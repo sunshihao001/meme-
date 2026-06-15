@@ -28,6 +28,10 @@ VALID_REPORT = """
 - conditional_not_executed: gmgn-token read-only not needed this round
 - forbidden: swap, private key, auto trading, cron job
 
+## 外部搜索来源
+- external_search_sources: not_applicable
+- not_applicable_reason: 本轮是 validator quality gate，不涉及 MQL5 指标/EA/回测/观察器 MVP。
+
 ## 输出类型与权限分类
 - 输出类型: validator quality gate
 - 权限分类: Autonomous

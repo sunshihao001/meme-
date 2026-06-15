@@ -117,7 +117,22 @@ swap
 
 ---
 
-## 5. Good-question rewrite
+## 5. 外部搜索来源适用性
+
+```text
+external_search_sources：not_applicable
+not_applicable_reason：本轮 loop_type=runtime_audit，主题是 V0.5 技能调用证据与运行契约补丁，不涉及 MQL5 指标、EA、回测、优化、观察器 MVP 或策略实现语义检索。
+```
+
+后续如果本轮主题涉及 MQL5/策略实现类概念，外部搜索来源必须显式列入：
+
+```text
+https://www.mql5.com/zh/articles
+```
+
+---
+
+## 6. Good-question rewrite
 
 ### Improved Agent-Usable Question
 

@@ -268,6 +268,7 @@ shared_phenomena
 concept_map_seed
 issue_tree_seed
 external_search_terms
+external_search_sources：至少列出本轮应检索/应说明不适用的来源；MQL5/策略实现类主题必须包含 https://www.mql5.com/zh/articles
 constraints
 feedback_entry
 ```
