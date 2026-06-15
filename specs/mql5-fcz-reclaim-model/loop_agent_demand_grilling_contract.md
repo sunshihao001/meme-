@@ -163,18 +163,50 @@ dbs-good-question：钉住本轮唯一最高价值问题。
 spec-first-ai-engineering：把问题转成可执行、可验证、可交接的工程/研究任务。
 ```
 
-### 5.2 按需加载
+### 5.2 V0.5 DBS Overlay 完整运行态
+
+当 Owner 明确要求“按 V0.5 需求拷问端 / DBS Overlay 全链条执行”，或质疑“技能是否真的调用起来”时，不能只加载基础必载技能；必须进入 Runtime Skill Audit 模式。
+
+此时必须实际加载并报告：
 
 ```text
-dbs-decision：涉及 Owner 决策、待决策问题、长期状态。
-dbs-content-system：涉及知识库归位、资料结构化。
-dbs-chatroom：需要多角色批评理论补丁。
-dbs-slowisfast：判断是否必须慢做、是否触发 owner gate。
-gmgn-market / gmgn-token / gmgn-portfolio / gmgn-track：只读 GMGN 数据和样本候选。
-github-pr-workflow / github-issues：涉及 PR / issue / CI。
+dbs-good-question：钉住运行时好问题，并加载 runtime audit reference。
+dbs-goal：检查本轮目标是否空转，改写为可检查交付物。
+dbs-content-system：判断是否属于内容/知识结构化工程，避免方法论全量塞进业务仓库。
+dbs-chatroom：判断是否需要多角色批评；若未启动聊天室，必须说明原因。
+dbs-slowisfast：判断哪些环节值得慢做，哪些不应伪慢。
+dbs-decision：判断是否涉及 Owner 决策、长期状态或待回填结果。
+dbs-save：判断是否需要写入 ~/.dbs/sessions；若项目已有 durable memory，说明为何不用。
+dbs-report：判断是否存在可合并存档；没有存档时不得凭空生成报告。
+spec-first-ai-engineering：把需求拷问转成工程/研究可验证交付。
 ```
 
-### 5.3 明确禁止
+报告中必须区分：
+
+```text
+1. loaded：本轮通过 skill_view 实际加载。
+2. referenced_only：只阅读或引用的方法文档 / 项目文件。
+3. conditional_not_executed：已加载但按 skill 规则不执行下一步，并说明原因。
+4. forbidden：本轮明确禁止调用。
+```
+
+禁止使用以下模糊表述：
+
+```text
+“按 V0.5 执行了”但不列 loaded 技能。
+“调用了 DBS Overlay”但只加载了 dbs-good-question / dbs-decision。
+“dbs-report 已使用”但没有读取 ~/.dbs/sessions 或没有说明为何不生成报告。
+“dbs-chatroom 已使用”但没有进入推荐专家 / 等待确认 / 多 Agent 对话协议。
+```
+
+### 5.3 按需加载
+
+```text
+gmgn-market / gmgn-token / gmgn-portfolio / gmgn-track：只读 GMGN 数据和样本候选。
+github-pr-workflow / github-issues / github-repo-management：涉及 PR / issue / CI / 上传。
+```
+
+### 5.4 明确禁止
 
 ```text
 gmgn-swap
