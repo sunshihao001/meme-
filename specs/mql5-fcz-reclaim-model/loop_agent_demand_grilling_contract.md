@@ -256,6 +256,7 @@ product_identity：本轮需求拷问端作为哪个产品形态运行，例如 
 skill_invocation_plan：本轮计划调用哪些 skill、为什么、预期输出是什么、谁消费输出。
 skill_capability_registry_snapshot：本轮可用 / 缺失 / pattern_only / forbidden 的能力快照。
 missing_skill_bridge：预期存在但当前 profile 未确认的技能，例如 sup / Superpowers brainstorming。
+subprotocol_activation_plan：当本轮需要 `intent-brainstorm-grill` 等子协议时，必须说明 parent_skill、subprotocol、trigger_reason、expected_artifact、downstream_consumer。
 ```
 
 `skill_invocation_plan` 最小格式：
@@ -274,7 +275,7 @@ execution_mode：required / conditional / gated / forbidden / pattern_only / mis
 ```text
 1. `dbs` 是 router，不是诊断技能；不能用“调用 DBS”代替具体子 skill 调用。
 2. `dbs-chatroom` 是 gated skill；未得到 Owner 确认时不能报告为 executed。
-3. `intent-brainstorm-grill` 若不是当前 profile 的真实 skill，只能标记为 pattern_only。
+3. `intent-brainstorm-grill` 不是顶层独立 skill，但已作为 `spec-first-ai-engineering/references/intent-brainstorm-grill.md` 子协议存在；必须区分 subprotocol_loaded / activated / executed / output_consumed。
 4. `sup / Superpowers brainstorming` 未经 skill_view 或技能列表确认时，只能标记为 missing_runtime_skill 或 referenced_as_pattern_only。
 5. 每个 loaded/executed 的 skill 必须说明输出是否被下游消费。
 ```
@@ -290,6 +291,7 @@ skills_forbidden_this_turn
 missing_skills_if_any
 skill_runtime_matrix
 skill_handoff_chain
+subprotocol_execution_evidence
 ```
 
 `skill_runtime_matrix` 必须区分：
@@ -299,6 +301,15 @@ installed / loaded / executed / output_consumed / referenced_only / conditional_
 ```
 
 禁止将 `listed_only`、`referenced_only`、`pattern_only` 误报成 `executed`。
+
+对子协议还要禁止：
+
+```text
+1. 将 subprotocol_present 误报成 activated。
+2. 将 subprotocol_loaded 误报成 executed。
+3. 将外部 pattern 引用误报成本地独立 skill 调用。
+4. 将没有 durable artifact 的口头澄清误报成 output_consumed。
+```
 
 ### Step 4：语义发散与问题空间建模
 
@@ -400,14 +411,16 @@ specs/mql5-fcz-reclaim-model/reports/loop_agent_demand_grilling_report_<YYYYMMDD
 8. skill_runtime_matrix。
 9. skill_handoff_chain。
 10. missing_skill_bridge。
-11. 实际加载技能。
-12. 禁止调用技能。
-13. 输出类型。
-14. 权限分类。
-15. 更新文件。
-16. PROPOSED / UNKNOWN / REQUIRES_OWNER 项。
-17. 验证输出。
-18. 下一轮建议。
+11. subprotocol_activation_plan。
+12. subprotocol_execution_evidence。
+13. 实际加载技能。
+14. 禁止调用技能。
+15. 输出类型。
+16. 权限分类。
+17. 更新文件。
+18. PROPOSED / UNKNOWN / REQUIRES_OWNER 项。
+19. 验证输出。
+20. 下一轮建议。
 ```
 
 ### Step 9：更新索引和变更记录

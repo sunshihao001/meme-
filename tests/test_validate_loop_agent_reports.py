@@ -28,6 +28,8 @@ VALID_REPORT = """
 - skill_runtime_matrix: installed / loaded / executed / output_consumed / referenced_only / conditional_not_executed / missing / forbidden
 - skill_handoff_chain: owner_request -> problem_statement -> validator quality gate
 - missing_skill_bridge: sup / Superpowers brainstorming = missing_runtime_skill
+- subprotocol_activation_plan: parent_skill=spec-first-ai-engineering; subprotocol=references/intent-brainstorm-grill.md; trigger_reason=fuzzy demand-grilling workflow
+- subprotocol_execution_evidence: funnel_layers_completed=goal/users_operators/boundaries_non_goals/assumptions/failure_modes/options_compared/acceptance_criteria; artifact_path=specs/example/clarification.md; output_consumed_by=validator quality gate
 
 ## Skill Runtime Audit
 - loaded: spec-first-ai-engineering, dbs-good-question

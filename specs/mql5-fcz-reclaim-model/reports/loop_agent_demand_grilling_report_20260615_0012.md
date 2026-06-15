@@ -201,6 +201,26 @@ Owner 原始反馈
 → loop_agent_report_validator：后续检查报告不能缺外部来源和运行证据
 ```
 
+### subprotocol_activation_plan
+
+```text
+parent_skill：spec-first-ai-engineering
+subprotocol：references/intent-brainstorm-grill.md
+trigger_reason：本轮需要先发散再收敛，防止直接把 Owner 表层词拿去搜索。
+expected_artifact：搜索前语义转译层报告 / loop contract patch。
+downstream_consumer：demand_theory_evolution_loop、loop_agent_demand_grilling_contract、loop report validator。
+```
+
+### subprotocol_execution_evidence
+
+```text
+loaded_reference：no；历史报告产生时没有显式 skill_view 加载 references/intent-brainstorm-grill.md。
+activated：partial；本轮实际执行了“先发散再收敛”的 pattern，但没有把它标注为子协议激活。
+funnel_layers_completed：goal / assumptions / failure_modes / options_compared / acceptance_criteria 部分覆盖；users_operators / boundaries_non_goals 未完整记录。
+artifact_path：10_工程化交接/需求拷问端概念语义升级_外部概念吸收_v0.1.md；specs/mql5-fcz-reclaim-model/loop_agent_demand_grilling_contract.md。
+output_consumed_by：demand_theory_evolution_loop 与 loop report validator；但本历史报告只能标为 partial，不回填伪 full execution。
+```
+
 ### missing_skill_bridge
 
 ```text

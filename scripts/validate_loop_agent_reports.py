@@ -24,6 +24,8 @@ REQUIRED_EVIDENCE: list[tuple[str, tuple[str, ...]]] = [
     ("skill_runtime_matrix", ("skill_runtime_matrix", "installed", "output_consumed")),
     ("skill_handoff_chain", ("skill_handoff_chain", "handoff_chain", "输出交接")),
     ("missing_skill_bridge", ("missing_skill_bridge", "missing_runtime_skill", "缺失技能桥接")),
+    ("subprotocol_activation_plan", ("subprotocol_activation_plan", "parent_skill", "subprotocol", "trigger_reason")),
+    ("subprotocol_execution_evidence", ("subprotocol_execution_evidence", "funnel_layers_completed", "artifact_path", "output_consumed_by")),
     ("loaded", ("loaded", "实际加载技能", "实际加载")),
     ("referenced_only", ("referenced_only", "referenced only", "referenced_only", "referenced /", "只 referenced")),
     ("conditional_not_executed", ("conditional_not_executed", "conditional", "not_executed", "未调用", "按需但未调用", "not called")),
