@@ -220,7 +220,7 @@ GMGN_PRIVATE_KEY
 
 ---
 
-## 6. 每轮 10 步运行协议
+## 6. 每轮 11 步运行协议
 
 ### Step 1：读取真源
 
@@ -245,7 +245,41 @@ specs/mql5-fcz-reclaim-model/decisions.md
 12_决策记录/决策记录_v0.1.md
 ```
 
-### Step 2：运行态技能审计
+### Step 2：技能编排计划
+
+在运行态技能审计之前，必须先生成本轮 `skill_invocation_plan`。需求拷问端不是把所有 skill 全量跑一遍，而是按任务类型选择、排序和解释 skill。
+
+必须输出：
+
+```text
+product_identity：本轮需求拷问端作为哪个产品形态运行，例如 Demand Cognition & Knowledge Integration Orchestrator。
+skill_invocation_plan：本轮计划调用哪些 skill、为什么、预期输出是什么、谁消费输出。
+skill_capability_registry_snapshot：本轮可用 / 缺失 / pattern_only / forbidden 的能力快照。
+missing_skill_bridge：预期存在但当前 profile 未确认的技能，例如 sup / Superpowers brainstorming。
+```
+
+`skill_invocation_plan` 最小格式：
+
+```text
+skill
+role：router / clarifier / concept_parser / critic / gate / handoff / domain_data / validator
+trigger_reason
+expected_output
+downstream_consumer
+execution_mode：required / conditional / gated / forbidden / pattern_only / missing
+```
+
+规则：
+
+```text
+1. `dbs` 是 router，不是诊断技能；不能用“调用 DBS”代替具体子 skill 调用。
+2. `dbs-chatroom` 是 gated skill；未得到 Owner 确认时不能报告为 executed。
+3. `intent-brainstorm-grill` 若不是当前 profile 的真实 skill，只能标记为 pattern_only。
+4. `sup / Superpowers brainstorming` 未经 skill_view 或技能列表确认时，只能标记为 missing_runtime_skill 或 referenced_as_pattern_only。
+5. 每个 loaded/executed 的 skill 必须说明输出是否被下游消费。
+```
+
+### Step 3：运行态技能审计
 
 输出并写入报告：
 
@@ -254,9 +288,19 @@ skills_loaded_this_turn
 skills_referenced_only
 skills_forbidden_this_turn
 missing_skills_if_any
+skill_runtime_matrix
+skill_handoff_chain
 ```
 
-### Step 3：语义发散与问题空间建模
+`skill_runtime_matrix` 必须区分：
+
+```text
+installed / loaded / executed / output_consumed / referenced_only / conditional_not_executed / missing / forbidden
+```
+
+禁止将 `listed_only`、`referenced_only`、`pattern_only` 误报成 `executed`。
+
+### Step 4：语义发散与问题空间建模
 
 用 `dbs-good-question` + `dbs-deconstruct` 先形成问题空间，而不是直接钉住唯一最高价值问题：
 
@@ -290,7 +334,7 @@ feedback_entry
 5. 必须记录 unchosen_branches 和 revisit_trigger。
 ```
 
-### Step 4：判断输出类型
+### Step 5：判断输出类型
 
 只能选择一种主输出：
 
@@ -306,7 +350,7 @@ TYPE_H_EXTERNAL_CONCEPT_ABSORPTION
 TYPE_I_LOOP_SELF_PATCH
 ```
 
-### Step 5：权限分类
+### Step 6：权限分类
 
 ```text
 Autonomous：可以写文件 + 验证。
@@ -322,7 +366,7 @@ Read-only：只输出报告，不改文件。
 涉及文档入口 / issue 草案 / validator spec / 非决策性字段提案 → Autonomous。
 ```
 
-### Step 6：执行文件落地
+### Step 7：执行文件落地
 
 根据输出类型写入对应位置：
 
@@ -335,7 +379,7 @@ Owner 决策 → 11_问题清单 / 12_决策记录 / specs/.../decisions.md
 报告 → specs/mql5-fcz-reclaim-model/reports
 ```
 
-### Step 7：写循环报告
+### Step 8：写循环报告
 
 报告路径：
 
@@ -351,23 +395,28 @@ specs/mql5-fcz-reclaim-model/reports/loop_agent_demand_grilling_report_<YYYYMMDD
 3. external_sources_absorbed，若本轮涉及理论升级。
 4. 当前收敛切片 current_convergence_slice。
 5. 未选分支 unchosen_branches 与 revisit_trigger。
-6. 实际加载技能。
-7. 禁止调用技能。
-8. 输出类型。
-9. 权限分类。
-10. 更新文件。
-11. PROPOSED / UNKNOWN / REQUIRES_OWNER 项。
-12. 验证输出。
-13. 下一轮建议。
+6. product_identity。
+7. skill_invocation_plan。
+8. skill_runtime_matrix。
+9. skill_handoff_chain。
+10. missing_skill_bridge。
+11. 实际加载技能。
+12. 禁止调用技能。
+13. 输出类型。
+14. 权限分类。
+15. 更新文件。
+16. PROPOSED / UNKNOWN / REQUIRES_OWNER 项。
+17. 验证输出。
+18. 下一轮建议。
 ```
 
-### Step 8：更新索引和变更记录
+### Step 9：更新索引和变更记录
 
 新增正式文件必须更新索引。
 
 每轮有实质更新必须更新变更记录。
 
-### Step 9：运行验证
+### Step 10：运行验证
 
 默认验证：
 
@@ -377,7 +426,7 @@ python scripts/validate_all.py
 
 如果本轮新增 validator，还要运行对应 validator 和 tests。
 
-### Step 10：Owner 汇报
+### Step 11：Owner 汇报
 
 最终回复只汇报：
 

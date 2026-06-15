@@ -117,7 +117,19 @@ swap
 
 ---
 
-## 5. 外部搜索来源适用性
+## 5. Skill Orchestration Evidence
+
+```text
+product_identity：Demand Cognition & Knowledge Integration Orchestrator / 需求认知与知识接入编排器。
+skill_invocation_plan：本历史报告产生时尚未固化技能编排层；本轮实际范围是 runtime skill audit，因此只要求记录 loaded / referenced_only / conditional_not_executed / forbidden。
+skill_runtime_matrix：installed / loaded / executed / output_consumed / referenced_only / conditional_not_executed / missing / forbidden 已作为后续 P70 规则引入；本历史报告按 backfill 方式标注，不回填伪执行。
+skill_handoff_chain：Owner runtime-audit concern → dbs-good-question runtime audit → loop contract patch → validator quality gate。
+missing_skill_bridge：not_applicable_reason：本历史报告未涉及 sup / Superpowers brainstorming 或 intent-brainstorm-grill 真实 skill 桥接。
+```
+
+---
+
+## 6. 外部搜索来源适用性
 
 ```text
 external_search_sources：not_applicable

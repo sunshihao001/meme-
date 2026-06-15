@@ -22,6 +22,13 @@ VALID_REPORT = """
 ## 本轮唯一最高价值问题
 如何防止循环代理只写方法论而没有执行证据？
 
+## Skill Orchestration Evidence
+- product_identity: Demand Cognition & Knowledge Integration Orchestrator
+- skill_invocation_plan: dbs-good-question -> spec-first-ai-engineering
+- skill_runtime_matrix: installed / loaded / executed / output_consumed / referenced_only / conditional_not_executed / missing / forbidden
+- skill_handoff_chain: owner_request -> problem_statement -> validator quality gate
+- missing_skill_bridge: sup / Superpowers brainstorming = missing_runtime_skill
+
 ## Skill Runtime Audit
 - loaded: spec-first-ai-engineering, dbs-good-question
 - referenced_only: github-pr-workflow

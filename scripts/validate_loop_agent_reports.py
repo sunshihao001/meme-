@@ -19,6 +19,11 @@ REPORT_GLOB = "loop_agent_demand_grilling_report_*.md"
 REQUIRED_EVIDENCE: list[tuple[str, tuple[str, ...]]] = [
     ("问题空间或当前收敛切片", ("本轮唯一最高价值问题", "current_convergence_slice", "当前收敛切片", "problem_world", "concept_map_seed", "issue_tree_seed")),
     ("外部搜索来源", ("external_search_sources", "external_sources_absorbed", "not_applicable_reason", "https://www.mql5.com/zh/articles", "mql5.com/zh/articles")),
+    ("product_identity", ("product_identity", "Demand Cognition", "需求认知")),
+    ("skill_invocation_plan", ("skill_invocation_plan", "技能编排计划")),
+    ("skill_runtime_matrix", ("skill_runtime_matrix", "installed", "output_consumed")),
+    ("skill_handoff_chain", ("skill_handoff_chain", "handoff_chain", "输出交接")),
+    ("missing_skill_bridge", ("missing_skill_bridge", "missing_runtime_skill", "缺失技能桥接")),
     ("loaded", ("loaded", "实际加载技能", "实际加载")),
     ("referenced_only", ("referenced_only", "referenced only", "referenced_only", "referenced /", "只 referenced")),
     ("conditional_not_executed", ("conditional_not_executed", "conditional", "not_executed", "未调用", "按需但未调用", "not called")),

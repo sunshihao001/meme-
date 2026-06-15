@@ -131,7 +131,85 @@ revisit_trigger：
 
 ---
 
-## 7. Runtime Skill Audit
+## 7. Skill Orchestration Evidence
+
+### product_identity
+
+```text
+Demand Cognition & Knowledge Integration Orchestrator / 需求认知与知识接入编排器
+```
+
+### skill_invocation_plan
+
+```text
+- skill: dbs-good-question
+  role: problem_clarifier
+  trigger_reason: Owner 批评需求拷问端搜索前没有把个人语义转成可检索专业表达。
+  expected_output: problem statement / semantic divergence frame
+  downstream_consumer: search_intent_translation_layer
+  execution_mode: required
+
+- skill: spec-first-ai-engineering
+  role: engineering_handoff
+  trigger_reason: 需要把方法修正落成项目文件、validator 和可验证变更。
+  expected_output: contract patch / report / validation discipline
+  downstream_consumer: project files / validator / CI
+  execution_mode: required
+
+- skill: dbs-chatroom
+  role: multi_perspective_critic
+  trigger_reason: 本轮可以被多角色批评增强，但已收敛为方法契约补丁。
+  expected_output: expert critique if Owner confirms
+  downstream_consumer: convergence_slice
+  execution_mode: gated
+
+- skill: intent-brainstorm-grill
+  role: divergent_ideation_pattern
+  trigger_reason: 需要先发散再收敛。
+  expected_output: options / assumptions / failure modes
+  downstream_consumer: issue_tree_seed
+  execution_mode: pattern_only
+
+- skill: sup / Superpowers brainstorming
+  role: divergent_ideation
+  trigger_reason: Owner 提到可能需要真正头脑风暴能力。
+  expected_output: brainstorm options
+  downstream_consumer: dbs-chatroom / convergence_slice
+  execution_mode: missing
+```
+
+### skill_runtime_matrix
+
+```text
+| skill | installed | loaded | executed | output_consumed | referenced_only | conditional_not_executed | missing | forbidden |
+|---|---|---|---|---|---|---|---|---|
+| dbs-good-question | yes | yes | partial | yes | no | no | no | no |
+| spec-first-ai-engineering | yes | yes | partial | yes | no | no | no | no |
+| dbs-chatroom | yes | no | no | not_applicable | no | 本轮未进入 Owner 确认的多专家聊天室 | no | no |
+| intent-brainstorm-grill | pattern | no | no | partial | yes | not a standalone loaded skill | no | no |
+| sup / Superpowers brainstorming | unknown | no | no | no | yes | no | missing_runtime_skill | no |
+| GMGN execution / swap | not_applicable | no | no | no | no | no | no | forbidden |
+```
+
+### skill_handoff_chain
+
+```text
+Owner 原始反馈
+→ dbs-good-question：识别为搜索前语义转译缺口
+→ spec-first-ai-engineering：转成项目文件 / 运行契约 / validator 可验证补丁
+→ search_intent_translation_layer：生成 query transformation 字段
+→ loop_agent_report_validator：后续检查报告不能缺外部来源和运行证据
+```
+
+### missing_skill_bridge
+
+```text
+sup / Superpowers brainstorming：当前未作为 Hermes profile 中的真实 skill 被确认。若 Owner 要求它成为需求拷问端真实节点，需要后续执行 missing_skill_bridge 审计，确认安装、创建桥接 skill，或明确仅作为 intent-brainstorm-grill 的 pattern_only 来源。
+```
+
+---
+
+## 8. Runtime Skill Audit
 
 ### loaded
 
