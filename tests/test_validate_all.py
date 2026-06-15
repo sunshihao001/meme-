@@ -28,6 +28,7 @@ class ValidateAllTests(unittest.TestCase):
         self.assertTrue(any("scripts/validate_sample_csv.py" in text for text in command_text))
         self.assertTrue(any("scripts/validate_state_paths.py" in text for text in command_text))
         self.assertTrue(any("scripts/validate_loop_agent_reports.py" in text for text in command_text))
+        self.assertTrue(any("scripts/validate_index_references.py" in text for text in command_text))
 
     def test_run_commands_returns_zero_when_all_pass(self):
         commands = [[sys.executable, "ok1"], [sys.executable, "ok2"]]
