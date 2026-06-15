@@ -186,9 +186,17 @@ Agent 工作流 → skills/
 当前最建议推进：
 
 ```text
+TP-003 / GitHub Issue #2：index reference validator
+https://github.com/sunshihao001/meme-/issues/2
+```
+
+后续候选：
+
+```text
+TP-004：sample record markdown validator
+TP-005：FCZ_B_0001 真实失败样本
+TP-006：FCZ_C / FCZ_D 图表派生结构
 08_指标需求/MQL5观察指标MVP开发计划_v0.1.md
-07_样本标注/meme样本标注体系_v0.1.md
-09_规则与回测/状态机规则整合_v0.1.md
 ```
 
 如涉及项目工作方式，先查看：

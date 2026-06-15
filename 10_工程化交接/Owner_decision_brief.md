@@ -69,46 +69,55 @@ D. 反证样本 CSV schema 校验器
 
 ### Decision Needed
 
-是否允许 Agent/Codex 创建 GitHub issue、branch、PR。
+哪些 GitHub 副作用允许 Agent 直接执行，哪些仍需 owner 决策。
+
+### Current State
+
+```text
+gh CLI 已安装并认证。
+PR #1 已存在：https://github.com/sunshihao001/meme-/pull/1
+TP-003 已创建真实 Issue #2：https://github.com/sunshihao001/meme-/issues/2
+```
 
 ### Recommended Default
 
 ```text
-先只生成本地 issue 草案，不直接调用 GitHub。
+允许 Agent 为当前明确任务创建单个 GitHub issue、更新当前 PR 分支并检查 CI；不允许未经确认批量创建 issue、修改 branch protection、合并 PR 或发布 release。
 ```
 
 ### Alternatives
 
 ```text
-A. 只生成本地 issue 草案
-B. 允许创建 GitHub issue
-C. 允许创建 branch/PR
+A. 只允许本地 issue 草案
+B. 允许当前任务的单个 GitHub issue / PR 检查
+C. 允许批量 issue / branch protection / merge
 ```
 
 ### Evidence
 
-当前 repo URL 与权限 UNKNOWN。
+当前 repo 与权限已确认：
+
+```text
+repo：sunshihao001/meme-
+gh auth：sunshihao001 authenticated
+open PR：#1
+open issue：#2
+```
 
 ### Risk
 
-未经授权创建 issue/PR 属于外部副作用。
+批量创建 issue、修改保护规则或合并 PR 仍属于高副作用，需要 owner 决策。
 
-### What happens if we choose A
-
-```text
-安全，但需要 owner 手动复制到 GitHub。
-```
-
-### What happens if we choose B/C
+### What happens if we choose B
 
 ```text
-效率高，但需要权限与 repo 确认。
+AI 工作流可以从 #UNKNOWN handoff 升级到真实 GitHub issue / PR / CI 对象，但仍保留 owner 对合并和保护规则的最终控制。
 ```
 
 ### Exact question for owner
 
 ```text
-是否提供 GitHub repo，并授权创建 issue？如果是，请给 repo URL 和权限范围。
+是否允许后续每个明确任务都自动创建一个真实 GitHub issue？批量创建、合并和 branch protection 仍默认需要单独确认。
 ```
 
 ---

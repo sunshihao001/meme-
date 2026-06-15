@@ -197,7 +197,7 @@ specs/mql5-fcz-reclaim-model/demand_theory_evolution_loop.md
 
 | 主线 | 当前状态 | 主要文件 | 现在缺什么 |
 |---|---|---|---|
-| GitHub 项目治理层 | 已建立并在 PR 分支中 | README、ROADMAP、.github、PR 模板、issue 草案 | 需合并到 main；真实 issue 尚未创建 |
+| GitHub 项目治理层 | 已建立并在 PR #1 中；`gh` 已安装认证；TP-003 已创建真实 Issue #2 | README、ROADMAP、.github、PR 模板、Issue #2、PR #1 | 需合并到 main；branch protection 仍需 owner 决策 |
 | V0.5 需求拷问运行态 | 已补运行契约、runtime audit，并新增 loop report validator | loop_agent_demand_grilling_contract、runtime report、validate_loop_agent_reports | 后续新报告需持续通过 schema 检查 |
 | 项目继续入口 | 本文件新增 | Project_Continuation_Brief_v0.1.md | 后续 README/ROADMAP 应引用 |
 | 样本标注主线 | 已启动 | 07_样本标注、FCZ_B/C/D、CSV、raw_refs | FCZ_B 待补真实失败样本；C/D 待图表派生结构 |
@@ -372,16 +372,18 @@ P2-1：做 index reference validator。
 ## 13. 下一轮 invocation 建议
 
 ```text
-读取 10_工程化交接/Project_Continuation_Brief_v0.1.md 和 10_工程化交接/优先级问题清单任务包_v0.1.md，执行 TP-003 / P2-1 index reference validator。
+读取 10_工程化交接/Project_Continuation_Brief_v0.1.md、10_工程化交接/优先级问题清单任务包_v0.1.md 和 GitHub Issue #2，执行 TP-003 / P2-1 index reference validator。
 
 本轮只做：
-1. 读取 issue-005-index-reference-validator.md。
-2. 建立 specs/index-reference-validator/ 的 spec / plan / tasks / checklist。
-3. 写 RED 测试，检查索引引用不存在时失败。
-4. 写 scripts/validate_index_references.py。
-5. 接入 scripts/validate_all.py。
-6. 更新索引和变更记录。
-7. 运行 python scripts/validate_all.py。
+1. 读取 GitHub Issue #2：https://github.com/sunshihao001/meme-/issues/2。
+2. 读取本地 issue-005-index-reference-validator.md。
+3. 建立 specs/index-reference-validator/ 的 spec / plan / tasks / checklist。
+4. 写 RED 测试，检查索引引用不存在时失败。
+5. 写 scripts/validate_index_references.py。
+6. 接入 scripts/validate_all.py。
+7. 更新索引和变更记录。
+8. 运行 python scripts/validate_all.py。
+9. 使用 gh pr checks 1 检查 PR CI。
 
-不要做：目录重构、旧资料搬迁、真实 GitHub issue 创建、自动交易、cron。
+不要做：目录重构、旧资料搬迁、批量创建更多 GitHub issue、自动交易、cron。
 ```

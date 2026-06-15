@@ -162,11 +162,11 @@ v0.1-P7-Agent工作台骨架
 当前建议优先级：
 
 ```text
-P1. 完成 Agent 工作台入口层：AGENTS.md / CLAUDE.md / SOURCE_OF_TRUTH.md / skills/
-P2. 写 MQL5观察指标MVP开发计划_v0.1.md
-P3. 建 meme样本标注体系_v0.1.md
-P4. 建 状态机规则整合_v0.1.md
-P5. 后续再考虑 Claude / Codex / Grok bridge
+P1. 执行 TP-003 / GitHub Issue #2：index reference validator，防止索引引用漂移。
+P2. 执行 TP-004：sample record markdown validator，保护样本主线。
+P3. 补 FCZ_B_0001 真实失败样本。
+P4. 补 FCZ_C / FCZ_D 图表派生结构。
+P5. 写 MQL5 观察器 MVP 计划，但仍保持观察器定位，不进入自动下单。
 ```
 
 ---

@@ -1,8 +1,10 @@
 # Issue Draft: 增加索引引用存在性 Validator
 
-> 状态：draft  
+> 状态：GitHub Issue 已创建 / open  
+> GitHub Issue：#2  
+> URL：https://github.com/sunshihao001/meme-/issues/2  
 > 类型：validator / quality-gate  
-> 建议标签：validator, ci, documentation  
+> 标签：validator, ci, documentation, ai-workflow, quality-gate  
 > Agent 执行分类：Autonomous
 
 ---
