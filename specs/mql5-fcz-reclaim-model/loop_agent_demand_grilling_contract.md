@@ -267,7 +267,14 @@ solution_world
 shared_phenomena
 concept_map_seed
 issue_tree_seed
+owner_surface_terms：Owner 原始表层词，不直接当作唯一搜索词
+interpreted_information_need：Agent 理解的真实信息需求
+professional_concept_family：可搜索的专业概念族 / 上位概念 / 相邻概念
+query_transformation_strategy：rewrite / expansion / decomposition / step-back / HyDE / multilingual
 external_search_terms
+search_query_variants：至少 5 条查询，覆盖中文、英文、领域术语、论坛语、论文/工程语
+query_drift_risk：扩展后可能偏离 Owner 原意的风险
+retrieval_failure_mode：词汇不匹配 / 过窄查询 / 过宽查询 / 语言不匹配 / 多问题混合
 external_search_sources：至少列出本轮应检索/应说明不适用的来源；MQL5/策略实现类主题必须包含 https://www.mql5.com/zh/articles
 constraints
 feedback_entry
