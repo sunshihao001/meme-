@@ -36,6 +36,7 @@ ROADMAP.md
 .github/ISSUE_TEMPLATE/research_sample_task.yml
 .github/ISSUE_TEMPLATE/validator_task.yml
 .github/pull_request_template.md
+10_工程化交接/Project_Continuation_Brief_v0.1.md
 10_工程化交接/issues/ 下一阶段 issue 草案
 ```
 
@@ -194,4 +195,29 @@ P5-4 引入 code review / simplification / validator-first 工作流。
 2. 是否优先推进 P1 样本标注，还是 P2 validators。
 3. 是否接受 GitHub Issues 作为所有新任务入口。
 4. 是否暂缓自动交易方向，继续保持观察器 / 研究知识库定位。
+```
+
+---
+
+## 9. 当前继续入口与 V0.5 控制面
+
+当前接手项目、判断优先级和自动推进任务包时，先读取：
+
+```text
+10_工程化交接/Project_Continuation_Brief_v0.1.md
+```
+
+如果任务涉及 V0.5 需求拷问端运行态，还要读取：
+
+```text
+specs/mql5-fcz-reclaim-model/loop_agent_demand_grilling_contract.md
+10_工程化交接/V0.5需求拷问理论补全体系承接清单_v0.1.md
+```
+
+原则：
+
+```text
+1. Project Continuation Brief 负责回答“现在从哪里继续”。
+2. V0.5 运行契约负责回答“拷问端是否真的调用、是否越权、是否可验证”。
+3. ROADMAP 只保留阶段路线，不承载每轮运行细节。
 ```

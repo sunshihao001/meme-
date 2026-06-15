@@ -73,6 +73,12 @@ specs/
 .github/pull_request_template.md
 ```
 
+如果要先接手当前项目、判断从哪里继续，先看：
+
+```text
+10_工程化交接/Project_Continuation_Brief_v0.1.md
+```
+
 ---
 
 ## 4. 目录结构
@@ -172,17 +178,18 @@ ROADMAP.md
 当前最建议的下一批 issue：
 
 ```text
-1. 补齐 FCZ_B_0001 真实“模型符合但失败”样本。
-2. 为 FCZ_C_0001 / FCZ_D_0001 增加图表派生结构标注。
-3. 增加样本记录 Markdown 字段完整性 validator。
-4. 增加索引引用存在性 validator。
-5. 编写 MQL5 观察指标 MVP 开发计划。
+1. 先接入 Project Continuation Brief 到入口层。
+2. 补齐 FCZ_B_0001 真实“模型符合但失败”样本。
+3. 为 FCZ_C_0001 / FCZ_D_0001 增加图表派生结构标注。
+4. 增加样本记录 Markdown 字段完整性 validator。
+5. 增加索引引用存在性 validator。
+6. 编写 MQL5 观察指标 MVP 开发计划。
 ```
 
 对应本地草案位于：
 
 ```text
-10_工程化交接/issues/
+10_工程化交接/
 ```
 
 ---

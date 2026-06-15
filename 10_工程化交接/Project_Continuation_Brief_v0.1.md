@@ -220,6 +220,15 @@ specs/mql5-fcz-reclaim-model/demand_theory_evolution_loop.md
 | P0-A3 | SOURCE_OF_TRUTH 增加项目继续入口 | 真源地图未列本文件 | 在当前下一步入口或工程化交接处引用本文件 | 真源入口能指向本文件 |
 | P0-A4 | AGENTS.md 启动阅读顺序加入本文件 | Agent 启动规则未包含 continuation brief | 在启动阅读顺序中加入本文件 | Agent 规则层强制读取 |
 
+当前执行状态：
+
+```text
+P0-A1：已完成
+P0-A2：已完成
+P0-A3：已完成
+P0-A4：已完成
+```
+
 ### P0-B：V0.5 运行态补全
 
 | ID | 补全项 | 为什么重要 | 建议动作 | 验收标准 |
@@ -283,25 +292,25 @@ specs/mql5-fcz-reclaim-model/demand_theory_evolution_loop.md
 按“减少 owner 口头提醒 + 提升后续可执行性”排序：
 
 ```text
-1. P0-A1 / P0-A2 / P0-A3 / P0-A4：把 Project Continuation Brief 接入 README / ROADMAP / SOURCE_OF_TRUTH / AGENTS。
-2. P0-B1：做 loop report validator，防止 V0.5 再次变成口头方法论。
-3. P2-1：做 index reference validator，防止索引漂移。
-4. P1-4：做 sample record markdown validator，保护样本主线。
-5. P1-1：补 FCZ_B_0001 真实失败样本。
-6. P1-2 / P1-3：补 C/D 图表派生结构。
-7. P4-1：写 MQL5 观察器 MVP 计划。
+已完成：P0-A1 / P0-A2 / P0-A3 / P0-A4：Project Continuation Brief 已接入 README / ROADMAP / SOURCE_OF_TRUTH / AGENTS。
+1. P0-B1：做 loop report validator，防止 V0.5 再次变成口头方法论。
+2. P2-1：做 index reference validator，防止索引漂移。
+3. P1-4：做 sample record markdown validator，保护样本主线。
+4. P1-1：补 FCZ_B_0001 真实失败样本。
+5. P1-2 / P1-3：补 C/D 图表派生结构。
+6. P4-1：写 MQL5 观察器 MVP 计划。
 ```
 
 推荐下一轮只做第 1 项：
 
 ```text
-把 Project Continuation Brief 接入 README / ROADMAP / SOURCE_OF_TRUTH / AGENTS。
+P0-B1：做 loop report validator。
 ```
 
 原因：
 
 ```text
-本文件虽然已经存在，但如果入口文件不引用它，新 Agent 仍可能找不到它。先接入口层，再做 validator。
+入口层已补齐；下一步应把 V0.5 运行报告的 required evidence 做成自动质量门，防止拷问端再次退化成口头方法论。
 ```
 
 ---

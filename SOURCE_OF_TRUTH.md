@@ -177,6 +177,12 @@ Agent 工作流 → skills/
 
 ## 8. 当前下一步真源入口
 
+当前接手项目、判断从哪里继续，优先查看：
+
+```text
+10_工程化交接/Project_Continuation_Brief_v0.1.md
+```
+
 当前最建议推进：
 
 ```text
