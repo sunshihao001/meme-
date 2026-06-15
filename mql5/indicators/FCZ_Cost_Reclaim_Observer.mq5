@@ -122,6 +122,8 @@ int OnCalculate(const int rates_total,
    double val = fczLow + lowBin * binSize;
    double vah = fczLow + (highBin + 1) * binSize;
 
+   int fczBars = startShift - endShift + 1;
+
    DrawRect(PREFIX + "FCZ", time[startShift], fczHigh, time[endShift], fczLow, clrDodgerBlue);
    DrawHLine(PREFIX + "POC", poc, clrGold, 2);
    DrawHLine(PREFIX + "VAH", vah, clrLimeGreen, 1);
@@ -130,23 +132,36 @@ int OnCalculate(const int rates_total,
    double avwapZone = EMPTY_VALUE;
    double avwapImpulse = EMPTY_VALUE;
    if(InpShowAVWAPZoneStart && startShift < rates_total)
+   {
       avwapZone = CalcAVWAP(startShift, 0, high, low, close, tick_volume, rates_total);
+      DrawHLine(PREFIX + "AVWAP_ZONE_START", avwapZone, clrAqua, 1);
+   }
    if(InpShowAVWAPImpulseStart && InpImpulseStartShift < rates_total)
+   {
       avwapImpulse = CalcAVWAP(InpImpulseStartShift, 0, high, low, close, tick_volume, rates_total);
+      DrawHLine(PREFIX + "AVWAP_IMPULSE_START", avwapImpulse, clrViolet, 1);
+   }
 
    double retracement = EMPTY_VALUE;
    if(InpImpulseHighShift < rates_total && InpWashoutLowShift < rates_total && InpImpulseStartShift < rates_total)
    {
-      double impulseRange = high[InpImpulseHighShift] - close[InpImpulseStartShift];
+      double impulseBase = close[InpImpulseStartShift];
+      double impulseTop = high[InpImpulseHighShift];
+      double impulseRange = impulseTop - impulseBase;
       if(impulseRange > 0.0)
-         retracement = (high[InpImpulseHighShift] - low[InpWashoutLowShift]) / impulseRange;
+      {
+         retracement = (impulseTop - low[InpWashoutLowShift]) / impulseRange;
+         DrawHLine(PREFIX + "RETRACE_0618", impulseTop - impulseRange * 0.618, clrSlateBlue, 1);
+         DrawHLine(PREFIX + "RETRACE_0786", impulseTop - impulseRange * 0.786, clrSlateBlue, 1);
+         DrawHLine(PREFIX + "RETRACE_0886", impulseTop - impulseRange * 0.886, clrOrangeRed, 1);
+      }
    }
 
    string state = "STATE_PROFILE_READY";
-   string pocRelation = (close[0] >= poc) ? "reclaimed_or_above" : "below";
+   string pocRelation = RelationToLevel(close[0], poc, _Point * 3.0);
    string avwapRelation = "not_available";
    if(avwapZone != EMPTY_VALUE)
-      avwapRelation = (close[0] >= avwapZone) ? "above_zonestart" : "below_zonestart";
+      avwapRelation = RelationToLevel(close[0], avwapZone, _Point * 3.0);
 
    DrawLabel(PREFIX + "STATUS",
              "FCZ Observer MVP\n" +
@@ -158,7 +173,7 @@ int OnCalculate(const int rates_total,
              "Allowed: observe_only");
 
    if(InpExportCSV)
-      ExportLatest(_Symbol, EnumToString(_Period), time[0], fczHigh, fczLow, poc, vah, val, avwapZone, avwapImpulse, retracement, pocRelation, avwapRelation, state);
+      ExportLatest(_Symbol, EnumToString(_Period), time[0], fczHigh, fczLow, fczBars, poc, vah, val, avwapZone, avwapImpulse, retracement, pocRelation, avwapRelation, state);
 
    return(rates_total);
 }
@@ -223,8 +238,19 @@ string ValueText(double value)
    return(DoubleToString(value, _Digits));
 }
 
+string RelationToLevel(double price, double level, double tolerance)
+{
+   if(level == EMPTY_VALUE)
+      return("not_available");
+   if(MathAbs(price - level) <= tolerance)
+      return("touch");
+   if(price > level)
+      return("reclaimed");
+   return("below");
+}
+
 void ExportLatest(string symbol, string timeframe, datetime sampleTime,
-                  double fczHigh, double fczLow, double poc, double vah, double val,
+                  double fczHigh, double fczLow, int fczBars, double poc, double vah, double val,
                   double avwapZone, double avwapImpulse, double retracement,
                   string pocRelation, string avwapRelation, string state)
 {
@@ -235,7 +261,7 @@ void ExportLatest(string symbol, string timeframe, datetime sampleTime,
 
    FileWrite(handle,
              "symbol", "timeframe", "sample_time", "fcz_high", "fcz_low",
-             "poc_level", "vah_level", "val_level", "avwap_zonestart",
+             "fcz_bars", "poc_level", "vah_level", "val_level", "avwap_zonestart",
              "avwap_impulsestart", "retracement_ratio", "poc_relation",
              "avwap_relation", "current_state", "allowed_mode",
              "positive_evidence", "negative_evidence", "missing_evidence");
@@ -243,7 +269,7 @@ void ExportLatest(string symbol, string timeframe, datetime sampleTime,
    FileWrite(handle,
              symbol, timeframe, TimeToString(sampleTime, TIME_DATE | TIME_MINUTES),
              DoubleToString(fczHigh, _Digits), DoubleToString(fczLow, _Digits),
-             DoubleToString(poc, _Digits), DoubleToString(vah, _Digits), DoubleToString(val, _Digits),
+             IntegerToString(fczBars), DoubleToString(poc, _Digits), DoubleToString(vah, _Digits), DoubleToString(val, _Digits),
              ValueText(avwapZone), ValueText(avwapImpulse), ValueText(retracement),
              pocRelation, avwapRelation, state, "observe_only",
              "manual_fcz_and_profile_ready", "thresholds_not_validated", "manual_chart_review_required");
