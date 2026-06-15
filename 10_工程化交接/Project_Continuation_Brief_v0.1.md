@@ -198,7 +198,7 @@ specs/mql5-fcz-reclaim-model/demand_theory_evolution_loop.md
 | 主线 | 当前状态 | 主要文件 | 现在缺什么 |
 |---|---|---|---|
 | GitHub 项目治理层 | 已建立并在 PR 分支中 | README、ROADMAP、.github、PR 模板、issue 草案 | 需合并到 main；真实 issue 尚未创建 |
-| V0.5 需求拷问运行态 | 已补运行契约与一次 runtime audit | loop_agent_demand_grilling_contract、runtime report、V0.5 承接清单 | 需做 loop report validator |
+| V0.5 需求拷问运行态 | 已补运行契约、runtime audit，并新增 loop report validator | loop_agent_demand_grilling_contract、runtime report、validate_loop_agent_reports | 后续新报告需持续通过 schema 检查 |
 | 项目继续入口 | 本文件新增 | Project_Continuation_Brief_v0.1.md | 后续 README/ROADMAP 应引用 |
 | 样本标注主线 | 已启动 | 07_样本标注、FCZ_B/C/D、CSV、raw_refs | FCZ_B 待补真实失败样本；C/D 待图表派生结构 |
 | GMGN 字段扩展 | 已产出 | GMGN样本标注字段扩展、字段表、采集清单 | 需接入样本 validator 和 ROADMAP |
@@ -233,9 +233,9 @@ P0-A4：已完成
 
 | ID | 补全项 | 为什么重要 | 建议动作 | 验收标准 |
 |---|---|---|---|---|
-| P0-B1 | loop report validator | 目前报告靠人工遵守契约 | 执行 issue-007，检查 report 必填字段 | validate_all 能检查报告 schema |
-| P0-B2 | V0.5 runtime report 命名规范 | 现在已有一份报告，但目录规范刚开始 | 明确 reports 目录和命名格式 | 新报告可被 validator 发现 |
-| P0-B3 | DBS Overlay 调用分层固化 | 已写入契约，但还未被自动检查 | validator 检查 loaded / referenced / forbidden 字段 | 不能再误报“全链条调用” |
+| P0-B1 | loop report validator | 目前报告靠人工遵守契约 | 已执行 issue-007，检查 report 必填字段 | 已接入 validate_all，可检查报告 schema |
+| P0-B2 | V0.5 runtime report 命名规范 | 现在已有一份报告，但目录规范刚开始 | 使用 `loop_agent_demand_grilling_report_*.md` | 新报告可被 validator 发现 |
+| P0-B3 | DBS Overlay 调用分层固化 | 已写入契约，但此前未被自动检查 | validator 检查 loaded / referenced / forbidden 字段 | 不能再误报“全链条调用” |
 | P0-B4 | 上游方法论引用规则 | 业务仓库不应复制完整方法论 | README/ROADMAP 只引用上游位置，不复制全文 | 业务项目保持轻量 |
 
 ### P1：样本标注补全
@@ -293,24 +293,24 @@ P0-A4：已完成
 
 ```text
 已完成：P0-A1 / P0-A2 / P0-A3 / P0-A4：Project Continuation Brief 已接入 README / ROADMAP / SOURCE_OF_TRUTH / AGENTS。
-1. P0-B1：做 loop report validator，防止 V0.5 再次变成口头方法论。
-2. P2-1：做 index reference validator，防止索引漂移。
-3. P1-4：做 sample record markdown validator，保护样本主线。
-4. P1-1：补 FCZ_B_0001 真实失败样本。
-5. P1-2 / P1-3：补 C/D 图表派生结构。
-6. P4-1：写 MQL5 观察器 MVP 计划。
+已完成：P0-B1 / P0-B2 / P0-B3：loop report validator 已接入 validate_all，报告命名规范已固化。
+1. P2-1：做 index reference validator，防止索引漂移。
+2. P1-4：做 sample record markdown validator，保护样本主线。
+3. P1-1：补 FCZ_B_0001 真实失败样本。
+4. P1-2 / P1-3：补 C/D 图表派生结构。
+5. P4-1：写 MQL5 观察器 MVP 计划。
 ```
 
 推荐下一轮只做第 1 项：
 
 ```text
-P0-B1：做 loop report validator。
+P2-1：做 index reference validator。
 ```
 
 原因：
 
 ```text
-入口层已补齐；下一步应把 V0.5 运行报告的 required evidence 做成自动质量门，防止拷问端再次退化成口头方法论。
+入口层与 V0.5 report 质量门已补齐；下一步应保护索引引用不漂移，减少新 Agent 通过索引找不到文件的失败。
 ```
 
 ---
@@ -372,15 +372,16 @@ P0-B1：做 loop report validator。
 ## 13. 下一轮 invocation 建议
 
 ```text
-读取 10_工程化交接/Project_Continuation_Brief_v0.1.md，执行 P0-A 入口层补全。
+读取 10_工程化交接/Project_Continuation_Brief_v0.1.md 和 10_工程化交接/优先级问题清单任务包_v0.1.md，执行 TP-003 / P2-1 index reference validator。
 
 本轮只做：
-1. README.md 引用 Project Continuation Brief。
-2. ROADMAP.md 加入 V0.5 / Project Continuation Brief 位置。
-3. SOURCE_OF_TRUTH.md 加入项目继续入口。
-4. AGENTS.md 启动阅读顺序加入本文件。
-5. 更新索引和变更记录。
-6. 运行 python scripts/validate_all.py。
+1. 读取 issue-005-index-reference-validator.md。
+2. 建立 specs/index-reference-validator/ 的 spec / plan / tasks / checklist。
+3. 写 RED 测试，检查索引引用不存在时失败。
+4. 写 scripts/validate_index_references.py。
+5. 接入 scripts/validate_all.py。
+6. 更新索引和变更记录。
+7. 运行 python scripts/validate_all.py。
 
 不要做：目录重构、旧资料搬迁、真实 GitHub issue 创建、自动交易、cron。
 ```

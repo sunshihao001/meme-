@@ -1,6 +1,6 @@
 # Issue Draft: 增加循环代理需求拷问报告 Validator
 
-> 状态：draft  
+> 状态：implemented on branch / awaiting PR merge  
 > 类型：validator / AI-workflow-quality-gate  
 > 建议标签：validator, ai-workflow, quality-gate, loop-agent  
 > Agent 执行分类：Autonomous
@@ -66,11 +66,11 @@ specs/mql5-fcz-reclaim-model/loop_agent_demand_grilling_contract.md
 ## 5. Acceptance Criteria
 
 ```text
-- [ ] validator 能识别合规 loop_agent_demand_grilling_report。
-- [ ] validator 能拒绝缺少 required evidence 的报告。
-- [ ] validate_all 聚合新 validator。
-- [ ] tests 覆盖通过样例和失败样例。
-- [ ] 当前仓库已有报告如不符合 schema，不强行 retroactive 修复；可先只检查新命名报告目录。
+- [x] validator 能识别合规 loop_agent_demand_grilling_report。
+- [x] validator 能拒绝缺少 required evidence 的报告。
+- [x] validate_all 聚合新 validator。
+- [x] tests 覆盖通过样例和失败样例。
+- [x] 当前仓库已有报告如不符合 schema，不强行 retroactive 修复；可先只检查新命名报告目录。
 - [ ] GitHub Actions 通过。
 ```
 
@@ -80,7 +80,7 @@ specs/mql5-fcz-reclaim-model/loop_agent_demand_grilling_contract.md
 
 ```bash
 python scripts/validate_loop_agent_reports.py
-python -m unittest tests/test_validate_loop_agent_reports.py
+python -m unittest discover -s tests -p 'test_validate_loop_agent_reports.py'
 python scripts/validate_all.py
 ```
 
@@ -92,4 +92,15 @@ python scripts/validate_all.py
 1. 是否要求所有未来 loop report 都必须进入 CI 检查。
 2. 是否允许 cron 未来自动生成 report；当前默认不允许。
 3. 是否把此 validator 作为 P2 可验证知识库工程化的优先任务。
+```
+
+---
+
+## 8. Implementation Notes
+
+```text
+实现路径：specs/loop-report-validator/
+脚本：scripts/validate_loop_agent_reports.py
+测试：tests/test_validate_loop_agent_reports.py
+聚合：scripts/validate_all.py
 ```

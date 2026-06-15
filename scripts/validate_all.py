@@ -13,6 +13,7 @@ COMMANDS = [
     [sys.executable, "-m", "unittest", "discover", "-s", "tests"],
     [sys.executable, "scripts/validate_sample_csv.py"],
     [sys.executable, "scripts/validate_state_paths.py"],
+    [sys.executable, "scripts/validate_loop_agent_reports.py"],
 ]
 
 
