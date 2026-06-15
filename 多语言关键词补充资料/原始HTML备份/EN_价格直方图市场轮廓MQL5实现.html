@@ -1,0 +1,1270 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+
+  <meta name="robots" content="max-snippet:250,max-image-preview:large">
+  <meta name="description" content="The Market Profile was developed by trully brilliant thinker Peter Steidlmayer. He suggested to use the alternative representation of information about &quot;horizontal&quot; and &quot;vertical&quot; market movements that leads to completely different set of models. He assumed that there is an underlying pulse of the market or a fundamental pattern called the cycle of equilibrium and disequilibrium. In this article I will consider Price Histogram — a simplified model of Market Profile, and will describe its implementation in MQL5.">
+  <meta property="og:url" content="https://www.mql5.com/en/articles/17">
+  <meta property="og:title" content="The Price Histogram (Market Profile) and its implementation in MQL5">
+  <meta property="og:description" content="The Market Profile was developed by trully brilliant thinker Peter Steidlmayer. He suggested to use the alternative representation of information about &quot;horizontal&quot; and &quot;vertical&quot; market movements that leads to completely different set of models. He assumed that there is an underlying pulse of the market or a fundamental pattern called the cycle of equilibrium and disequilibrium. In this article I will consider Price Histogram — a simplified model of Market Profile, and will describe its implementation in MQL5.">
+      <meta property="og:image" content="https://www.mql5.com/en/articles/images/og/fb/17">
+      <meta property="og:image:secure_url" content="https://www.mql5.com/en/articles/images/og/fb/17">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2010-01-28T15:45:51.0000000Z">
+  <meta property="article:author" content="https://www.mql5.com/en/users/vdv2001">
+  <meta property="article:section" content="MetaTrader 5">
+  <meta property="article:tag" content="Examples">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@mql5com">
+  <meta name="twitter:image" content="https://www.mql5.com/en/articles/images/og/fb/17">
+  <meta name="theme-color" content="#4a76b8">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-config" content="none">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta property="qc:admins" content="36367170677651456375">
+  <meta property="wb:webmaster" content="073d7690269bcd81">
+  <link rel="shortcut icon" href="https://c.mql5.com/i/favicon4.ico">
+  <link rel="dns-prefetch" href="https://c.mql5.com">
+  <link href="https://c.mql5.com/styles/core.444bc25de4c9131a69fedfe5ac42a082.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/all.266d64b83529847f568747dd160d42b0.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/articles.bc4209e4de0b5296041832431b46f3dd.css" type="text/css" rel="stylesheet" media="all">
+  <link href="/en/articles/rss" rel="alternate" type="application/rss+xml" title="Articles on the development and application of MetaTrader 5 trading robots and technical indicators">
+  <link rel="canonical" href="https://www.mql5.com/en/articles/17">
+  <link rel="alternate" hreflang="en" href="https://www.mql5.com/en/articles/17">
+  <link rel="alternate" hreflang="ru" href="https://www.mql5.com/ru/articles/17">
+  <link rel="alternate" hreflang="zh" href="https://www.mql5.com/zh/articles/17">
+  <link rel="alternate" hreflang="es" href="https://www.mql5.com/es/articles/17">
+  <link rel="alternate" hreflang="de" href="https://www.mql5.com/de/articles/17">
+  <link rel="alternate" hreflang="ja" href="https://www.mql5.com/ja/articles/17">
+  <link rel="alternate" hreflang="pt" href="https://www.mql5.com/pt/articles/17">
+  <link rel="alternate" hreflang="ko" href="https://www.mql5.com/ko/articles/17">
+  <link rel="alternate" hreflang="fr" href="https://www.mql5.com/fr/articles/17">
+  <link rel="alternate" hreflang="it" href="https://www.mql5.com/it/articles/17">
+  <link rel="alternate" hreflang="tr" href="https://www.mql5.com/tr/articles/17">
+  <title>The Price Histogram (Market Profile) and its implementation in MQL5 - MQL5 Articles</title>
+
+
+
+<script type="text/javascript">
+  !function(){window.mqGlobal={};var t=!1,n=!1,e=[],o=[],i=[];function d(t){var n;for(n=0;n<t.length;n+=1)t[n]()}function c(){t||(t=!0,d(e),d(o),o=[],e=[])}function a(){c(),n||(n=!0,d(i),i=[])}if(mqGlobal.AddOnReady=function(n,i){t?n(document):i?e.push(n):o.push(n)},mqGlobal.AddOnLoad=function(t){n?t(document):i.push(t)},mqGlobal.AddOnActiveWindowChange=function(t){this._onvisibility||(this._onvisibility=[]),this._onvisibility[this._onvisibility.length]=t},document.addEventListener)document.addEventListener("DOMContentLoaded",c,!1),window.addEventListener("load",a,!1);else if(document.attachEvent&&(document.attachEvent("onreadystatechange",(function(){switch(document.readyState){case"interactive":c();break;case"complete":a()}})),window.attachEvent("onload",a),document.documentElement.doScroll&&window==window.top)){!function n(){if(!t&&document.body)try{document.documentElement.doScroll("left"),c()}catch(t){setTimeout(n,0)}}()}}();
+  mqGlobal.CookieDomain = ".mql5.com";
+  mqGlobal.Language = 'en';
+  mqGlobal.IsMobile = false;
+  mqGlobal.ClearRteStorage = function (e) { if (window.GStorage || (window.GStorage = globalStorage()), window.GStorage.supported) try { var o = e; window.GStorage.getItem("rte_autosave_uid", function (e, t) { t == o && (window.GStorage.removeItem("rte_autosave_text"), window.GStorage.removeItem("rte_autosave_date"), window.GStorage.removeItem("rte_autosave_uid")) }) } catch (e) { } };
+</script>
+  
+
+    <script src="https://c.mql5.com/js/all.c09fd283bed20d28a52c95cd70a12a27.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/vendor.1be6e9a4a90b28525f93c4c69a5058a1.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/articles.cd4c73c476b2781eecdf04f5583514b5.js" type="text/javascript" defer="defer"></script>
+
+
+</head>
+
+<body id="cover" class="cover">
+
+
+  <nav class="head">
+    <a href="https://www.mql5.com" class="head__logo" title="MQL5 - Language of trade strategies built-in the MetaTrader 5 client terminal"></a>
+      <div class="head__content">
+        <div class="main-menu" id="mainmenu">
+          
+                    <ul class="main-menu__top-level" id="menuTopLevel">
+                    <li><a href="/en/forum" data-fz-event="MQL5+Menu+Forum">Forum</a></li>
+                    <li><a href="/en/market" data-fz-event="MQL5+Menu+Market">Market</a></li>
+                    <li><a href="/en/signals" data-fz-event="MQL5+Menu+Signals">Signals</a></li>
+                    <li><a href="/en/job" data-fz-event="MQL5+Menu+Job">Freelance</a></li>
+                    <li><a href="/en/vps" data-fz-event="MQL5+Menu+VPS">VPS</a></li>
+                    <li><a href="/en/quotes/overview" data-fz-event="MQL5+Menu+Overview">Quotes</a></li>
+                    <li><a href="https://www.metatrader.com" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+MetaTrader">MetaTrader</a></li>
+                  </ul><ul class="main-menu__second-level" id="menuSecondLevel">
+                    <li class="main-menu__selected"><a href="/en/articles" data-fz-event="MQL5+Menu+Articles"><img src="https://c.mql5.com/i/menu/icon-articles4.svg" alt="" width="16" height="16"/>Articles</a></li>
+                    <li><a href="/en/code" data-fz-event="MQL5+Menu+CodeBase"><img src="https://c.mql5.com/i/menu/icon-code4.svg" alt="" width="16" height="16"/>CodeBase</a></li>
+                    <li><a href="https://forge.mql5.io/?lang=en" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+AlgoForge"><img src="https://c.mql5.com/i/menu/icon-algoforge4.svg" alt="" width="16" height="16"/>Algo Forge</a></li>
+                    <li><a href="/en/docs" data-fz-event="MQL5+Menu+Docs"><img src="https://c.mql5.com/i/menu/icon-docs4.svg" alt="" width="16" height="16"/>Documentation</a></li>
+                    <li><a href="/en/book" data-fz-event="MQL5+Menu+Book"><img src="https://c.mql5.com/i/menu/icon-book4.svg" alt="" width="16" height="16"/>AlgoBook</a></li>
+                    <li><a href="/en/neurobook" data-fz-event="MQL5+Menu+Neurobook"><img src="https://c.mql5.com/i/menu/icon-neurobook4.svg" alt="" width="16" height="16"/>NeuroBook</a></li>
+                    <li><a href="/en/economic-calendar" data-fz-event="MQL5+Menu+Economic+Calendar"><img src="https://c.mql5.com/i/menu/icon-economic-calendar4.svg" alt="" width="16" height="16"/>Calendar</a></li>
+                    <li><a href="https://web.metatrader.app/terminal?mode=demo&lang=en" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Menu+Trading"><img src="https://c.mql5.com/i/menu/icon-trading4.svg" alt="" width="16" height="16"/>WebTerminal</a></li>
+                    <li class="main-menu__mobile"><a href="/en/about">About</a></li>
+                    <li class="main-menu__second-tools"><a rel="noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" title="Get the latest version of the trading platform for free" class="button-mt" data-vars-fz="MetaTrader+5+Desktop+Download+Submenu"><img width="18" height="18" src="https://c.mql5.com/i/sidebar/download.svg" alt="" loading="lazy">Download MetaTrader 5</a></li>
+                    </ul>
+        </div>
+          <div class="main-menu__active">
+            <a id="mainMenuSelected" href="#">
+              <span class="main-menu__primary">Articles</span><span class="main-menu__secondary">Sections</span>
+            </a>
+          </div>
+<form action="https://www.mql5.com/en/search" onsubmit="return false;" autocomplete="off" id="headerSearchForm" class="header-search" method="post">
+<button type="button" id="headerSearchButton" title="Search" class="header-search__button"></button><div class="header-search__input"><input name="keyword" type="text" enterkeyhint="search" title="Enter search text" placeholder="Search" id="headerSearchKeyword"/><label for="headerSearchKeyword" class="header-search__placeholder">Type <span>/</span> to search:  @user, $symbol, ...</label><button id="headerSearchSubmit" class="header-search__submit"></button></div><button type="button" id="headerSearchClean" title="Close" class="header-search__clean"></button></form>        <input class="blurHandler" id="mainMenuBlurHandler" type="checkbox">
+      </div>
+      <div class="head__toolbar" id="headerToolbar">
+          <div class="container loginRegister">
+            <nav>
+              <ul id="loginRegisterButtons"><li><a class="login" title="Please sign in. OpenID supported" href="https://www.mql5.com/en/auth_login" rel="nofollow" data-fz-event="MQL5+Menu+Siginin">Log in</a></li><li><a class="registration en" title="Please register" href="https://www.mql5.com/en/auth_register" rel="nofollow" data-fz-event="MQL5+Menu+Register" onclick="window.fpush('MQL5+Button+Click');">Create an account</a></li></ul>
+            </nav>
+          </div>
+        <div class="toggle-button" id="sidebarToggleButton">
+          <i></i>
+        </div>
+
+        <div class="group-menu" id="groupMenu">
+
+
+          <div class="container lang-menu-container">
+            <div id="langMenuContainer" class="lang-menu">
+              <input class="blurHandler" id="langmenuBlurHandler" type="checkbox">
+              <nav>
+                <ul class="lang-menu__list" id="langmenu">
+                  <li class="lang-menu__list-item lang-menu__list-item_selected"><a href="/en/articles/17" aria-label="English (English)"><i class="icons-languages icons-languages_en"></i><span>English</span></a></li>
+<li class="lang-menu__list-item"><a href="/ru/articles/17" aria-label="Русский (Russian)"><i class="icons-languages icons-languages_ru"></i><span>Русский</span></a></li>
+<li class="lang-menu__list-item"><a href="/zh/articles/17" aria-label="中文 (Chinese)"><i class="icons-languages icons-languages_zh"></i><span>中文</span></a></li>
+<li class="lang-menu__list-item"><a href="/es/articles/17" aria-label="Español (Spanish)"><i class="icons-languages icons-languages_es"></i><span>Español</span></a></li>
+<li class="lang-menu__list-item"><a href="/pt/articles/17" aria-label="Português (Portuguese)"><i class="icons-languages icons-languages_pt"></i><span>Português</span></a></li>
+<li class="lang-menu__list-item"><a href="/ja/articles/17" aria-label="日本語 (Japanese)"><i class="icons-languages icons-languages_ja"></i><span>日本語</span></a></li>
+<li class="lang-menu__list-item"><a href="/de/articles/17" aria-label="Deutsch (German)"><i class="icons-languages icons-languages_de"></i><span>Deutsch</span></a></li>
+<li class="lang-menu__list-item"><a href="/ko/articles/17" aria-label="한국어 (Korean)"><i class="icons-languages icons-languages_ko"></i><span>한국어</span></a></li>
+<li class="lang-menu__list-item"><a href="/fr/articles/17" aria-label="Français (French)"><i class="icons-languages icons-languages_fr"></i><span>Français</span></a></li>
+<li class="lang-menu__list-item"><a href="/it/articles/17" aria-label="Italiano (Italian)"><i class="icons-languages icons-languages_it"></i><span>Italiano</span></a></li>
+<li class="lang-menu__list-item"><a href="/tr/articles/17" aria-label="Türkçe (Turkish)"><i class="icons-languages icons-languages_tr"></i><span>Türkçe</span></a></li>
+
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+  </nav>
+
+
+
+  <div id="left-sidebar-selector" class="left-sidebar__selector left-sidebar__selector_padding">
+    <div class="left-sidebar__title">
+MetaTrader 5 /     Examples
+    </div>
+    <i class="icons-ux icons-ux_arrow-down-black"></i>
+  </div>
+  <div class="articles-container block-with-sidebar">
+    <aside class="left-sidebar left-sidebar_270" id="left-sidebar">
+      
+  <ul class="tree-menu-ul"><li class="tree-menu__item tree-menu__item_selected"><a class="tree-menu__link" href="/en/articles/examples"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples.svg" alt="" loading="lazy"/>Examples</a><ul class="tree-menu__list tree-menu__list_nested"><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/examples_indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_indicators.svg" alt="" loading="lazy"/>Indicators</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/examples_experts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_experts.svg" alt="" loading="lazy"/>Experts</a></li></ul></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/strategy_tester"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/strategy_tester.svg" alt="" loading="lazy"/>Tester</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/trading"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading.svg" alt="" loading="lazy"/>Trading</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/trading_systems"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading_systems.svg" alt="" loading="lazy"/>Trading systems</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/integration"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/integration.svg" alt="" loading="lazy"/>Integration</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/indicator.svg" alt="" loading="lazy"/>Indicators</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/expert_advisors"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/expert.svg" alt="" loading="lazy"/>Expert Advisors</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/statistics"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/statistics.svg" alt="" loading="lazy"/>Statistics and analysis</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/machine_learning"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/machine_learning.svg" alt="" loading="lazy"/>Machine learning</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/interviews"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/interviews.svg" alt="" loading="lazy"/>Interviews</a></li></ul>
+  
+
+    <div class="hints-panel">
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_like"></i>
+        <div class="hints-panel__content">
+          Do you like the article?<br>
+          Share it with others —<br>post a <a href="https://www.mql5.com/en/articles/17" target="_blank">link</a> to it!
+        </div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_tg-square icons-hints_24px"></i><div class="hints-panel__content">
+Find us on <a href="https://t.me/mql5dev" target="_blank" rel="nofollow">Telegram</a>!<br> Join our fan page</div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_mt-5"></i>
+        <div class="hints-panel__content">
+          Use new possibilities of <a href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Article" rel="nofollow sponsored noopener noreferrer">MetaTrader 5</a>
+        </div>
+      </div>
+    </div>
+<div id='vgckrufggwxdtfscpyalmenexmvhljduja' class="roeid8y6hsc3ntv1l gg88d3drb"></div>      <div class="similar-author-articles ui">
+        <h4 class="similar-author-articles__title">Similar articles</h4>
+        <ul class="similar-author-articles__list">
+            <li>
+              <a href="/en/articles/22691" data-fz-event="MQL5+Article+Similar+Article">Step-by-Step Implementation of a Local Stop Loss System in MQL5</a>
+            </li>
+            <li>
+              <a href="/en/articles/22563" data-fz-event="MQL5+Article+Similar+Article">How to Detect and Normalize Chart Objects in MQL5 (Part 2): Collecting and Structuring Data from Complex Analytical Objects</a>
+            </li>
+            <li>
+              <a href="/en/articles/17608" data-fz-event="MQL5+Article+Similar+Article">Developing a Multi-Currency Expert Advisor (Part 28): Adding a Position Closing Manager</a>
+            </li>
+            <li>
+              <a href="/en/articles/18111" data-fz-event="MQL5+Article+Similar+Article">Implementing a Breakeven Mechanism in MQL5 (Part 2): ATR- and RRR-Based Breakeven</a>
+            </li>
+            <li>
+              <a href="/en/articles/22666" data-fz-event="MQL5+Article+Similar+Article">Interactive Supply and Demand Zone Manager in MQL5: From Manual to Automated Lifecycle</a>
+            </li>
+        </ul>
+      </div>
+    <div class="freelance-hint">
+      <img src="https://c.mql5.com/i/articles/icon_freelance.svg" width="24" height="24" loading="lazy" />
+      <div class="freelance-hint__text">
+        Use the ideas from this article<br>to order your own robot<br>on Freelance
+      </div>
+        <a target="_blank" class="button button_blue-gray-border" title="Go to Freelance" href="/en/job/new" data-fz-event="MQL5+Article+New+Job">Go to Freelance</a>
+    </div>
+
+    </aside>
+    <article class="content-with-sidebar articles-content splashed">
+      
+
+
+  <header class="article-header" style="background-color: rgb(193,202,246)">
+    <section class="article-tools-panel">
+        <div class="article-tools-panel__item">
+          <span class="popup framed client flags">
+            <a class="dropdown" href="javascript:void(false);">
+              <span class="icons-languages icons-languages_en"></span><i></i>
+            </a>
+            <span class="popup">
+              <span class="tip">
+                <span></span>
+              </span>
+              <span class="items">
+                    <a href="/ru/articles/17">Русский</a>
+                    <a href="/zh/articles/17">中文</a>
+                    <a href="/es/articles/17">Español</a>
+                    <a href="/de/articles/17">Deutsch</a>
+                    <a href="/ja/articles/17">日本語</a>
+                    <a href="/pt/articles/17">Português</a>
+                    <a href="/ko/articles/17">한국어</a>
+                    <a href="/fr/articles/17">Français</a>
+                    <a href="/it/articles/17">Italiano</a>
+                    <a href="/tr/articles/17">Türkçe</a>
+              </span>
+            </span>
+          </span>
+        </div>
+        
+      <div class="article-tools-panel__item">
+        <a href="#pocket" title="Pocket allows you to insert a complete content description to the appropriate comment" onclick="return Pocket.Add(this,'en',2,1,17);" class="article-tools-panel__rounded">
+          <i class="article-pocket-icon"></i>
+        </a>
+      </div>
+      <div class="article-tools-panel__item">
+        <a href="/en/articles/17?print=" target="_blank" class="article-tools-panel__rounded" rel="nofollow" title="Printer friendly version">
+          <i class="article-print-icon"></i>
+        </a>
+      </div>
+
+    </section>
+    <section class="article-header__image-box">
+      <div class="article-header__gradient" style="background: linear-gradient(90deg, rgba(193,202,246, 1) 0%, rgba(193,202,246, 0.72) 8.31%, rgba(193,202,246, 0) 17.1%), linear-gradient(270deg, rgba(193,202,246, 1) 0%, rgba(193,202,246, 0.72) 8.06%, rgba(193,202,246, 0) 16.59%), linear-gradient(0deg, rgba(193,202,246, 1) 8.26%, rgba(193,202,246, 0.8) 65%, rgba(193,202,246, 0) 100%);"></div>
+        <img loading="lazy" width="600" height="314" srcset="https://c.mql5.com/i/articles/overlay.png, https://c.mql5.com/i/articles/overlay_2x.png 2x" src="https://c.mql5.com/i/articles/overlay.png" alt="The Price Histogram (Market Profile) and its implementation in MQL5">
+    </section>
+    <section class="article-header__content">
+      <h1>The Price Histogram (Market Profile) and its implementation in MQL5</h1>
+      <div class="article-header__info">
+        <a href="/en/articles/mt5">MetaTrader 5</a>
+          &mdash;
+          <a href="/en/articles/mt5/examples">Examples</a>
+        | <time datetime="2010-01-28T15:45Z" title="15:45" datetime-type="datetime">28 January 2010, 15:45</time>
+      </div>
+      <div class="article-header__indicators">
+        <span title="Views">
+          <img src="https://c.mql5.com/i/icons.svg#views-usage" width="20" height="20" alt="" />
+          55 247
+        </span>
+        
+          <a title="Comments" href="/en/forum/414">
+            <img src="https://c.mql5.com/i/icons.svg#comments-usage" width="20" height="20" alt="" />
+            103
+          </a>
+      </div>
+      <div class="article-header__author">
+          <div class="article-header__avatar">
+            <img src="https://c.mql5.com/avatar/2010/3/4B9E6DA0-951C.jpg" srcset="https://c.mql5.com/avatar/2010/3/4B9E6DA0-951C_big.jpg 2x" data-user-login="vdv2001" title="Dmitry Voronkov" alt="Dmitry Voronkov" loading="lazy" width="60" height="60">
+          </div>
+<a class="author" href="/en/users/vdv2001" data-user-login="vdv2001">Dmitry Voronkov</a>      </div>
+    </section>
+  </header>
+
+    <div class="content">
+      <div class="inner formatted-content">
+        <p style="text-align:right;"><span style="color:rgb(102, 102, 102);">"Market Profile tries to provide this internal logic in the context of the market.<br />It is a method of analysis that starts off with the understanding that price alone<br />does not communicate information to the participant, just as words </span>without syntax<br /><span style="color:rgb(102, 102, 102);">or context may have no meaning. Volume is an integral part of the direct expression</span><span style="color:rgb(102, 102, 102);"><br />of the market - understand it and you understand the language of the the market."<br />Robin Mesh</span><br /></p>
+<h3>
+<p style="text-align:justify;">Introduction<br /></p></h3><p style="text-align:justify;">A
+long time ago, looking through a magazines subscription I have found an article "Market Profile and understanding
+the market language" (October, 2002) in the Russian journal "Valutny Spekulant" (At present time it called as "Active Trader"). The original article has been published in <a target="_blank" href="/go?link=https://www.amazon.com/New-Thinking-Technical-Analysis-Trading/dp/1576600491" rel="nofollow" title="http://www.amazon.com/New-Thinking-Technical-Analysis-Trading/dp/1576600491">"New
+ Thinking in Technical Analysis: Trading Models from the Masters"</a>.</p>
+
+<p style="text-align:justify;">The
+Market Profile was developed by trully brilliant thinker Peter
+Steidlmayer. He found the natural expression of the market (volume) and organized it in a way that is readable (the bell curve), so that objective information generated by the market is accessible to market participiants. Steidlmayer has suggested to
+use the alternative representation of information about "horizontal" and
+"vertical" market movements that leads to completely different set of
+models. He assumed that there is an underlying pulse of the market or a fundamental pattern called the cycle of equilibrium  and disequilibrium.
+</p>
+
+<p style="text-align:justify;">Market Profile measures the horizontal market movement through the vertical one.&nbsp; Let's call that "equillibrium" through "disequillibrium". This relationship is the fundamental organizing principle of the market. A trader's whole style of trading may change depending on what part of the equilibrium/disequilibrium cycle the market is in. Market Profile can determine both when the market is going to shift from equilibrium to disequilibrium and how big the move is going to be.</p><p style="text-align:justify;">The two basic concepts of Market Profile are:<br /></p><ol><li>The market is an auction, and it moves in the direction of the price range where the supply and demand are more or less equal.<br /></li><li>The market has two phases: horizontal activity and vertical activity. The market moves vertically when supply and demand are not equal or they are in disequillibrium, and horizontally when they are in equilibrium or balanced.</li></ol>
+
+<p style="text-align:justify;">The equilibrium market shown using the Market Profile in the chart below tends to form an almost perfect bell-shaped curve, rotated by 90 degrees because of the orientation of the chart:<br /></p>
+<p style="text-align:justify;"></p>
+
+<p style="text-align:center;"><img title="" src="https://c.mql5.com/2/0/c1ps45k3w0gomnwb.PNG" height="456" width="439" />&nbsp;</p>
+<p style="text-align:center;"><span class="small">Fig 1. The Market Profile of equilibrium market</span></p>
+<p style="text-align:justify;">The trend, non-equilibrium market also forms a bell-shaped curve, but its center is shifted up or down. Other configurations that form two peaks of bells ,depending on the price movement and the confidence of market players, are possible.</p>
+<p style="text-align:center;"><img title="" src="https://c.mql5.com/2/0/98o191fgn7nephf9rn.PNG" height="569" width="570" /></p>
+<p style="text-align:center;"><span class="small">Fig 2. The Market Profile of disequilibrium (trend) market</span></p>
+<p style="text-align:justify;"><span>Use of the daily profile shapes to determine the degree of balance/imbalance level of the market can be useful, because it gives you a starting point in understanding the shifts of between various market participants.<br /></span></p>
+<p style="text-align:justify;">A trading opportunity with the greatest benefit appears when the shift from balance to imbalance is about to occur. Moreover, if you can identify that trading opportunity and accurately estimate the potential magnitude of that shift, then you can estimate the quality of that trade and the amount of time that is necessary for it.<br /></p><span class="small"></span>It's necessary to note that in this article we'll consider the code for drawing a simplified version of the Market Profile, the so called Price Histogram based on the realtionship between price and time.<br />
+<p style="text-align:justify;"></p>
+<p style="text-align:justify;">You can find the example of methodology of working with this tool can be found at <a href="https://www.mql5.com/go?link=http://www.enthios.com/" rel="nofollow" target="_blank" title="http://www.enthios.com/">http://www.enthios.com/</a>, where a group of traders has studied the Price Histrogram since 1998. The Enthios Universal strategy and example of its use you can also be found there.<br /></p>
+<p style="text-align:justify;"></p>
+<h3>1. Price Histogram<br /></h3><p style="text-align:justify;">The Price Histogram is a very reliable tool. It's a bit intuitive but extremely effective. The price histogram simply shows you the "most convenient" trading points of the market. This is aa leading indicator, because it shows the points where market can change its direction in advance. The indicators like moving averages or oscillators cannot specify the exact points of resistance and support, they can only show the fact whether the market is overbought or oversold.<br /></p>
+<p style="text-align:justify;"><span><span style="background-color:rgb(255, 255, 255);">Usually, the Price Histogram (or Market Profile) is applied to 30 min. price charts to study the market activity during one day. I prefer to use the 5 min. charts for stock markets and 15-30 min. charts for FOREX.<br /></span></span></p>
+<p style="text-align:justify;"></p>
+<h3>2. Point of Control<br />
+</h3><p style="text-align:justify;">In the figure above you can see the level where the market was traded the maximum amount of time; it's outlined with the longest line in the histogram. It's called the <b>Point of Control</b>, or <b>POC</b>. Sometimes, as it seen in the figure, the histogram has two tops, one of them is a little bit lower. In such case, we see that the indicator shows just one POC, but in fact there are two of them, and it should be taken into the account.<br /></p>
+<p style="text-align:left;">In addition, the percentage level of the range in the histogram also creates additional levels, so called <b>Secondary POC levels</b>:<br /></p>
+<p style="text-align:center;"><img title="" src="https://c.mql5.com/2/0/POC.PNG" height="481" width="596" /><span class="small"></span></p>
+<p style="text-align:center;"><span class="small">Fig 3. Points of control<br /></span></p>
+<p style="text-align:justify;">What does POC show? The price that is remembered by most of traders. The longer market is traded at this price, the longer market remembers it.<br /></p>
+<p style="text-align:justify;">Psychologically POC acts as a center of attraction.<br /></p><p>The next chart shows what happened a few days earlier. It's a good demonstration of power of the Price Histogram.</p><p style="text-align:center;"><img title="Points of Control isn't absolute, it shows the range of trade" src="https://c.mql5.com/2/0/POC1__.png" height="621" width="801" /></p>
+
+<p style="text-align:center;"><span class="small">Fig 4. The Point of Control isn't absolute; it shows the range of trade<br /></span></p>
+<p style="text-align:justify;">The Point of Control isn't absolute; it indicates the range of trading. Thus, the trader should be ready to act when the market approaches to POC. It helps to optimize orders, using the historical observations.<br /></p>
+<p style="text-align:justify;">Let's consider the Fig. 4. The POC on 29.12.2009 is located at price 68.87. It is clear even without the histogram and POC line that the market was within the 68.82~68.96 range almost all the day. The market closed at the end of the day at 5 points below the POC. On the next day it caused the opening of the market with a gap down.<br /></p>
+<p style="text-align:justify;">It's important to understand that we can't predict whether the market will go up or down. We can only suppose that the market will return to the POC line and to the maximal&nbsp; accumulation of the histogram lines. But what will happen when the price touches the POC? The same thing that happens with an elastic object that falls to the ground, it will jump back.&nbsp; If it happens quickly, like a tennis ball stroke back with a racket, the price will return very quickly back to the initial level.<br /></p>
+<p style="text-align:justify;">After the market opening on 30.12.2009 we see that it was a gap and then market touched the POC of the previous day, and then quickly returned to the open price and updated the minimum.<br /></p>
+<p style="text-align:justify;">Note that POC is not absolutely accurate (experienced traders know that there is no clear resistance levels when the price reaches a maximum, minimum or concentration&nbsp; range). What happens at this point depends on the market players. If the collective desire (for example, news publication) coincides, then market will pass through the POC, but it's rare and it can be used to develop a trading system.<br /></p>
+<p style="text-align:justify;">Pay attention that the market behavior was the same on 31.12.2009. When the price touched POC, the buyers yielded to the sellers.<br /></p>
+<p style="text-align:justify;"></p>
+<h3>3. Virgin Point of Control<br />
+</h3><p style="text-align:justify;">The Virgin POC (Virgin Point of Contro) is a level that price hasn't reached in the next days.<br /></p>
+<p style="text-align:justify;">The logics is simple, as described above, the POC is an attraction point for the market. As the price moves away from the POC, the force of attraction increases. And the more the price goes away from the Virgin POC, the greater is the possibility that when it returns to this level the rebounce will occur and probably a price reverse will occur as well.<br /></p>
+<p style="text-align:center;"><img title="" src="https://c.mql5.com/2/0/VirginPOC.png" height="404" width="823" /></p>
+<p style="text-align:center;"><span class="small">Fig 5. Former and current Virgin POC</span><span class="small"></span></p>
+<p>At Fig. 5 the former Virgin POCs that were the support and resistance levels are marked with circles. The working Virgin POC are marked with price values.</p>
+<p style="text-align:justify;">Once the price has touched the Virgin POC, it ceases to be a "virgin". Psychologically, the market no longer sees it as a substantial level of support or resistance. The traders still can see the price levels, which initially has formed the POC, but as a simple accumulation of prices.<br /></p>
+You can more details about the price levels in the "Master-trading: The X-Files" book  by Eric Naiman (Chapter 4, "Price Level is a base line").<p style="text-align:justify;"></p>
+<h3><b><span style="color:rgb(102, 102, 102);">4. Price Histogram Implementation in MQL5</span></b><br /></h3><p style="text-align:justify;">My first version of Price Histogram appeared in 2006 it was written in MQL4 in MetaTrader4 for personal use. During the development of this indicator I faced some troubles, here are some of them:<br /></p>
+<ol></ol>
+<ol><li>very short number of bars in history for M5, not to speak of M1;</li><li>the necessity to develop special functions for working with histrory, such as returning back by one day considering holidays, checking for the market close time on Friday, checking for the open and close time for CFD market, etc;</li><li>recalculation of indicator when changing timeframes and, as a result, terminal delays. </li></ol><span class="small"></span><p style="text-align:justify;">
+</p>
+<p style="text-align:justify;">Therefore when beta-testing of МetaТrader5 and MQL5 has started, I have decided to convert it to MQL5.<br /></p>
+
+<p>As people say, "the first pancake is always a bit tricky", I have tried to implement it as an indicator.<br /></p><p style="text-align:justify;">Let's start with the good: the presence of the long history of minute
+quotes for all symbols, the possibility of historical data obtaining for a certain time period at any time range.<br />
+</p>
+<p style="text-align:justify;">Now I will explain why it has turned out. I haven't considered the features of the MQL5 indicators:<br /></p>
+<ol></ol><ol><li>the indicator's runtime is critical;</li><li>the features of the indicator's work after the timeframe changes.</li></ol>
+<p style="text-align:justify;">The execution of function <a target="_blank" href="/en/docs/basis/function/events#oncalculate">OnCalculate()</a>, which corresponds to Calculate event handler has a critical runtime. Accordingly, the processing of 260 days (annual period) using the minute bars history takes a long time, up to several minutes. Of course we can accept it, if the calculations performed at once after the indicator attaching to the chart. But this isn't the case for the timeframe changes. When indicator switches to the different timeframe, the old copy of the indicator is destroyed and created the new one. That's why <a target="_blank" href="/en/docs/runtime/running">after the timeframe changes</a> we have to recalculate the same levels again and it spends a lot of time.<br /></p><p style="text-align:justify;">But as saying, if you don't know what to do - "Read the documentation first", in our case, it's the <a target="_blank" href="/en/docs">documentation of MQL5</a>. The solution was very simple - to implement this indicator as Expert Advisor which doesn't trade.<br /></p><p>The advantages of Expert Advisor are:</p>
+<ol></ol><span class="small"></span><ol><li>the processing time isn't critical for <a target="_blank" href="/en/docs/runtime/event_fire#init">Init</a> event handler in OnTick ();</li><li>the possibility to obtain the parameters of the handler <a target="_blank" href="/en/docs/runtime/event_fire#deinit">OnDeinit </a>(const int reason).<br /></li></ol><p style="text-align:justify;">The Expert Advisors are differing from the indicators the following: after the timeframe change the expert advisor just generates the <a target="_blank" href="/en/docs/runtime/event_fire#deinit">DeInit</a> event with REASON_CHARTCHANGE reason parameter, it doesn't unload the Expert Advisor from memory and serves the values of <a target="_blank" href="/en/docs/basis/variables/global">global variables</a>. It allows us to perform all calculations at once after Expert Advisor attaching, changing its parameters and new data appearing, in our case for a new trading day.<br /></p>
+<p>Let's introduce some definitions that will be needed later.<br /></p>
+<p style="text-align:justify;">The Object-oriented programming (<a target="_blank" href="/en/docs/basis/oop">OOP</a>) - is a style of programming which basic concepts are the concepts of objects and classes.<br /></p>
+<p style="text-align:justify;">The Object is an entity in the virtual space, with specified state and behavior; it has some values of properties (called as attributes) and operations with them (called as methods).<br /></p>
+<p style="text-align:justify;"><span style="color:rgb(102, 102, 102);">In <a target="_blank" href="/en/docs/basis/oop">OOP</a> the Class is a special abstract data type, characterized by means of its construction. The class is a key concept in OOP. The class is differing from the other abstract data types. The data definition in class also contains class methods of its data processing (interface).</span><span style="color:rgb(102, 102, 102);"></span><br /></p>
+<p style="text-align:justify;">In programming there is a software interface concept that means a list of possible computations that can be performed by some part of the program, including algorithms, description of arguments and order of input parameters to proceed and its return values. The abstract data type interface has been developed for a formalized description of such a list. The algorithms itself and the code that will perform all these calculations aren't specified and called as interface implementation.<br /></p>
+<p style="text-align:justify;">The class creation is creation of some structure with fields and methods. The entire class can be considered as a template for the objects creation, which are class instances. The class instances are created using the same template, so they have the same fields and methods.<br /></p>
+<p>Let's get started...<br /></p>
+<p style="text-align:justify;">The source code is located in 4 files. The main file is  <b>PriceHistogram.mq5</b>, the other files are: <b>ClassExpert.mqh</b>, <b>ClassPriceHistogram.mqh</b> and <b>ClassProgressBar.mqh</b>. The files with .mqh extension contain the classes' description and methods. All files must be located in the same directory, My directory is: \MQL5\ Experts\PriceHistogram.<br /></p>
+<p><b>4.1. PriceHistogram.mq5</b></p>
+<p>The first statement in the source code is:<br /></p><pre class="code"><span class="preprocessor">#include <span class="string">"ClassExpert.mqh"</span></span></pre>
+<p style="text-align:justify;">The <a target="_blank" href="/en/docs/basis/preprosessor/include">#include</a> compiler directive includes the text from the specified file. In our case it is description of class CExpert (discussed below).<br /></p>
+<p style="text-align:justify;">The next one is a block of <a target="_blank" href="/en/docs/basis/variables/inputvariables">input variables</a> which are parameters of Expert Advisor.<br /></p><pre class="code"><span class="comment">// The block input parameters</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DayTheHistogram&nbsp;&nbsp; = <span class="number">10</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Days for histogram</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DaysForCalculation= <span class="number">500</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Days for calculation(-1 all)</span>
+<span class="keyword">input</span> <span class="keyword">uint</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RangePercent&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="number">70</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Percent range</span>
+<span class="keyword">input</span> <span class="keyword">color</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InnerRange&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=<span>Indigo</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Inner range</span>
+<span class="keyword">input</span> <span class="keyword">color</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OuterRange&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=<span>Magenta</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Outer range</span>
+<span class="keyword">input</span> <span class="keyword">color</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ControlPoint&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=<span>Orange</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Point of Control</span>
+<span class="keyword">input</span> <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ShowValue&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =true;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Show Values</span>
+</pre>
+<p style="text-align:justify;">After that the variable ExtExpert (of CExpert class type) is declared.<br /></p>
+<p style="text-align:justify;">The next is the standard event handlers which are in MQL5-programs. The event handlers call for the corresponding methods of CExpert class.<br /></p>
+There is an only method which performs some operations before the execution of CExpert - it's OnInit() method:<br /><pre class="code"><span class="keyword">int</span> OnInit()
+&nbsp;&nbsp;{
+<span class="comment">//---</span>
+<span class="comment">// We check for symbol synchronization</span><span class="comment"> before the start of calculations</span>
+&nbsp;&nbsp; <span class="keyword">int</span> err=<span class="number">0</span>;
+&nbsp;&nbsp; <span class="keyword">while</span>(!(<span class="keyword">bool</span>)<span class="functions">SeriesInfoInteger</span>(<span class="functions">Symbol</span>(),<span class="number">0</span>,<span class="keyword">SERIES_SYNCRONIZED</span>) &amp;&amp; err&lt;AMOUNT_OF_ATTEMPTS)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Sleep</span>(<span class="number">500</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;err++;
+&nbsp;&nbsp;&nbsp;&nbsp; }
+<span class="comment">// CExpert class initialization</span>
+&nbsp;&nbsp; ExtExpert.RangePercent=RangePercent;
+&nbsp;&nbsp; ExtExpert.InnerRange=InnerRange;
+&nbsp;&nbsp; ExtExpert.OuterRange=OuterRange;
+&nbsp;&nbsp; ExtExpert.ControlPoint=ControlPoint;
+&nbsp;&nbsp; ExtExpert.ShowValue=ShowValue;
+&nbsp;&nbsp; ExtExpert.DaysForCalculation=DaysForCalculation;
+&nbsp;&nbsp; ExtExpert.DayTheHistogram=DayTheHistogram;
+&nbsp;&nbsp; ExtExpert.Init();
+&nbsp;&nbsp; <span class="keyword">return</span>(<span class="number">0</span>);
+&nbsp;&nbsp;}
+</pre>
+<p style="text-align:justify;">When I wrote the first version of the Expert Advisor and run it, I have some trouble with understanding why it terminates with error after the client terminal restart or a symbol changes. And it occurs when the client terminal was disconnected or a symbol hasn't used for a long time.<br /></p>
+<p style="text-align:justify;">It's great that developers have added the debugger to MetaEditor5. I remember a lot of Print() and Comment() commands, used for checking of values of variables in MetaEditor4. Many thanks to MetaEditor5 developers.<br /></p>
+<p style="text-align:justify;">In my case, everything was easy; the expert starts before connection to server and update of the historical data. To resolve this problem, I had to use the <a target="_blank" href="/en/docs/series/seriesinfointeger">SeriesInfoInteger(Symbol(),0,SERIES_SYNCRONIZED</a>), which reports that data is synchronized or not, and the cycle while (), the case of the connection absence it uses the counter variable err.<br /></p>
+<p style="text-align:justify;">Once the data has been synchronized, or the cycle has completed because of the counter in the absence of connection, we pass the input parameters of our expert class CExpert, and call the class initialization method Init ().<br /></p>
+<p>As you see, thanks to classes concept in MQL5, our file PriceHistogram.mq5 has transformed into a simple template, and all further processing is in the CExpert class, declared in the file ClassExpert.mqh.<br /></p><p><b>4.2. ClassExpert.mqh</b><br /></p><p>Let's consider its description.</p><pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//|&nbsp;&nbsp; Class CExpert&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//|&nbsp;&nbsp; Class description&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">class</span> CExpert
+&nbsp;&nbsp;{
+<span class="keyword">public</span>:
+&nbsp;&nbsp; <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DaysForCalculation; <span class="comment">// Days to calculate (-1 for all)
+</span>&nbsp;&nbsp; <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DayTheHistogram;&nbsp;&nbsp; <span class="comment"> // Days for Histogram 
+</span>&nbsp;&nbsp; <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RangePercent;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Percent range
+</span>&nbsp;&nbsp; <span class="keyword">color</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InnerRange;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Internal range color
+</span>&nbsp;&nbsp; <span class="keyword">color</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OuterRange;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Outer range color
+</span>&nbsp;&nbsp; <span class="keyword">color</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ControlPoint;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Point of Control (POC) Color
+</span>&nbsp;&nbsp; <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ShowValue;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Show value</span>
+</pre>
+<p style="text-align:justify;">The public section is open and accessible from the outside variables. You'll notice that names of the variables coincide with names of the input parameters section described in PriceHistogram.mq5. It isn't necessary because the input parameters are global. But in this case - is a tribute to the good breeding rules, it's desirable to avoid using of external variables within the class.</p><pre class="code"><span class="keyword">private</span>:
+&nbsp;&nbsp; CList&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; list_object;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// The dynamic list of CObject class instances
+</span>&nbsp;&nbsp; <span class="built_in">string</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name_symbol;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Symbol name</span>
+&nbsp;&nbsp; <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; count_bars;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Number of daily bars
+</span>&nbsp;&nbsp; <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;event_on;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Flag of events processing</span>
+</pre>
+<div><div style="margin:2px 6px 0pt 0pt;"></div><p style="text-align:justify;"><span><span style="background-color:rgb(255, 255, 255);">The private section is closed from the outside and accessible only within the class. </span><span style="background-color:rgb(255, 255, 255);">I
+would like to outline the variable list_object of CList type, which is a class of the standard </span></span><span><span style="background-color:rgb(255, 255, 255);">MQL5 </span></span><span><span style="background-color:rgb(255, 255, 255);">library. </span><span style="background-color:rgb(255, 255, 255);">The CList Class is a dynamic class with a list of instances of CObject </span></span><span><span style="background-color:rgb(255, 255, 255);">class </span></span><span><span style="background-color:rgb(255, 255, 255);">and its heirs. </span><span>I
+will use this list for the references storage for the CPriceHistogram class elements, which is an heir of the CObject class; we'll&nbsp; consider the
+details below. </span><span>The CList class description is in the List.mqh, and it includes by using the compiler directive #include &lt;Arrays\List.mqh&gt;.</span></span></p></div><pre class="code"><span class="keyword">public</span>:
+<span class="comment">   // Class constructor</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CExpert();
+<span class="comment">   // Class destructor</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~CExpert(){Deinit(<span>REASON_CHARTCLOSE</span>);}
+<span class="comment">   // Initialization method</span>
+&nbsp;&nbsp; <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Init();
+<span class="comment">   // Deinitialization method</span>
+&nbsp;&nbsp; <span class="keyword">void</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Deinit(<span class="keyword">const</span> <span class="keyword">int</span> reason);
+<span class="comment">   // Method of OnTick processing</span>
+&nbsp;&nbsp; <span class="keyword">void</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnTick();
+<span class="comment">   // Method of OnChartEvent() event processing</span>
+&nbsp;&nbsp; <span class="keyword">void</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnEvent(<span class="keyword">const</span> <span class="keyword">int</span> id,<span class="keyword">const</span> <span class="keyword">long</span> &amp;lparam,<span class="keyword">const</span> <span class="keyword">double</span> &amp;dparam,<span class="keyword">const</span> <span class="keyword">string</span> &amp;sparam);
+<span class="comment">   // Method of OnTimer() event processing</span>
+&nbsp;&nbsp; <span class="keyword">void</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnTimer();
+};</pre>
+<p style="text-align:justify;">The following is a public methods section. As you have guessed these methods (functions) are available outside the class.<br /></p>
+<p style="text-align:justify;">And finally the brace with a semicolon completes the class description.<br /></p>
+<p style="text-align:justify;">Let's consider class methods in detail.<br /></p>
+<p style="text-align:justify;">The class constructor is a special block of statements, called when the object is created. Constructor is similar to the method, but differs from method that it hasn't explicitly a certain type of returned data. <br /></p><p style="text-align:justify;">In MQL5 language, the constructors can't have any input parameters, and each class should have an only one constructor. In our case, the constructor is a primary initialization of variables.<br /></p>
+<p style="text-align:justify;">The destructor is a special class method that used for the object deinitialization (eg, free memory). In our case the method is called as Deinit (REASON_CHARTCLOSE);</p><p style="text-align:justify;">The Init() is a method for the class initialization. This is the most important method of CExpert class; the
+creation of histogram objects has performed there. Please look at the comments for the details. But I would like to consider there points.<br />
+</p>
+
+
+<p style="text-align:justify;">The first, to build up a daily Price Histogram we need the open time data for days to proceed. Here I would like to digress and draw your attention to the <a target="_blank" href="/en/docs/series/timeseries_access">features of working with time series</a>.&nbsp; For the data request from the other timeframes we needed a time, so the functions Bars () and CopyTime (), as well as other functions to work with timeseries aren't always return the desired data from the first call.<br /></p><p style="text-align:justify;">So I had to put this function in the do (...) while () loop, but to make it finite, I have used the counter variable.<br /></p><pre class="code"> <span class="keyword">int</span> err=<span class="number">0</span>;
+ <span class="keyword">do</span>
+&nbsp;&nbsp; {
+<span class="comment">    // Calculate the number of days which available from the history</span>
+&nbsp;&nbsp;&nbsp; count_bars=<span class="functions">Bars</span>(<span>NULL</span>,<span class="keyword">PERIOD_D1</span>);
+&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(DaysForCalculation+<span class="number">1</span>&lt;count_bars)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; count=DaysForCalculation+<span class="number">1</span>;
+&nbsp;&nbsp;&nbsp; <span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; count=count_bars;
+&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(DaysForCalculation&lt;=<span class="number">0</span>) count=count_bars;
+&nbsp;&nbsp;&nbsp; rates_total=<span class="functions">CopyTime</span>(<span>NULL</span>,<span class="keyword">PERIOD_D1</span>,<span class="number">0</span>,count,day_time_open);
+&nbsp;&nbsp;&nbsp; <span class="functions">Sleep</span>(<span class="number">1</span>);
+&nbsp;&nbsp;&nbsp; err++;
+&nbsp;&nbsp; }
+ <span class="keyword">while</span>(rates_total&lt;=<span class="number">0</span> &amp;&amp; err&lt;AMOUNT_OF_ATTEMPTS);
+ <span class="keyword">if</span>(err&gt;=AMOUNT_OF_ATTEMPTS)
+&nbsp;&nbsp; {
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"There is no accessible history PERIOD_D1"</span>);
+&nbsp;&nbsp; name_symbol=<span>NULL</span>;
+&nbsp;&nbsp; <span class="keyword">return</span>(false);
+&nbsp;&nbsp; }</pre>
+<p style="text-align:justify;">Secondly, the minute history of MetaTrader 5 is equal to the days available, so it can take a lot of time to proceed, so it's necessary to visualize the calculation process. The class CProgressBar
+(#include "ClassProgressBar.mqh") has been developed for this purpose. It creates the progress bar in the chart window and updates it during the calculation process.</p><pre class="code"> <span class="comment">// We create the progress bar on the char to shot the loading process</span>
+ CProgressBar&nbsp;&nbsp; *progress=<span class="keyword">new</span> CProgressBar;
+ progress.Create(<span class="number">0</span>,<span class="string">"Loading"</span>,<span class="number">0</span>,<span class="number">150</span>,<span class="number">20</span>);
+ progress.Text(<span class="string">"Calculation:"</span>);
+ progress.Maximum=rates_total;&nbsp;</pre>
+<p style="text-align:justify;">The third, in cycle, using the "new" statement, we create the CPriceHistogram object, configure it using its methods and initialize it by calling the Init(). If successful, we add it to the list_object list, overwise we delete the hist_obj by using delete statement. The CPriceHistogram class description will presented further, see comments in the code.<br /></p><pre class="code"> <span class="comment">// In this cycle there is creation of object CPriceHistogram
+&nbsp;// its initialization and addition to the list of objects</span>
+ <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;rates_total;i++)
+&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; CPriceHistogram&nbsp;&nbsp;*hist_obj=<span class="keyword">new</span> CPriceHistogram();
+&nbsp;&nbsp;&nbsp; <span class="comment">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; hist_obj.StepHistigram(step);</span>
+<span class="comment">    // We set the flag to show text labels</span>
+&nbsp;&nbsp;&nbsp; hist_obj.ShowLevel(ShowValue);
+<span class="comment">    // We set POCs colour</span>
+&nbsp;&nbsp;&nbsp; hist_obj.ColorPOCs(ControlPoint);
+<span class="comment">    // We set colour for inner range</span>
+ &nbsp;&nbsp; hist_obj.ColorInner(InnerRange);
+<span class="comment">    // We set colour for outer range</span>
+&nbsp;&nbsp;&nbsp; hist_obj.ColorOuter(OuterRange);
+<span class="comment">    // We set the percent range</span>
+&nbsp;&nbsp;&nbsp; hist_obj.RangePercent(RangePercent);
+&nbsp;&nbsp;&nbsp; <span class="comment">//&nbsp; hist_obj.ShowSecondaryPOCs((i&gt;=rates_total-DayTheHistogram),PeriodSeconds(PERIOD_D1));</span>
+&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(hist_obj.Init(day_time_open[i],day_time_open[i]+<span class="functions">PeriodSeconds</span>(<span class="keyword">PERIOD_D1</span>),(i&gt;=rates_total-DayTheHistogram)))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; list_object.Add(hist_obj);
+&nbsp;&nbsp;&nbsp; <span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">delete</span> hist_obj; <span class="comment">// Delete object if there was an error
+</span>&nbsp;&nbsp;&nbsp; progress.Value(i);
+&nbsp;&nbsp; };&nbsp;</pre>
+<p style="text-align:justify;">The OnTick() is a method called when you receive a new tick for a symbol. We comparing the values of the number of days stored in the variable count_bars with the number of daily bars returned by Bars (Symbol (), PERIOD_D1) and if they are not equal&nbsp; we forcedly call the method Init () for the class initialization, clearing the list list_object and changing the variable to NULL name_symbol . If the number of days has not changed, the loop goes through all objects stored in the class CPriceHistogram list_object, and execute a method Redraw (), for those who are Virgin ( «virgin").<br /></p>
+<p style="text-align:justify;">The Deinit() is a method for class deinitialization. In the case of REASON_PARAMETERS (input parameters were changed by the user) we clear the list_object list and set name_symbol variable to NULL. In other cases, the <span style="color:rgb(226, 8, 0);"><span style="color:rgb(102, 102, 102);"></span></span>expert doesn't do anything, but if you want to add something, read the comments.<br /></p>
+<p style="text-align:justify;">The OnEvent() is a method for event processing of the client terminal. Events are generated by the client terminal when user working with chart. The <a target="_blank" href="/en/docs/runtime/event_fire">details</a> can be found in the documentation of MQL5 language. In this Expert Advisor the chart event CHARTEVENT_OBJECT_CLICK has been used. By clicking on histogram element&nbsp; the it shows the secondary POC levels and inverses the histogram color.<br /></p>
+<p style="text-align:justify;">The OnTimer(void) is a method for timer events processing. It doesn't used in my programs, but if you want to add some timer actions (for example, to show the time) - it's here. Before use it's necessary to add the following line to the class constructor:<br /></p><pre class="code"><span class="functions">EventSetTimer</span>(time in seconds);</pre>
+<p style="text-align:justify;">And the following line to the destructor:<br /></p><pre class="code"><span class="functions">EventKillTimer</span>();&nbsp;</pre>
+<p style="text-align:justify;">before calling the method Deinit (REASON_CHARTCLOSE).<br /></p>
+<p>iWe have considered the CExpert class;it has been created for the demonstration of the CPriceHistogram class methods.<br /></p><b>4.3. ClassPriceHistogram.mqh</b> <br /><pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//|&nbsp;&nbsp; Class CPriceHistogram&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//|&nbsp;&nbsp; Class description&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">class</span> CPriceHistogram : <span class="keyword">public</span> CObject
+&nbsp;&nbsp;{
+<span class="keyword">private</span>:
+&nbsp;&nbsp; <span class="comment">// Class variables</span>
+&nbsp;&nbsp; <span class="keyword">double</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;high_day,low_day;
+&nbsp;&nbsp; <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Init_passed;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Flag if the initialization has passed or not
+</span>&nbsp;&nbsp; CChartObjectTrend *POCLine;
+&nbsp;&nbsp; CChartObjectTrend *SecondTopPOCLine,*SecondBottomPOCLine;
+&nbsp;&nbsp; CChartObjectText&nbsp;&nbsp;*POCLable;
+&nbsp;&nbsp; CList&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ListHistogramInner; <span class="comment">// list for inner lines storage 
+</span>&nbsp;&nbsp; CList&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ListHistogramOuter;<span class="comment"> // list for outer lines storage</span>
+&nbsp;&nbsp; <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;show_level;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <span class="comment"> // to show values of level</span>
+&nbsp;&nbsp; <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;virgin;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   <span class="comment">// is it virgin</span>
+&nbsp;&nbsp; <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;show_second_poc;&nbsp;   <span class="comment">// show secondary POC levels
+</span>  &nbsp;<span class="keyword">double</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;second_poc_top;&nbsp;&nbsp;   <span class="comment">// </span><span class="comment">value of the top secondary POC</span><span class="comment"> level</span>
+&nbsp;&nbsp; <span class="keyword">double</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;second_poc_bottom;<span class="comment">  // value of the bottom secondary POC level</span>
+&nbsp;&nbsp; <span class="keyword">double</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;poc_value;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">  // POC level value
+</span>&nbsp;&nbsp; <span class="keyword">color</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; poc_color;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">  // color of POC level
+</span>&nbsp;&nbsp; <span class="keyword">datetime</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;poc_start_time;
+&nbsp;&nbsp; <span class="keyword">datetime</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;poc_end_time;
+&nbsp;&nbsp; <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;show_histogram;&nbsp;&nbsp; <span class="comment">  // show histogram&nbsp; 
+</span>&nbsp;&nbsp; <span class="keyword">color</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; inner_color;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;<span class="comment">// inner color of the histogram</span>
+&nbsp;&nbsp; <span class="keyword">color</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; outer_color;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;<span class="comment">// outer color of the histogram</span>
+&nbsp;&nbsp; <span class="keyword">uint</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;range_percent;&nbsp;&nbsp;&nbsp;  &nbsp;<span class="comment">// percent range</span>
+&nbsp;&nbsp; <span class="keyword">datetime</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;time_start;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   <span class="comment">// start time for construction
+</span>&nbsp;&nbsp; <span class="keyword">datetime</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;time_end;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">  // final time of construction
+</span><span class="keyword">public</span>:
+<span class="comment">   // Class constructor</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CPriceHistogram();
+<span class="comment">   // Class destructor</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~CPriceHistogram(){Delete();}
+<span class="comment">   // Class initialization</span>
+&nbsp;&nbsp; <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Init(<span class="keyword">datetime</span> time_open,<span class="keyword">datetime</span> time_close,<span class="keyword">bool</span> showhistogram);
+<span class="comment">   // To level value</span>
+&nbsp;&nbsp; <span class="keyword">void</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ShowLevel(<span class="keyword">bool</span> show){show_level=show; <span class="keyword">if</span>(Init_passed) RefreshPOCs();}
+&nbsp;&nbsp; <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ShowLevel(){<span class="keyword">return</span>(show_level);}
+<span class="comment">   // To show histogram</span>
+&nbsp;&nbsp; <span class="keyword">void</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ShowHistogram(<span class="keyword">bool</span> show);
+&nbsp;&nbsp; <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ShowHistogram(){<span class="keyword">return</span>(show_histogram);}
+<span class="comment">   // To show Secondary POC levels</span>
+&nbsp;&nbsp; <span class="keyword">void</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ShowSecondaryPOCs(<span class="keyword">bool</span> show){show_second_poc=show;<span class="keyword">if</span>(Init_passed)RefreshPOCs();}
+&nbsp;&nbsp; <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ShowSecondaryPOCs(){<span class="keyword">return</span>(show_second_poc);}
+<span class="comment">   // To set color of POC levels</span>
+&nbsp;&nbsp; <span class="keyword">void</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ColorPOCs(<span class="keyword">color</span> col){poc_color=col; <span class="keyword">if</span>(Init_passed)RefreshPOCs();}
+&nbsp;&nbsp; <span class="keyword">color</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ColorPOCs(){<span class="keyword">return</span>(poc_color);}
+<span class="comment">   // To set internal colour of histogram</span>
+&nbsp;&nbsp; <span class="keyword">void</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ColorInner(<span class="keyword">color</span> col);
+&nbsp;&nbsp; <span class="keyword">color</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ColorInner(){<span class="keyword">return</span>(inner_color);}
+&nbsp;&nbsp; // <span class="comment">To set outer colour of histogram</span>
+&nbsp;&nbsp; <span class="keyword">void</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ColorOuter(<span class="keyword">color</span> col);
+&nbsp;&nbsp; <span class="keyword">color</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ColorOuter(){<span class="keyword">return</span>(outer_color);}
+&nbsp;&nbsp; <span class="comment">// To set percent range</span>
+&nbsp;&nbsp; <span class="keyword">void</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RangePercent(<span class="keyword">uint</span> percent){range_percent=percent; <span class="keyword">if</span>(Init_passed)calculationPOCs();}
+&nbsp;&nbsp; <span class="keyword">uint</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RangePercent(){<span class="keyword">return</span>(range_percent);}
+&nbsp;&nbsp; <span class="comment">// Returns value of virginity of POC level</span>
+&nbsp;&nbsp; <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VirginPOCs(){<span class="keyword">return</span>(virgin);}
+&nbsp;&nbsp; <span class="comment">// Returns starting time of histogram construction</span>
+&nbsp;&nbsp; <span class="keyword">datetime</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetStartDateTime(){<span class="keyword">return</span>(time_start);}
+&nbsp;&nbsp; <span class="comment">// Updating of POC levels</span>
+&nbsp;&nbsp; <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RefreshPOCs();
+<span class="keyword">private</span>:
+&nbsp;&nbsp; <span class="comment">// Calculations of the histogram and POC levels</span>
+&nbsp;&nbsp; <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;calculationPOCs();
+&nbsp;&nbsp; <span class="comment">// Class delete</span>
+&nbsp;&nbsp; <span class="keyword">void</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delete();
+&nbsp;&nbsp;};&nbsp;</pre>
+<p>In the description of the class, I tried to provide comments for class variables and methods. Let's consider some of them in details.<br /></p><pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//|&nbsp;&nbsp; Class initialization&nbsp;                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">bool</span> CPriceHistogram::Init(<span class="keyword">datetime</span> time_open,<span class="keyword">datetime</span> time_close,<span class="keyword">bool</span> showhistogram)&nbsp;</pre>
+<p style="text-align:justify;">This method uses three input parameters - the opening of the building, the closing time of construction and a flag indicating to construct a histogram, or only the levels of POCs.<br /></p>
+<p style="text-align:justify;">In my example (class CExpert) input parameters are passed at the opening day and time of opening the next day day_time_open [i] + PeriodSeconds (PERIOD_D1). But when you use this class, nothing prevents to ask, for example, the time of European, American session, or the gap size in the week, month, etc.<br /></p><pre class="code"><span class="comment">//+---------------------------------------------------------------------------------------+</span>
+<span class="comment">//|&nbsp;&nbsp; Calculations of the histogram and POCs levels                                       |</span>
+<span class="comment">//+---------------------------------------------------------------------------------------+</span>
+<span class="keyword">bool</span> CPriceHistogram::calculationPOCs()&nbsp;</pre>
+<p>In this method, the origin of all levels and the calculations of their construction, it is a closed private method, inaccessible from the outside.</p><pre class="code"><span class="comment">// We get the data from time_start to time_end</span>
+&nbsp;&nbsp; <span class="keyword">int</span> err=<span class="number">0</span>;
+&nbsp;&nbsp; <span class="keyword">do</span>
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- for each bar we are copying the open time</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rates_time=<span class="functions">CopyTime</span>(<span>NULL</span>,<span class="keyword">PERIOD_M1</span>,time_start,time_end,iTime);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(rates_time&lt;<span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PrintErrorOnCopyFunction(<span class="string">"CopyTime"</span>,<span>_Symbol</span>,<span class="keyword">PERIOD_M1</span>,<span class="functions">GetLastError</span>());
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- for each bar we are copying the High prices</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rates_high=<span class="functions">CopyHigh</span>(<span>NULL</span>,<span class="keyword">PERIOD_M1</span>,time_start,time_end,iHigh);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(rates_high&lt;<span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PrintErrorOnCopyFunction(<span class="string">"CopyHigh"</span>,<span>_Symbol</span>,<span class="keyword">PERIOD_M1</span>,<span class="functions">GetLastError</span>());
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- for each bar we are copying the Low prices</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rates_total=<span class="functions">CopyLow</span>(<span>NULL</span>,<span class="keyword">PERIOD_M1</span>,time_start,time_end,iLow);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(rates_total&lt;<span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PrintErrorOnCopyFunction(<span class="string">"CopyLow"</span>,<span>_Symbol</span>,<span class="keyword">PERIOD_M1</span>,<span class="functions">GetLastError</span>());
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;err++;
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">while</span>((rates_time&lt;=<span class="number">0</span> || (rates_total!=rates_high &amp;&amp; rates_total!=rates_time)) &amp;&amp; err&lt;AMOUNT_OF_ATTEMPTS&amp;&amp;!<span class="functions">IsStopped</span>());
+&nbsp;&nbsp; <span class="keyword">if</span>(err&gt;=AMOUNT_OF_ATTEMPTS)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>(false);
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; poc_start_time=iTime[<span class="number">0</span>];
+&nbsp;&nbsp; high_day=iHigh[<span class="functions">ArrayMaximum</span>(iHigh,<span class="number">0</span>,<span>WHOLE_ARRAY</span>)];
+&nbsp;&nbsp; low_day=iLow[<span class="functions">ArrayMinimum</span>(iLow,<span class="number">0</span>,<span>WHOLE_ARRAY</span>)];
+&nbsp;&nbsp; <span class="keyword">int</span> count=<span class="keyword">int</span>((high_day-low_day)/<span>_Point</span>)+<span class="number">1</span>;
+<span class="comment">// Count of duration of a finding of the price at each level</span>
+&nbsp;&nbsp; <span class="keyword">int</span> ThicknessOfLevel[];&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// create an array for count of ticks</span>
+&nbsp;&nbsp; <span class="functions">ArrayResize</span>(ThicknessOfLevel,count);
+&nbsp;&nbsp; <span class="functions">ArrayInitialize</span>(ThicknessOfLevel,<span class="number">0</span>);
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;rates_total;i++)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> C=iLow[i];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">while</span>(C&lt;iHigh[i])
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">int</span> Index=<span class="keyword">int</span>((C-low_day)/<span>_Point</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ThicknessOfLevel[Index]++;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; C+=<span>_Point</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">int</span> MaxLevel=<span class="functions">ArrayMaximum</span>(ThicknessOfLevel,<span class="number">0</span>,count);
+&nbsp;&nbsp; poc_value=low_day+<span>_Point</span>*MaxLevel;</pre>
+<p style="text-align:justify;">First, we get the minute bars history data for a certain period of time&nbsp; (iTime [], iHigh[], iLow[]). Then we find the maximum and minimum element of iHigh[] iand Low[]. Then we calculate the number of&nbsp; points (count) from minimum to maximum, and reserve the array ThicknessOfLevel&nbsp; with ThicknessOfLevel elements. In the cycle we go through&nbsp; the each minute candle from Low to High, and adding the data of the time period presence at this price level. Then we find the maximal element of the ThicknessOfLevel array, it will be the level at which price was the longest time. This is our POC level.<br /></p><pre class="code"><span class="comment">// Search for the secondary POCs</span>
+&nbsp;&nbsp; <span class="keyword">int</span> range_min=ThicknessOfLevel[MaxLevel]-ThicknessOfLevel[MaxLevel]*range_percent/<span class="number">100</span>;
+&nbsp;&nbsp; <span class="keyword">int</span> DownLine=<span class="number">0</span>;
+&nbsp;&nbsp; <span class="keyword">int</span> UpLine=<span class="number">0</span>;
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;count;i++)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(ThicknessOfLevel[i]&gt;=range_min)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DownLine=i;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">break</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i=count-<span class="number">1</span>;i&gt;<span class="number">0</span>;i--)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(ThicknessOfLevel[i]&gt;=range_min)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UpLine=i;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">break</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">if</span>(DownLine==<span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DownLine=MaxLevel;
+&nbsp;&nbsp; <span class="keyword">if</span>(UpLine==<span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UpLine=MaxLevel;
+&nbsp;&nbsp; second_poc_top=low_day+<span>_Point</span>*UpLine;
+&nbsp;&nbsp; second_poc_bottom=low_day+<span>_Point</span>*DownLine;
+</pre>
+<p style="text-align:justify;">The next step is to find the secondary POC levels. Recall that our diagram is divided. Recall that our histogram is divided into two ranges, the internal and external (displayed in different colors) and size range is defined in percentage of time of&nbsp; the price at this level. The range of the internal boundaries are Secondary POC levels.<br /></p>
+<p style="text-align:justify;">After finding the Secondary POC - Borders percent range, proceed to the construction of the histogram.<br /></p><pre class="code"><span class="comment">// Histogram formation </span>
+&nbsp;&nbsp; <span class="keyword">if</span>(show_histogram)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> Delta=(iTime[rates_total-<span class="number">1</span>]-iTime[<span class="number">0</span>]-<span class="functions">PeriodSeconds</span>(<span class="keyword">PERIOD_H1</span>))/ThicknessOfLevel[MaxLevel];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> step=<span class="number">1</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(count&gt;<span class="number">100</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; step=count/<span class="number">100</span>;&nbsp; <span class="comment">// Calculate the step of the histogram (100 lines as max)</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ListHistogramInner.Clear();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ListHistogramOuter.Clear();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;count;i+=step)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">string</span> name=<span class="functions">TimeToString</span>(time_start)+<span class="string">" "</span>+<span class="functions">IntegerToString</span>(i);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">double</span> StartY= low_day+<span>_Point</span>*i;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">datetime</span> EndX= iTime[<span class="number">0</span>]+(ThicknessOfLevel[i])*Delta;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CChartObjectTrend *obj=<span class="keyword">new</span> CChartObjectTrend();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj.Create(<span class="number">0</span>,name,<span class="number">0</span>,poc_start_time,StartY,EndX,StartY);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj.Background(true);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(i&gt;=DownLine &amp;&amp; i&lt;=UpLine)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj.Color(inner_color);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ListHistogramInner.Add(obj);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj.Color(outer_color);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ListHistogramOuter.Add(obj);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+</pre>
+<p style="text-align:justify;">It should be mentioned that in order to reduce the load on the terminal, I bring to the screen a maximum of 100 lines for each histogram. Lines of the histogram are stored in two lists, and ListHistogramInner ListHistogramOuter, which are the objects already known to us class CList. But these pointers are stored in a standard class of objects CChartObjectTrend. Why two lists, I think you can guess from the title, to be able to change the color histogram.<br /></p><pre class="code"><span class="comment"></span><span class="comment">// We receive data beginning from the final time of the histogram till current time</span>
+&nbsp;&nbsp; err=<span class="number">0</span>;
+&nbsp;&nbsp; <span class="keyword">do</span>
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rates_time=<span class="functions">CopyTime</span>(<span>NULL</span>,<span class="keyword">PERIOD_M1</span>,time_end,last_tick.time,iTime);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rates_high=<span class="functions">CopyHigh</span>(<span>NULL</span>,<span class="keyword">PERIOD_M1</span>,time_end,last_tick.time,iHigh);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rates_total=<span class="functions">CopyLow</span>(<span>NULL</span>,<span class="keyword">PERIOD_M1</span>,time_end,last_tick.time,iLow);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;err++;
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">while</span>((rates_time&lt;=<span class="number">0</span> || (rates_total!=rates_high &amp;&amp; rates_total!=rates_time)) &amp;&amp; err&lt;AMOUNT_OF_ATTEMPTS);
+<span class="comment"></span><span class="comment">// If there isn't history, the present day, level is virgin, we hoist the colours</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(rates_time==<span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;virgin=true;
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">else</span>
+<span class="comment">// Otherwise we check history</span>
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(index=<span class="number">0</span>;index&lt;rates_total;index++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(poc_value&lt;iHigh[index] &amp;&amp; poc_value&gt;iLow[index]) <span class="keyword">break</span>;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(index&lt;rates_total)&nbsp;&nbsp; <span class="comment">// If level has crossed
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; poc_end_time=iTime[index];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; virgin=true;
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">if</span>(POCLine==<span>NULL</span>)
+&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;POCLine=<span class="keyword">new</span> CChartObjectTrend();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;POCLine.Create(<span class="number">0</span>,<span class="functions">TimeToString</span>(time_start)+<span class="string">" POC "</span>,<span class="number">0</span>,poc_start_time,poc_value,<span class="number">0</span>,<span class="number">0</span>);
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; POCLine.Color(poc_color);
+&nbsp;&nbsp; RefreshPOCs();</pre>
+<p style="text-align:justify;">I have tried to design the CPriceHistogram with all necessary methods, if it <span>insufficient</span><span></span>, you can add yourself, and I will help with it.</p>
+<h3>Summary<br />
+</h3><p>Once again I would like to remind that the Price Histogram is reliable, but the intuitive tool, so the confirmation signals are necessary for its use.<br /></p>
+<p style="text-align:justify;">Thank you for your interest. I am ready to answer to all your questions.<br /></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+      </div>
+          <p style="text-align: right;">
+            <small>
+              Translated from Russian by MetaQuotes Ltd. <br>Original article: <a href="/ru/articles/17" target="_blank">https://www.mql5.com/ru/articles/17</a>
+            </small>
+          </p>
+<div id="cb_17" class="attachBlock">
+  <strong>Attached files</strong> |
+  <div class="grouped-attachments-help">
+    <a title="Download all attachments in the single ZIP archive" href="/en/articles/download/17.zip">
+      <i class="attach-icon attach-icon_zip"></i>Download ZIP
+    </a>
+  </div>
+    <div class="attachItem">
+      <a title="Download classexpert.mqh" href="/en/articles/download/17/classexpert.mqh"><i class="attach-icon attach-icon_mqh"></i>classexpert.mqh</a>
+      <span class="attachSize">(9.44 KB)</span>
+    </div>
+    <div class="attachItem">
+      <a title="Download classprogressbar.mqh" href="/en/articles/download/17/classprogressbar.mqh"><i class="attach-icon attach-icon_mqh"></i>classprogressbar.mqh</a>
+      <span class="attachSize">(3.75 KB)</span>
+    </div>
+    <div class="attachItem">
+      <a title="Download pricehistogram.mq5" href="/en/articles/download/17/pricehistogram.mq5"><i class="attach-icon attach-icon_mq5"></i>pricehistogram.mq5</a>
+      <span class="attachSize">(3.63 KB)</span>
+    </div>
+    <div class="attachItem">
+      <a title="Download colorprogressbar.mqh" href="/en/articles/download/17/colorprogressbar.mqh"><i class="attach-icon attach-icon_mqh"></i>colorprogressbar.mqh</a>
+      <span class="attachSize">(4.89 KB)</span>
+    </div>
+    <div class="attachItem">
+      <a title="Download classpricehistogram.mqh" href="/en/articles/download/17/classpricehistogram.mqh"><i class="attach-icon attach-icon_mqh"></i>classpricehistogram.mqh</a>
+      <span class="attachSize">(16.07 KB)</span>
+    </div>
+</div>
+    </div>
+
+  <div class="copyright">
+    <p><strong>Warning:</strong> All rights to these materials are reserved by MetaQuotes Ltd. Copying or reprinting of these materials in whole or in part is prohibited.</p>
+      <p>This article was written by a user of the site and reflects their personal views. MetaQuotes Ltd is not responsible for the accuracy of the information presented, nor for any consequences resulting from the use of the solutions, strategies or recommendations described.</p>
+  </div>
+
+
+
+    <div class="article__author-with-articles">
+      
+
+
+<div class="article-footer__author">
+  <div class="article-footer__author-avatar">
+    <img id="avatar" src="https://c.mql5.com/avatar/2010/3/4B9E6DA0-951C_big.jpg" title="Dmitry Voronkov" alt="Dmitry Voronkov" loading="lazy" width="164" height="164">
+  </div>
+  <div class="article-footer__author-content">
+    <div class="article-footer__author-name">
+      <a href="/en/users/vdv2001" title="Dmitry Voronkov">Dmitry Voronkov</a>
+    </div>
+    <div class="article-footer__author-info">
+      <ul>
+          <li>
+            <i title="Lives" class="icons-profile icons-profile_geo"></i>
+            <a target="_blank" rel="nofollow" title="Lives" href="https://www.mql5.com/go?https://maps.google.com/?z=4&q=Ukraine">Ukraine</a>
+          </li>
+        <li>
+          <i title="Rating" class="icons-profile icons-profile_statistics"></i>
+          <a title="Rating" href="/en/users/vdv2001/achievements">13026</a>
+        </li>
+      </ul>
+    </div>
+    <div class="article-footer__author-contacts">
+      
+    </div>
+    <div class="article-footer__author-bio"></div>
+  </div>
+</div>
+
+      <div class="other-author-articles ui">
+        <h4 class="other-author-articles__title">Other articles by this author</h4>
+        <ul class="other-author-articles__list">
+          <li><a href="/en/articles/101" data-fz-event="MQL5+Article+From+Author+Article">Analyzing Candlestick Patterns</a></li>
+          <li><a href="/en/articles/91" data-fz-event="MQL5+Article+From+Author+Article">An Example of a Trading System Based on a Heiken-Ashi Indicator</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+  <div class="article__last-comments" id="articleAdditional">
+    
+
+<div class="comments-preview">
+    <div class="title">
+      <span></span><b>
+         Last comments |
+ <a href="/en/forum/414">Go to discussion</a>
+      </b>
+        (103)
+    </div>
+    <div>
+        
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2025/5/68239006-fc9d.png" srcset="https://c.mql5.com/avatar/2025/5/68239006-fc9d_big.png 2x" alt="Ryan L Johnson" title="Ryan L Johnson" data-user-login="RJo" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/rjo" data-user-login="RJo">Ryan L Johnson</a></b>
+              |
+              <span class="comment__date">5 Apr 2023 at 19:38</span>
+              <a id="comment_46093517"></a>
+              
+            </div>
+            <div class="content" id="content46093517">
+              Just a heads up here... I downloaded all files to their appropriate directories, compiled, and received errors regarding ClassPriceHistogram.mqh. On line 375 therein, I simply replaced&nbsp; <pre class="code">CPriceHistogram::Delete()</pre> <p>with</p> <pre class="code"><span class="keyword">void</span> CPriceHistogram::Delete()</pre> <p>Works fine now in AMP Futures' MT5 Version 5.00 Build 3661.</p> <p>@Oleksandr, this "indicator" is technically an Expert. <a href="https://www.mql5.com/en/articles/180" title="Article: Averaging Price Series for Intermediate Calculations Without Using Additional Buffers " class="linkator"><span class="mark">Indicator buffers</span></a> are not available in Experts. Buffers can be effectively recreated using arrays in Experts but only real indicator buffers can be called by iCustom so for that purpose, a new custom indicator would have to be coded from scratch. Unfortunately, both options are beyond my level of coding ability. Good luck to you in finding better help.</p>
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/avatar_na2.png" srcset="https://c.mql5.com/avatar/avatar_na2_big.png 2x" alt="O_M_333" title="O_M_333" data-user-login="OrelMely" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/orelmely" data-user-login="OrelMely">O_M_333</a></b>
+              |
+              <span class="comment__date">13 Apr 2023 at 17:52</span>
+              <a id="comment_46245648"></a>
+              
+            </div>
+            <div class="content" id="content46245648">
+              is thre any way to plot the current seesion?<br/><br/><br/>THNAKS
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/avatar_na2.png" srcset="https://c.mql5.com/avatar/avatar_na2_big.png 2x" alt="O_M_333" title="O_M_333" data-user-login="OrelMely" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/orelmely" data-user-login="OrelMely">O_M_333</a></b>
+              |
+              <span class="comment__date">13 Apr 2023 at 18:23</span>
+              <a id="comment_46245866"></a>
+              
+            </div>
+            <div class="content" id="content46245866">
+              hello i tried changing the lines in your comment , but it istill doesnt work , i cant see the current session volumen <a href="https://www.metatrader5.com/en/metaeditor/help/development/profiling" target="_blank" title="MetaEditor User Guide: Code profiling" class="linkator"><span class="mark">profile</span></a><br/><br/>THANKS
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/avatar_na2.png" srcset="https://c.mql5.com/avatar/avatar_na2_big.png 2x" alt="O_M_333" title="O_M_333" data-user-login="OrelMely" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/orelmely" data-user-login="OrelMely">O_M_333</a></b>
+              |
+              <span class="comment__date">19 Apr 2023 at 14:34</span>
+              <a id="comment_46360935"></a>
+              
+            </div>
+            <div class="content" id="content46360935">
+              <div class="fquote"> <strong><span style="color:#42639C;">apirakkamjan <a href="/en/forum/414/page3#comment_11953750">#</a></span>:</strong><br/> <p></p> <h3><i>Want to see something cool!!<br/> </i></h3> <p>&nbsp; &nbsp; &nbsp; &nbsp;File&nbsp; classexpert.mqh&nbsp; &nbsp;Line 104 ::&nbsp; &nbsp;change&nbsp; <b>&nbsp;</b><span style="background-color:rgb(255, 221, 0);"><b> &gt;=&nbsp;</b> &nbsp;</span>&nbsp; &nbsp;back to&nbsp; &nbsp;<span style="background-color:rgb(255, 221, 0);"> <b>&lt;&nbsp;</b></span></p> </div> <p>hello sir...<br/><br/>It doesnt work on my side.</p>Can i have some help?<br/><br/>THANKS
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2025/5/68239006-fc9d.png" srcset="https://c.mql5.com/avatar/2025/5/68239006-fc9d_big.png 2x" alt="Ryan L Johnson" title="Ryan L Johnson" data-user-login="RJo" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/rjo" data-user-login="RJo">Ryan L Johnson</a></b>
+              |
+              <span class="comment__date">22 Oct 2023 at 18:59</span>
+              <a id="comment_50078186"></a>
+              
+            </div>
+            <div class="content" id="content50078186">
+              <div class="fquote"> <strong><span style="color:#42639C;">JHawk <a href="/en/forum/414/page5#comment_41420407">#</a></span>:</strong><br/> <p>What I have here for you and the community is an update, so that histogram uses the tickvolume...</p> </div> <p>Nicely done! I'm guessing that you use tickvolume for trading an S&amp;P 500 CFD. I might have a go at replacing tickvolume with realvolume because I'll be trading S&amp;P 500 futures on the centralized CME.</p> <p>@ <a href="/en/users/orelmely">O_M_333</a>,&nbsp;I sent you a private message.</p>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+  </div>
+
+
+    <div class="articles-bottom-list" id="articleAdditional">
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Applying One Indicator to Another" src="https://c.mql5.com/2/0/indikators_001.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/15" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Applying One Indicator to Another</a>
+                <div class="articles-bottom-list__desc">When writing an indicator that uses the short form of the OnCalculate()  function call, you might miss the fact that an indicator can be calculated not only by price data, but also by data of some other indicator (no matter whether it is a built-in or custom one). Do you want to improve an indicator for its correct application to the other indicator&#x27;s data? In this article we&#x27;ll review all the steps required for such modification.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="How to Exchange Data: A DLL for MQL5 in 10 Minutes" src="https://c.mql5.com/2/0/mql5_dll_sample__1.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/18" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">How to Exchange Data: A DLL for MQL5 in 10 Minutes</a>
+                <div class="articles-bottom-list__desc">Now not so many developers remember how to write a simple DLL, and what are special features of different system binding. Using several examples, I will try to show the entire process of the simple DLL&#x27;s creation in 10 minutes, as well as to discuss some technical details of our binding implementation. I will show the step-by-step process of DLL creation in Visual Studio with examples of exchanging different types of variables (numbers, arrays, strings, etc.). Besides I will explain how to protect your client terminal from crashes in custom DLLs.</div>
+              </div>
+          </div>
+        </div>
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Checking the Myth: The Whole Day Trading Depends on How the Asian Session Is Traded" src="https://c.mql5.com/2/17/872_36.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/1575" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Checking the Myth: The Whole Day Trading Depends on How the Asian Session Is Traded</a>
+                <div class="articles-bottom-list__desc">In this article we will check the well-known statement that &quot;The whole day trading depends on how the Asian session is traded&quot;.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Data Exchange between Indicators: It&#x27;s Easy" src="https://c.mql5.com/2/0/v5__1.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/19" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Data Exchange between Indicators: It&#x27;s Easy</a>
+                <div class="articles-bottom-list__desc">We want to create such an environment, which would provide access to data of indicators attached to a chart, and would have the following properties: absence of data copying; minimal modification of the code of available methods, if we need to use them; MQL code is preferable (of course, we have to use DLL, but we will use just a dozen of strings of C&#x2B;&#x2B; code). The article describes an easy method to develop a program environment for the MetaTrader terminal, that would provide means for accessing indicator buffers from other MQL programs.</div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+<div class="clear-fix"></div>
+
+<div id='wdausxxqrpvhekbwjrjlhqjghyhesrqqau' class="r6irig5txiuua4k0m r6irig5txiuua4k0m_articles-view gg88d3drb"></div>
+    
+
+<div class="hidden" id="popupRegisterLogin">
+  <div class="register-login-popup">
+    <div class="register-login-popup__header">
+      <img src="https://c.mql5.com/i/registerlandings/logo-2.png" srcset="https://c.mql5.com/i/registerlandings/logo-2_2x.png 2x" alt="MQL5 - Language of trade strategies built-in the MetaTrader 5 client terminal" loading="lazy" width="74" height="24" />
+    </div>
+    <div class="register-login-popup__content">
+      <div class="register-login-popup__desc">
+        <div class="register-login-popup__title">You are missing trading opportunities:</div>
+        <ul>
+<li>Free trading apps</li>
+<li>Over 8,000 signals for copying</li>
+<li>Economic news for exploring financial markets</li>
+</ul>
+      </div>
+      <div class="register-login-popup__forms ui">
+        <div class="register-login-popup__tabs" id="registerLoginPopupTabs">
+          <span data-id="register" id="registerLoginPopupTab_register" class="register-login-popup__tab register-login-popup__tab_active">Registration</span>
+          <span data-id="login" id="registerLoginPopupTab_login" class="register-login-popup__tab">Log in</span>
+        </div>
+        <div id="registerLoginPopupTabContent_register">
+          <div class="ui auth-form__content">
+    
+  <script type='text/javascript'>/*<![CDATA[*/ if (!window.V) var V = []; /*]]>*/</script>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/en/auth_register_short" id="PopupRegisterquickRegisterForm" onsubmit="PopupRegisterquickRegistration.OnSubmit(this,&#39;en&#39;);if(Validate(this)) Ajax.form(this,{onready:PopupRegisterquickRegistration.OnSuccessPopup,onerror:PopupRegisterquickRegistration.OnError,onbeginrequest:PopupRegisterquickRegistration.DisableInputs,onendrequest:PopupRegisterquickRegistration.EnableInputs});return(false);" enctype = "multipart/form-data"><input type="hidden" name="__signature" value="2ff9cc3011053a3f9c31b1a272ab0efa"/>
+    <div class="auth-form__inputs">
+      <input type="hidden" value="0" name="IsValidate" id="PopupRegisterIsValidate" />
+
+      <!--[if lt IE 10]><div class="note">Login:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input type="text" id="PopupRegisterusername" name="username" class="input" maxlength="32" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.CheckUserName();}" onkeyup="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.ValidateUserName(this, 'Enter a valid login');}" placeholder="Login" title="May contain Latin letters, digits, dots, dashes,underscore characters. Cannot start or end with a dot. The allowed length is 3 to 32 characters." onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisterusername'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisterusername',10,'You may use Latin characters, numbers, underscores and periods.',validate_username]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisterusername">latin characters without spaces</label>
+      </div>
+      <!--[if lt IE 10]><div class="note">Your email:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input class="input" type="email" id="PopupRegisteremail" name="email" placeholder="Your email" title="Please enter the email (it may not exceed 256 characters). For example: john@example.com" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnChange(this);}" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisteremail'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisteremail',10,'Enter a valid email address',validate_email]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisteremail">a password will be sent to this email</label>
+      </div>
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Register" />
+    </div>
+    <span id="PopupRegisterquickRegisterSubmit">
+      <input type="submit" value="Register" id="PopupRegisterquickRegisterButton"  title="Sign up and receive an email with your password" class="button button_yellow"  />
+    </span>
+    <span id="PopupRegisterquickRegisterErrorMessage" class="quick-register-error-message field-validation-error" style="text-align: center; margin-top: 16px; display: none;">
+      An error occurred
+    </span>
+</form>
+    
+</div>
+<div class="auth-social">
+  <ul class="auth-social-list" id="socialList">
+    <li><a onclick="window.fpush({name: 'MQL5+Popup+Register+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/en/auth_oauth2?provider=Google&amp;amp;return=popup&amp;amp;reg=1" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Log in With Google</a></li>
+  </ul>
+</div>
+<div class="auth-block-agree">
+  <p>
+    You agree to <a target="_blank" href="/en/about/privacy">website policy</a> and <a target="_blank" href="/en/about/terms">terms of use</a>
+  </p>
+</div>
+
+
+        </div>
+        <div id="registerLoginPopupTabContent_login" class="hidden">
+            <div class="auth-form__text">
+    If you do not have an account, please <a href="https://www.mql5.com/en/auth_register" rel="nofollow" style="vertical-align: top">register</a>
+  </div>
+<div class="ui auth-form__content auth-form__content_login" id="loginFormWrapper">
+    
+  <div id="needCookies" class="need-cookies hidden">
+    <div class="danger-box">
+      <p>Allow the use of cookies to log in to the MQL5.com website.</p>
+<p>Please enable the necessary setting in your browser, otherwise you will not be able to log in.</p>
+    </div>
+  </div>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/en/auth_login" id="loginForm" onsubmit="if(window.quickLogin){return window.quickLogin.onSubmit(this);}var result = Validate(this); if(result) { preventDoubleSubmit(this); } return result;"><input id="RedirectAfterLoginUrl" name="RedirectAfterLoginUrl" type="hidden" value="" /><input id="RegistrationUrl" name="RegistrationUrl" type="hidden" value="" /><input data-val="true" data-val-required="The ShowOpenId field is required." id="ShowOpenId" name="ShowOpenId" type="hidden" value="True" /><input id="TrackingSection" name="TrackingSection" type="hidden" value="Articles" />    <input name="ViewType" type="hidden" value="5" />
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Login" />
+    <!--[if lt IE 10]><div class="note">Your login:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <input class="input qa-login" id="Login" name="Login" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Login" title="Your login" type="text" value="" />
+      <script type='text/javascript' id='validate_Login'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Login',1,'Enter login specified when signing up']);});mqGlobal.AddOnReady(function() {V.push(['Login',10,'Email cannot be used. Enter your login please',validateLogin]);}); /*]]>*/</script>
+    </div>
+    <!--[if lt IE 10]><div class="note">Password:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <div class="input-with-show">
+        <input autocomplete="off" class="input qa-password" id="Password" name="Password" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Password" title="Enter the password please" type="password" />
+        <span class="input-with-show__icon" title="Show password" onclick="if(window.quickLogin){window.quickLogin.showPass(this, 'Show password', 'Hide password');}"></span>
+      </div>
+      <script type='text/javascript' id='validate_Password'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Password',1,'Please enter the password']);}); /*]]>*/</script>
+    </div>
+    <script type="text/javascript">
+    function validateLogin(input) {
+      console.log('validate login ' + input.value);
+      return !/^\w+([-+.'']{1,2}\w+)* @\w+([-.]\w+)*\.\w+([-.]\w+)*$/i.test(input.value);
+    }
+    </script>
+    <div class="forgot" id="loginForgotBlock"><a id="loginForgotLink" href="https://www.mql5.com/en/auth_forgotten?return=popup">Forgot your login/password?</a></div>
+    <input type="submit" class="button button_yellow qa-submit" id="loginSubmit" value="Log in" title="Enter">
+</form></div>
+
+  <div class="auth-social" id="authSocialBlock">
+    <ul class="auth-social-list" id="socialList">
+      <li><a onclick="window.fpush({name: 'MQL5+Popup+Login+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/en/auth_oauth2?provider=Google&amp;amp;return=popup" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Log in With Google</a></li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script id="popupSection" type="application/json">{"section": "Articles"}</script>
+<script id="popupTranslate" data-type="translate" type="application/json">
+{
+  "popup":
+  {
+  "EmailTitle" : "The password has been sent to {0}",
+  "EmailDescription" : "Log in using the obtained password and the login specified during the registration",
+  "SubmitButtonText" : "Activate account",
+  "RegistrationTip" : "If you have not received the password email, check the spam folder or &lt;a href={0}&gt;repeat the registration&lt;/a&gt;"
+  }
+}
+</script>
+
+    
+
+    
+
+
+    </article>
+  </div>
+
+
+
+<div aria-hidden="true" class="footer  desktop" id="footer">
+  <ul class="links  links_desktop">
+      <li id="navFooterCommunity">
+        <nav>
+          <ul>
+            <li><a href="https://web.metatrader.app/terminal?mode=demo&amp;lang=en" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Footer+Trading">Online trading / WebTerminal</a></li>
+            <li><a href="/en/code" data-fz-event="MQL5+Footer+CodeBase">Free technical indicators and robots</a></li>
+            <li><a href="/en/articles" data-fz-event="MQL5+Footer+Articles">Articles about programming and trading</a></li>
+            <li><a href="/en/job" data-fz-event="MQL5+Footer+Job">Order trading robots on the Freelance</a></li>
+            <li><a href="/en/market" data-fz-event="MQL5+Footer+Market">Market of Expert Advisors and applications&#x9;</a></li>
+            <li><a href="/en/signals" data-fz-event="MQL5+Footer+Signals">Follow forex signals</a></li>
+            <li><a href="/en/vps" data-fz-event="MQL5+Footer+VPS">Low latency forex VPS</a></li>
+            <li><a href="/en/forum" data-fz-event="MQL5+Footer+Forum">Traders forum</a></li>
+            <li><a href="/en/blogs" data-fz-event="MQL5+Footer+Blogs">Trading blogs</a></li>
+            <li><a rel="nofollow" href="/en/charts" data-fz-event="MQL5+Footer+Charts">Charts</a></li>
+            <li><a href="/en/widgets" data-fz-event="MQL5+Footer+Widgets">Free widgets</a></li>
+          </ul>
+        </nav>
+      </li>
+      <li id="navFooterMt5">
+        <nav>
+          <ul>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> Trading Platform</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/releasenotes" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> latest updates</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/news" data-fz-event="MQL5+Footer+MetaTrader+5">News, implementations and technology</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> User Manual</a></li>
+            <li><a href="/en/docs" data-fz-event="MQL5+Footer+Docs">MQL5 language of trading strategies</a></li>
+            <li><a rel="nofollow noopener" href="https://cloud.mql5.com" data-fz-event="MQL5+Footer+Cloud">MQL5 Cloud Network</a></li>
+            <li><a rel="noopener" href="https://forge.mql5.io/?lang=en" data-fz-event="MQL5+Footer+Forge" target="_blank">MQL5 Algo Forge</a></li>
+              <li><a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Footer">Download <span class="nobr">MetaTrader 5</span></a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help/start_advanced/installation" data-fz-event="MQL5+Footer+MetaTrader+5">Install Platform</a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help/start_advanced/deinstallation" data-fz-event="MQL5+Footer+MetaTrader+5">Uninstall Platform</a></li>
+          </ul>
+        </nav>
+
+      </li>
+    <li id="navFooterWebsite">
+        <nav>
+          <ul>
+            <li><a rel="nofollow" href="/en/about" data-fz-event="MQL5+Footer+About">About</a></li>
+              <li><a href="/en/wall" data-fz-event="MQL5+Footer+Wall">Timeline</a></li>
+            <li><a rel="nofollow" href="/en/about/terms" data-fz-event="MQL5+Footer+About">Terms and Conditions</a></li>
+            <li><a rel="nofollow" href="/en/about/autopayments" data-fz-event="MQL5+Footer+About">Recurring Payment Agreement</a></li>
+            <li><a rel="nofollow" href="/en/about/agencyagreement" data-fz-event="MQL5+Footer+About">Agency Agreement – Offer</a></li>
+            <li><a rel="nofollow" href="/en/about/privacy" data-fz-event="MQL5+Footer+About">Privacy and Data Protection Policy</a></li>
+            <li><a rel="nofollow" href="/en/about/cookies" data-fz-event="MQL5+Footer+About">Cookies Policy</a></li>
+            <li>
+                <a rel="nofollow" href="/en/contact" data-fz-event="MQL5+Footer+Contacts">Contacts and requests</a>
+            </li>
+          </ul>
+        </nav>
+    </li>
+
+      <li>
+        <div class="footer__products">
+          <div class="footer__product">
+            <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com" class="footer__product-name">MetaTrader 5</a>
+            <div class="footer__product-links">
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon windows" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for Windows</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/MetaTrader5.pkg.zip?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon macos" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for MacOS</div></a>
+            <a rel="nofollow noopener" href="https://www.mql5.com/en/articles/625?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon linux" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for Linux</div></a>
+            <a rel="nofollow noopener" href="https://web.metatrader.app/terminal?mode=demo&amp;lang=en" class="icon web"><div  class="footer__product-link-hint footer__product-link-hint-short">Open MetaTrader 5 WebTerminal</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/ios?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=en" class="icon ios" data-fz-event="MetaTrader+5+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/jhZn8Ed1I1d.png)">Scan to install from App Store</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=en" class="icon android" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/kiF2Io6W-9d.png)">Scan to install from Google Play</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon huawei" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ZRt&#x2B;zI1l&#x2B;8O.png)">Scan to install from Huawei AppGallery</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon ark" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/L0Q9oag&#x2B;3eE.png)">Scan to get Android APK file</div></a>
+            </div>
+          </div>
+          <div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com/en/news/2270" class="footer__product-name">MQL5 Channels</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon ios" data-fz-event="MQL5+Channels+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/bZVfOJnYpcO.png)">Scan to install from App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon android" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/32MJFgw7BVs.png)">Scan to install from Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Su&#x2B;fe4n374e.png)">Scan to install from Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mql5channels/mql5channels.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/G6Mg4NfCPzO.png)">Scan to get Android APK file</div></a>
+              </div>
+            </div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.tradays.com/en/download?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MQL5+Footer+Download+Tradays" class="footer__product-name">Economic Calendar</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon ios" data-fz-event="Tradays+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CpD&#x2B;mhIw-1E.png)">Scan to install from App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon android" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Bgyx8UcmYap.png)">Scan to install from Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CrS7bbDAdAO.png)">Scan to install from Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/tradays/tradays.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/VZi8YPIb2op.png)">Scan to get Android APK file</div></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__networks">
+          <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow" title="Facebook"><i class="icons-networks icons-networks_fb"></i></a>
+          <a href="https://t.me/mql5dev" target="_blank" rel="nofollow" title="Telegram"><i class="icons-networks icons-networks_tg"></i></a>
+          <a href="https://x.com/mql5com" target="_blank" rel="nofollow" title="X (Twitter)"><i class="icons-networks icons-networks_tw"></i></a>
+          <a href="https://www.youtube.com/@MetaQuotesOfficial" target="_blank" rel="nofollow" title="YouTube"><i class="icons-networks icons-networks_yt"></i></a>
+          <a href="https://www.linkedin.com/company/mql5" target="_blank" rel="nofollow" title="LinkedIn"><i class="icons-networks icons-networks_linkedin"></i></a>
+          <span>Subscribe to algotrading news</span>
+        </div>
+  
+        <div class="footer__other">
+          <div class="footer__not-a-broker">Not a broker, no real trading accounts</div>
+          <div class="copyright">35 Dodekanisou str, Germasogeia, 4043,&nbsp;Limassol,&nbsp;Cyprus</div>
+          <div class="copyright">Copyright 2000-2026, <span class="nobr">MetaQuotes Ltd</span></div>
+        </div>
+      </li>
+  </ul>
+</div>
+
+
+
+<div class="shadow-layer" id="layer"></div>
+    
+
+  <div class="b-fixed-mt" id="bFixedMt" style="display: none;">
+    
+  </div>
+
+
+<script type='text/javascript'>
+		(function (a, e, f, g, b, c, d) { a[b] || (a.FintezaCoreObject = b, a[b] = a[b] || function () { (a[b].q = a[b].q || []).push(arguments) }, a[b].l = 1 * new Date, c = e.createElement(f), d = e.getElementsByTagName(f)[0], c.async = !0, c.defer = !0, c.src = g, d && d.parentNode && d.parentNode.insertBefore(c, d)) })
+      (window, document, "script", "/ff/core.js", "fz");
+		window.fz("register", "website", {
+      id: "sqjxkxkswybhifrohpyooonwgbvsfzmayq",
+			trackLinks: true
+		});
+        mqGlobal.AddOnReady(function () { Mql5Cookie.init('mql5.com', '5089786805923375765'); });
+mqGlobal.AddOnReady(function(){if(!window.Pocket){window.Pocket=new PocketManager();}});mqGlobal.AddOnReady(function(){if(!window.translateManager){window.translateManager=new Translate(undefined,'Error: failed to translate. Please try again later.');}if(document.querySelectorAll){var translateElements=document.querySelectorAll(".translateMenu");if(translateElements){var i=0,count=translateElements.length;for(i;i<count;i++){(function(i){var contentid=dataset(translateElements[i],"contentid"),sourcelang=dataset(translateElements[i],"sourcelang"),targetlang=dataset(translateElements[i],"targetlang"),moduleid=parseInt(dataset(translateElements[i],"moduleid")),typeid=parseInt(dataset(translateElements[i],"typeid")),entityid=parseInt(dataset(translateElements[i],"entityid"));Core.AddHandler(translateElements[i],"mouseover",function(){return translateManager.SetMenu(this,contentid,sourcelang,targetlang,moduleid,typeid,entityid);});})(i);}}}});window.fz("show","wdausxxqrpvhekbwjrjlhqjghyhesrqqau");window.mqGlobal.AddOnLoad(function(){window.fpush('MQL5+Article+Open');Articles.CheckOnScrollDown();});mqGlobal.AddOnReady(function(){window.PopupRegisterquickRegistration=new QuickRegistration('PopupRegister','Popup+Register','Articles');});function validate_username(input){var reg=/^([a-z0-9]){1}([\-._a-z0-9]){1,30}([\-_a-z0-9]){1}$/i,value=input.value,result=true;if(reg.test(value)){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Login',unit:'section',value:'Articles'});}return result;}function validate_email(input){var reg=/^\w+([-+.'']{1,2}\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/i,value=input.value,result=true,length_value=value.length;if(reg.test(value)&&length_value>=1&&length_value<=40){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Email',unit:'section',value:'Articles'});}return result;};mqGlobal.AddOnReady(function(){var username=$('PopupRegisterusername'),email=$('PopupRegisteremail');if(username)username.value='';if(email)email.value='';});mqGlobal.AddOnReady(function(){window.quickLogin=new QuickLogin('Popup+Login','Articles');});mqGlobal.AddOnLoad(function(){window.showLoginRegisterPopupAtEnd();});mqGlobal.AddOnLoad(function(){window.tooltipUserInfo.init();});mqGlobal.AddOnReady(function(){{window.initHeaderSearch('','https://www.mql5.com/en/search');}});</script><script type="text/javascript">mqGlobal.AddOnReady(function(){window.initSuggestions("headerSearchKeyword","en","https://search.mql5.com/api/query","https://www.mql5.com/en/users_search/suggestion");});window.fz("show","vgckrufggwxdtfscpyalmenexmvhljduja");mqGlobal.AddOnReady(function(){window.floatVerticalPanelNode=FloatVerticalPanel('This website uses cookies. Learn more about our <a href="/en/about/cookies">Cookies Policy</a>.','cookie_accept');});							if (typeof Attach !== "undefined")
+			Attach.setAcceptFilter(".zip, .txt, .log, .mqh, .ex5, .mq5, .mq4, .mqproj, .ex4, .mt5, .set, .tpl, .cl, .py, .sqlite, .csv, .ini, .ipynb, .onnx, .gif, .png, .jpg, .jpeg, .mp4, .webm");
+	</script>
+
+<script type="application/ld&#x2B;json">
+		[
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"url": "https://www.mql5.com",
+				"logo": "https://c.mql5.com/i/community/logo_mql5-2.png",
+				"sameAs": [
+					"https://www.facebook.com/mql5.community",
+					"https://www.x.com/mql5com",
+					"https://www.youtube.com/user/MetaQuotesOfficial"
+				 ]
+			}
+		
+, 
+{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"Forum","description":"Discussions of trading strategies and algorithmic trading. MQL5.community  the largest forex forum","url":"https://www.mql5.com/en/forum","children":[]},{"@type":"SiteNavigationElement","position":2,"name":"Market","description":"MetaTrader Market - a Market of trading robots, indicators, trading books and magazines","url":"https://www.mql5.com/en/market","children":[]},{"@type":"SiteNavigationElement","position":3,"name":"Signals","description":"Social trading, copy trading and account monitoring with MetaTrader - Trading Signals on MQL5.com","url":"https://www.mql5.com/en/signals","children":[]},{"@type":"SiteNavigationElement","position":4,"name":"Freelance","description":"Order trading robots, technical indicators and algorithmic trading applications. Forex jobs. Freelance on MQL5.com. Hire MetaTrader experts and specialists","url":"https://www.mql5.com/en/job","children":[]},{"@type":"SiteNavigationElement","position":5,"name":"Quotes","description":"","url":"https://www.mql5.com/en/quotes/overview","children":[]},{"@type":"SiteNavigationElement","position":6,"name":"MetaTrader","description":"","url":"https://www.metatrader.com","children":[]},{"@type":"SiteNavigationElement","position":7,"name":"WebTerminal","description":"WebTerminal for the MetaTrader trading platform. Online forex trading.","url":"https://web.metatrader.app/terminal?mode=demo","children":[]},{"@type":"SiteNavigationElement","position":8,"name":"Calendar","description":"","url":"https://www.mql5.com/en/economic-calendar","children":[]},{"@type":"SiteNavigationElement","position":9,"name":"VPS","description":"","url":"https://www.mql5.com/en/vps","children":[]},{"@type":"SiteNavigationElement","position":10,"name":"Articles","description":"","url":"https://www.mql5.com/en/articles","children":[]},{"@type":"SiteNavigationElement","position":11,"name":"CodeBase","description":"Download trading robots, technical indicators and scripts with source code - MQL5 Code Base for MetaTrader 5","url":"https://www.mql5.com/en/code","children":[]},{"@type":"SiteNavigationElement","position":12,"name":"Algo Forge","description":"","url":"https://forge.mql5.io","children":[]},{"@type":"SiteNavigationElement","position":13,"name":"Documentation","description":"MetaQuotes Language 5 (MQL5) Reference - Documentation on MQL5.com","url":"https://www.mql5.com/en/docs","children":[]}]}		
+,
+{"@context":"https://schema.org","@type":"TechArticle","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.mql5.com/en/articles/17"},"headline":"The Price Histogram (Market Profile) and its implementation in MQL5","image":["https://c.mql5.com/2/0/c1ps45k3w0gomnwb.PNG","https://c.mql5.com/2/0/98o191fgn7nephf9rn.PNG","https://c.mql5.com/2/0/POC.PNG","https://c.mql5.com/2/0/POC1__.png","https://c.mql5.com/2/0/VirginPOC.png"],"datePublished":"2010-01-28T15:45:51+00:00Z","dateModified":"2016-03-15T08:58:01+00:00Z","author":{"@type":"Person","name":"Dmitry Voronkov","url":"https://www.mql5.com/en/users/vdv2001"},"editor":{"@type":"Organization","name":"MetaQuotes","url":"https://www.mql5.com/en/users/metaquotes","address":{"@type":"PostalAddress","addressCountry":"CY"}},"publisher":{"@type":"Organization","name":"MQL5 Community","url":"https://www.mql5.com","logo":{"@type":"ImageObject","url":"https://c.mql5.com/i/community/logo_mql5-2.png"}},"description":"The Market Profile was developed by trully brilliant thinker Peter Steidlmayer. He suggested to use the alternative representation of information about \"horizontal\" and \"vertical\" market movements that leads to completely different set of models. He assumed that there is an underlying pulse of the market or a fundamental pattern called the cycle of equilibrium and disequilibrium. In this article I will consider Price Histogram  a simplified model of Market Profile, and will describe its implementation in MQL5."}
+,
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":"https://www.mql5.com/en/articles","name":"Articles"},{"@type":"ListItem","position":2,"item":"https://www.mql5.com/en/articles/mt5","name":"MetaTrader 5"},{"@type":"ListItem","position":3,"item":"https://www.mql5.com/en/articles/mt5/examples","name":"Examples"}]}
+
+		]
+	</script>
+</body>
+</html>

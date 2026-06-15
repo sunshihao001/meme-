@@ -1,0 +1,986 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+
+  <meta name="robots" content="max-snippet:250,max-image-preview:large">
+  <meta name="description" content="Understanding the subtle dynamics behind price movements can give you a critical edge. One such phenomenon is the liquidity sweep, a deliberate strategy that large traders, especially institutions, use to push prices through key support or resistance levels. These levels often coincide with clusters of retail stop-loss orders, creating pockets of liquidity that big players can exploit to enter or exit sizeable positions with minimal slippage.">
+  <meta property="og:url" content="https://www.mql5.com/en/articles/18379">
+  <meta property="og:title" content="Price Action Analysis Toolkit Development (Part 27): Liquidity Sweep With MA Filter Tool">
+  <meta property="og:description" content="Understanding the subtle dynamics behind price movements can give you a critical edge. One such phenomenon is the liquidity sweep, a deliberate strategy that large traders, especially institutions, use to push prices through key support or resistance levels. These levels often coincide with clusters of retail stop-loss orders, creating pockets of liquidity that big players can exploit to enter or exit sizeable positions with minimal slippage.">
+      <meta property="og:image" content="https://c.mql5.com/2/148/18379-price-action-analysis-toolkit-development-part-27-liquidity_1200x628.jpg">
+      <meta property="og:image:secure_url" content="https://c.mql5.com/2/148/18379-price-action-analysis-toolkit-development-part-27-liquidity_1200x628.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2025-06-11T08:18:08.0000000Z">
+  <meta property="article:author" content="https://www.mql5.com/en/users/lynnchris">
+  <meta property="article:section" content="MetaTrader 5">
+  <meta property="article:tag" content="Examples">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@mql5com">
+  <meta name="twitter:image" content="https://c.mql5.com/2/148/18379-price-action-analysis-toolkit-development-part-27-liquidity_1200x628.jpg">
+  <meta name="theme-color" content="#4a76b8">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-config" content="none">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta property="qc:admins" content="36367170677651456375">
+  <meta property="wb:webmaster" content="073d7690269bcd81">
+  <link rel="shortcut icon" href="https://c.mql5.com/i/favicon4.ico">
+  <link rel="dns-prefetch" href="https://c.mql5.com">
+  <link href="https://c.mql5.com/styles/core.444bc25de4c9131a69fedfe5ac42a082.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/all.266d64b83529847f568747dd160d42b0.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/articles.bc4209e4de0b5296041832431b46f3dd.css" type="text/css" rel="stylesheet" media="all">
+  <link href="/en/articles/rss" rel="alternate" type="application/rss+xml" title="Articles on the development and application of MetaTrader 5 trading robots and technical indicators">
+  <link rel="canonical" href="https://www.mql5.com/en/articles/18379">
+  <link rel="alternate" hreflang="en" href="https://www.mql5.com/en/articles/18379">
+  <link rel="alternate" hreflang="ru" href="https://www.mql5.com/ru/articles/18379">
+  <link rel="alternate" hreflang="zh" href="https://www.mql5.com/zh/articles/18379">
+  <link rel="alternate" hreflang="de" href="https://www.mql5.com/de/articles/18379">
+  <link rel="alternate" hreflang="ja" href="https://www.mql5.com/ja/articles/18379">
+  <title>Price Action Analysis Toolkit Development (Part 27): Liquidity Sweep With MA Filter Tool - MQL5 Articles</title>
+
+
+
+<script type="text/javascript">
+  !function(){window.mqGlobal={};var t=!1,n=!1,e=[],o=[],i=[];function d(t){var n;for(n=0;n<t.length;n+=1)t[n]()}function c(){t||(t=!0,d(e),d(o),o=[],e=[])}function a(){c(),n||(n=!0,d(i),i=[])}if(mqGlobal.AddOnReady=function(n,i){t?n(document):i?e.push(n):o.push(n)},mqGlobal.AddOnLoad=function(t){n?t(document):i.push(t)},mqGlobal.AddOnActiveWindowChange=function(t){this._onvisibility||(this._onvisibility=[]),this._onvisibility[this._onvisibility.length]=t},document.addEventListener)document.addEventListener("DOMContentLoaded",c,!1),window.addEventListener("load",a,!1);else if(document.attachEvent&&(document.attachEvent("onreadystatechange",(function(){switch(document.readyState){case"interactive":c();break;case"complete":a()}})),window.attachEvent("onload",a),document.documentElement.doScroll&&window==window.top)){!function n(){if(!t&&document.body)try{document.documentElement.doScroll("left"),c()}catch(t){setTimeout(n,0)}}()}}();
+  mqGlobal.CookieDomain = ".mql5.com";
+  mqGlobal.Language = 'en';
+  mqGlobal.IsMobile = false;
+  mqGlobal.ClearRteStorage = function (e) { if (window.GStorage || (window.GStorage = globalStorage()), window.GStorage.supported) try { var o = e; window.GStorage.getItem("rte_autosave_uid", function (e, t) { t == o && (window.GStorage.removeItem("rte_autosave_text"), window.GStorage.removeItem("rte_autosave_date"), window.GStorage.removeItem("rte_autosave_uid")) }) } catch (e) { } };
+</script>
+  
+
+    <script src="https://c.mql5.com/js/all.c09fd283bed20d28a52c95cd70a12a27.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/vendor.1be6e9a4a90b28525f93c4c69a5058a1.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/articles.cd4c73c476b2781eecdf04f5583514b5.js" type="text/javascript" defer="defer"></script>
+
+
+</head>
+
+<body id="cover" class="cover">
+
+
+  <nav class="head">
+    <a href="https://www.mql5.com" class="head__logo" title="MQL5 - Language of trade strategies built-in the MetaTrader 5 client terminal"></a>
+      <div class="head__content">
+        <div class="main-menu" id="mainmenu">
+          
+                    <ul class="main-menu__top-level" id="menuTopLevel">
+                    <li><a href="/en/forum" data-fz-event="MQL5+Menu+Forum">Forum</a></li>
+                    <li><a href="/en/market" data-fz-event="MQL5+Menu+Market">Market</a></li>
+                    <li><a href="/en/signals" data-fz-event="MQL5+Menu+Signals">Signals</a></li>
+                    <li><a href="/en/job" data-fz-event="MQL5+Menu+Job">Freelance</a></li>
+                    <li><a href="/en/vps" data-fz-event="MQL5+Menu+VPS">VPS</a></li>
+                    <li><a href="/en/quotes/overview" data-fz-event="MQL5+Menu+Overview">Quotes</a></li>
+                    <li><a href="https://www.metatrader.com" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+MetaTrader">MetaTrader</a></li>
+                  </ul><ul class="main-menu__second-level" id="menuSecondLevel">
+                    <li class="main-menu__selected"><a href="/en/articles" data-fz-event="MQL5+Menu+Articles"><img src="https://c.mql5.com/i/menu/icon-articles4.svg" alt="" width="16" height="16"/>Articles</a></li>
+                    <li><a href="/en/code" data-fz-event="MQL5+Menu+CodeBase"><img src="https://c.mql5.com/i/menu/icon-code4.svg" alt="" width="16" height="16"/>CodeBase</a></li>
+                    <li><a href="https://forge.mql5.io/?lang=en" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+AlgoForge"><img src="https://c.mql5.com/i/menu/icon-algoforge4.svg" alt="" width="16" height="16"/>Algo Forge</a></li>
+                    <li><a href="/en/docs" data-fz-event="MQL5+Menu+Docs"><img src="https://c.mql5.com/i/menu/icon-docs4.svg" alt="" width="16" height="16"/>Documentation</a></li>
+                    <li><a href="/en/book" data-fz-event="MQL5+Menu+Book"><img src="https://c.mql5.com/i/menu/icon-book4.svg" alt="" width="16" height="16"/>AlgoBook</a></li>
+                    <li><a href="/en/neurobook" data-fz-event="MQL5+Menu+Neurobook"><img src="https://c.mql5.com/i/menu/icon-neurobook4.svg" alt="" width="16" height="16"/>NeuroBook</a></li>
+                    <li><a href="/en/economic-calendar" data-fz-event="MQL5+Menu+Economic+Calendar"><img src="https://c.mql5.com/i/menu/icon-economic-calendar4.svg" alt="" width="16" height="16"/>Calendar</a></li>
+                    <li><a href="https://web.metatrader.app/terminal?mode=demo&lang=en" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Menu+Trading"><img src="https://c.mql5.com/i/menu/icon-trading4.svg" alt="" width="16" height="16"/>WebTerminal</a></li>
+                    <li class="main-menu__mobile"><a href="/en/about">About</a></li>
+                    <li class="main-menu__second-tools"><a rel="noopener" target="_blank" href="https://t.me/mql5dev" title="Follow us on socials for top articles and CodeBase updates" class="button-mt" data-vars-fz="Algo+Trading+Channel+Submenu"><img width="18" height="18" src="https://c.mql5.com/i/sidebar/tg.svg" alt="" loading="lazy">Algo Trading Channel</a></li>
+                    </ul>
+        </div>
+          <div class="main-menu__active">
+            <a id="mainMenuSelected" href="#">
+              <span class="main-menu__primary">Articles</span><span class="main-menu__secondary">Sections</span>
+            </a>
+          </div>
+<form action="https://www.mql5.com/en/search" onsubmit="return false;" autocomplete="off" id="headerSearchForm" class="header-search" method="post">
+<button type="button" id="headerSearchButton" title="Search" class="header-search__button"></button><div class="header-search__input"><input name="keyword" type="text" enterkeyhint="search" title="Enter search text" placeholder="Search" id="headerSearchKeyword"/><label for="headerSearchKeyword" class="header-search__placeholder">Type <span>/</span> to search:  @user, $symbol, ...</label><button id="headerSearchSubmit" class="header-search__submit"></button></div><button type="button" id="headerSearchClean" title="Close" class="header-search__clean"></button></form>        <input class="blurHandler" id="mainMenuBlurHandler" type="checkbox">
+      </div>
+      <div class="head__toolbar" id="headerToolbar">
+          <div class="container loginRegister">
+            <nav>
+              <ul id="loginRegisterButtons"><li><a class="login" title="Please sign in. OpenID supported" href="https://www.mql5.com/en/auth_login" rel="nofollow" data-fz-event="MQL5+Menu+Siginin">Log in</a></li><li><a class="registration en" title="Please register" href="https://www.mql5.com/en/auth_register" rel="nofollow" data-fz-event="MQL5+Menu+Register" onclick="window.fpush('MQL5+Button+Click');">Create an account</a></li></ul>
+            </nav>
+          </div>
+        <div class="toggle-button" id="sidebarToggleButton">
+          <i></i>
+        </div>
+
+        <div class="group-menu" id="groupMenu">
+
+
+          <div class="container lang-menu-container">
+            <div id="langMenuContainer" class="lang-menu">
+              <input class="blurHandler" id="langmenuBlurHandler" type="checkbox">
+              <nav>
+                <ul class="lang-menu__list" id="langmenu">
+                  <li class="lang-menu__list-item lang-menu__list-item_selected"><a href="/en/articles" aria-label="English (English)"><i class="icons-languages icons-languages_en"></i><span>English</span></a></li>
+<li class="lang-menu__list-item"><a href="/ru/articles" aria-label="Русский (Russian)"><i class="icons-languages icons-languages_ru"></i><span>Русский</span></a></li>
+<li class="lang-menu__list-item"><a href="/zh/articles" aria-label="中文 (Chinese)"><i class="icons-languages icons-languages_zh"></i><span>中文</span></a></li>
+<li class="lang-menu__list-item"><a href="/es/articles" aria-label="Español (Spanish)"><i class="icons-languages icons-languages_es"></i><span>Español</span></a></li>
+<li class="lang-menu__list-item"><a href="/pt/articles" aria-label="Português (Portuguese)"><i class="icons-languages icons-languages_pt"></i><span>Português</span></a></li>
+<li class="lang-menu__list-item"><a href="/ja/articles" aria-label="日本語 (Japanese)"><i class="icons-languages icons-languages_ja"></i><span>日本語</span></a></li>
+<li class="lang-menu__list-item"><a href="/de/articles" aria-label="Deutsch (German)"><i class="icons-languages icons-languages_de"></i><span>Deutsch</span></a></li>
+<li class="lang-menu__list-item"><a href="/ko/articles" aria-label="한국어 (Korean)"><i class="icons-languages icons-languages_ko"></i><span>한국어</span></a></li>
+<li class="lang-menu__list-item"><a href="/fr/articles" aria-label="Français (French)"><i class="icons-languages icons-languages_fr"></i><span>Français</span></a></li>
+<li class="lang-menu__list-item"><a href="/it/articles" aria-label="Italiano (Italian)"><i class="icons-languages icons-languages_it"></i><span>Italiano</span></a></li>
+<li class="lang-menu__list-item"><a href="/tr/articles" aria-label="Türkçe (Turkish)"><i class="icons-languages icons-languages_tr"></i><span>Türkçe</span></a></li>
+
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+  </nav>
+
+
+
+  <div id="left-sidebar-selector" class="left-sidebar__selector left-sidebar__selector_padding">
+    <div class="left-sidebar__title">
+MetaTrader 5 /     Examples
+    </div>
+    <i class="icons-ux icons-ux_arrow-down-black"></i>
+  </div>
+  <div class="articles-container block-with-sidebar">
+    <aside class="left-sidebar left-sidebar_270" id="left-sidebar">
+      
+  <ul class="tree-menu-ul"><li class="tree-menu__item tree-menu__item_selected"><a class="tree-menu__link" href="/en/articles/examples"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples.svg" alt="" loading="lazy"/>Examples</a><ul class="tree-menu__list tree-menu__list_nested"><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/examples_indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_indicators.svg" alt="" loading="lazy"/>Indicators</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/examples_experts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_experts.svg" alt="" loading="lazy"/>Experts</a></li></ul></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/strategy_tester"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/strategy_tester.svg" alt="" loading="lazy"/>Tester</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/trading"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading.svg" alt="" loading="lazy"/>Trading</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/trading_systems"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading_systems.svg" alt="" loading="lazy"/>Trading systems</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/integration"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/integration.svg" alt="" loading="lazy"/>Integration</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/indicator.svg" alt="" loading="lazy"/>Indicators</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/expert_advisors"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/expert.svg" alt="" loading="lazy"/>Expert Advisors</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/statistics"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/statistics.svg" alt="" loading="lazy"/>Statistics and analysis</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/machine_learning"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/machine_learning.svg" alt="" loading="lazy"/>Machine learning</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/interviews"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/interviews.svg" alt="" loading="lazy"/>Interviews</a></li></ul>
+  
+
+    <div class="hints-panel">
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_like"></i>
+        <div class="hints-panel__content">
+          Do you like the article?<br>
+          Share it with others —<br>post a <a href="https://www.mql5.com/en/articles/18379" target="_blank">link</a> to it!
+        </div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_fb-square icons-hints_24px"></i><div class="hints-panel__content">
+Find us on <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow">Facebook</a>!<br> Join our fan page</div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_mt-5"></i>
+        <div class="hints-panel__content">
+          Use new possibilities of <a href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Article" rel="nofollow sponsored noopener noreferrer">MetaTrader 5</a>
+        </div>
+      </div>
+    </div>
+<div id='vgckrufggwxdtfscpyalmenexmvhljduja' class="roeid8y6hsc3ntv1l gg88d3drb"></div>      <div class="similar-author-articles ui">
+        <h4 class="similar-author-articles__title">Similar articles</h4>
+        <ul class="similar-author-articles__list">
+            <li>
+              <a href="/en/articles/22691" data-fz-event="MQL5+Article+Similar+Article">Step-by-Step Implementation of a Local Stop Loss System in MQL5</a>
+            </li>
+            <li>
+              <a href="/en/articles/22563" data-fz-event="MQL5+Article+Similar+Article">How to Detect and Normalize Chart Objects in MQL5 (Part 2): Collecting and Structuring Data from Complex Analytical Objects</a>
+            </li>
+            <li>
+              <a href="/en/articles/17608" data-fz-event="MQL5+Article+Similar+Article">Developing a Multi-Currency Expert Advisor (Part 28): Adding a Position Closing Manager</a>
+            </li>
+            <li>
+              <a href="/en/articles/18111" data-fz-event="MQL5+Article+Similar+Article">Implementing a Breakeven Mechanism in MQL5 (Part 2): ATR- and RRR-Based Breakeven</a>
+            </li>
+            <li>
+              <a href="/en/articles/22666" data-fz-event="MQL5+Article+Similar+Article">Interactive Supply and Demand Zone Manager in MQL5: From Manual to Automated Lifecycle</a>
+            </li>
+        </ul>
+      </div>
+    <div class="freelance-hint">
+      <img src="https://c.mql5.com/i/articles/icon_freelance.svg" width="24" height="24" loading="lazy" />
+      <div class="freelance-hint__text">
+        Use the ideas from this article<br>to order your own robot<br>on Freelance
+      </div>
+        <a target="_blank" class="button button_blue-gray-border" title="Go to Freelance" href="/en/job/new" data-fz-event="MQL5+Article+New+Job">Go to Freelance</a>
+    </div>
+
+    </aside>
+    <article class="content-with-sidebar articles-content splashed">
+      
+
+
+  <header class="article-header" style="background-color: rgb(173,169,167)">
+    <section class="article-tools-panel">
+        <div class="article-tools-panel__item">
+          <span class="popup framed client flags">
+            <a class="dropdown" href="javascript:void(false);">
+              <span class="icons-languages icons-languages_en"></span><i></i>
+            </a>
+            <span class="popup">
+              <span class="tip">
+                <span></span>
+              </span>
+              <span class="items">
+                    <a href="/ru/articles/18379">Русский</a>
+                    <a href="/zh/articles/18379">中文</a>
+                    <a href="/de/articles/18379">Deutsch</a>
+                    <a href="/ja/articles/18379">日本語</a>
+              </span>
+            </span>
+          </span>
+        </div>
+        
+      <div class="article-tools-panel__item">
+        <a href="#pocket" title="Pocket allows you to insert a complete content description to the appropriate comment" onclick="return Pocket.Add(this,'en',2,1,18379);" class="article-tools-panel__rounded">
+          <i class="article-pocket-icon"></i>
+        </a>
+      </div>
+      <div class="article-tools-panel__item">
+        <a href="/en/articles/18379?print=" target="_blank" class="article-tools-panel__rounded" rel="nofollow" title="Printer friendly version">
+          <i class="article-print-icon"></i>
+        </a>
+      </div>
+
+    </section>
+    <section class="article-header__image-box">
+        <img class="article-header__image-preview" loading="lazy" width="32" height="16" alt="preview" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAsICAoIBwsKCQoNDAsNERwSEQ8PESIZGhQcKSQrKigkJyctMkA3LTA9MCcnOEw5PUNFSElIKzZPVU5GVEBHSEX/2wBDAQwNDREPESESEiFFLicuRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUX/wAARCAAQACADASIAAhEBAxEB/8QAFwABAQEBAAAAAAAAAAAAAAAABAUDBv/EACIQAAICAQMEAwAAAAAAAAAAAAECAxEABBIhBRMiUTFhgf/EABUBAQEAAAAAAAAAAAAAAAAAAAIA/8QAGREBAQEAAwAAAAAAAAAAAAAAAQARMUFR/9oADAMBAAIRAxEAPwDvZepRqKR9x&#x2B;hkzVa9Qd07X6X1mzQxIPEVg54ojyReHF5oPYWo61LICkLbVPFVhBJfN2T8knEz9pB4oo/MnvK&#x2B;7igMQT06v//Z">
+      <div class="article-header__gradient" style="background: linear-gradient(90deg, rgba(173,169,167, 1) 0%, rgba(173,169,167, 0.72) 8.31%, rgba(173,169,167, 0) 17.1%), linear-gradient(270deg, rgba(173,169,167, 1) 0%, rgba(173,169,167, 0.72) 8.06%, rgba(173,169,167, 0) 16.59%), linear-gradient(0deg, rgba(173,169,167, 1) 8.26%, rgba(173,169,167, 0.8) 65%, rgba(173,169,167, 0) 100%);"></div>
+        <picture>
+          <source srcset="https://c.mql5.com/2/148/18379-price-action-analysis-toolkit-development-part-27-liquidity_600x314.jpg, https://c.mql5.com/2/148/18379-price-action-analysis-toolkit-development-part-27-liquidity_1200x628.jpg 2x" media="(min-width:700px)">
+          <img class="article-header__image" loading="lazy" width="600" height="314" srcset="https://c.mql5.com/2/148/18379-price-action-analysis-toolkit-development-part-27-liquidity_300x157.jpg, https://c.mql5.com/2/148/18379-price-action-analysis-toolkit-development-part-27-liquidity_600x314.jpg 2x" src="https://c.mql5.com/2/148/18379-price-action-analysis-toolkit-development-part-27-liquidity_600x314.jpg" alt="Price Action Analysis Toolkit Development (Part 27): Liquidity Sweep With MA Filter Tool" onerror="this.style.display='none';">
+        </picture>
+    </section>
+    <section class="article-header__content">
+      <h1>Price Action Analysis Toolkit Development (Part 27): Liquidity Sweep With MA Filter Tool</h1>
+      <div class="article-header__info">
+        <a href="/en/articles/mt5">MetaTrader 5</a>
+          &mdash;
+          <a href="/en/articles/mt5/examples">Examples</a>
+        | <time datetime="2025-06-11T08:18Z" title="08:18" datetime-type="datetime">11 June 2025, 08:18</time>
+      </div>
+      <div class="article-header__indicators">
+        <span title="Views">
+          <img src="https://c.mql5.com/i/icons.svg#views-usage" width="20" height="20" alt="" />
+          11 534
+        </span>
+        
+          <a title="Comments" href="/en/forum/488697">
+            <img src="https://c.mql5.com/i/icons.svg#comments-usage" width="20" height="20" alt="" />
+            0
+          </a>
+      </div>
+      <div class="article-header__author">
+          <div class="article-header__avatar">
+            <img src="https://c.mql5.com/avatar/2025/10/68fd3661-daee.png" srcset="https://c.mql5.com/avatar/2025/10/68fd3661-daee_big.png 2x" data-user-login="Lynnchris" title="Christian Benjamin" alt="Christian Benjamin" loading="lazy" width="60" height="60">
+          </div>
+<a class="author" href="/en/users/lynnchris" data-user-login="Lynnchris">Christian Benjamin</a>      </div>
+    </section>
+  </header>
+
+    <div class="content">
+      <div class="inner formatted-content">
+        <h3 id="para1">Contents</h3> <ul> <li><a href="/en/articles/18379#para2" target="_blank">Introduction</a></li> <li><a href="/en/articles/18379para3" target="_blank">Understanding The Strategy</a></li> <li><a href="/en/articles/18379#para4" target="_blank">Code Breakdown</a></li> <li><a href="/en/articles/18379#para5" target="_blank">Testing and Results</a></li> <li><a href="/en/articles/18379#para5" target="_blank">Conclusion</a></li> </ul> <h3 id="para2"><br/></h3> <h3 id="para2">Introduction</h3> <p>Large institutional traders do not influence the markets by chance. Their strategy often involves pushing prices beyond well-known support or resistance levels, intentionally triggering smaller orders such as stop-losses and pending entries. This brief movement, called a liquidity sweep, allows them to acquire or offload large positions at more favorable prices without immediately counteracting the market’s direction.</p> <p>For many retail traders, these moves can feel like deceptive traps. The price may dip below a familiar low, triggering stop-losses, only to bounce back quickly. Conversely, it might break above resistance, triggering stops, and then sharply reverse. Once the major players have absorbed this influx of liquidity, the market often resumes its prior trend with renewed strength. Recognizing these liquidity sweeps early can help traders avoid being stopped out prematurely and instead position themselves to follow the institutional flow, rather than reacting to their temporary shakeouts.</p> <p>In this article, we will develop an MQL5 Expert Advisor designed to identify liquidity sweeps as they unfold. The EA begins by analyzing candles that break below or above previous swing points, then close back within the range, indicators of potential liquidity absorption. It incorporates optional filters, such as candlestick color changes or moving average confirmations, to ensure the signals align with your market bias. When a valid pattern is detected, the EA visually marks it on the chart with arrows or labels and generates an alert.</p> <p>By the end of the tutorial, you will have a comprehensive, clear, and straightforward Expert Advisor highlighting liquidity sweeps immediately. You will learn how the EA detects these specific market patterns, how it employs filters to reduce false signals, and how it helps you stay aligned with the actions of the smart money. With this tool in your arsenal, you can anticipate institutional moves before they trap your stop-loss, providing a strategic advantage in any trading environment.</p> <h3 id="para3"><br/></h3> <h3 id="para3">Understanding The Strategy</h3> <p style="text-align:center;"></p> <p style="text-align:left;">A liquidity sweep can form in two ways, either as a bullish sweep (a false break below support) or as a bearish sweep (a false break above resistance). The EA’s core detection logic lives in the <u>DetectLiquiditySweep</u> function. Below is a step-by-step breakdown of how it distinguishes between the two, followed by the exact MQL5 code snippet that performs the <u>boolean</u> checks.</p> <p style="text-align:left;">As soon as a new candle closes, the EA calls</p> <pre class="code">DetectLiquiditySweep(<span class="number">1</span>);
+</pre> <p>Passing shift=1 means:</p> <ul> <li>Index 1 (shift) refers to the just-closed bar (the “current” candle that we want to test).</li> <li>Index 2 (shift + 1) refers to the bar directly before it (the “previous” candle).</li> <li>Inside <u>DetectLiquiditySweep</u>, these lines grab open/high/low/close for both bars:</li> </ul> <p></p> <pre class="code"><span class="keyword">double</span> o&nbsp;&nbsp; = <span class="functions">iOpen</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), shift);
+<span class="keyword">double</span> c&nbsp;&nbsp; = <span class="functions">iClose</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), shift);
+<span class="keyword">double</span> h&nbsp;&nbsp; = <span class="functions">iHigh</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), shift);
+<span class="keyword">double</span> l&nbsp;&nbsp; = <span class="functions">iLow</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), shift);
+
+<span class="keyword">double</span> o1&nbsp;&nbsp;= <span class="functions">iOpen</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), shift + <span class="number">1</span>);
+<span class="keyword">double</span> c1&nbsp;&nbsp;= <span class="functions">iClose</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), shift + <span class="number">1</span>);
+<span class="keyword">double</span> h1&nbsp;&nbsp;= <span class="functions">iHigh</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), shift + <span class="number">1</span>);
+<span class="keyword">double</span> l1&nbsp;&nbsp;= <span class="functions">iLow</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), shift + <span class="number">1</span>);
+</pre> <p></p> <ul> <li>(o, h, l, c) are the open, high, low, and close of the new bar.</li> <li>(o1, h1, l1, c1) are the same values for the immediately preceding bar.</li> </ul> <p></p> <p>The EA allows two slightly different definitions, controlled by the SignalStrict input:</p> <p><u>1. LessStrict (default)</u></p> <p><span style="background-color:rgb(119, 183, 83);">Bullish Sweep</span>:</p> <ul> <li>The new bar must close higher than it opened: c &gt; o.</li> <li>Its low must dip below the previous bar’s low: l &lt; l1.</li> <li>Its close must also be above the previous bar’s open: c &gt; o1. (This prevents a pure doji or a tiny false candle from qualifying.)</li> <li>The previous bar was not a doji: c1 != o1.</li> </ul><span style="background-color:rgb(232, 183, 215);">Bearish Sweep:</span> <p></p> <ul> <li>The new bar must close lower than it opened: c &lt; o.</li> <li>Its high must spike above the previous bar’s high: h &gt; h1.</li> <li>Its close must also be below the previous bar’s open: c &lt; o1.</li> <li>The previous bar was not a doji: c1 != o1.</li> </ul> <p></p> <p><u>2. Strict</u></p> <p><span style="background-color:rgb(119, 183, 83);">Bullish Sweep: </span></p> <p>Exactly the same as <u>LessStrict</u>, except that step 2 is tightened from <u>“low &lt; previous low”</u> to also require that the close is higher than the previous high <u>(c &gt; h1)</u>. In other words, the new bar must dip below and also reclaim past the prior high before closing.</p> <p><span style="background-color:rgb(232, 183, 215);">Bearish Sweep: </span></p> <p>Similarly, the new bar must close below the previous low <u>(c &lt; l1)</u> after spiking above the prior high <u>(h &gt; h1</u>), instead of merely piercing above the prior high.</p> <p>These <u>boolean</u> tests live in the code block below</p> <pre class="code"><span class="comment">//--- Liquidity sweep logic (LessStrict vs Strict)</span>
+<span class="keyword">bool</span> bullSweep, bearSweep;
+<span class="keyword">if</span> (SignalStrict == LessStrict)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;bullSweep = (c &gt; o &amp;&amp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// 1) Bullish candle</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; l &lt; l1 &amp;&amp;&nbsp;&nbsp; <span class="comment">// 2) Low dipped below previous low</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c &gt; o1 &amp;&amp;&nbsp;&nbsp; <span class="comment">// 3) Close above previous open</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c1 != o1);&nbsp;&nbsp;<span class="comment">// 4) Previous bar was not a doji</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;bearSweep = (c &lt; o &amp;&amp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// 1) Bearish candle</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; h &gt; h1 &amp;&amp;&nbsp;&nbsp; <span class="comment">// 2) High spiked above previous high</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c &lt; o1 &amp;&amp;&nbsp;&nbsp; <span class="comment">// 3) Close below previous open</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c1 != o1);&nbsp;&nbsp;<span class="comment">// 4) Previous bar was not a doji</span>
+&nbsp;&nbsp;}
+<span class="keyword">else</span> <span class="comment">// Strict</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;bullSweep = (c &gt; o &amp;&amp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// 1) Bullish candle</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; l &lt; l1 &amp;&amp;&nbsp;&nbsp; <span class="comment">// 2) Low dipped below previous low</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c &gt; h1 &amp;&amp;&nbsp;&nbsp; <span class="comment">// 3) Close above previous high (stricter)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c1 != o1);&nbsp;&nbsp;<span class="comment">// 4) Previous bar was not a doji</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;bearSweep = (c &lt; o &amp;&amp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// 1) Bearish candle</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; h &gt; h1 &amp;&amp;&nbsp;&nbsp; <span class="comment">// 2) High spiked above previous high</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c &lt; l1 &amp;&amp;&nbsp;&nbsp; <span class="comment">// 3) Close below previous low (stricter)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c1 != o1);&nbsp;&nbsp;<span class="comment">// 4) Previous bar was not a doji</span>
+&nbsp;&nbsp;}
+</pre> <p></p> <ul> <li>In <u>LessStrict</u> mode, step 3 only requires <u>c &gt; o1</u> (for bullish) or <u>c &lt; o1</u> (for bearish).</li> <li>In Strict mode, step 3 changes to <u>c &gt; h1</u> (bullish) or <u>c &lt; l1</u> (bearish).</li> </ul> <p></p> <p>If the user has set <u>ColorChangeOnly</u> = true, the EA requires the new bar to be the opposite color of the prior bar. Specifically:</p> <pre class="code"><span class="keyword">bool</span> bullCC = (c &gt; o &amp;&amp; c1 &lt; o1);&nbsp;&nbsp; <span class="comment">// New bar bullish, old bar bearish</span>
+<span class="keyword">bool</span> bearCC = (c &lt; o &amp;&amp; c1 &gt; o1);&nbsp;&nbsp; <span class="comment">// New bar bearish, old bar bullish</span>
+
+<span class="keyword">if</span> (ColorChangeOnly)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;bullSweep &amp;= bullCC;&nbsp;&nbsp;<span class="comment">// Only a bullish sweep if also a bull‐after‐bear color flip</span>
+&nbsp;&nbsp;&nbsp;&nbsp;bearSweep &amp;= bearCC;&nbsp;&nbsp;<span class="comment">// Only a bearish sweep if also a bear‐after‐bull color flip</span>
+&nbsp;&nbsp;}
+</pre> <p>If <u>ColorChangeOnly</u> is false, these two lines have no effect and both <u>bullSweep</u> and <u>bearSweep</u> remain as determined by the previous price tests.</p> <p>Once <u>bullSweep</u> or <u>bearSweep</u> is true (after the price and optional color tests), the EA can further filter based on a moving average. This is controlled by <u>UseMAFilter</u> and <u>PriceAboveMA</u>. In essence:</p> <ul> <li>Calculate a single MA value at index shift (the just‐closed bar), either via a built-in <u>iMA</u>() handle (for SMA, EMA, LWMA, or RMA) or a custom function (<u>CalcVWMA</u> or <u>CalcHMA</u>).</li> </ul> <p></p> <pre class="code"><span class="keyword">bool</span> cond = PriceAboveMA ? (c &gt; maValue) : (c &lt; maValue);
+</pre> <p></p> <ul> <li>If <u>PriceAboveMA</u> == true, the EA only keeps <u>bullSweep</u> if c &gt; <u>maValue</u> and forcibly sets <u>bearSweep</u> = false.</li> <li>If <u>PriceAboveMA</u> == false, the EA only keeps <u>bearSweep</u> if c &lt; <u>maValue</u> and forcibly sets <u>bullSweep</u> = false.</li> </ul> <p></p> <pre class="code"><span class="keyword">if</span> (UseMAFilter)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> maValue = <span class="number">0.0</span>;
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (MAType == VWMA)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; maValue = CalcVWMA(shift);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span> <span class="keyword">if</span> (MAType == HMA)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; maValue = CalcHMA(shift);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> buf[];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="functions">CopyBuffer</span>(MAHandle, <span class="number">0</span>, shift, <span class="number">1</span>, buf) != <span class="number">1</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;&nbsp;&nbsp;<span class="comment">// not enough MA data yet</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;maValue = buf[<span class="number">0</span>];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Keep only bullish sweeps if price &gt; MA, or only bearish if price &lt; MA</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">bool</span> cond = PriceAboveMA ? (c &gt; maValue) : (c &lt; maValue);
+&nbsp;&nbsp;&nbsp;&nbsp;bullSweep &amp;= cond;
+&nbsp;&nbsp;&nbsp;&nbsp;bearSweep &amp;= !cond;
+&nbsp;&nbsp;}
+</pre> <p><u>In Summary</u></p> <p>Bullish Sweep:</p> <ol> <li>Candle closes higher than it opened and dips below the prior low and closes above the prior open (<u>LessStrict</u>) or prior high (Strict).</li> <li>Optionally, it must be a bullish‐after‐bearish color change.</li> <li>Optionally, the close must be above the moving average.</li> <li>If all tests pass, the EA places a green up arrow (<u>OBJ_ARROW_UP</u>) a few points below that candle’s low.</li> </ol> <p></p> <p style="text-align:center;"> <img width="736" height="609" src="https://c.mql5.com/2/147/new_abc.png" loading="lazy" alt style="vertical-align:middle;"/></p> <p style="text-align:center;"><span class="small">Fig. 1. Bullish Sweep</span></p> <p>Bearish Sweep:</p> <ol> <li>Candle closes lower than it opened and spikes above the prior high and closes below the prior open (<u>LessStrict</u>) or prior low (Strict).</li> <li>Optionally, it must be a bearish‐after‐bullish color change.</li> <li>Optionally, the close must be below the moving average.</li> <li>If all tests pass, the EA places a red down arrow (<u>OBJ_ARROW_DOWN</u>) a few points above that candle’s high.</li> </ol> <p></p> <p style="text-align:center;"> <img width="743" height="609" src="https://c.mql5.com/2/147/aqa.png" loading="lazy" alt style="vertical-align:middle;"/></p> <p style="text-align:center;"><span class="small">Fig. 2. Bearish Sweep</span></p> <p style="text-align:left;"><br/></p> <h3>Code Breakdown<br/></h3> <p>The <u>“Liquidity Sweep with MA filter”</u> EA is designed to identify and visually mark false-break moves-often referred to as liquidity sweeps-on any chart in <u>MetaTrader</u> 5. At its core, the EA watches for bars that push below (or above) the prior bar’s swing low (or high) and then close in a manner suggestive of trapped orders. By combining this detection logic with an optional moving-average filter, traders can refine signals to align with broader trend context. In the following paragraphs, we will walk through every major component of the EA, explaining both what each section does and why it matters in a cohesive, step-by-step narrative.</p> <p><span>To begin, the EA file declares its metadata-title, copyright, author link, and version-immediately followed by #property strict. These lines are not merely decorative: they serve two purposes. First, they identify the script for anyone browsing multiple EAs, making it clear who the author is and where to find more of their work. Second, by specifying </span><u>#property strict</u><span>, the compiler enforces stricter syntax and type checking, catching common mistakes (such as undeclared variables or type mismatches) before the code ever runs. This practice of clear metadata and strict compilation reflects a professional standard, ensuring both maintainability and reliability.</span></p> <p></p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Liquidity Sweep with MA filter|</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Copyright 2025, MetaQuotes Ltd.|</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; https://www.mql5.com/en/users/lynnchris|</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="preprocessor">#property </span><span class="macro">copyright</span> <span class="string">"Copyright 2025, MetaQuotes Ltd."</span>
+<span class="preprocessor">#property </span><span class="macro">link</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"https://www.mql5.com/en/users/lynnchris"</span>
+<span class="preprocessor">#property </span><span class="macro">version</span>&nbsp;&nbsp; <span class="string">"1.0"</span>
+<span class="preprocessor">#property </span><span class="macro">strict</span></pre> <p>Next, the EA includes the <u>Trade.mqh</u> library. Even though this particular version does not automatically place real trades, including <u>&lt;Trade\Trade.mqh&gt;</u> is forward-looking: it makes the powerful CTrade class available for any future enhancements that might open, modify, or close positions. In a tutorial context, it also signals to readers that this EA could easily evolve into a fully automated strategy executor—simply by invoking trade.Buy(...) or trade.Sell(...) inside the detection logic. By demonstrating this inclusion up front, the author primes the reader to think about both analysis and execution.</p> <p></p> <pre class="code"><span class="preprocessor">#include </span>&lt;Trade\Trade.mqh&gt;</pre> <p>Following the library inclusion, the EA defines a set of input parameters, which become visible in <u>MetaTrader’s</u> Inputs dialog when the EA is attached to a chart. These inputs fall into three logical groups. The first group, Moving Average settings-allows the user to toggle an MA filter on or off (<u>UseMAFilter</u>), choose whether to display that MA on the chart (<u>ShowMA</u>), select the MA period (<u>MALength</u>), and pick among six MA types (SMA, EMA, LWMA, VWMA, RMA, or HMA). A <u>boolean</u><u>PriceAboveMA</u> then dictates whether the EA should require price to be above (for bullish sweeps) or below (for bearish sweeps) the MA. </p> <p>In practice, this filter ensures that traders only take liquidity sweeps in the direction of the prevailing trend, reducing false positives when the market is against them.</p> <p></p> <pre class="code"><span class="comment">//--- Inputs: Moving Average Filter</span>
+<span class="keyword">input</span> <span class="keyword">bool</span>&nbsp;&nbsp; UseMAFilter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = <span class="macro">false</span>;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Enable Moving Average Filter</span>
+<span class="keyword">input</span> <span class="keyword">bool</span>&nbsp;&nbsp; ShowMA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="macro">false</span>;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Show MA on chart</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;MALength&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="number">20</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// MA period (must be &gt;=1)</span>
+<span class="keyword">enum</span> MA_Type {SMA=<span class="number">0</span>, EMA, LWMA, VWMA, RMA, HMA};
+<span class="keyword">input</span> MA_Type MAType&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = SMA;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Moving Average type</span>
+<span class="keyword">input</span> <span class="keyword">bool</span>&nbsp;&nbsp; PriceAboveMA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="macro">true</span>;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Filter: price above MA?</span></pre> <p>The second group of inputs controls how rigidly the EA defines a sweep. An enumeration <u>SignalStrict</u> offers two modes: “<u>LessStrict</u>” requires only that the new bar’s low (for bullish signals) be below the previous low (and vice versa for bearish), whereas “Strict” demands an additional break of the prior bar’s high (or low). By exposing this flag, readers learn how to calibrate sensitivity: some prefer a looser interpretation that catches more signals, while others want a more conservative approach that waits for a clear breach. </p> <p>A complementary <u>boolean</u>, <u>ColorChangeOnly</u>, further tightens the conditions by insisting that the new bar’s color (bullish vs. bearish) be opposite the preceding bar’s color. In many trading philosophies, a color change signals a shift in momentum, so this option appeals to those who only want to mark reversals that coincide with a visible candle flip.</p> <p></p> <pre class="code"><span class="comment">//--- Inputs: Sweep Definition Strictness</span>
+<span class="keyword">enum</span> Strictness {LessStrict=<span class="number">0</span>, Strict};
+<span class="keyword">input</span> Strictness SignalStrict&nbsp;&nbsp;= LessStrict; <span class="comment">// Signal strictness</span>
+<span class="keyword">input</span> <span class="keyword">bool</span>&nbsp;&nbsp; ColorChangeOnly&nbsp;&nbsp; = <span class="macro">false</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Only on color-change candles</span></pre> <p>The third group concerns on-chart visuals. A <u>LabelType</u> enumeration allows for no label, a short two-letter label (“BS” for bull sweep, “SS” for sell sweep), or a full text label (“Bull Sweep” or “Bear Sweep”). In parallel, <u>PlotArrow</u> lets traders draw an arrow instead of (or in addition to) text. To avoid clutter and ensure that labels don’t overlap candles, the <u>ArrowOffsetPoints</u> input moves each arrow or text object a specified number of points above (for bearish) or below (for bullish) the candle. </p> <p>Finally, two color inputs-<u>BullishColor</u> and <u>BearishColor</u>, give complete control over the hue of these markers, letting the user match them to their charting theme. By separating display options from detection logic, the EA remains flexible: traders can configure it in “silent alert” mode (no on-chart objects) or in full “chart annotation” mode based on their personal preference or system performance needs.</p> <p></p> <pre class="code"><span class="comment">//--- Inputs: Label/Arrow &amp; Color Customization</span>
+<span class="keyword">enum</span> LabelType {None=<span class="number">0</span>, Short, Full};
+<span class="keyword">input</span> LabelType LblType&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= Full;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Label type (None/Short/Full)</span>
+<span class="keyword">input</span> <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PlotArrow&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="macro">true</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Draw arrow on signal</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ArrowOffsetPoints = <span class="number">10</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Offset (in points) above/below candles</span>
+<span class="keyword">input</span> <span class="keyword">color</span>&nbsp;&nbsp;&nbsp;&nbsp; BullishColor&nbsp;&nbsp; = <span class="macro">clrLime</span>;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Color for bullish signals</span>
+<span class="keyword">input</span> <span class="keyword">color</span>&nbsp;&nbsp;&nbsp;&nbsp; BearishColor&nbsp;&nbsp; = <span class="macro">clrRed</span>;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Color for bearish signals</span></pre> <p>Immediately after the input section, the EA declares two global variables. The first, datetime <u>lastBarTime</u>, stores the timestamp of the most recently processed bar. This variable is pivotal: on each tick, the EA compares the current bar’s start time <u>(iTime(Symbol()</u>,<u>Period</u>(),0)) to <u>lastBarTime</u>. If they differ, it means a new candle has formed, and only then does the EA execute its detection routine. Without this check, the logic would run on every tick of a forming bar, causing multiple signals on one candle and introducing what is commonly referred to as “repainting.” </p> <p>The second global, int <u>MAHandle</u>, holds the indicator handle returned by <u>iMA(...)</u> whenever a built-in MA is created. By initializing it to <u>INVALID_HANDLE</u>, the code can later test whether a valid handle actually exists before trying to read from it.</p> <p></p> <pre class="code"><span class="comment">//--- Globals</span>
+<span class="keyword">datetime</span>&nbsp;&nbsp; lastBarTime = <span class="number">0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Timestamp of the last processed bar</span>
+<span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MAHandle&nbsp;&nbsp;&nbsp;&nbsp;= <span class="macro">INVALID_HANDLE</span>;&nbsp;&nbsp;<span class="comment">// Handle for built‐in MA indicator</span></pre> <p>The <u>OnInit</u>() function is the EA’s setup routine. When the EA is first attached, or whenever someone changes an input-the platform calls <u>OnInit</u>(). The first task here is to validate <u>MALength</u>. Since MQL5 treats any input as a constant after compilation, we cannot simply reassign a safe value; instead, the code checks <u>if(MALength &lt; 1)</u>, prints an error message, and returns INIT_FAILED if the user specified an invalid period. This defensive programming ensures that the EA never attempts to compute an MA over zero or negative bars, which would otherwise cause runtime errors or nonsensical results. Next, <u>lastBarTime</u> is set to the current bar’s start time-seeding the tick-handler logic so that it won’t immediately fire on the bar during which it was attached.</p> <p></p> <pre class="code"><span class="keyword">int</span> <span class="functions">OnInit</span>()
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="comment">// Validate MALength (cannot assign to an input directly)</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(MALength &lt; <span class="number">1</span>)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"ERROR: MALength must be at least 1. Current value = "</span>, MALength);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>(<span class="macro">INIT_FAILED</span>);
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp; <span class="comment">// Initialize timing so we only run when a new bar closes</span>
+&nbsp;&nbsp; lastBarTime = <span class="functions">iTime</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), <span class="number">0</span>);
+
+&nbsp;&nbsp; <span class="comment">// … (rest of OnInit follows) …</span>
+&nbsp;&nbsp; <span class="keyword">return</span>(<span class="macro">INIT_SUCCEEDED</span>);
+&nbsp;&nbsp;}</pre> <p>Continuing inside OnInit(), the EA determines whether a built-in MA handle must be created. If the user selected any of the four standard MA types (SMA, EMA, LWMA, or RMA) and has either <u>UseMAFilter</u> or ShowMA enabled, the code calls <u>iMA(Symbol()</u>, Period(), <u>MALength</u>, 0, <u>(ENUM_MA_METHOD)MAType, PRICE_CLOSE</u>) to create an indicator handle. If that call fails, the EA prints a diagnostic error and aborts initialization. Assuming success, it then checks if(ShowMA == true) and, if so, calls <u>ChartIndicatorAdd</u>(0, 0, <u>MAHandle</u>) to plot the MA on the chart. At the end of initialization, a message- “Liquidity Sweep EA initialized successfully.”-confirms that all prerequisites (valid period, MA handle) are in place and the EA is ready to run.</p> <p></p> <pre class="code"><span class="comment">// Create MA handle if using a built-in MA (SMA, EMA, LWMA, RMA) </span>
+<span class="keyword">if</span>((MAType != VWMA &amp;&amp; MAType != HMA) &amp;&amp; (UseMAFilter || ShowMA))
+&nbsp; {
+&nbsp;&nbsp;&nbsp;<span class="macro">ENUM_MA_METHOD</span> method = (<span class="macro">ENUM_MA_METHOD</span>)MAType;
+&nbsp;&nbsp;&nbsp;MAHandle = <span class="indicators">iMA</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), MALength, <span class="number">0</span>, method, <span class="macro">PRICE_CLOSE</span>);
+&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(MAHandle == <span class="macro">INVALID_HANDLE</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Failed to create MA handle (type="</span>, <span class="functions">EnumToString</span>(MAType), 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="string">", length="</span>, MALength, <span class="string">")"</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">return</span>(<span class="macro">INIT_FAILED</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(ShowMA)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">ChartIndicatorAdd</span>(<span class="number">0</span>, <span class="number">0</span>, MAHandle);
+&nbsp; }</pre> <p>When the user removes the EA or closes <u>MetaTrader</u>, the <u>OnDeinit</u>() function executes. Its sole responsibility is housekeeping: if <u>MAHandle</u> was set (i.e., not <u>INVALID_HANDLE</u>), it calls<u> IndicatorRelease(MAHandle)</u> to free the memory and remove any lingering references. By doing so, the EA avoids resource leaks, an important best practice whenever indicator handles are created at runtime. Even though modern <u>MetaTrader</u> manages some of this automatically, explicitly releasing handles prevents chart bloat in long‐running sessions or when frequently reattaching the EA for parameter optimization.</p> <p></p> <pre class="code"><span class="keyword">void</span> <span class="functions">OnDeinit</span>(<span class="keyword">const</span> <span class="keyword">int</span> reason)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">if</span>(MAHandle != <span class="macro">INVALID_HANDLE</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">IndicatorRelease</span>(MAHandle);
+&nbsp;&nbsp;}</pre> <p>The <u>OnTick</u>() function is the EA’s heartbeat,&nbsp;<u>MetaTrader</u> calls it on every incoming price tick. However, because we only want to check for liquidity sweeps once per completed candle, <u>OnTick</u>() first retrieves the latest bar’s time via iTime(Symbol(),Period(),0) and compares it to <u>lastBarTime</u>. If they match, it means the EA is still within the same bar, so nothing happens. </p> <p>Only when a new candle appears <u>(i.e., iTime(...) != lastBarTime)</u> does the code invoke <u>DetectLiquiditySweep</u>(1), passing a shift of 1 to examine the just‐closed candle against its predecessor. Immediately afterward, <u>lastBarTime</u> is updated to the new value, ensuring the EA won’t detect again until the following bar closes. This disciplined approach guarantees one-and only one-signal per bar, eliminating noise and preventing multiple alerts on a single candle.</p> <p></p> <pre class="code"><span class="keyword">void</span> <span class="functions">OnTick</span>()
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="comment">// Retrieve the current bar’s start time</span>
+&nbsp;&nbsp; <span class="keyword">datetime</span> current = <span class="functions">iTime</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), <span class="number">0</span>);
+
+&nbsp;&nbsp; <span class="comment">// If the bar start time changed, call the detection routine once</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(current != lastBarTime)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DetectLiquiditySweep(<span class="number">1</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lastBarTime = current;
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;}</pre> <p>The workhorse routine, D<u>etectLiquiditySweep(int shift)</u>, implements the logic that distinguishes this EA from simpler pattern markers. First, it ensures there is enough historical data to compute any custom moving averages. By calculating <u>requiredBars</u> = shift + <u>MALength</u> and verifying if(Bars(Symbol(),Period()) &lt;= <u>requiredBars</u>) return; the code prevents out-of-range indexing. If there are, say, only 15 bars on the chart but the user set <u>MALength=20</u>, the EA will not attempt an MA calculation or pattern check, because it lacks sufficient history. This guard clause demonstrates careful error prevention, which is essential for robust EAs.</p> <p></p> <pre class="code"><span class="keyword">void</span> DetectLiquiditySweep(<span class="keyword">int</span> shift)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="comment">// Ensure there are at least (shift + MALength) bars of history</span>
+&nbsp;&nbsp; <span class="keyword">int</span> requiredBars = shift + MALength;
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">Bars</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>()) &lt;= requiredBars)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Not enough bars to compute custom MA or compare prices</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp; <span class="comment">// … (next steps in the function) …</span>
+&nbsp;&nbsp;}</pre> <p>Once the history check passes, <u>DetectLiquiditySweep</u> reads eight price values-open, high, low, and close for both the “current” completed bar (index = shift) and the “previous” bar (index = shift + 1). These values are stored in eight separate doubles: o, c, h, l for the current bar, and o1, c1, h1, l1 for the prior bar. With these in hand, the EA can assess whether a liquidity sweep has occurred. </p> <p>Importantly, the code also computes two Boolean flags-<u>bullCC</u> (bullish color-change) and <u>bearCC</u> (bearish color-change)-by simply checking if the current bar’s close is above its open while the prior bar’s close was below its open, and vice versa. These flags come into play later if <u>ColorChangeOnly</u> is enabled, ensuring the EA only flags sweeps that coincide with a candle-color reversal.</p> <p></p> <pre class="code"><span class="comment">//--- Bar data for the current completed candle (index = shift)</span>
+<span class="keyword">double</span> o&nbsp;&nbsp;= <span class="functions">iOpen</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), shift);
+<span class="keyword">double</span> c&nbsp;&nbsp;= <span class="functions">iClose</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), shift);
+<span class="keyword">double</span> h&nbsp;&nbsp;= <span class="functions">iHigh</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), shift);
+<span class="keyword">double</span> l&nbsp;&nbsp;= <span class="functions">iLow</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), shift);
+
+<span class="comment">//--- Bar data for the prior candle (index = shift + 1)</span>
+<span class="keyword">double</span> o1 = <span class="functions">iOpen</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), shift + <span class="number">1</span>);
+<span class="keyword">double</span> c1 = <span class="functions">iClose</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), shift + <span class="number">1</span>);
+<span class="keyword">double</span> h1 = <span class="functions">iHigh</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), shift + <span class="number">1</span>);
+<span class="keyword">double</span> l1 = <span class="functions">iLow</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), shift + <span class="number">1</span>);</pre> <p>The next section implements the “<u>LessStrict</u>” vs. “Strict” sweep definitions. If the user selected <u>LessStrict</u>, a bullish sweep is signaled when the current bar closes above its own open (c &gt; o), its low dips below the prior bar’s low (l &lt; l1), it closes above the prior bar’s open (c &gt; o1), and the prior bar was not a doji (c1 != o1). A bearish sweep is symmetric: current close &lt; current open, current high &gt; prior high, current close &lt; prior open, and prior bar not a doji. </p> <p>If the user instead chose Strict, the EA tightens conditions by requiring the current close to break beyond the prior bar’s high (for bullish) or break below the prior bar’s low (for bearish). This Strict variant reduces “false” whistle‐blower signals at shallow retracements, forcing a more definitive violation of support or resistance. By exposing both modes, the EA teaches readers how small tweaks in logic can meaningfully alter signal frequency and quality.</p> <p></p> <pre class="code"><span class="comment">// Compute color-change flags</span>
+<span class="keyword">bool</span> bullCC = (c &gt; o &amp;&amp; c1 &lt; o1);
+<span class="keyword">bool</span> bearCC = (c &lt; o &amp;&amp; c1 &gt; o1);
+
+<span class="comment">// Liquidity sweep flags (LessStrict or Strict)</span>
+<span class="keyword">bool</span> bullSweep, bearSweep;
+<span class="keyword">if</span>(SignalStrict == LessStrict)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;bullSweep = (c &gt; o &amp;&amp; l &lt; l1 &amp;&amp; c &gt; o1 &amp;&amp; c1 != o1);
+&nbsp;&nbsp;&nbsp;bearSweep = (c &lt; o &amp;&amp; h &gt; h1 &amp;&amp; c &lt; o1 &amp;&amp; c1 != o1);
+&nbsp;&nbsp;}
+<span class="keyword">else</span> <span class="comment">// Strict</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;bullSweep = (c &gt; o &amp;&amp; l &lt; l1 &amp;&amp; c &gt; h1 &amp;&amp; c1 != o1);
+&nbsp;&nbsp;&nbsp;bearSweep = (c &lt; o &amp;&amp; h &gt; h1 &amp;&amp; c &lt; l1 &amp;&amp; c1 != o1);
+&nbsp;&nbsp;}</pre> <p>Following the raw sweep checks, the EA optionally applies the color-change filter. If <u>ColorChangeOnly </u>is true, it does <u>bullSweep</u> &amp;= <u>bullCC</u>; <u>bearSweep</u> &amp;= <u>bearCC</u>;. In effect, any sweep that does not coincide with a candle-color flip is immediately discarded. Many traders regard a color change (e.g., a red candle following a green candle) as a confirmation of reversal momentum, so by gating sweeps behind that condition, the EA reduces the chance of marking a sweep that lacks visible rejection. This simple bitwise AND operation elegantly ties two complementary signals—price structure and candle psychology-into a single filter.</p> <p></p> <pre class="code"><span class="comment">// If only color-change sweeps are desired, AND‐combine with the raw sweep flags</span>
+<span class="keyword">if</span>(ColorChangeOnly)
+&nbsp; {
+&nbsp;&nbsp;&nbsp;bullSweep &amp;= bullCC;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// must also be a bullish color reversal</span>
+&nbsp;&nbsp;&nbsp;bearSweep &amp;= bearCC;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// must also be a bearish color reversal</span>
+&nbsp; }</pre> <p>With the raw sweep conditions and optional color filter in place, the EA then examines the Moving Average filter if <u>UseMAFilter</u> is true. It declares double <u>maValue</u> = 0.0; and proceeds to compute the MA in one of three ways. If the user selected “VWMA,” it calls the custom helper <u>CalcVWMA(shift)</u>. If “HMA” was chosen, it calls <u>CalcHMA(shift</u>). Otherwise, it assumes a built-in MA type (SMA, EMA, LWMA, or RMA) and executes <u>CopyBuffer(MAHandle</u>, 0, shift, 1, buf) to retrieve one MA value. If <u>CopyBuffer</u> fails to return exactly one result, the EA simply returns and skips all further logic on that bar. </p> <p>Once <u>maValue</u> is known, a <u>boolean</u> cond tests <u>PriceAboveMA</u> ? (c &gt; maValue) : (c &lt; maValue). In practice, if <u>PriceAboveMA</u> is true, the EA keeps only bullish sweeps that close above the MA (vetoing bearish ones by setting <u>bearSweep</u> = false), whereas if <u>PriceAboveMA</u> is false, only bearish sweeps that close below the MA survive. This filter ensures that liquidity sweeps are viewed in the context of trend: bullish sweeps only matter if price is above the MA, and bearish sweeps only if price is below.</p> <p></p> <pre class="code"><span class="keyword">if</span>(UseMAFilter)
+&nbsp; {
+&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> maValue = <span class="number">0.0</span>;
+
+&nbsp;&nbsp;&nbsp;<span class="comment">// Compute MA value at the same 'shift'</span>
+&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(MAType == VWMA)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; maValue = CalcVWMA(shift);
+&nbsp;&nbsp;&nbsp;<span class="keyword">else</span> <span class="keyword">if</span>(MAType == HMA)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; maValue = CalcHMA(shift);
+&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Built‐in MA handle (SMA, EMA, LWMA, RMA)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">double</span> buf[];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyBuffer</span>(MAHandle, <span class="number">0</span>, shift, <span class="number">1</span>, buf) != <span class="number">1</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;&nbsp;&nbsp;<span class="comment">// no valid MA data available</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; maValue = buf[<span class="number">0</span>];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;<span class="comment">// Only allow bullish sweeps above MA or bearish sweeps below MA</span>
+&nbsp;&nbsp;&nbsp;<span class="keyword">bool</span> cond = PriceAboveMA ? (c &gt; maValue) : (c &lt; maValue);
+&nbsp;&nbsp;&nbsp;bullSweep &amp;= cond;
+&nbsp;&nbsp;&nbsp;bearSweep &amp;= !cond;
+&nbsp; }</pre> <p>At last, after all filters have been applied, <u>DetectLiquiditySweep</u> uses two if blocks to check if(<u>bullSweep</u>) and if(<u>bearSweep</u>). If <u>bullSweep </u>is true, it calls DrawSignal(shift, true) to place a bullish marker on the chart and writes a message to the Experts log like “Bullish sweep detected at [time], price=[close].” If bearSweep is true, it does the same with DrawSignal(shift, false) and a corresponding print. </p> <p>In either case, as long as one of them fired, the code finally calls Alert("Liquidity Sweep detected on ", Symbol(), " ", <u>EnumToString(Period()));</u> which pops up an on-screen alert. This separation between “drawing on chart” and “sending an alert” allows each trader to decide whether they want only sonic/popup notifications or also a persistent visual reference on the chart itself.</p> <p></p> <pre class="code"><span class="comment">// If a bullish sweep remains true after all filters, draw and log it</span>
+<span class="keyword">if</span>(bullSweep)
+&nbsp; {
+&nbsp;&nbsp;&nbsp;DrawSignal(shift, <span class="macro">true</span>);
+&nbsp;&nbsp;&nbsp;<span class="functions">PrintFormat</span>(<span class="string">"Bullish sweep detected at %s, price=%.5f"</span>,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">TimeToString</span>(<span class="functions">iTime</span>(<span class="functions">Symbol</span>(),<span class="functions">Period</span>(),shift)), c);
+&nbsp; }
+
+<span class="comment">// If a bearish sweep remains true after all filters, draw and log it</span>
+<span class="keyword">if</span>(bearSweep)
+&nbsp; {
+&nbsp;&nbsp;&nbsp;DrawSignal(shift, <span class="macro">false</span>);
+&nbsp;&nbsp;&nbsp;<span class="functions">PrintFormat</span>(<span class="string">"Bearish sweep detected at %s, price=%.5f"</span>,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">TimeToString</span>(<span class="functions">iTime</span>(<span class="functions">Symbol</span>(),<span class="functions">Period</span>(),shift)), c);
+&nbsp; }
+
+<span class="comment">// In either case, fire a pop‐up alert</span>
+<span class="keyword">if</span>(bullSweep || bearSweep)
+&nbsp; {
+&nbsp;&nbsp;&nbsp;<span class="functions">Alert</span>(<span class="string">"Liquidity Sweep detected on "</span>, <span class="functions">Symbol</span>(), <span class="string">" "</span>, <span class="functions">EnumToString</span>(<span class="functions">Period</span>()));
+&nbsp; }</pre> <p>The <u>DrawSignal(int shift, bool bullish)</u> function is solely responsible for placing chart objects. It first reads the bar’s timestamp t = <u>iTime(Symbol(),Period(),shift)</u> and computes a display price by taking either the low minus <u>ArrowOffsetPoints * _Point</u> (for a bullish arrow) or the high plus the same offset (for a bearish arrow). Choosing _Point ensures that the offset is measured in actual price increments regardless of whether the instrument is, say, EURUSD (0.0001 increments) or USDJPY (0.01 increments). Next, it composes a unique object name via <u>StringFormat("LS_%I64u", (long)t)</u>. Because (long)t is a 64-bit integer reflecting the bar’s exact opening time, no two bars ever produce the same object name. </p> <p>Before drawing anything, it calls <u>ObjectFind(0, name)</u> and deletes any preexisting object with that name—this prevents clutter if the EA is reattached or if a chart refresh repeats the same detection. Finally, if <u>PlotArrow</u> is true, <u>ObjectCreate</u>(...) draws a colored arrow (up for bullish or down for bearish) at the computed price. If PlotArrow is false but LblType is not None, the function instead draws a short or full text label (e.g., “BS” vs. “Bull Sweep”). By isolating all chart-object code in one routine, the EA keeps its detection logic separate from its visual annotations, which is a hallmark of clean, modular design.</p> <p></p> <pre class="code"><span class="keyword">void</span> DrawSignal(<span class="keyword">int</span> shift, <span class="keyword">bool</span> bullish)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="comment">// Get the exact bar start time for this sweep</span>
+&nbsp;&nbsp; <span class="keyword">datetime</span> t = <span class="functions">iTime</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), shift);
+
+&nbsp;&nbsp; <span class="comment">// Determine the on‐chart Y‐coordinate: offset a few points above/below the candle</span>
+&nbsp;&nbsp; <span class="keyword">double</span> price = bullish
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;? (<span class="functions">iLow</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), shift)&nbsp;&nbsp;- ArrowOffsetPoints * <span class="predefines">_Point</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: (<span class="functions">iHigh</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), shift) + ArrowOffsetPoints * <span class="predefines">_Point</span>);
+
+&nbsp;&nbsp; <span class="comment">// Compose a unique name using the 64-bit timestamp</span>
+&nbsp;&nbsp; <span class="keyword">string</span> name = <span class="functions">StringFormat</span>(<span class="string">"LS_%I64u"</span>, (<span class="keyword">long</span>)t);
+
+&nbsp;&nbsp; <span class="comment">// If an object with that name already exists, delete it first</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">ObjectFind</span>(<span class="number">0</span>, name) &gt;= <span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectDelete</span>(<span class="number">0</span>, name);
+
+&nbsp;&nbsp; <span class="comment">// (Next lines will choose arrow vs. text drawing)</span>
+}</pre> <p>Under the hood, two helper functions compute non‐standard moving averages. <u>CalcVWMA(int shift)</u> implements a typical volume-weighted moving average. It initializes two aggregate variables-numerator and denominator-to 0.0. Then, for each bar index from shift to <u>shift + MALength – 1</u>, it reads the close price <u>price = iClose(...)</u> and the tick volume <u>vol = iVolume(...)</u> (stored as a 64-bit long). By explicitly casting vol to double when computing numerator += price * (double)vol and denominator += (double)vol, the code avoids any warnings about inadvertent integer-to-double conversion. </p> <p>Once the loop finishes, it returns numerator / denominator if denominator &gt; 0.0; otherwise, it safely returns 0.0 to avoid division by zero. Thus, each VWMA point is precisely the sum of (price × volume) over the past <u>MALength</u> bars, divided by the sum of volume-exactly what traders expect from a volume-weighted average.</p> <p></p> <pre class="code"><span class="keyword">double</span> CalcVWMA(<span class="keyword">int</span> shift)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">double</span> numerator&nbsp;&nbsp; = <span class="number">0.0</span>;
+&nbsp;&nbsp; <span class="keyword">double</span> denominator = <span class="number">0.0</span>;
+
+&nbsp;&nbsp; <span class="comment">// Loop over 'MALength' bars, starting at 'shift'</span>
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = shift; i &lt; shift + MALength; i++)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> price = <span class="functions">iClose</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), i);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">long</span>&nbsp;&nbsp; vol&nbsp;&nbsp; = <span class="functions">iVolume</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), i);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Accumulate (price × volume) and sum of volume</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;numerator&nbsp;&nbsp; += price * (<span class="keyword">double</span>)vol;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;denominator += (<span class="keyword">double</span>)vol;
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp; <span class="comment">// Return VWMA = sum(price×volume) / sum(volume), or 0 if volume = 0</span>
+&nbsp;&nbsp; <span class="keyword">return</span> (denominator &gt; <span class="number">0.0</span>) ? (numerator / denominator) : <span class="number">0.0</span>;
+&nbsp;&nbsp;}</pre> <p>Finally, <u>CalcHMA(int shift)</u> computes the Hull Moving Average, a two-step weighted average designed to reduce lag. First, it sets <u>half = MALength / 2</u> and loops from <u>i = shift to i &lt; shift + half</u>, assigning each bar a descending weight from half down to 1. It accumulates a weighted sum w1 and weight total sw1, ultimately dividing w1/sw1 to get a half-period weighted MA. Second, it loops from<u> i = shift to i &lt; shift + MALength</u>, assigning weights from <u>MALength</u> down to 1, accumulating w2 and sw2, and computing w2/sw2 to get a full-period weighted MA. </p> <p>The final HMA value is 2 * w1 – w2. In effect, doubling the half-period MA and subtracting the full-period MA sharpens the moving average’s responsiveness to recent price changes, which many traders find superior for dynamic markets. As with VWMA, the EA guards against insufficient history by never calling <u>CalcHMA</u> unless <u>Bars(Symbol(),Period()) &gt; shift + MALength</u>.</p> <p></p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Compute Hull Moving Average (HMA)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">double</span> CalcHMA(<span class="keyword">int</span> shift)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">int</span> half = MALength / <span class="number">2</span>;
+&nbsp;&nbsp; <span class="keyword">double</span> w1&nbsp;&nbsp; = <span class="number">0.0</span>, sw1 = <span class="number">0.0</span>;
+&nbsp;&nbsp; <span class="keyword">double</span> w2&nbsp;&nbsp; = <span class="number">0.0</span>, sw2 = <span class="number">0.0</span>;
+
+&nbsp;&nbsp; <span class="comment">// 1) Weighted MA over half period</span>
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = shift; i &lt; shift + half; i++)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> p = <span class="functions">iClose</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), i);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;weight = half - (i - shift);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;w1&nbsp;&nbsp; += p * weight;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sw1 += weight;
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; w1 = (sw1 &gt; <span class="number">0.0</span>) ? (w1 / sw1) : <span class="number">0.0</span>;
+
+&nbsp;&nbsp; <span class="comment">// 2) Weighted MA over full period</span>
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = shift; i &lt; shift + MALength; i++)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> p = <span class="functions">iClose</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), i);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;weight = MALength - (i - shift);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;w2&nbsp;&nbsp; += p * weight;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sw2 += weight;
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; w2 = (sw2 &gt; <span class="number">0.0</span>) ? (w2 / sw2) : <span class="number">0.0</span>;
+
+&nbsp;&nbsp; <span class="comment">// 3) Final HMA value = 2 * (MA over half) – (MA over full)</span>
+&nbsp;&nbsp; <span class="keyword">return</span> <span class="number">2.0</span> * w1 - w2;
+&nbsp;&nbsp;}
+</pre> <p><br/></p> <h3 id="para5">Testing and Results<br/></h3> <p>To evaluate and understand the performance of our tool, we conducted comprehensive testing. This process involved running the tool on historical data through backtesting, as well as assessing its immediate performance in live market conditions. Below, we present an illustration of the results obtained from these tests.</p> <p style="text-align:center;"> <img width="749" height="925" src="https://c.mql5.com/2/147/outcomes_b1o.png" loading="lazy" alt style="vertical-align:middle;"/></p> <p style="text-align:center;"><span class="small">Fig. 3. Live Testing on GBPUSD</span></p> <p>This chart effectively illustrates the tool's capability to identify liquidity sweeps, highlighting a clear bearish sweep followed by a bullish sweep, which indicates its potential to detect market reversals and institutional activity accurately. This chart effectively illustrates the tool's capability to identify liquidity sweeps, highlighting a clear bearish sweep followed by a bullish sweep, which indicates its potential to detect market reversals and institutional activity accurately.</p> <p style="text-align:center;"> <img width="744" height="919" src="https://c.mql5.com/2/147/terminal64_GQRaEO3hDh214.gif" loading="lazy" alt style="vertical-align:middle;"/></p> <p style="text-align:center;"><span class="small">Fig. 4. Live Testing Step Index</span></p> <p>The above outcome demonstrates the tool's effectiveness in identifying liquidity sweeps, capturing key market reversals with clear visual markers, which can aid in strategic decision-making. This outcome demonstrates the tool's effectiveness in identifying liquidity sweeps, capturing key market reversals with clear visual markers, which can aid in strategic decision-making.</p> <p style="text-align:center;"> <img width="743" height="842" src="https://c.mql5.com/2/147/metatester64_zJNGBaggkP81k.gif" loading="lazy" alt style="vertical-align:middle;"/></p> <p style="text-align:center;"><span class="small">Fig. 5. Backtesting EURUSD</span></p> <p>This backtest chart demonstrates the tool’s ability to accurately detect liquidity sweep patterns within historical market data. By analyzing past price movements, it highlights instances where price temporarily penetrated support or resistance levels before reversing, signaling potential institutional activity. These identified points can serve as valuable cues for anticipating future market reversals or trend continuations. The chart validates the effectiveness of the detection mechanism and provides confidence in its application for live trading scenarios.</p> <h3 id="para6"><br/></h3> <h3 id="para6">Conclusion</h3> <p>This EA consistently identifies liquidity sweeps both in historical backtests and in live simulation, marking each valid sweep with an arrow precisely where price pierced, and then reclaimed, a prior swing low or high. Across multiple MA filter settings, the signals aligned well with subsequent trend continuation, showing strong reliability in real market conditions. Whether you review its past performance or observe it running live, the EA’s ability to catch institutional style “stop hunts” has been consistently validated. Use these insights to integrate sweep detection into your own strategy, knowing the code has proven its accuracy and responsiveness in both replayed and real-time environments.</p> <table cellspacing="0" cellpadding="3" width="100%" class="standart"> <thead> <tr> <th><br/></th> <th><br/></th> <th><br/></th> <th><br/></th> <th>&nbsp;</th> <th>&nbsp;</th> </tr> </thead> <tbody> <tr> <td><a href="/en/articles/16014" target="_blank">Chart Projector</a><br/></td> <td><a href="/en/articles/15927" target="_blank">Analytical Comment</a><br/></td> <td><a href="/en/articles/16434" target="_blank">Analytics Master</a><br/></td> <td><a href="/en/articles/16559" target="_blank">Analytics Forecaster</a>&nbsp;<br/></td> <td><a href="/en/articles/16560" target="_blank">Volatility Navigator</a><br/></td> <td><a href="/en/articles/16700" target="_blank">Mean Reversion Signal Reaper</a><br/></td> </tr> <tr> <td><a href="/en/articles/16861" target="_blank">Signal Pulse&nbsp;</a><br/></td> <td><a href="/en/articles/16584" target="_blank">Metrics Board</a>&nbsp;<br/></td> <td><a href="/en/articles/16967" target="_blank">External Flow</a><br/></td> <td><a href="/en/articles/16984" target="_blank">VWAP</a><br/></td> <td><a href="/en/articles/17021" target="_blank">Heikin Ashi&nbsp;</a>&nbsp;</td> <td><a href="/en/articles/17121" target="_blank">FibVWAP</a>&nbsp;&nbsp;</td> </tr> <tr> <td><a href="/en/articles/17198" target="_blank">RSI DIVERGENCE</a><br/></td> <td><a href="/en/articles/17234" target="_blank">Parabolic Stop and Reverse (PSAR)</a>&nbsp;<br/></td> <td><a href="/en/articles/17250" target="_blank">Quarters Drawer Script</a><br/></td> <td><a href="/en/articles/17321" target="_blank">Intrusion Detector</a><br/></td> <td><a href="/en/articles/17329" target="_blank">TrendLoom Tool</a>&nbsp;</td> <td><a href="/en/articles/17442" target="_blank">Quarters Board</a>&nbsp;<br/></td> </tr> <tr> <td><a href="/en/articles/17625" target="_blank">ZigZag Analyzer</a>&nbsp;</td> <td><a href="/en/articles/17742" target="_blank">Correlation Pathfinder</a>&nbsp;</td> <td><a href="/en/articles/17891" target="_blank">Market Structure Flip Detector Tool</a><br/></td> <td><a href="/en/articles/18052" target="_blank">Correlation Dashboard&nbsp;</a>&nbsp;</td> <td><a href="/en/articles/18108" target="_blank">Currency Strength Meter&nbsp;</a><br/></td> <td><a href="/en/articles/18207" target="_blank">PAQ Analysis Tool&nbsp;</a><br/></td> </tr> <tr> <td><a href="/en/articles/18297" target="_blank">Dual EMA Fractal Breaker</a><br/></td> <td><a href="/en/articles/17962" target="_blank">Pin bar, Engulfing and RSI divergence</a><br/></td> <td>Liquidity Sweep</td> <td>&nbsp;</td> <td>&nbsp;</td> <td>&nbsp;</td> </tr> </tbody> </table> <p></p>
+      </div>
+<div id="cb_18379" class="attachBlock">
+  <strong>Attached files</strong> |
+  <div class="grouped-attachments-help">
+    <a title="Download all attachments in the single ZIP archive" href="/en/articles/download/18379.zip">
+      <i class="attach-icon attach-icon_zip"></i>Download ZIP
+    </a>
+  </div>
+    <div class="attachItem">
+      <a title="Download Liquidity_Sweep.mq5" href="/en/articles/download/18379/liquidity_sweep.mq5"><i class="attach-icon attach-icon_mq5"></i>Liquidity_Sweep.mq5</a>
+      <span class="attachSize">(19.66 KB)</span>
+    </div>
+</div>
+    </div>
+
+  <div class="copyright">
+    <p><strong>Warning:</strong> All rights to these materials are reserved by MetaQuotes Ltd. Copying or reprinting of these materials in whole or in part is prohibited.</p>
+      <p>This article was written by a user of the site and reflects their personal views. MetaQuotes Ltd is not responsible for the accuracy of the information presented, nor for any consequences resulting from the use of the solutions, strategies or recommendations described.</p>
+  </div>
+
+
+
+    <div class="article__author-with-articles">
+      
+
+
+<div class="article-footer__author">
+  <div class="article-footer__author-avatar">
+    <img id="avatar" src="https://c.mql5.com/avatar/2025/10/68fd3661-daee_big.png" title="Christian Benjamin" alt="Christian Benjamin" loading="lazy" width="164" height="164">
+  </div>
+  <div class="article-footer__author-content">
+    <div class="article-footer__author-name">
+      <a href="/en/users/lynnchris" title="Christian Benjamin">Christian Benjamin</a>
+    </div>
+    <div class="article-footer__author-info">
+      <ul>
+          <li>
+            <i title="Works" class="icons-profile icons-profile_suitcase"></i>
+Developer, Trader and Pastor
+at            Out For Christ Ministries International
+          </li>
+          <li>
+            <i title="Lives" class="icons-profile icons-profile_geo"></i>
+            <a target="_blank" rel="nofollow" title="Lives" href="https://www.mql5.com/go?https://maps.google.com/?z=4&q=Zimbabwe">Zimbabwe</a>
+          </li>
+        <li>
+          <i title="Rating" class="icons-profile icons-profile_statistics"></i>
+          <a title="Rating" href="/en/users/lynnchris/achievements">19977</a>
+        </li>
+      </ul>
+    </div>
+    <div class="article-footer__author-contacts">
+          <li title="Facebook"><a class="icons-networks icons-networks_fb-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://www.facebook.com/christian benjamin"></a></li>
+
+    </div>
+    <div class="article-footer__author-bio">Excellence and integrity define my approach to every project. The same standard is maintained regardless of compensation structure, guided by the conviction that God’s reward surpasses what man can offer. This principle shapes every tool I develop.</div>
+  </div>
+</div>
+
+      <div class="other-author-articles ui">
+        <h4 class="other-author-articles__title">Other articles by this author</h4>
+        <ul class="other-author-articles__list">
+          <li><a href="/en/articles/22833" data-fz-event="MQL5+Article+From+Author+Article">Engineering Trading Discipline into Code (Part 7): Automating Equity Protection Through Governance Logic</a></li>
+          <li><a href="/en/articles/22796" data-fz-event="MQL5+Article+From+Author+Article">Price Action Analysis Toolkit Development (Part 71): Weekend Gap Structure Mapping in MQL5</a></li>
+          <li><a href="/en/articles/22607" data-fz-event="MQL5+Article+From+Author+Article">Price Action Analysis Toolkit Development (Part 70): Turning Flag Pattern Signals into Automated Trade Execution</a></li>
+          <li><a href="/en/articles/22560" data-fz-event="MQL5+Article+From+Author+Article">Engineering Trading Discipline into Code (Part 6): Building a Unified Discipline Framework in MQL5</a></li>
+          <li><a href="/en/articles/22503" data-fz-event="MQL5+Article+From+Author+Article">Price Action Analysis Toolkit Development (Part 69): Flag Pattern Detection in MQL5</a></li>
+          <li><a href="/en/articles/21995" data-fz-event="MQL5+Article+From+Author+Article">Engineering Trading Discipline into Code (Part 5): Account-Level Risk Enforcement in MQL5</a></li>
+          <li><a href="/en/articles/22110" data-fz-event="MQL5+Article+From+Author+Article">Price Action Analysis Toolkit Development (Part 68): Price-Attached RSI Panel in MQL5</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+  <div class="article__last-comments" id="articleAdditional">
+    
+
+<div class="comments-preview">
+    <div class="title">
+      <span></span><b>
+ <a href="/en/forum/488697">Go to discussion</a>
+      </b>
+    </div>
+    <div>
+        
+    </div>
+</div>
+
+  </div>
+
+
+    <div class="articles-bottom-list" id="articleAdditional">
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="MQL5 Wizard Techniques you should know (Part 69): Using Patterns of SAR and the RVI" src="https://c.mql5.com/2/148/18399-mql5-wizard-techniques-you-logo__1.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/18399" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">MQL5 Wizard Techniques you should know (Part 69): Using Patterns of SAR and the RVI</a>
+                <div class="articles-bottom-list__desc">The Parabolic-SAR (SAR) and the Relative Vigour Index (RVI) are another pair of indicators that could be used in conjunction within an MQL5 Expert Advisor. This indicator pair, like those we’ve covered in the past, is also complementary since SAR defines the trend while RVI checks momentum. As usual, we use the MQL5 wizard to build and test any potential this indicator pairing may have.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Neural Networks in Trading: Contrastive Pattern Transformer (Final Part)" src="https://c.mql5.com/2/99/Atom-Motif_Contrastive_Transformer___LOGO.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/16192" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Neural Networks in Trading: Contrastive Pattern Transformer (Final Part)</a>
+                <div class="articles-bottom-list__desc">In the previous last article within this series, we looked at the Atom-Motif Contrastive Transformer (AMCT) framework, which uses contrastive learning to discover key patterns at all levels, from basic elements to complex structures. In this article, we continue implementing AMCT approaches using MQL5.</div>
+              </div>
+          </div>
+        </div>
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="SQLite capabilities in MQL5: Example of a dashboard with trading statistics by symbols and magic numbers" src="https://c.mql5.com/2/99/interactive_panel_with_trading_statistics_by_symbols_and_magics___LOGO.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/16233" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">SQLite capabilities in MQL5: Example of a dashboard with trading statistics by symbols and magic numbers</a>
+                <div class="articles-bottom-list__desc">In this article, we will consider creating an indicator that displays trading statistics on a dashboard by account and by symbols and trading strategies. We will implement the code based on examples from the Documentation and the article on working with databases.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="ALGLIB library optimization methods (Part II)" src="https://c.mql5.com/2/99/Alglib_Library_Optimization_Techniques_PartI___LOGO__3.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/16164" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">ALGLIB library optimization methods (Part II)</a>
+                <div class="articles-bottom-list__desc">In this article, we will continue to study the remaining optimization methods from the ALGLIB library, paying special attention to their testing on complex multidimensional functions. This will allow us not only to evaluate the efficiency of each algorithm, but also to identify their strengths and weaknesses in different conditions.</div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+<div class="clear-fix"></div>
+
+<div id='wdausxxqrpvhekbwjrjlhqjghyhesrqqau' class="r6irig5txiuua4k0m r6irig5txiuua4k0m_articles-view gg88d3drb"></div>
+    
+
+<div class="hidden" id="popupRegisterLogin">
+  <div class="register-login-popup">
+    <div class="register-login-popup__header">
+      <img src="https://c.mql5.com/i/registerlandings/logo-2.png" srcset="https://c.mql5.com/i/registerlandings/logo-2_2x.png 2x" alt="MQL5 - Language of trade strategies built-in the MetaTrader 5 client terminal" loading="lazy" width="74" height="24" />
+    </div>
+    <div class="register-login-popup__content">
+      <div class="register-login-popup__desc">
+        <div class="register-login-popup__title">You are missing trading opportunities:</div>
+        <ul>
+<li>Free trading apps</li>
+<li>Over 8,000 signals for copying</li>
+<li>Economic news for exploring financial markets</li>
+</ul>
+      </div>
+      <div class="register-login-popup__forms ui">
+        <div class="register-login-popup__tabs" id="registerLoginPopupTabs">
+          <span data-id="register" id="registerLoginPopupTab_register" class="register-login-popup__tab register-login-popup__tab_active">Registration</span>
+          <span data-id="login" id="registerLoginPopupTab_login" class="register-login-popup__tab">Log in</span>
+        </div>
+        <div id="registerLoginPopupTabContent_register">
+          <div class="ui auth-form__content">
+    
+  <script type='text/javascript'>/*<![CDATA[*/ if (!window.V) var V = []; /*]]>*/</script>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/en/auth_register_short" id="PopupRegisterquickRegisterForm" onsubmit="PopupRegisterquickRegistration.OnSubmit(this,&#39;en&#39;);if(Validate(this)) Ajax.form(this,{onready:PopupRegisterquickRegistration.OnSuccessPopup,onerror:PopupRegisterquickRegistration.OnError,onbeginrequest:PopupRegisterquickRegistration.DisableInputs,onendrequest:PopupRegisterquickRegistration.EnableInputs});return(false);" enctype = "multipart/form-data"><input type="hidden" name="__signature" value="900686508d4c051af41c61a0e81126a4"/>
+    <div class="auth-form__inputs">
+      <input type="hidden" value="0" name="IsValidate" id="PopupRegisterIsValidate" />
+
+      <!--[if lt IE 10]><div class="note">Login:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input type="text" id="PopupRegisterusername" name="username" class="input" maxlength="32" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.CheckUserName();}" onkeyup="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.ValidateUserName(this, 'Enter a valid login');}" placeholder="Login" title="May contain Latin letters, digits, dots, dashes,underscore characters. Cannot start or end with a dot. The allowed length is 3 to 32 characters." onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisterusername'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisterusername',10,'You may use Latin characters, numbers, underscores and periods.',validate_username]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisterusername">latin characters without spaces</label>
+      </div>
+      <!--[if lt IE 10]><div class="note">Your email:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input class="input" type="email" id="PopupRegisteremail" name="email" placeholder="Your email" title="Please enter the email (it may not exceed 256 characters). For example: john@example.com" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnChange(this);}" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisteremail'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisteremail',10,'Enter a valid email address',validate_email]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisteremail">a password will be sent to this email</label>
+      </div>
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Register" />
+    </div>
+    <span id="PopupRegisterquickRegisterSubmit">
+      <input type="submit" value="Register" id="PopupRegisterquickRegisterButton"  title="Sign up and receive an email with your password" class="button button_yellow"  />
+    </span>
+    <span id="PopupRegisterquickRegisterErrorMessage" class="quick-register-error-message field-validation-error" style="text-align: center; margin-top: 16px; display: none;">
+      An error occurred
+    </span>
+</form>
+    
+</div>
+<div class="auth-social">
+  <ul class="auth-social-list" id="socialList">
+    <li><a onclick="window.fpush({name: 'MQL5+Popup+Register+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/en/auth_oauth2?provider=Google&amp;amp;return=popup&amp;amp;reg=1" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Log in With Google</a></li>
+  </ul>
+</div>
+<div class="auth-block-agree">
+  <p>
+    You agree to <a target="_blank" href="/en/about/privacy">website policy</a> and <a target="_blank" href="/en/about/terms">terms of use</a>
+  </p>
+</div>
+
+
+        </div>
+        <div id="registerLoginPopupTabContent_login" class="hidden">
+            <div class="auth-form__text">
+    If you do not have an account, please <a href="https://www.mql5.com/en/auth_register" rel="nofollow" style="vertical-align: top">register</a>
+  </div>
+<div class="ui auth-form__content auth-form__content_login" id="loginFormWrapper">
+    
+  <div id="needCookies" class="need-cookies hidden">
+    <div class="danger-box">
+      <p>Allow the use of cookies to log in to the MQL5.com website.</p>
+<p>Please enable the necessary setting in your browser, otherwise you will not be able to log in.</p>
+    </div>
+  </div>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/en/auth_login" id="loginForm" onsubmit="if(window.quickLogin){return window.quickLogin.onSubmit(this);}var result = Validate(this); if(result) { preventDoubleSubmit(this); } return result;"><input id="RedirectAfterLoginUrl" name="RedirectAfterLoginUrl" type="hidden" value="" /><input id="RegistrationUrl" name="RegistrationUrl" type="hidden" value="" /><input data-val="true" data-val-required="The ShowOpenId field is required." id="ShowOpenId" name="ShowOpenId" type="hidden" value="True" /><input id="TrackingSection" name="TrackingSection" type="hidden" value="Articles" />    <input name="ViewType" type="hidden" value="5" />
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Login" />
+    <!--[if lt IE 10]><div class="note">Your login:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <input class="input qa-login" id="Login" name="Login" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Login" title="Your login" type="text" value="" />
+      <script type='text/javascript' id='validate_Login'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Login',1,'Enter login specified when signing up']);});mqGlobal.AddOnReady(function() {V.push(['Login',10,'Email cannot be used. Enter your login please',validateLogin]);}); /*]]>*/</script>
+    </div>
+    <!--[if lt IE 10]><div class="note">Password:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <div class="input-with-show">
+        <input autocomplete="off" class="input qa-password" id="Password" name="Password" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Password" title="Enter the password please" type="password" />
+        <span class="input-with-show__icon" title="Show password" onclick="if(window.quickLogin){window.quickLogin.showPass(this, 'Show password', 'Hide password');}"></span>
+      </div>
+      <script type='text/javascript' id='validate_Password'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Password',1,'Please enter the password']);}); /*]]>*/</script>
+    </div>
+    <script type="text/javascript">
+    function validateLogin(input) {
+      console.log('validate login ' + input.value);
+      return !/^\w+([-+.'']{1,2}\w+)* @\w+([-.]\w+)*\.\w+([-.]\w+)*$/i.test(input.value);
+    }
+    </script>
+    <div class="forgot" id="loginForgotBlock"><a id="loginForgotLink" href="https://www.mql5.com/en/auth_forgotten?return=popup">Forgot your login/password?</a></div>
+    <input type="submit" class="button button_yellow qa-submit" id="loginSubmit" value="Log in" title="Enter">
+</form></div>
+
+  <div class="auth-social" id="authSocialBlock">
+    <ul class="auth-social-list" id="socialList">
+      <li><a onclick="window.fpush({name: 'MQL5+Popup+Login+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/en/auth_oauth2?provider=Google&amp;amp;return=popup" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Log in With Google</a></li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script id="popupSection" type="application/json">{"section": "Articles"}</script>
+<script id="popupTranslate" data-type="translate" type="application/json">
+{
+  "popup":
+  {
+  "EmailTitle" : "The password has been sent to {0}",
+  "EmailDescription" : "Log in using the obtained password and the login specified during the registration",
+  "SubmitButtonText" : "Activate account",
+  "RegistrationTip" : "If you have not received the password email, check the spam folder or &lt;a href={0}&gt;repeat the registration&lt;/a&gt;"
+  }
+}
+</script>
+
+    
+
+    
+
+
+    </article>
+  </div>
+
+
+
+<div aria-hidden="true" class="footer  desktop" id="footer">
+  <ul class="links  links_desktop">
+      <li id="navFooterCommunity">
+        <nav>
+          <ul>
+            <li><a href="https://web.metatrader.app/terminal?mode=demo&amp;lang=en" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Footer+Trading">Online trading / WebTerminal</a></li>
+            <li><a href="/en/code" data-fz-event="MQL5+Footer+CodeBase">Free technical indicators and robots</a></li>
+            <li><a href="/en/articles" data-fz-event="MQL5+Footer+Articles">Articles about programming and trading</a></li>
+            <li><a href="/en/job" data-fz-event="MQL5+Footer+Job">Order trading robots on the Freelance</a></li>
+            <li><a href="/en/market" data-fz-event="MQL5+Footer+Market">Market of Expert Advisors and applications&#x9;</a></li>
+            <li><a href="/en/signals" data-fz-event="MQL5+Footer+Signals">Follow forex signals</a></li>
+            <li><a href="/en/vps" data-fz-event="MQL5+Footer+VPS">Low latency forex VPS</a></li>
+            <li><a href="/en/forum" data-fz-event="MQL5+Footer+Forum">Traders forum</a></li>
+            <li><a href="/en/blogs" data-fz-event="MQL5+Footer+Blogs">Trading blogs</a></li>
+            <li><a rel="nofollow" href="/en/charts" data-fz-event="MQL5+Footer+Charts">Charts</a></li>
+            <li><a href="/en/widgets" data-fz-event="MQL5+Footer+Widgets">Free widgets</a></li>
+          </ul>
+        </nav>
+      </li>
+      <li id="navFooterMt5">
+        <nav>
+          <ul>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> Trading Platform</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/releasenotes" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> latest updates</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/news" data-fz-event="MQL5+Footer+MetaTrader+5">News, implementations and technology</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> User Manual</a></li>
+            <li><a href="/en/docs" data-fz-event="MQL5+Footer+Docs">MQL5 language of trading strategies</a></li>
+            <li><a rel="nofollow noopener" href="https://cloud.mql5.com" data-fz-event="MQL5+Footer+Cloud">MQL5 Cloud Network</a></li>
+            <li><a rel="noopener" href="https://forge.mql5.io/?lang=en" data-fz-event="MQL5+Footer+Forge" target="_blank">MQL5 Algo Forge</a></li>
+              <li><a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Footer">Download <span class="nobr">MetaTrader 5</span></a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help/start_advanced/installation" data-fz-event="MQL5+Footer+MetaTrader+5">Install Platform</a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help/start_advanced/deinstallation" data-fz-event="MQL5+Footer+MetaTrader+5">Uninstall Platform</a></li>
+          </ul>
+        </nav>
+
+      </li>
+    <li id="navFooterWebsite">
+        <nav>
+          <ul>
+            <li><a rel="nofollow" href="/en/about" data-fz-event="MQL5+Footer+About">About</a></li>
+              <li><a href="/en/wall" data-fz-event="MQL5+Footer+Wall">Timeline</a></li>
+            <li><a rel="nofollow" href="/en/about/terms" data-fz-event="MQL5+Footer+About">Terms and Conditions</a></li>
+            <li><a rel="nofollow" href="/en/about/autopayments" data-fz-event="MQL5+Footer+About">Recurring Payment Agreement</a></li>
+            <li><a rel="nofollow" href="/en/about/agencyagreement" data-fz-event="MQL5+Footer+About">Agency Agreement – Offer</a></li>
+            <li><a rel="nofollow" href="/en/about/privacy" data-fz-event="MQL5+Footer+About">Privacy and Data Protection Policy</a></li>
+            <li><a rel="nofollow" href="/en/about/cookies" data-fz-event="MQL5+Footer+About">Cookies Policy</a></li>
+            <li>
+                <a rel="nofollow" href="/en/contact" data-fz-event="MQL5+Footer+Contacts">Contacts and requests</a>
+            </li>
+          </ul>
+        </nav>
+    </li>
+
+      <li>
+        <div class="footer__products">
+          <div class="footer__product">
+            <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com" class="footer__product-name">MetaTrader 5</a>
+            <div class="footer__product-links">
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon windows" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for Windows</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/MetaTrader5.pkg.zip?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon macos" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for MacOS</div></a>
+            <a rel="nofollow noopener" href="https://www.mql5.com/en/articles/625?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon linux" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for Linux</div></a>
+            <a rel="nofollow noopener" href="https://web.metatrader.app/terminal?mode=demo&amp;lang=en" class="icon web"><div  class="footer__product-link-hint footer__product-link-hint-short">Open MetaTrader 5 WebTerminal</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/ios?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=en" class="icon ios" data-fz-event="MetaTrader+5+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/jhZn8Ed1I1d.png)">Scan to install from App Store</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=en" class="icon android" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/kiF2Io6W-9d.png)">Scan to install from Google Play</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon huawei" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ZRt&#x2B;zI1l&#x2B;8O.png)">Scan to install from Huawei AppGallery</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon ark" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/L0Q9oag&#x2B;3eE.png)">Scan to get Android APK file</div></a>
+            </div>
+          </div>
+          <div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com/en/news/2270" class="footer__product-name">MQL5 Channels</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon ios" data-fz-event="MQL5+Channels+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/bZVfOJnYpcO.png)">Scan to install from App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon android" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/32MJFgw7BVs.png)">Scan to install from Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Su&#x2B;fe4n374e.png)">Scan to install from Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mql5channels/mql5channels.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/G6Mg4NfCPzO.png)">Scan to get Android APK file</div></a>
+              </div>
+            </div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.tradays.com/en/download?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MQL5+Footer+Download+Tradays" class="footer__product-name">Economic Calendar</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon ios" data-fz-event="Tradays+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CpD&#x2B;mhIw-1E.png)">Scan to install from App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon android" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Bgyx8UcmYap.png)">Scan to install from Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CrS7bbDAdAO.png)">Scan to install from Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/tradays/tradays.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/VZi8YPIb2op.png)">Scan to get Android APK file</div></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__networks">
+          <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow" title="Facebook"><i class="icons-networks icons-networks_fb"></i></a>
+          <a href="https://t.me/mql5dev" target="_blank" rel="nofollow" title="Telegram"><i class="icons-networks icons-networks_tg"></i></a>
+          <a href="https://x.com/mql5com" target="_blank" rel="nofollow" title="X (Twitter)"><i class="icons-networks icons-networks_tw"></i></a>
+          <a href="https://www.youtube.com/@MetaQuotesOfficial" target="_blank" rel="nofollow" title="YouTube"><i class="icons-networks icons-networks_yt"></i></a>
+          <a href="https://www.linkedin.com/company/mql5" target="_blank" rel="nofollow" title="LinkedIn"><i class="icons-networks icons-networks_linkedin"></i></a>
+          <span>Subscribe to algotrading news</span>
+        </div>
+  
+        <div class="footer__other">
+          <div class="footer__not-a-broker">Not a broker, no real trading accounts</div>
+          <div class="copyright">35 Dodekanisou str, Germasogeia, 4043,&nbsp;Limassol,&nbsp;Cyprus</div>
+          <div class="copyright">Copyright 2000-2026, <span class="nobr">MetaQuotes Ltd</span></div>
+        </div>
+      </li>
+  </ul>
+</div>
+
+
+
+<div class="shadow-layer" id="layer"></div>
+    
+
+  <div class="b-fixed-mt" id="bFixedMt" style="display: none;">
+    
+  </div>
+
+
+<script type='text/javascript'>
+		(function (a, e, f, g, b, c, d) { a[b] || (a.FintezaCoreObject = b, a[b] = a[b] || function () { (a[b].q = a[b].q || []).push(arguments) }, a[b].l = 1 * new Date, c = e.createElement(f), d = e.getElementsByTagName(f)[0], c.async = !0, c.defer = !0, c.src = g, d && d.parentNode && d.parentNode.insertBefore(c, d)) })
+      (window, document, "script", "/ff/core.js", "fz");
+		window.fz("register", "website", {
+      id: "sqjxkxkswybhifrohpyooonwgbvsfzmayq",
+			trackLinks: true
+		});
+        mqGlobal.AddOnReady(function () { Mql5Cookie.init('mql5.com', '5091021617610912753'); });
+mqGlobal.AddOnReady(function(){if(!window.Pocket){window.Pocket=new PocketManager();}});mqGlobal.AddOnReady(function(){if(!window.translateManager){window.translateManager=new Translate(undefined,'Error: failed to translate. Please try again later.');}if(document.querySelectorAll){var translateElements=document.querySelectorAll(".translateMenu");if(translateElements){var i=0,count=translateElements.length;for(i;i<count;i++){(function(i){var contentid=dataset(translateElements[i],"contentid"),sourcelang=dataset(translateElements[i],"sourcelang"),targetlang=dataset(translateElements[i],"targetlang"),moduleid=parseInt(dataset(translateElements[i],"moduleid")),typeid=parseInt(dataset(translateElements[i],"typeid")),entityid=parseInt(dataset(translateElements[i],"entityid"));Core.AddHandler(translateElements[i],"mouseover",function(){return translateManager.SetMenu(this,contentid,sourcelang,targetlang,moduleid,typeid,entityid);});})(i);}}}});window.fz("show","wdausxxqrpvhekbwjrjlhqjghyhesrqqau");window.mqGlobal.AddOnLoad(function(){window.fpush('MQL5+Article+Open');Articles.CheckOnScrollDown();});mqGlobal.AddOnReady(function(){window.PopupRegisterquickRegistration=new QuickRegistration('PopupRegister','Popup+Register','Articles');});function validate_username(input){var reg=/^([a-z0-9]){1}([\-._a-z0-9]){1,30}([\-_a-z0-9]){1}$/i,value=input.value,result=true;if(reg.test(value)){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Login',unit:'section',value:'Articles'});}return result;}function validate_email(input){var reg=/^\w+([-+.'']{1,2}\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/i,value=input.value,result=true,length_value=value.length;if(reg.test(value)&&length_value>=1&&length_value<=40){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Email',unit:'section',value:'Articles'});}return result;};mqGlobal.AddOnReady(function(){var username=$('PopupRegisterusername'),email=$('PopupRegisteremail');if(username)username.value='';if(email)email.value='';});mqGlobal.AddOnReady(function(){window.quickLogin=new QuickLogin('Popup+Login','Articles');});mqGlobal.AddOnLoad(function(){window.showLoginRegisterPopupAtEnd();});mqGlobal.AddOnLoad(function(){window.tooltipUserInfo.init();});mqGlobal.AddOnReady(function(){{window.initHeaderSearch('','https://www.mql5.com/en/search');}});</script><script type="text/javascript">mqGlobal.AddOnReady(function(){window.initSuggestions("headerSearchKeyword","en","https://search.mql5.com/api/query","https://www.mql5.com/en/users_search/suggestion");});window.fz("show","vgckrufggwxdtfscpyalmenexmvhljduja");mqGlobal.AddOnReady(function(){window.floatVerticalPanelNode=FloatVerticalPanel('This website uses cookies. Learn more about our <a href="/en/about/cookies">Cookies Policy</a>.','cookie_accept');});							if (typeof Attach !== "undefined")
+			Attach.setAcceptFilter(".zip, .txt, .log, .mqh, .ex5, .mq5, .mq4, .mqproj, .ex4, .mt5, .set, .tpl, .cl, .py, .sqlite, .csv, .ini, .ipynb, .onnx, .gif, .png, .jpg, .jpeg, .mp4, .webm");
+	</script>
+
+<script type="application/ld&#x2B;json">
+		[
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"url": "https://www.mql5.com",
+				"logo": "https://c.mql5.com/i/community/logo_mql5-2.png",
+				"sameAs": [
+					"https://www.facebook.com/mql5.community",
+					"https://www.x.com/mql5com",
+					"https://www.youtube.com/user/MetaQuotesOfficial"
+				 ]
+			}
+		
+, 
+{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"Forum","description":"Discussions of trading strategies and algorithmic trading. MQL5.community  the largest forex forum","url":"https://www.mql5.com/en/forum","children":[]},{"@type":"SiteNavigationElement","position":2,"name":"Market","description":"MetaTrader Market - a Market of trading robots, indicators, trading books and magazines","url":"https://www.mql5.com/en/market","children":[]},{"@type":"SiteNavigationElement","position":3,"name":"Signals","description":"Social trading, copy trading and account monitoring with MetaTrader - Trading Signals on MQL5.com","url":"https://www.mql5.com/en/signals","children":[]},{"@type":"SiteNavigationElement","position":4,"name":"Freelance","description":"Order trading robots, technical indicators and algorithmic trading applications. Forex jobs. Freelance on MQL5.com. Hire MetaTrader experts and specialists","url":"https://www.mql5.com/en/job","children":[]},{"@type":"SiteNavigationElement","position":5,"name":"Quotes","description":"","url":"https://www.mql5.com/en/quotes/overview","children":[]},{"@type":"SiteNavigationElement","position":6,"name":"MetaTrader","description":"","url":"https://www.metatrader.com","children":[]},{"@type":"SiteNavigationElement","position":7,"name":"WebTerminal","description":"WebTerminal for the MetaTrader trading platform. Online forex trading.","url":"https://web.metatrader.app/terminal?mode=demo","children":[]},{"@type":"SiteNavigationElement","position":8,"name":"Calendar","description":"","url":"https://www.mql5.com/en/economic-calendar","children":[]},{"@type":"SiteNavigationElement","position":9,"name":"VPS","description":"","url":"https://www.mql5.com/en/vps","children":[]},{"@type":"SiteNavigationElement","position":10,"name":"Articles","description":"","url":"https://www.mql5.com/en/articles","children":[]},{"@type":"SiteNavigationElement","position":11,"name":"CodeBase","description":"Download trading robots, technical indicators and scripts with source code - MQL5 Code Base for MetaTrader 5","url":"https://www.mql5.com/en/code","children":[]},{"@type":"SiteNavigationElement","position":12,"name":"Algo Forge","description":"","url":"https://forge.mql5.io","children":[]},{"@type":"SiteNavigationElement","position":13,"name":"Documentation","description":"MetaQuotes Language 5 (MQL5) Reference - Documentation on MQL5.com","url":"https://www.mql5.com/en/docs","children":[]}]}		
+,
+{"@context":"https://schema.org","@type":"TechArticle","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.mql5.com/en/articles/18379"},"headline":"Price Action Analysis Toolkit Development (Part 27): Liquidity Sweep With MA Filter Tool","image":["https://c.mql5.com/2/147/new_abc.png","https://c.mql5.com/2/147/aqa.png","https://c.mql5.com/2/147/outcomes_b1o.png","https://c.mql5.com/2/147/terminal64_GQRaEO3hDh214.gif","https://c.mql5.com/2/147/metatester64_zJNGBaggkP81k.gif"],"datePublished":"2025-06-11T08:18:08+00:00Z","dateModified":"2025-06-11T08:21:32+00:00Z","author":{"@type":"Person","name":"Christian Benjamin","url":"https://www.mql5.com/en/users/lynnchris"},"editor":{"@type":"Organization","name":"MetaQuotes","url":"https://www.mql5.com/en/users/metaquotes","address":{"@type":"PostalAddress","addressCountry":"CY"}},"publisher":{"@type":"Organization","name":"MQL5 Community","url":"https://www.mql5.com","logo":{"@type":"ImageObject","url":"https://c.mql5.com/i/community/logo_mql5-2.png"}},"description":"Understanding the subtle dynamics behind price movements can give you a critical edge. One such phenomenon is the liquidity sweep, a deliberate strategy that large traders, especially institutions, use to push prices through key support or resistance levels. These levels often coincide with clusters of retail stop-loss orders, creating pockets of liquidity that big players can exploit to enter or exit sizeable positions with minimal slippage."}
+,
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":"https://www.mql5.com/en/articles","name":"Articles"},{"@type":"ListItem","position":2,"item":"https://www.mql5.com/en/articles/mt5","name":"MetaTrader 5"},{"@type":"ListItem","position":3,"item":"https://www.mql5.com/en/articles/mt5/examples","name":"Examples"}]}
+
+		]
+	</script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+[
+  {
+    "目标名": "FORUM_假突破讨论_避免false_breakout",
+    "来源标题": "False breakout - Equities - General - MQL5 programming forum",
+    "url": "https://www.mql5.com/en/forum/508608",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\知识库迭代机制_v0.1\\二次检索风险补全资料\\FORUM_假突破讨论_避免false_breakout.md",
+    "附件": []
+  },
+  {
+    "目标名": "FORUM_强突破与假突破区别",
+    "来源标题": "What Defines a Strong Breakout vs. False Breakout? - Breakout - Trading Systems - MQL5 programming forum",
+    "url": "https://www.mql5.com/en/forum/502423",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\知识库迭代机制_v0.1\\二次检索风险补全资料\\FORUM_强突破与假突破区别.md",
+    "附件": []
+  },
+  {
+    "目标名": "FORUM_突破策略过滤确认EA逻辑讨论",
+    "来源标题": "Breakout Trading Strategy Discussion: Filters, Confirmation, and EA Logic - Best Forex Trading Strategy - Trading Systems - MQL5 programming forum",
+    "url": "https://www.mql5.com/en/forum/507369",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\知识库迭代机制_v0.1\\二次检索风险补全资料\\FORUM_突破策略过滤确认EA逻辑讨论.md",
+    "附件": []
+  },
+  {
+    "目标名": "EN_开盘区间突破策略_噪音区间与回撤风险",
+    "来源标题": "Decoding Opening Range Breakout Intraday Trading Strategies - MQL5 Articles",
+    "url": "https://www.mql5.com/en/articles/17745",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\知识库迭代机制_v0.1\\二次检索风险补全资料\\EN_开盘区间突破策略_噪音区间与回撤风险.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\知识库迭代机制_v0.1\\二次检索风险补全资料\\EN_开盘区间突破策略_噪音区间与回撤风险_17745.zip",
+        "https://www.mql5.com/en/articles/download/17745.zip",
+        7018
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\知识库迭代机制_v0.1\\二次检索风险补全资料\\EN_开盘区间突破策略_噪音区间与回撤风险_orb.zip",
+        "https://www.mql5.com/en/articles/download/17745/orb.zip",
+        7277
+      ]
+    ]
+  },
+  {
+    "目标名": "EN_亚洲突破EA_风险管理与突破结构",
+    "来源标题": "Automating Trading Strategies in MQL5 (Part 9): Building an Expert Advisor for the Asian Breakout Strategy - MQL5 Articles",
+    "url": "https://www.mql5.com/en/articles/17239",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\知识库迭代机制_v0.1\\二次检索风险补全资料\\EN_亚洲突破EA_风险管理与突破结构.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\知识库迭代机制_v0.1\\二次检索风险补全资料\\EN_亚洲突破EA_风险管理与突破结构_17239.zip",
+        "https://www.mql5.com/en/articles/download/17239.zip",
+        6979
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\知识库迭代机制_v0.1\\二次检索风险补全资料\\EN_亚洲突破EA_风险管理与突破结构_asian_breakout_ea.mq5",
+        "https://www.mql5.com/en/articles/download/17239/asian_breakout_ea.mq5",
+        50980
+      ]
+    ]
+  },
+  {
+    "目标名": "RU_假突破指标讨论_ATR过滤参考",
+    "来源标题": "\"Индикатор\" ложного пробоя уровня... - Общее обсуждение - Форум алго-трейдеров MQL5",
+    "url": "https://www.mql5.com/ru/forum/364561",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\知识库迭代机制_v0.1\\二次检索风险补全资料\\RU_假突破指标讨论_ATR过滤参考.md",
+    "附件": []
+  },
+  {
+    "目标名": "RU_风险管理基础类构建",
+    "来源标题": "Управление рисками (Часть 1): Основы построения класса по управлению рисками - Статьи по MQL5",
+    "url": "https://www.mql5.com/ru/articles/16820",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\知识库迭代机制_v0.1\\二次检索风险补全资料\\RU_风险管理基础类构建.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\知识库迭代机制_v0.1\\二次检索风险补全资料\\RU_风险管理基础类构建_16820.zip",
+        "https://www.mql5.com/ru/articles/download/16820.zip",
+        4485
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\知识库迭代机制_v0.1\\二次检索风险补全资料\\RU_风险管理基础类构建_risk_management.mqh",
+        "https://www.mql5.com/ru/articles/download/16820/risk_management.mqh",
+        8471
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\知识库迭代机制_v0.1\\二次检索风险补全资料\\RU_风险管理基础类构建_get_sl_by_risk_per_operation_and_lot.mq5",
+        "https://www.mql5.com/ru/articles/download/16820/get_sl_by_risk_per_operation_and_lot.mq5",
+        3936
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\知识库迭代机制_v0.1\\二次检索风险补全资料\\RU_风险管理基础类构建_get_lot_by_risk_per_trade_and_sl.mq5",
+        "https://www.mql5.com/ru/articles/download/16820/get_lot_by_risk_per_trade_and_sl.mq5",
+        2117
+      ]
+    ]
+  },
+  {
+    "目标名": "RU_均线系统中的假突破概念",
+    "来源标题": "Как разрабатывать системы на основе скользящих средних - Статьи по MQL5",
+    "url": "https://www.mql5.com/ru/articles/3040",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\知识库迭代机制_v0.1\\二次检索风险补全资料\\RU_均线系统中的假突破概念.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\知识库迭代机制_v0.1\\二次检索风险补全资料\\RU_均线系统中的假突破概念_3040.zip",
+        "https://www.mql5.com/ru/articles/download/3040.zip",
+        2298
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\知识库迭代机制_v0.1\\二次检索风险补全资料\\RU_均线系统中的假突破概念_one_moving_average_system.mq5",
+        "https://www.mql5.com/ru/articles/download/3040/one_moving_average_system.mq5",
+        1777
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\知识库迭代机制_v0.1\\二次检索风险补全资料\\RU_均线系统中的假突破概念_two_moving_averages_system.mq5",
+        "https://www.mql5.com/ru/articles/download/3040/two_moving_averages_system.mq5",
+        1967
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\知识库迭代机制_v0.1\\二次检索风险补全资料\\RU_均线系统中的假突破概念_three_moving_averages_system.mq5",
+        "https://www.mql5.com/ru/articles/download/3040/three_moving_averages_system.mq5",
+        2662
+      ]
+    ]
+  }
+]

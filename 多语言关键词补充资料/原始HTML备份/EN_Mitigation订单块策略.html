@@ -1,0 +1,1127 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+
+  <meta name="robots" content="max-snippet:250,max-image-preview:large">
+  <meta name="description" content="In this article, we build an MQL5 trading system that automates order block detection for Smart Money trading. We outline the strategy’s rules, implement the logic in MQL5, and integrate risk management for effective trade execution. Finally, we backtest the system to assess its performance and refine it for optimal results.">
+  <meta property="og:url" content="https://www.mql5.com/en/articles/17547">
+  <meta property="og:title" content="Automating Trading Strategies in MQL5 (Part 12): Implementing the Mitigation Order Blocks (MOB) Strategy">
+  <meta property="og:description" content="In this article, we build an MQL5 trading system that automates order block detection for Smart Money trading. We outline the strategy’s rules, implement the logic in MQL5, and integrate risk management for effective trade execution. Finally, we backtest the system to assess its performance and refine it for optimal results.">
+      <meta property="og:image" content="https://c.mql5.com/2/128/Automating_Trading_Strategies_in_MQL5_Part_12__V2_1200x628.jpg">
+      <meta property="og:image:secure_url" content="https://c.mql5.com/2/128/Automating_Trading_Strategies_in_MQL5_Part_12__V2_1200x628.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2025-03-27T11:51:51.0000000Z">
+  <meta property="article:author" content="https://www.mql5.com/en/users/29210372">
+  <meta property="article:section" content="MetaTrader 5">
+  <meta property="article:tag" content="Trading">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@mql5com">
+  <meta name="twitter:image" content="https://c.mql5.com/2/128/Automating_Trading_Strategies_in_MQL5_Part_12__V2_1200x628.jpg">
+  <meta name="theme-color" content="#4a76b8">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-config" content="none">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta property="qc:admins" content="36367170677651456375">
+  <meta property="wb:webmaster" content="073d7690269bcd81">
+  <link rel="shortcut icon" href="https://c.mql5.com/i/favicon4.ico">
+  <link rel="dns-prefetch" href="https://c.mql5.com">
+  <link href="https://c.mql5.com/styles/core.444bc25de4c9131a69fedfe5ac42a082.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/all.266d64b83529847f568747dd160d42b0.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/articles.bc4209e4de0b5296041832431b46f3dd.css" type="text/css" rel="stylesheet" media="all">
+  <link href="/en/articles/rss" rel="alternate" type="application/rss+xml" title="Articles on the development and application of MetaTrader 5 trading robots and technical indicators">
+  <link rel="canonical" href="https://www.mql5.com/en/articles/17547">
+  <link rel="alternate" hreflang="en" href="https://www.mql5.com/en/articles/17547">
+  <link rel="alternate" hreflang="ru" href="https://www.mql5.com/ru/articles/17547">
+  <link rel="alternate" hreflang="zh" href="https://www.mql5.com/zh/articles/17547">
+  <link rel="alternate" hreflang="es" href="https://www.mql5.com/es/articles/17547">
+  <link rel="alternate" hreflang="de" href="https://www.mql5.com/de/articles/17547">
+  <link rel="alternate" hreflang="ja" href="https://www.mql5.com/ja/articles/17547">
+  <link rel="alternate" hreflang="pt" href="https://www.mql5.com/pt/articles/17547">
+  <title>Automating Trading Strategies in MQL5 (Part 12): Implementing the Mitigation Order Blocks (MOB) Strategy - MQL5 Articles</title>
+
+
+
+<script type="text/javascript">
+  !function(){window.mqGlobal={};var t=!1,n=!1,e=[],o=[],i=[];function d(t){var n;for(n=0;n<t.length;n+=1)t[n]()}function c(){t||(t=!0,d(e),d(o),o=[],e=[])}function a(){c(),n||(n=!0,d(i),i=[])}if(mqGlobal.AddOnReady=function(n,i){t?n(document):i?e.push(n):o.push(n)},mqGlobal.AddOnLoad=function(t){n?t(document):i.push(t)},mqGlobal.AddOnActiveWindowChange=function(t){this._onvisibility||(this._onvisibility=[]),this._onvisibility[this._onvisibility.length]=t},document.addEventListener)document.addEventListener("DOMContentLoaded",c,!1),window.addEventListener("load",a,!1);else if(document.attachEvent&&(document.attachEvent("onreadystatechange",(function(){switch(document.readyState){case"interactive":c();break;case"complete":a()}})),window.attachEvent("onload",a),document.documentElement.doScroll&&window==window.top)){!function n(){if(!t&&document.body)try{document.documentElement.doScroll("left"),c()}catch(t){setTimeout(n,0)}}()}}();
+  mqGlobal.CookieDomain = ".mql5.com";
+  mqGlobal.Language = 'en';
+  mqGlobal.IsMobile = false;
+  mqGlobal.ClearRteStorage = function (e) { if (window.GStorage || (window.GStorage = globalStorage()), window.GStorage.supported) try { var o = e; window.GStorage.getItem("rte_autosave_uid", function (e, t) { t == o && (window.GStorage.removeItem("rte_autosave_text"), window.GStorage.removeItem("rte_autosave_date"), window.GStorage.removeItem("rte_autosave_uid")) }) } catch (e) { } };
+</script>
+  
+
+    <script src="https://c.mql5.com/js/all.c09fd283bed20d28a52c95cd70a12a27.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/vendor.1be6e9a4a90b28525f93c4c69a5058a1.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/articles.cd4c73c476b2781eecdf04f5583514b5.js" type="text/javascript" defer="defer"></script>
+
+
+</head>
+
+<body id="cover" class="cover">
+
+
+  <nav class="head">
+    <a href="https://www.mql5.com" class="head__logo" title="MQL5 - Language of trade strategies built-in the MetaTrader 5 client terminal"></a>
+      <div class="head__content">
+        <div class="main-menu" id="mainmenu">
+          
+                    <ul class="main-menu__top-level" id="menuTopLevel">
+                    <li><a href="/en/forum" data-fz-event="MQL5+Menu+Forum">Forum</a></li>
+                    <li><a href="/en/market" data-fz-event="MQL5+Menu+Market">Market</a></li>
+                    <li><a href="/en/signals" data-fz-event="MQL5+Menu+Signals">Signals</a></li>
+                    <li><a href="/en/job" data-fz-event="MQL5+Menu+Job">Freelance</a></li>
+                    <li><a href="/en/vps" data-fz-event="MQL5+Menu+VPS">VPS</a></li>
+                    <li><a href="/en/quotes/overview" data-fz-event="MQL5+Menu+Overview">Quotes</a></li>
+                    <li><a href="https://www.metatrader.com" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+MetaTrader">MetaTrader</a></li>
+                  </ul><ul class="main-menu__second-level" id="menuSecondLevel">
+                    <li class="main-menu__selected"><a href="/en/articles" data-fz-event="MQL5+Menu+Articles"><img src="https://c.mql5.com/i/menu/icon-articles4.svg" alt="" width="16" height="16"/>Articles</a></li>
+                    <li><a href="/en/code" data-fz-event="MQL5+Menu+CodeBase"><img src="https://c.mql5.com/i/menu/icon-code4.svg" alt="" width="16" height="16"/>CodeBase</a></li>
+                    <li><a href="https://forge.mql5.io/?lang=en" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+AlgoForge"><img src="https://c.mql5.com/i/menu/icon-algoforge4.svg" alt="" width="16" height="16"/>Algo Forge</a></li>
+                    <li><a href="/en/docs" data-fz-event="MQL5+Menu+Docs"><img src="https://c.mql5.com/i/menu/icon-docs4.svg" alt="" width="16" height="16"/>Documentation</a></li>
+                    <li><a href="/en/book" data-fz-event="MQL5+Menu+Book"><img src="https://c.mql5.com/i/menu/icon-book4.svg" alt="" width="16" height="16"/>AlgoBook</a></li>
+                    <li><a href="/en/neurobook" data-fz-event="MQL5+Menu+Neurobook"><img src="https://c.mql5.com/i/menu/icon-neurobook4.svg" alt="" width="16" height="16"/>NeuroBook</a></li>
+                    <li><a href="/en/economic-calendar" data-fz-event="MQL5+Menu+Economic+Calendar"><img src="https://c.mql5.com/i/menu/icon-economic-calendar4.svg" alt="" width="16" height="16"/>Calendar</a></li>
+                    <li><a href="https://web.metatrader.app/terminal?mode=demo&lang=en" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Menu+Trading"><img src="https://c.mql5.com/i/menu/icon-trading4.svg" alt="" width="16" height="16"/>WebTerminal</a></li>
+                    <li class="main-menu__mobile"><a href="/en/about">About</a></li>
+                    <li class="main-menu__second-tools"><a rel="noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" title="Get the latest version of the trading platform for free" class="button-mt" data-vars-fz="MetaTrader+5+Desktop+Download+Submenu"><img width="18" height="18" src="https://c.mql5.com/i/sidebar/download.svg" alt="" loading="lazy">Download MetaTrader 5</a></li>
+                    </ul>
+        </div>
+          <div class="main-menu__active">
+            <a id="mainMenuSelected" href="#">
+              <span class="main-menu__primary">Articles</span><span class="main-menu__secondary">Sections</span>
+            </a>
+          </div>
+<form action="https://www.mql5.com/en/search" onsubmit="return false;" autocomplete="off" id="headerSearchForm" class="header-search" method="post">
+<button type="button" id="headerSearchButton" title="Search" class="header-search__button"></button><div class="header-search__input"><input name="keyword" type="text" enterkeyhint="search" title="Enter search text" placeholder="Search" id="headerSearchKeyword"/><label for="headerSearchKeyword" class="header-search__placeholder">Type <span>/</span> to search:  @user, $symbol, ...</label><button id="headerSearchSubmit" class="header-search__submit"></button></div><button type="button" id="headerSearchClean" title="Close" class="header-search__clean"></button></form>        <input class="blurHandler" id="mainMenuBlurHandler" type="checkbox">
+      </div>
+      <div class="head__toolbar" id="headerToolbar">
+          <div class="container loginRegister">
+            <nav>
+              <ul id="loginRegisterButtons"><li><a class="login" title="Please sign in. OpenID supported" href="https://www.mql5.com/en/auth_login" rel="nofollow" data-fz-event="MQL5+Menu+Siginin">Log in</a></li><li><a class="registration en" title="Please register" href="https://www.mql5.com/en/auth_register" rel="nofollow" data-fz-event="MQL5+Menu+Register" onclick="window.fpush('MQL5+Button+Click');">Create an account</a></li></ul>
+            </nav>
+          </div>
+        <div class="toggle-button" id="sidebarToggleButton">
+          <i></i>
+        </div>
+
+        <div class="group-menu" id="groupMenu">
+
+
+          <div class="container lang-menu-container">
+            <div id="langMenuContainer" class="lang-menu">
+              <input class="blurHandler" id="langmenuBlurHandler" type="checkbox">
+              <nav>
+                <ul class="lang-menu__list" id="langmenu">
+                  <li class="lang-menu__list-item lang-menu__list-item_selected"><a href="/en/articles" aria-label="English (English)"><i class="icons-languages icons-languages_en"></i><span>English</span></a></li>
+<li class="lang-menu__list-item"><a href="/ru/articles" aria-label="Русский (Russian)"><i class="icons-languages icons-languages_ru"></i><span>Русский</span></a></li>
+<li class="lang-menu__list-item"><a href="/zh/articles" aria-label="中文 (Chinese)"><i class="icons-languages icons-languages_zh"></i><span>中文</span></a></li>
+<li class="lang-menu__list-item"><a href="/es/articles" aria-label="Español (Spanish)"><i class="icons-languages icons-languages_es"></i><span>Español</span></a></li>
+<li class="lang-menu__list-item"><a href="/pt/articles" aria-label="Português (Portuguese)"><i class="icons-languages icons-languages_pt"></i><span>Português</span></a></li>
+<li class="lang-menu__list-item"><a href="/ja/articles" aria-label="日本語 (Japanese)"><i class="icons-languages icons-languages_ja"></i><span>日本語</span></a></li>
+<li class="lang-menu__list-item"><a href="/de/articles" aria-label="Deutsch (German)"><i class="icons-languages icons-languages_de"></i><span>Deutsch</span></a></li>
+<li class="lang-menu__list-item"><a href="/ko/articles" aria-label="한국어 (Korean)"><i class="icons-languages icons-languages_ko"></i><span>한국어</span></a></li>
+<li class="lang-menu__list-item"><a href="/fr/articles" aria-label="Français (French)"><i class="icons-languages icons-languages_fr"></i><span>Français</span></a></li>
+<li class="lang-menu__list-item"><a href="/it/articles" aria-label="Italiano (Italian)"><i class="icons-languages icons-languages_it"></i><span>Italiano</span></a></li>
+<li class="lang-menu__list-item"><a href="/tr/articles" aria-label="Türkçe (Turkish)"><i class="icons-languages icons-languages_tr"></i><span>Türkçe</span></a></li>
+
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+  </nav>
+
+
+
+  <div id="left-sidebar-selector" class="left-sidebar__selector left-sidebar__selector_padding">
+    <div class="left-sidebar__title">
+MetaTrader 5 /     Trading
+    </div>
+    <i class="icons-ux icons-ux_arrow-down-black"></i>
+  </div>
+  <div class="articles-container block-with-sidebar">
+    <aside class="left-sidebar left-sidebar_270" id="left-sidebar">
+      
+  <ul class="tree-menu-ul"><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/examples"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples.svg" alt="" loading="lazy"/>Examples</a><ul class="tree-menu__list tree-menu__list_nested"><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/examples_indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_indicators.svg" alt="" loading="lazy"/>Indicators</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/examples_experts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_experts.svg" alt="" loading="lazy"/>Experts</a></li></ul></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/strategy_tester"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/strategy_tester.svg" alt="" loading="lazy"/>Tester</a></li><li class="tree-menu__item tree-menu__item_selected"><a class="tree-menu__link" href="/en/articles/trading"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading.svg" alt="" loading="lazy"/>Trading</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/trading_systems"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading_systems.svg" alt="" loading="lazy"/>Trading systems</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/integration"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/integration.svg" alt="" loading="lazy"/>Integration</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/indicator.svg" alt="" loading="lazy"/>Indicators</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/expert_advisors"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/expert.svg" alt="" loading="lazy"/>Expert Advisors</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/statistics"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/statistics.svg" alt="" loading="lazy"/>Statistics and analysis</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/machine_learning"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/machine_learning.svg" alt="" loading="lazy"/>Machine learning</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/interviews"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/interviews.svg" alt="" loading="lazy"/>Interviews</a></li></ul>
+  
+
+    <div class="hints-panel">
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_like"></i>
+        <div class="hints-panel__content">
+          Do you like the article?<br>
+          Share it with others —<br>post a <a href="https://www.mql5.com/en/articles/17547" target="_blank">link</a> to it!
+        </div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_tg-square icons-hints_24px"></i><div class="hints-panel__content">
+Find us on <a href="https://t.me/mql5dev" target="_blank" rel="nofollow">Telegram</a>!<br> Join our fan page</div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_mt-5"></i>
+        <div class="hints-panel__content">
+          Use new possibilities of <a href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Article" rel="nofollow sponsored noopener noreferrer">MetaTrader 5</a>
+        </div>
+      </div>
+    </div>
+<div id='vgckrufggwxdtfscpyalmenexmvhljduja' class="roeid8y6hsc3ntv1l gg88d3drb"></div>      <div class="similar-author-articles ui">
+        <h4 class="similar-author-articles__title">Similar articles</h4>
+        <ul class="similar-author-articles__list">
+            <li>
+              <a href="/en/articles/18755" data-fz-event="MQL5+Article+Similar+Article">Extremal Optimization (EO)</a>
+            </li>
+            <li>
+              <a href="/en/articles/22691" data-fz-event="MQL5+Article+Similar+Article">Step-by-Step Implementation of a Local Stop Loss System in MQL5</a>
+            </li>
+            <li>
+              <a href="/en/articles/22855" data-fz-event="MQL5+Article+Similar+Article">Position Management: A Reusable Trade Journal with Live Maximum Adverse Excursion, Maximum Favorable Excursion, and R-Multiple Tracking in MQL5</a>
+            </li>
+            <li>
+              <a href="/en/articles/18111" data-fz-event="MQL5+Article+Similar+Article">Implementing a Breakeven Mechanism in MQL5 (Part 2): ATR- and RRR-Based Breakeven</a>
+            </li>
+            <li>
+              <a href="/en/articles/22628" data-fz-event="MQL5+Article+Similar+Article">Automating Classic Market Methods in MQL5 (Part 1): Wyckoff Accumulation and Distribution</a>
+            </li>
+        </ul>
+      </div>
+    <div class="freelance-hint">
+      <img src="https://c.mql5.com/i/articles/icon_freelance.svg" width="24" height="24" loading="lazy" />
+      <div class="freelance-hint__text">
+        Use the ideas from this article<br>to order your own robot<br>on Freelance
+      </div>
+        <a target="_blank" class="button button_blue-gray-border" title="Go to Freelance" href="/en/job/new" data-fz-event="MQL5+Article+New+Job">Go to Freelance</a>
+    </div>
+
+    </aside>
+    <article class="content-with-sidebar articles-content splashed">
+      
+
+
+  <header class="article-header article-header_light" style="background-color: rgb(90,117,111)">
+    <section class="article-tools-panel">
+        <div class="article-tools-panel__item">
+          <span class="popup framed client flags">
+            <a class="dropdown" href="javascript:void(false);">
+              <span class="icons-languages icons-languages_en"></span><i></i>
+            </a>
+            <span class="popup">
+              <span class="tip">
+                <span></span>
+              </span>
+              <span class="items">
+                    <a href="/ru/articles/17547">Русский</a>
+                    <a href="/zh/articles/17547">中文</a>
+                    <a href="/es/articles/17547">Español</a>
+                    <a href="/de/articles/17547">Deutsch</a>
+                    <a href="/ja/articles/17547">日本語</a>
+                    <a href="/pt/articles/17547">Português</a>
+              </span>
+            </span>
+          </span>
+        </div>
+        
+      <div class="article-tools-panel__item">
+        <a href="#pocket" title="Pocket allows you to insert a complete content description to the appropriate comment" onclick="return Pocket.Add(this,'en',2,1,17547);" class="article-tools-panel__rounded">
+          <i class="article-pocket-icon"></i>
+        </a>
+      </div>
+      <div class="article-tools-panel__item">
+        <a href="/en/articles/17547?print=" target="_blank" class="article-tools-panel__rounded" rel="nofollow" title="Printer friendly version">
+          <i class="article-print-icon"></i>
+        </a>
+      </div>
+
+    </section>
+    <section class="article-header__image-box">
+        <img class="article-header__image-preview" loading="lazy" width="32" height="16" alt="preview" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAsICAoIBwsKCQoNDAsNERwSEQ8PESIZGhQcKSQrKigkJyctMkA3LTA9MCcnOEw5PUNFSElIKzZPVU5GVEBHSEX/2wBDAQwNDREPESESEiFFLicuRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUX/wAARCAAQACADASIAAhEBAxEB/8QAFwAAAwEAAAAAAAAAAAAAAAAAAgMEBf/EACIQAAICAQMEAwAAAAAAAAAAAAECABEDBBJhBSEicTEyof/EABYBAQEBAAAAAAAAAAAAAAAAAAEABP/EABkRAQEBAAMAAAAAAAAAAAAAAAEAAhESMf/aAAwDAQACEQMRAD8AB8y8mKGr2Nfj2&#x2B;Lg6kIhJxkyJtRkJo0RzEEsz11aD9TyuK3DbxEZOobW8Wr1J0ZD9k/YD6fE7XZHqRlnjPl//9k=">
+      <div class="article-header__gradient" style="background: linear-gradient(90deg, rgba(90,117,111, 1) 0%, rgba(90,117,111, 0.72) 8.31%, rgba(90,117,111, 0) 17.1%), linear-gradient(270deg, rgba(90,117,111, 1) 0%, rgba(90,117,111, 0.72) 8.06%, rgba(90,117,111, 0) 16.59%), linear-gradient(0deg, rgba(90,117,111, 1) 8.26%, rgba(90,117,111, 0.8) 65%, rgba(90,117,111, 0) 100%);"></div>
+        <picture>
+          <source srcset="https://c.mql5.com/2/128/Automating_Trading_Strategies_in_MQL5_Part_12__V2_600x314.jpg, https://c.mql5.com/2/128/Automating_Trading_Strategies_in_MQL5_Part_12__V2_1200x628.jpg 2x" media="(min-width:700px)">
+          <img class="article-header__image" loading="lazy" width="600" height="314" srcset="https://c.mql5.com/2/128/Automating_Trading_Strategies_in_MQL5_Part_12__V2_300x157.jpg, https://c.mql5.com/2/128/Automating_Trading_Strategies_in_MQL5_Part_12__V2_600x314.jpg 2x" src="https://c.mql5.com/2/128/Automating_Trading_Strategies_in_MQL5_Part_12__V2_600x314.jpg" alt="Automating Trading Strategies in MQL5 (Part 12): Implementing the Mitigation Order Blocks (MOB) Strategy" onerror="this.style.display='none';">
+        </picture>
+    </section>
+    <section class="article-header__content">
+      <h1>Automating Trading Strategies in MQL5 (Part 12): Implementing the Mitigation Order Blocks (MOB) Strategy</h1>
+      <div class="article-header__info">
+        <a href="/en/articles/mt5">MetaTrader 5</a>
+          &mdash;
+          <a href="/en/articles/mt5/trading">Trading</a>
+        | <time datetime="2025-03-27T11:51Z" title="11:51" datetime-type="datetime">27 March 2025, 11:51</time>
+      </div>
+      <div class="article-header__indicators">
+        <span title="Views">
+          <img src="https://c.mql5.com/i/icons.svg#views-white-usage" width="20" height="20" alt="" />
+          17 730
+        </span>
+        
+          <a title="Comments" href="/en/forum/483609">
+            <img src="https://c.mql5.com/i/icons.svg#comments-white-usage" width="20" height="20" alt="" />
+            7
+          </a>
+      </div>
+      <div class="article-header__author">
+          <div class="article-header__avatar">
+            <img src="https://c.mql5.com/avatar/2022/11/637df59b-9551.jpg" srcset="https://c.mql5.com/avatar/2022/11/637df59b-9551_big.jpg 2x" data-user-login="29210372" title="Allan Munene Mutiiria" alt="Allan Munene Mutiiria" loading="lazy" width="60" height="60">
+          </div>
+<a class="author" href="/en/users/29210372" data-user-login="29210372">Allan Munene Mutiiria</a>      </div>
+    </section>
+  </header>
+
+    <div class="content">
+      <div class="inner formatted-content">
+        <h3 id="para1">Introduction</h3> <p>In our <a href="/en/articles/17350" target="_blank">previous article (Part 11)</a>, we built a multi-level grid trading system in <a href="https://www.metaquotes.net/en/metatrader5/algorithmic-trading/mql5" title="https://www.metaquotes.net/en/metatrader5/algorithmic-trading/mql5" target="_blank">MetaQuotes Language 5</a> (MQL5) to capitalize on market fluctuations. Now, in Part 12, we focus on implementing the <a href="/go?link=https://theicttrader.com/2024/03/24/order-blocks-breaker-blocks-and-mitigation-blocks/" title="https://theicttrader.com/2024/03/24/order-blocks-breaker-blocks-and-mitigation-blocks/" rel="nofollow" target="_blank">Mitigation Order Blocks (MOB)</a> Strategy, a Smart Money concept that identifies key price zones where institutional orders are mitigated before significant market moves. We will cover the following topics:</p> <ol> <li><a href="/en/articles/17547#para1" target="_blank">Strategy Blueprint</a></li> <li><a href="/en/articles/17547#para2" target="_blank">Implementation in MQL5</a></li> <li><a href="/en/articles/17547#para3" target="_blank">Backtesting</a></li> <li><a href="/en/articles/17547#para4" target="_blank">Conclusion</a></li> </ol> <p>By the end of this article, you will have a fully automated <a href="/go?link=https://innercircletrader.net/tutorials/ict-mitigation-block-explained/" title="https://innercircletrader.net/tutorials/ict-mitigation-block-explained/" rel="nofollow" target="_blank">mitigation order blocks</a> trading system ready for trading. Let’s get started!</p> <p><br/></p> <h3 id="para1">Strategy Blueprint</h3> <p>To implement the <a href="/go?link=https://innercircletrader.net/tutorials/ict-mitigation-block-explained/" title="https://innercircletrader.net/tutorials/ict-mitigation-block-explained/" rel="nofollow" target="_blank">Mitigation Order Blocks Strategy</a>, we will develop an automated system that detects, validates, and executes trades based on order block mitigation events. The strategy will focus on identifying institutional price zones where liquidity is absorbed before trend continuation. Our system will incorporate precise conditions for entry, stop-loss placement, and trade management to ensure efficiency and accuracy. We will structure the development as follows:</p> <ul> <li><b>Order Block Identification</b> – The system will scan historical price action to detect bullish and bearish order blocks, filtering out weak zones based on volatility, liquidity grabs, and price imbalance.</li> <li><b>Mitigation Validation</b> – We will program conditions that confirm a valid mitigation event, ensuring that the price revisits the order block and reacts with rejection signals such as wicks or momentum shifts.</li> <li><b>Market Structure Confirmation</b> – The EA will analyze higher-timeframe trends and liquidity sweeps to ensure that the identified mitigation aligns with the broader market flow.</li> <li><b>Trade Execution Rules</b> – Once mitigation is confirmed, the system will define precise entry points, dynamically calculate stop-loss levels based on order block structure, and set take-profit targets based on risk-reward parameters.</li> <li><b>Risk and Money Management</b> – The strategy will integrate position sizing, drawdown protection, and exit strategies to manage trade risk effectively.</li> </ul> <p></p> <p>In a nutshell, here is a general visualization of the strategy.</p> <p style="text-align:center;"> <img width="749" height="450" src="https://c.mql5.com/2/126/Screenshot_2025-03-20_121647.png" loading="lazy" title="Mitigation Order Block" alt="Mitigation Order Block" style="vertical-align:middle;"/></p> <p><br/></p> <h3 id="para2">Implementation in MQL5</h3> <p>To create the program in MQL5, open the <a href="https://www.metatrader5.com/en/automated-trading/metaeditor" title="https://www.metatrader5.com/en/automated-trading/metaeditor" target="_blank">MetaEditor</a>, go to the Navigator, locate the Indicators folder, click on the "New" tab, and follow the prompts to create the file. Once it is made, in the coding environment, we will need to declare some <a href="/en/docs/basis/variables/global" target="_blank">global variables</a> that we will use throughout the program.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Copyright 2025, Forex Algo-Trader, Allan. |</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "https://t.me/Forex_Algo_Trader" |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="preprocessor">#property </span><span class="macro">copyright</span> <span class="string">"Forex Algo-Trader, Allan"</span>
+<span class="preprocessor">#property </span><span class="macro">link</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"https://t.me/Forex_Algo_Trader"</span>
+<span class="preprocessor">#property </span><span class="macro">version</span>&nbsp;&nbsp; <span class="string">"1.00"</span>
+<span class="preprocessor">#property </span><span class="macro">description</span> <span class="string">"This EA trades based on Mitigation Order Blocks Strategy"</span>
+<span class="preprocessor">#property </span><span class="macro">strict</span>
+
+<span class="comment">//--- Include the trade library for managing positions</span>
+<span class="preprocessor">#include </span>&lt;Trade/Trade.mqh&gt;
+CTrade obj_Trade;
+<span>
+</span></pre> <p>We begin the implementation by including the trade library with "<a href="/en/docs/basis/preprosessor/include" target="_blank">#include</a> &lt;Trade/Trade.mqh&gt;", which provides built-in functions for managing trade operations. We then initialize the trade object "obj_Trade" using the "CTrade" class, allowing the Expert Advisor to execute buy and sell orders programmatically. This setup will ensure that trade execution is handled efficiently without requiring manual intervention. Then we can provide some inputs so the user can change and control the behavior from the <a href="https://en.wikipedia.org/wiki/User_interface" title="https://en.wikipedia.org/wiki/User_interface" target="_blank">user interface</a> (UI).</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Input Parameters&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">input</span> <span class="keyword">double</span> tradeLotSize = <span class="number">0.01</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Trade size for each position</span>
+<span class="keyword">input</span> <span class="keyword">bool</span> enableTrading = <span class="macro">true</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Toggle to allow or disable trading</span>
+<span class="keyword">input</span> <span class="keyword">bool</span> enableTrailingStop = <span class="macro">true</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Toggle to enable or disable trailing stop</span>
+<span class="keyword">input</span> <span class="keyword">double</span> trailingStopPoints = <span class="number">30</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Distance in points for trailing stop</span>
+<span class="keyword">input</span> <span class="keyword">double</span> minProfitToTrail = <span class="number">50</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Minimum profit in points before trailing starts (not used yet)</span>
+<span class="keyword">input</span> <span class="keyword">int</span> uniqueMagicNumber = <span class="number">12345</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Unique identifier for EA trades</span>
+<span class="keyword">input</span> <span class="keyword">int</span> consolidationBars = <span class="number">7</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Number of bars to check for consolidation</span>
+<span class="keyword">input</span> <span class="keyword">double</span> maxConsolidationSpread = <span class="number">50</span>;&nbsp;&nbsp; <span class="comment">// Maximum allowed spread in points for consolidation</span>
+<span class="keyword">input</span> <span class="keyword">int</span> barsToWaitAfterBreakout = <span class="number">3</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Bars to wait after breakout before checking impulse</span>
+<span class="keyword">input</span> <span class="keyword">double</span> impulseMultiplier = <span class="number">1.0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Multiplier for detecting impulsive moves</span>
+<span class="keyword">input</span> <span class="keyword">double</span> stopLossDistance = <span class="number">1500</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Stop loss distance in points</span>
+<span class="keyword">input</span> <span class="keyword">double</span> takeProfitDistance = <span class="number">1500</span>;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Take profit distance in points</span>
+<span class="keyword">input</span> <span class="keyword">color</span> bullishOrderBlockColor = <span class="macro">clrGreen</span>;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Color for bullish order blocks</span>
+<span class="keyword">input</span> <span class="keyword">color</span> bearishOrderBlockColor = <span class="macro">clrRed</span>;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Color for bearish order blocks</span>
+<span class="keyword">input</span> <span class="keyword">color</span> mitigatedOrderBlockColor = <span class="macro">clrGray</span>;&nbsp;&nbsp;<span class="comment">// Color for mitigated order blocks</span>
+<span class="keyword">input</span> <span class="keyword">color</span> labelTextColor = <span class="macro">clrBlack</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Color for text labels</span>
+</pre> <p>Here, we define <a href="/en/docs/basis/variables/inputvariables" target="_blank">input</a> parameters to configure the program's behavior. "tradeLotSize" sets the position size, while "enableTrading" and "enableTrailingStop" control execution and trailing stops, with "trailingStopPoints" and "minProfitToTrail" refining stop logic. "uniqueMagicNumber" identifies trades, and consolidation is detected using "consolidationBars" and "maxConsolidationSpread". Breakouts are confirmed with "barsToWaitAfterBreakout" and "impulseMultiplier". "stopLossDistance" and "takeProfitDistance" manage risk, while "bullishOrderBlockColor", "bearishOrderBlockColor", "mitigatedOrderBlockColor", and "labelTextColor" handle chart visuals.</p> <p>Lastly, we need to define some global variables that we will use for the overall system control.</p> <pre class="code"><span class="comment">//--- Struct to store price and index for highs and lows</span>
+<span class="keyword">struct</span> PriceAndIndex {
+&nbsp;&nbsp; <span class="keyword">double</span> price;&nbsp;&nbsp;<span class="comment">// Price value</span>
+&nbsp;&nbsp; <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;index;&nbsp;&nbsp;<span class="comment">// Bar index where this price occurs</span>
+};
+
+<span class="comment">//--- Global variables for tracking market state</span>
+PriceAndIndex rangeHighestHigh = {<span class="number">0</span>, <span class="number">0</span>};&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Highest high in the consolidation range</span>
+PriceAndIndex rangeLowestLow = {<span class="number">0</span>, <span class="number">0</span>};&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Lowest low in the consolidation range</span>
+<span class="keyword">bool</span> isBreakoutDetected = <span class="macro">false</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Flag for when a breakout occurs</span>
+<span class="keyword">double</span> lastImpulseLow = <span class="number">0.0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Low price after breakout for impulse check</span>
+<span class="keyword">double</span> lastImpulseHigh = <span class="number">0.0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// High price after breakout for impulse check</span>
+<span class="keyword">int</span> breakoutBarNumber = -<span class="number">1</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Bar index where breakout happened</span>
+<span class="keyword">datetime</span> breakoutTimestamp = <span class="number">0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Time of the breakout</span>
+<span class="keyword">string</span> orderBlockNames[];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Array of order block object names</span>
+<span class="keyword">datetime</span> orderBlockEndTimes[];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Array of order block end times</span>
+<span class="keyword">bool</span> orderBlockMitigatedStatus[];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Array tracking if order blocks are mitigated</span>
+<span class="keyword">bool</span> isBullishImpulse = <span class="macro">false</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Flag for bullish impulsive move</span>
+<span class="keyword">bool</span> isBearishImpulse = <span class="macro">false</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Flag for bearish impulsive move</span>
+
+<span class="preprocessor">#define </span>OB_Prefix <span class="string">"OB REC "</span>&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Prefix for order block object names</span>
+<span>
+</span></pre> <p>We first define the "PriceAndIndex" <a href="/en/docs/basis/types/classes" target="_blank">struct</a>, which stores a "price" value and the "index" of the bar where this price occurs. This structure will be useful for tracking specific price points within a defined range. The global variables manage key aspects of market structure and breakout detection. "rangeHighestHigh" and "rangeLowestLow" will store the highest and lowest prices in the consolidation range, respectively, helping to define the boundaries of potential order blocks. "isBreakoutDetected" will act as a flag to indicate when a breakout has occurred, while "lastImpulseLow" and "lastImpulseHigh" will store the first low and high after a breakout, used to confirm impulsive moves.</p> <p>"breakoutBarNumber" will record the bar index where the breakout happened, and "breakoutTimestamp" store the exact time of the breakout event. The arrays "orderBlockNames", "orderBlockEndTimes", and "orderBlockMitigatedStatus" will handle the identification, lifespan, and mitigation tracking of order blocks. The boolean flags "isBullishImpulse" and "isBearishImpulse" determine whether the breakout move qualifies as a bullish or bearish impulse. Finally, "OB_Prefix" is a predefined string prefix defined by the macro <a href="/en/docs/basis/preprosessor/constant" target="_blank">#define</a>&nbsp;used when naming order block objects, ensuring consistency in graphical representation. With the variables, we are all set to begin the program logic.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Expert initialization function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">int</span> <span class="functions">OnInit</span>() {
+&nbsp;&nbsp; <span class="comment">//--- Set the magic number for the trade object to identify EA trades</span>
+&nbsp;&nbsp; obj_Trade.SetExpertMagicNumber(uniqueMagicNumber);
+&nbsp;&nbsp; <span class="keyword">return</span>(<span class="macro">INIT_SUCCEEDED</span>);
+}
+</pre> <p>Here, we initialize the Expert Advisor in the <a href="/en/docs/event_handlers/oninit" target="_blank">OnInit</a>&nbsp;event handler. We set the expert magic number using the "SetExpertMagicNumber" method, ensuring that all trades executed by our EA are uniquely tagged, preventing conflicts with other trades. This step is crucial for tracking and managing only the trades opened by our strategy. Once the initialization is complete, we return <a href="/en/docs/basis/function/events#enum_init_retcode" target="_blank">INIT_SUCCEEDED</a>, confirming that our program is ready to operate. We can then graduate to the main <a href="/en/docs/event_handlers/ontick" target="_blank">OnTick</a>&nbsp;event handler to our main control logic.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Expert OnTick function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> <span class="functions">OnTick</span>() {
+
+&nbsp;&nbsp; <span class="comment">//--- Check for a new bar to process logic only once per bar</span>
+&nbsp;&nbsp; <span class="keyword">static</span> <span class="keyword">bool</span> isNewBar = <span class="macro">false</span>;
+&nbsp;&nbsp; <span class="keyword">int</span> currentBarCount = <span class="functions">iBars</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>);
+&nbsp;&nbsp; <span class="keyword">static</span> <span class="keyword">int</span> previousBarCount = currentBarCount;
+&nbsp;&nbsp; <span class="keyword">if</span> (previousBarCount == currentBarCount) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isNewBar = <span class="macro">false</span>;
+&nbsp;&nbsp; } <span class="keyword">else</span> <span class="keyword">if</span> (previousBarCount != currentBarCount) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isNewBar = <span class="macro">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;previousBarCount = currentBarCount;
+&nbsp;&nbsp; }
+
+&nbsp;&nbsp; <span class="comment">//--- Exit if not a new bar to avoid redundant processing</span>
+&nbsp;&nbsp; <span class="keyword">if</span> (!isNewBar)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp; <span class="comment">//---</span>
+}</pre> <p>To ensure we process data on every bar and not on every tick, on the OnTick&nbsp;function, which executes on every new tick received, we use the <a href="/en/docs/series/ibars" target="_blank">iBars</a>&nbsp;function to get the total number of bars on the chart and store it in "currentBarCount". We then compare it with "previousBarCount", and if they are equal, "isNewBar" remains false, preventing redundant processing. If a new bar is detected, we update "previousBarCount" and set "isNewBar" to true, allowing the strategy logic to execute. Finally, if "isNewBar" is false, we return early, optimizing performance by skipping unnecessary computations. If it is a new bar, we continue looking for consolidations.</p> <pre class="code"><span class="comment">//--- Define the starting bar index for consolidation checks</span>
+<span class="keyword">int</span> startBarIndex = <span class="number">1</span>;
+
+<span class="comment">//--- Check for consolidation or extend the existing range</span>
+<span class="keyword">if</span> (!isBreakoutDetected) {
+&nbsp;&nbsp; <span class="keyword">if</span> (rangeHighestHigh.price == <span class="number">0</span> &amp;&amp; rangeLowestLow.price == <span class="number">0</span>) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Check if bars are in a tight consolidation range</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">bool</span> isConsolidated = <span class="macro">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span> (<span class="keyword">int</span> i = startBarIndex; i &lt; startBarIndex + consolidationBars - <span class="number">1</span>; i++) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span> (<span class="functions">MathAbs</span>(high(i) - high(i + <span class="number">1</span>)) &gt; maxConsolidationSpread * <span class="functions">Point</span>()) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isConsolidated = <span class="macro">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">break</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span> (<span class="functions">MathAbs</span>(low(i) - low(i + <span class="number">1</span>)) &gt; maxConsolidationSpread * <span class="functions">Point</span>()) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isConsolidated = <span class="macro">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">break</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (isConsolidated) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Find the highest high in the consolidation range</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rangeHighestHigh.price = high(startBarIndex);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rangeHighestHigh.index = startBarIndex;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">for</span> (<span class="keyword">int</span> i = startBarIndex + <span class="number">1</span>; i &lt; startBarIndex + consolidationBars; i++) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (high(i) &gt; rangeHighestHigh.price) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rangeHighestHigh.price = high(i);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rangeHighestHigh.index = i;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Find the lowest low in the consolidation range</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rangeLowestLow.price = low(startBarIndex);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rangeLowestLow.index = startBarIndex;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">for</span> (<span class="keyword">int</span> i = startBarIndex + <span class="number">1</span>; i &lt; startBarIndex + consolidationBars; i++) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (low(i) &lt; rangeLowestLow.price) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rangeLowestLow.price = low(i);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rangeLowestLow.index = i;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Log the established consolidation range</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Consolidation range established: Highest High = "</span>, rangeHighestHigh.price,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="string">" at index "</span>, rangeHighestHigh.index,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="string">" and Lowest Low = "</span>, rangeLowestLow.price,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="string">" at index "</span>, rangeLowestLow.index);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp; } <span class="keyword">else</span> {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Check if the current bar extends the existing range</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> currentHigh = high(<span class="number">1</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> currentLow = low(<span class="number">1</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (currentHigh &lt;= rangeHighestHigh.price &amp;&amp; currentLow &gt;= rangeLowestLow.price) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Range extended: High = "</span>, currentHigh, <span class="string">", Low = "</span>, currentLow);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <span class="keyword">else</span> {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"No extension: Bar outside range."</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp; }
+}</pre> <p>Here, we define and establish the consolidation range by analyzing recent price movements. We begin by setting "startBarIndex" to 1, determining the starting point for our consolidation checks. If we have not yet detected a breakout, as indicated by "isBreakoutDetected", we proceed to assess whether the market is in a tight consolidation phase. We iterate through the last "consolidationBars" count of bars, using the <a href="/en/docs/math/mathabs" target="_blank">MathAbs</a>&nbsp;function to measure the absolute differences between consecutive highs and lows. If all differences remain within "maxConsolidationSpread", we confirm consolidation.</p> <p>Once consolidation is detected, we determine the highest high and lowest low within the range. We initialize "rangeHighestHigh" and "rangeLowestLow" with the high and low of "startBarIndex", then iterate through the range to update these values whenever we encounter a new highest high or lowest low. These values define our consolidation boundaries.</p> <p>If the consolidation range is already established, we check whether the current bar extends the existing range. We retrieve "currentHigh" and "currentLow" using the "high" and "low" functions and compare them to "rangeHighestHigh.price" and "rangeLowestLow.price". If the price remains within the range, we print a message indicating the range extension using the <a href="/en/docs/common/print" target="_blank">Print</a>&nbsp;function. Otherwise, we print that no extension occurred, signaling a potential breakout scenario. The custom price functions are as below.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Price data accessors&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">double</span> high(<span class="keyword">int</span> index) { <span class="keyword">return</span> <span class="functions">iHigh</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, index); }&nbsp;&nbsp; <span class="comment">//--- Get high price of a bar</span>
+<span class="keyword">double</span> low(<span class="keyword">int</span> index) { <span class="keyword">return</span> <span class="functions">iLow</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, index); }&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Get low price of a bar</span>
+<span class="keyword">double</span> open(<span class="keyword">int</span> index) { <span class="keyword">return</span> <span class="functions">iOpen</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, index); }&nbsp;&nbsp; <span class="comment">//--- Get open price of a bar</span>
+<span class="keyword">double</span> close(<span class="keyword">int</span> index) { <span class="keyword">return</span> <span class="functions">iClose</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, index); } <span class="comment">//--- Get close price of a bar</span>
+<span class="keyword">datetime</span> time(<span class="keyword">int</span> index) { <span class="keyword">return</span> <span class="functions">iTime</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, index); } <span class="comment">//--- Get time of a bar</span>
+</pre> <p>These custom functions help us retrieve price data. The "high" function uses <a href="/en/docs/series/ihigh" target="_blank">iHigh</a>&nbsp;to return the high price of a bar at a specified "index", while the "low" function calls <a href="/en/docs/series/ilow" target="_blank">iLow</a>&nbsp;to obtain the corresponding low price. The "open" function fetches the opening price using <a href="/en/docs/series/iopen" target="_blank">iOpen</a>, and the "close" function retrieves the closing price via <a href="/en/docs/series/iclose" target="_blank">iClose</a>. Additionally, the "time" function employs <a href="/en/docs/series/itime" target="_blank">iTime</a>&nbsp;to return the timestamp of the given bar. Upon running the program, we have the following result.</p> <p style="text-align:center;"> <img width="748" height="327" src="https://c.mql5.com/2/126/Screenshot_2025-03-20_002653.png" loading="lazy" title="Consolidation Confirmation" alt="Consolidation Confirmation" style="vertical-align:middle;"/></p> <p>From the image, we can see that once the price range is established and price revolves within the range, we extend it until we have a range breach. So now, we need to detect a breakout on the confirmed price lag range. We achieve this using the following logic.</p> <pre class="code"><span class="comment">//--- Detect a breakout from the consolidation range</span>
+<span class="keyword">if</span> (rangeHighestHigh.price &gt; <span class="number">0</span> &amp;&amp; rangeLowestLow.price &gt; <span class="number">0</span>) {
+&nbsp;&nbsp; <span class="keyword">double</span> currentClosePrice = close(<span class="number">1</span>);
+&nbsp;&nbsp; <span class="keyword">if</span> (currentClosePrice &gt; rangeHighestHigh.price) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Upward breakout at "</span>, currentClosePrice, <span class="string">" &gt; "</span>, rangeHighestHigh.price);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isBreakoutDetected = <span class="macro">true</span>;
+&nbsp;&nbsp; } <span class="keyword">else</span> <span class="keyword">if</span> (currentClosePrice &lt; rangeLowestLow.price) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Downward breakout at "</span>, currentClosePrice, <span class="string">" &lt; "</span>, rangeLowestLow.price);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isBreakoutDetected = <span class="macro">true</span>;
+&nbsp;&nbsp; }
+}
+
+<span class="comment">//--- Reset state after a breakout is detected</span>
+<span class="keyword">if</span> (isBreakoutDetected) {
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Breakout detected. Resetting for the next range."</span>);
+&nbsp;&nbsp; breakoutBarNumber = <span class="number">1</span>;
+&nbsp;&nbsp; breakoutTimestamp = <span class="functions">TimeCurrent</span>();
+&nbsp;&nbsp; lastImpulseHigh = rangeHighestHigh.price;
+&nbsp;&nbsp; lastImpulseLow = rangeLowestLow.price;
+
+&nbsp;&nbsp; isBreakoutDetected = <span class="macro">false</span>;
+&nbsp;&nbsp; rangeHighestHigh.price = <span class="number">0</span>;
+&nbsp;&nbsp; rangeHighestHigh.index = <span class="number">0</span>;
+&nbsp;&nbsp; rangeLowestLow.price = <span class="number">0</span>;
+&nbsp;&nbsp; rangeLowestLow.index = <span class="number">0</span>;
+}
+</pre> <p>To detect and handle breakouts from a previously identified consolidation range, we first verify that the "rangeHighestHigh.price" and "rangeLowestLow.price" values are valid, ensuring a consolidation range has been established. We then compare the "currentClosePrice", obtained using the "close" function, against the range boundaries. If the closing price exceeds "rangeHighestHigh.price", we recognize an upward breakout, logging the event and setting "isBreakoutDetected" to true. Similarly, if the closing price falls below "rangeLowestLow.price", we identify a downward breakout and flag it accordingly.</p> <p>Once a breakout is confirmed, we reset the necessary state variables to prepare for tracking a new consolidation phase. We log the breakout occurrence and store the "breakoutBarNumber" as 1, marking the first bar of the breakout sequence. The "breakoutTimestamp" is recorded using <a href="/en/docs/dateandtime/timecurrent" target="_blank">TimeCurrent</a>&nbsp;to note the exact time of the breakout. Additionally, we store "lastImpulseHigh" and "lastImpulseLow" to track post-breakout price behavior. Finally, we reset "isBreakoutDetected" to false and clear the previous consolidation range by setting "rangeHighestHigh.price" and "rangeLowestLow.price" to 0, ensuring the system is ready to detect the next trading opportunity.</p> <p>If there are confirmed breakouts, we wait and verify them via impulsive movements, and then plot them on the chart.</p> <pre class="code"><span class="comment">//--- Check for impulsive movement after breakout and create order blocks</span>
+<span class="keyword">if</span> (breakoutBarNumber &gt;= <span class="number">0</span> &amp;&amp; <span class="functions">TimeCurrent</span>() &gt; breakoutTimestamp + barsToWaitAfterBreakout * <span class="functions">PeriodSeconds</span>()) {
+&nbsp;&nbsp; <span class="keyword">double</span> impulseRange = lastImpulseHigh - lastImpulseLow;
+&nbsp;&nbsp; <span class="keyword">double</span> impulseThresholdPrice = impulseRange * impulseMultiplier;
+&nbsp;&nbsp; isBullishImpulse = <span class="macro">false</span>;
+&nbsp;&nbsp; isBearishImpulse = <span class="macro">false</span>;
+&nbsp;&nbsp; <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= barsToWaitAfterBreakout; i++) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> closePrice = close(i);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (closePrice &gt;= lastImpulseHigh + impulseThresholdPrice) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; isBullishImpulse = <span class="macro">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Impulsive upward move: "</span>, closePrice, <span class="string">" &gt;= "</span>, lastImpulseHigh + impulseThresholdPrice);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">break</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <span class="keyword">else</span> <span class="keyword">if</span> (closePrice &lt;= lastImpulseLow - impulseThresholdPrice) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; isBearishImpulse = <span class="macro">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Impulsive downward move: "</span>, closePrice, <span class="string">" &lt;= "</span>, lastImpulseLow - impulseThresholdPrice);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">break</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">if</span> (!isBullishImpulse &amp;&amp; !isBearishImpulse) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"No impulsive movement detected."</span>);
+&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="comment">//---</span>
+}</pre> <p>Here, we analyze price action after a breakout to determine whether an impulsive movement has occurred, which is critical for identifying valid order blocks. We first check if "breakoutBarNumber" is valid and if the current time, retrieved via TimeCurrent, has surpassed the "breakoutTimestamp" plus "barsToWaitAfterBreakout" multiplied by <a href="/en/docs/common/periodseconds" target="_blank">PeriodSeconds</a>, ensuring a sufficient waiting period has elapsed. We then calculate "impulseRange" as the difference between "lastImpulseHigh" and "lastImpulseLow", which represents the post-breakout price fluctuation. Using this, we compute "impulseThresholdPrice" by multiplying "impulseRange" by "impulseMultiplier" to define the minimum price extension required for an impulsive move.</p> <p>Next, we initialize "isBullishImpulse" and "isBearishImpulse" as false, preparing to evaluate the price action over the last "barsToWaitAfterBreakout" bars. We iterate through these bars using a <a href="/en/docs/basis/operators/for" target="_blank">for loop</a>, retrieving the closing price with the "close" function. If "closePrice" is greater than or equal to "lastImpulseHigh + impulseThresholdPrice", we detect an impulsive bullish move, set "isBullishImpulse" to true, and log the event. If "closePrice" is less than or equal to "lastImpulseLow - impulseThresholdPrice", we identify an impulsive bearish move, set "isBearishImpulse" to true, and log it. If neither condition is met, we print a message stating that no impulsive movement was detected. This logic ensures that only strong breakout continuations qualify as valid order blocks for further processing. To visualize them, we use the following logic.</p> <pre class="code"><span class="keyword">bool</span> isOrderBlockValid = isBearishImpulse || isBullishImpulse;
+
+<span class="keyword">if</span> (isOrderBlockValid) {
+&nbsp;&nbsp; <span class="keyword">datetime</span> blockStartTime = <span class="functions">iTime</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, consolidationBars + barsToWaitAfterBreakout + <span class="number">1</span>);
+&nbsp;&nbsp; <span class="keyword">double</span> blockTopPrice = lastImpulseHigh;
+&nbsp;&nbsp; <span class="keyword">int</span> visibleBarsOnChart = (<span class="keyword">int</span>)<span class="functions">ChartGetInteger</span>(<span class="number">0</span>, <span class="macro">CHART_VISIBLE_BARS</span>);
+&nbsp;&nbsp; <span class="keyword">datetime</span> blockEndTime = blockStartTime + (visibleBarsOnChart / <span class="number">1</span>) * <span class="functions">PeriodSeconds</span>();
+&nbsp;&nbsp; <span class="keyword">double</span> blockBottomPrice = lastImpulseLow;
+&nbsp;&nbsp; <span class="keyword">string</span> orderBlockName = OB_Prefix + <span class="string">"("</span> + <span class="functions">TimeToString</span>(blockStartTime) + <span class="string">")"</span>;
+&nbsp;&nbsp; <span class="keyword">color</span> orderBlockColor = isBullishImpulse ? bullishOrderBlockColor : bearishOrderBlockColor;
+&nbsp;&nbsp; <span class="keyword">string</span> orderBlockLabel = isBullishImpulse ? <span class="string">"Bullish OB"</span> : <span class="string">"Bearish OB"</span>;
+
+&nbsp;&nbsp; <span class="keyword">if</span> (<span class="functions">ObjectFind</span>(<span class="number">0</span>, orderBlockName) &lt; <span class="number">0</span>) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Create a rectangle for the order block</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectCreate</span>(<span class="number">0</span>, orderBlockName, <span class="macro">OBJ_RECTANGLE</span>, <span class="number">0</span>, blockStartTime, blockTopPrice, blockEndTime, blockBottomPrice);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, orderBlockName, <span class="macro">OBJPROP_TIME</span>, <span class="number">0</span>, blockStartTime);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetDouble</span>(<span class="number">0</span>, orderBlockName, <span class="macro">OBJPROP_PRICE</span>, <span class="number">0</span>, blockTopPrice);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, orderBlockName, <span class="macro">OBJPROP_TIME</span>, <span class="number">1</span>, blockEndTime);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetDouble</span>(<span class="number">0</span>, orderBlockName, <span class="macro">OBJPROP_PRICE</span>, <span class="number">1</span>, blockBottomPrice);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, orderBlockName, <span class="macro">OBJPROP_FILL</span>, <span class="macro">true</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, orderBlockName, <span class="macro">OBJPROP_COLOR</span>, orderBlockColor);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, orderBlockName, <span class="macro">OBJPROP_BACK</span>, <span class="macro">false</span>);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Add a text label in the middle of the order block with dynamic font size</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> labelTime = blockStartTime + (blockEndTime - blockStartTime) / <span class="number">2</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> labelPrice = (blockTopPrice + blockBottomPrice) / <span class="number">2</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span> labelObjectName = orderBlockName + orderBlockLabel;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="functions">ObjectFind</span>(<span class="number">0</span>, labelObjectName) &lt; <span class="number">0</span>) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">ObjectCreate</span>(<span class="number">0</span>, labelObjectName, <span class="macro">OBJ_TEXT</span>, <span class="number">0</span>, labelTime, labelPrice);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">ObjectSetString</span>(<span class="number">0</span>, labelObjectName, <span class="macro">OBJPROP_TEXT</span>, orderBlockLabel);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, labelObjectName, <span class="macro">OBJPROP_COLOR</span>, labelTextColor);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, labelObjectName, <span class="macro">OBJPROP_FONTSIZE</span>, dynamicFontSize);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, labelObjectName, <span class="macro">OBJPROP_ANCHOR</span>, <span class="macro">ANCHOR_CENTER</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ChartRedraw</span>(<span class="number">0</span>);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Store the order block details in arrays</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayResize</span>(orderBlockNames, <span class="functions">ArraySize</span>(orderBlockNames) + <span class="number">1</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;orderBlockNames[<span class="functions">ArraySize</span>(orderBlockNames) - <span class="number">1</span>] = orderBlockName;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayResize</span>(orderBlockEndTimes, <span class="functions">ArraySize</span>(orderBlockEndTimes) + <span class="number">1</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;orderBlockEndTimes[<span class="functions">ArraySize</span>(orderBlockEndTimes) - <span class="number">1</span>] = blockEndTime;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayResize</span>(orderBlockMitigatedStatus, <span class="functions">ArraySize</span>(orderBlockMitigatedStatus) + <span class="number">1</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;orderBlockMitigatedStatus[<span class="functions">ArraySize</span>(orderBlockMitigatedStatus) - <span class="number">1</span>] = <span class="macro">false</span>;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Order Block created: "</span>, orderBlockName);
+&nbsp;&nbsp; }
+}<span>
+</span></pre> <p>Here, we determine whether an order block should be created based on the detection of an impulsive move. We first evaluate "isOrderBlockValid" by checking if either "isBearishImpulse" or "isBullishImpulse" is true. If valid, we define key parameters for the order block: "blockStartTime" is obtained using the <a href="/en/docs/series/itime" target="_blank">iTime</a>&nbsp;function to reference the bar at "consolidationBars + barsToWaitAfterBreakout + 1", ensuring it aligns with the identified structure. "blockTopPrice" is set to "lastImpulseHigh", and "blockBottomPrice" to "lastImpulseLow", marking the price range of the order block. We use the <a href="/en/docs/chart_operations/chartgetinteger" target="_blank">ChartGetInteger</a>&nbsp;function to determine "visibleBarsOnChart" and calculate "blockEndTime" dynamically based on <a href="/en/docs/common/periodseconds" target="_blank">PeriodSeconds</a>, ensuring the rectangle remains visible within the chart’s current scope. </p> <p>The order block name is constructed using "OB_Prefix" and the <a href="/en/docs/convert/timetostring" target="_blank">TimeToString</a>&nbsp;function to include the timestamp for uniqueness. The color and label are determined based on whether the impulse is bullish or bearish, selecting "bullishOrderBlockColor" or "bearishOrderBlockColor", and assigning the respective label.</p> <p>We then check for the existence of the order block using <a href="/en/docs/objects/ObjectFind" target="_blank">ObjectFind</a>. If it does not exist, we use the <a href="/en/docs/objects/objectcreate" target="_blank">ObjectCreate</a>&nbsp;function to draw a rectangle (<a href="/en/docs/constants/objectconstants/enum_object" target="_blank">OBJ_RECTANGLE</a>) representing the order block, setting its time and price boundaries with <a href="/en/docs/objects/objectsetinteger" target="_blank">ObjectSetInteger</a>&nbsp;and <a href="/en/docs/objects/objectsetdouble" target="_blank">ObjectSetDouble</a>. The rectangle is filled (OBJPROP_FILL), color is applied (OBJPROP_COLOR), and it is drawn in the foreground (<a href="/en/docs/constants/objectconstants/enum_object_property#enum_object_property_integer" target="_blank">OBJPROP_BACK</a> = false).</p> <p>Next, we create a label inside the order block for better visualization. The label's time ("labelTime") is set at the midpoint of "blockStartTime" and "blockEndTime", while "labelPrice" is calculated as the midpoint of "blockTopPrice" and "blockBottomPrice". We generate a unique label name by appending "orderBlockLabel" to "orderBlockName". If the label does not exist, we create a text object (OBJ_TEXT) with "ObjectCreate", setting the text content (OBJPROP_TEXT), color (OBJPROP_COLOR), font size (<a href="/en/docs/constants/objectconstants/enum_object_property#enum_object_property_integer" target="_blank">OBJPROP_FONTSIZE</a>), and centering it with (OBJPROP_ANCHOR = ANCHOR_CENTER). The <a href="/en/docs/chart_operations/ChartRedraw" target="_blank">ChartRedraw</a>&nbsp;function ensures that the newly created elements appear immediately. Since font size would significantly matter based on the chart scale, we calculate it dynamically as below.</p> <pre class="code"><span class="comment">//--- Calculate dynamic font size based on chart scale (0 = zoomed out, 5 = zoomed in)</span>
+<span class="keyword">int</span> chartScale = (<span class="keyword">int</span>)<span class="functions">ChartGetInteger</span>(<span class="number">0</span>, <span class="macro">CHART_SCALE</span>); <span class="comment">// Scale ranges from 0 to 5</span>
+<span class="keyword">int</span> dynamicFontSize = <span class="number">8</span> + (chartScale * <span class="number">2</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Font size: 8 (min) to 18 (max)</span>
+</pre> <p>Finally, we store the order block details in arrays: "orderBlockNames" (stores object names), "orderBlockEndTimes" (stores expiration times), and "orderBlockMitigatedStatus" (tracks whether the order block has been mitigated). We resize each array dynamically using the <a href="/en/docs/array/arrayresize" target="_blank">ArrayResize</a>&nbsp;function to accommodate new entries, ensuring our order block management remains flexible. A confirmation message is printed to indicate the successful creation of an order block. Finally, we just need to reset the breakout tracking variables.</p> <pre class="code"><span class="comment">//--- Reset breakout tracking variables</span>
+breakoutBarNumber = -<span class="number">1</span>;
+breakoutTimestamp = <span class="number">0</span>;
+lastImpulseHigh = <span class="number">0</span>;
+lastImpulseLow = <span class="number">0</span>;
+isBullishImpulse = <span class="keyword">false</span>;
+isBearishImpulse = <span class="keyword">false</span>;
+</pre> <p>Upon compilation and running the program, we have the following outcome.</p> <p style="text-align:center;"> <img width="749" height="517" src="https://c.mql5.com/2/126/Screenshot_2025-03-20_010100.png" loading="lazy" title="Confirmed OBs" alt="Confirmed OBs" style="vertical-align:middle;"/></p> <p>From the image, we can see that we have confirmed and labeled order blocks that result from the impulsive breakout movements. So now we just need to proceed to validate the mitigated order blocks via continued management of the setups within the chart boundaries.</p> <pre class="code"><span class="comment">//--- Process existing order blocks for mitigation and trading</span>
+<span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="functions">ArraySize</span>(orderBlockNames) - <span class="number">1</span>; j &gt;= <span class="number">0</span>; j--) {
+&nbsp;&nbsp; <span class="keyword">string</span> currentOrderBlockName = orderBlockNames[j];
+&nbsp;&nbsp; <span class="keyword">bool</span> doesOrderBlockExist = <span class="macro">false</span>;
+
+&nbsp;&nbsp; <span class="comment">//--- Retrieve order block properties</span>
+&nbsp;&nbsp; <span class="keyword">double</span> orderBlockHigh = <span class="functions">ObjectGetDouble</span>(<span class="number">0</span>, currentOrderBlockName, <span class="macro">OBJPROP_PRICE</span>, <span class="number">0</span>);
+&nbsp;&nbsp; <span class="keyword">double</span> orderBlockLow = <span class="functions">ObjectGetDouble</span>(<span class="number">0</span>, currentOrderBlockName, <span class="macro">OBJPROP_PRICE</span>, <span class="number">1</span>);
+&nbsp;&nbsp; <span class="keyword">datetime</span> orderBlockStartTime = (<span class="keyword">datetime</span>)<span class="functions">ObjectGetInteger</span>(<span class="number">0</span>, currentOrderBlockName, <span class="macro">OBJPROP_TIME</span>, <span class="number">0</span>);
+&nbsp;&nbsp; <span class="keyword">datetime</span> orderBlockEndTime = (<span class="keyword">datetime</span>)<span class="functions">ObjectGetInteger</span>(<span class="number">0</span>, currentOrderBlockName, <span class="macro">OBJPROP_TIME</span>, <span class="number">1</span>);
+&nbsp;&nbsp; <span class="keyword">color</span> orderBlockCurrentColor = (<span class="keyword">color</span>)<span class="functions">ObjectGetInteger</span>(<span class="number">0</span>, currentOrderBlockName, <span class="macro">OBJPROP_COLOR</span>);
+
+&nbsp;&nbsp; <span class="comment">//--- Check if the order block is still valid (not expired)</span>
+&nbsp;&nbsp; <span class="keyword">if</span> (time(<span class="number">1</span>) &lt; orderBlockEndTime) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;doesOrderBlockExist = <span class="macro">true</span>;
+&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="comment">//---</span>
+}</pre> <p>We iterate through "orderBlockNames" in reverse, processing each order block for mitigation and trading. "currentOrderBlockName" stores the name of the block being checked. We use <a href="/en/docs/objects/objectgetdouble" target="_blank">ObjectGetDouble</a>&nbsp;and <a href="/en/docs/objects/objectgetinteger" target="_blank">ObjectGetInteger</a>&nbsp;to retrieve "orderBlockHigh", "orderBlockLow", "orderBlockStartTime", "orderBlockEndTime", and "orderBlockCurrentColor", ensuring precise handling of each order block's properties.</p> <p>To verify if the order block is still valid, we compare "time(1)" (retrieved using the "time" function) with "orderBlockEndTime". If the current time is within the order block’s lifespan, "doesOrderBlockExist" is set to true, confirming that the order block remains active for further processing. If it does, we proceed to process it and trade it.</p> <pre class="code"><span class="comment">//--- Get current market prices</span>
+<span class="keyword">double</span> currentAskPrice = <span class="functions">NormalizeDouble</span>(<span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_ASK</span>), <span class="predefines">_Digits</span>);
+<span class="keyword">double</span> currentBidPrice = <span class="functions">NormalizeDouble</span>(<span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_BID</span>), <span class="predefines">_Digits</span>);
+
+<span class="comment">//--- Check for mitigation and execute trades if trading is enabled</span>
+<span class="keyword">if</span> (enableTrading &amp;&amp; orderBlockCurrentColor == bullishOrderBlockColor &amp;&amp; close(<span class="number">1</span>) &lt; orderBlockLow &amp;&amp; !orderBlockMitigatedStatus[j]) {
+&nbsp;&nbsp; <span class="comment">//--- Sell trade when price breaks below a bullish order block</span>
+&nbsp;&nbsp; <span class="keyword">double</span> entryPrice = currentBidPrice;
+&nbsp;&nbsp; <span class="keyword">double</span> stopLossPrice = entryPrice + stopLossDistance * <span class="predefines">_Point</span>;
+&nbsp;&nbsp; <span class="keyword">double</span> takeProfitPrice = entryPrice - takeProfitDistance * <span class="predefines">_Point</span>;
+&nbsp;&nbsp; obj_Trade.Sell(tradeLotSize, <span class="predefines">_Symbol</span>, entryPrice, stopLossPrice, takeProfitPrice);
+&nbsp;&nbsp; orderBlockMitigatedStatus[j] = <span class="macro">true</span>;
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, currentOrderBlockName, <span class="macro">OBJPROP_COLOR</span>, mitigatedOrderBlockColor);
+&nbsp;&nbsp; <span class="keyword">string</span> blockDescription = <span class="string">"Bullish Order Block"</span>;
+&nbsp;&nbsp; <span class="keyword">string</span> textObjectName = currentOrderBlockName + blockDescription;
+&nbsp;&nbsp; <span class="keyword">if</span> (<span class="functions">ObjectFind</span>(<span class="number">0</span>, textObjectName) &gt;= <span class="number">0</span>) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetString</span>(<span class="number">0</span>, textObjectName, <span class="macro">OBJPROP_TEXT</span>, <span class="string">"Mitigated "</span> + blockDescription);
+&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Sell trade entered upon mitigation of bullish OB: "</span>, currentOrderBlockName);
+} <span class="keyword">else</span> <span class="keyword">if</span> (enableTrading &amp;&amp; orderBlockCurrentColor == bearishOrderBlockColor &amp;&amp; close(<span class="number">1</span>) &gt; orderBlockHigh &amp;&amp; !orderBlockMitigatedStatus[j]) {
+&nbsp;&nbsp; <span class="comment">//--- Buy trade when price breaks above a bearish order block</span>
+&nbsp;&nbsp; <span class="keyword">double</span> entryPrice = currentAskPrice;
+&nbsp;&nbsp; <span class="keyword">double</span> stopLossPrice = entryPrice - stopLossDistance * <span class="predefines">_Point</span>;
+&nbsp;&nbsp; <span class="keyword">double</span> takeProfitPrice = entryPrice + takeProfitDistance * <span class="predefines">_Point</span>;
+&nbsp;&nbsp; obj_Trade.Buy(tradeLotSize, <span class="predefines">_Symbol</span>, entryPrice, stopLossPrice, takeProfitPrice);
+&nbsp;&nbsp; orderBlockMitigatedStatus[j] = <span class="macro">true</span>;
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, currentOrderBlockName, <span class="macro">OBJPROP_COLOR</span>, mitigatedOrderBlockColor);
+&nbsp;&nbsp; <span class="keyword">string</span> blockDescription = <span class="string">"Bearish Order Block"</span>;
+&nbsp;&nbsp; <span class="keyword">string</span> textObjectName = currentOrderBlockName + blockDescription;
+&nbsp;&nbsp; <span class="keyword">if</span> (<span class="functions">ObjectFind</span>(<span class="number">0</span>, textObjectName) &gt;= <span class="number">0</span>) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetString</span>(<span class="number">0</span>, textObjectName, <span class="macro">OBJPROP_TEXT</span>, <span class="string">"Mitigated "</span> + blockDescription);
+&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Buy trade entered upon mitigation of bearish OB: "</span>, currentOrderBlockName);
+}<span>
+</span></pre> <p>We begin by retrieving the current market prices using the <a href="/en/docs/marketinformation/symbolinfodouble" target="_blank">SymbolInfoDouble</a>&nbsp;function, ensuring both "currentAskPrice" and "currentBidPrice" are normalized to the appropriate number of decimal places using <a href="/en/docs/predefined/_Digits" target="_blank">_Digits</a>. This guarantees precision when placing trades. Next, we check if "enableTrading" is active and whether an order block mitigation condition has been met. Mitigation occurs when a price breaks through an order block, indicating a failure in its holding structure.</p> <p>For bullish order blocks, we verify if the "close" price of the previous bar (obtained using the "close" function) has dropped below "orderBlockLow" and ensure that this order block has not already been mitigated ("orderBlockMitigatedStatus[j] == false"). If these conditions hold, we place a sell trade using the "Sell" function of the "obj_Trade" object. The trade is executed at "currentBidPrice", with a stop-loss ("stopLossPrice") positioned above the entry price by "stopLossDistance * <a href="/en/docs/predefined/_point" target="_blank">_Point</a>" and a take-profit ("takeProfitPrice") set below the entry price by "takeProfitDistance * <a href="/en/docs/predefined/_point" target="_blank">_Point</a>".</p> <p>Once the trade is executed, the order block is marked as mitigated by updating "orderBlockMitigatedStatus[j]" to true, and its color is changed using <a href="/en/docs/objects/ObjectSetInteger" target="_blank">ObjectSetInteger</a>&nbsp;to indicate its mitigated state. If a text label exists for this order block (checked using <a href="/en/docs/objects/objectfind" target="_blank">ObjectFind</a>), we update it using <a href="/en/docs/objects/objectsetstring" target="_blank">ObjectSetString</a>&nbsp;to display "Mitigated Bullish Order Block". A <a href="/en/docs/common/print" target="_blank">Print</a>&nbsp;statement logs the trade execution for tracking and debugging.</p> <p>For bearish order blocks, the process is similar. We check if the "close" price has risen above "orderBlockHigh", indicating a break of the bearish order block. If the conditions are met, a buy trade is placed via the "Buy" function, using "currentAskPrice" as the entry price. The "stopLossPrice" is positioned below the entry price, and the "takeProfitPrice" is set above it, ensuring proper risk management. After placing the buy trade, we update "orderBlockMitigatedStatus[j]", change the order block’s color using <a href="/en/docs/objects/ObjectSetInteger" target="_blank">ObjectSetInteger</a>, and modify the text label (if found) to display "Mitigated Bearish Order Block". Finally, a "Print" statement logs the buy trade execution for monitoring purposes. Here is what we achieve.</p> <p style="text-align:center;"> <img width="749" height="599" src="https://c.mql5.com/2/126/Screenshot_2025-03-20_013215.png" loading="lazy" title="Mitigated &amp; Traded OB " alt="Mitigated &amp; Traded OB " style="vertical-align:middle;"/></p> <p>Finally, once the blocks are out of bounds, we remove them from the storage arrays.</p> <pre class="code"><span class="comment">//--- Remove expired order blocks from arrays</span>
+<span class="keyword">if</span> (!doesOrderBlockExist) {
+&nbsp;&nbsp; <span class="keyword">bool</span> removedName = <span class="functions">ArrayRemove</span>(orderBlockNames, j, <span class="number">1</span>);
+&nbsp;&nbsp; <span class="keyword">bool</span> removedTime = <span class="functions">ArrayRemove</span>(orderBlockEndTimes, j, <span class="number">1</span>);
+&nbsp;&nbsp; <span class="keyword">bool</span> removedStatus = <span class="functions">ArrayRemove</span>(orderBlockMitigatedStatus, j, <span class="number">1</span>);
+&nbsp;&nbsp; <span class="keyword">if</span> (removedName &amp;&amp; removedTime &amp;&amp; removedStatus) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Success removing OB DATA from arrays at index "</span>, j);
+&nbsp;&nbsp; }
+}
+</pre> <p>If the order block no longer exists, we remove its name, end time, and mitigation status from their respective arrays using the <a href="/en/docs/array/arrayremove" target="_blank">ArrayRemove</a>&nbsp;function. If all removals are successful, we log the action with a <a href="/en/docs/common/print" target="_blank">Print</a>&nbsp;statement to confirm the cleanup. Here is a sample cleanup confirmation.</p> <p style="text-align:center;"> <img width="749" height="599" src="https://c.mql5.com/2/126/Screenshot_2025-03-20_013621.png" loading="lazy" title="Blocks Cleanup" alt="Blocks Cleanup" style="vertical-align:middle;"/></p> <p>From the image, we can see that we successfully do the blocks cleanup. Now we just need to add a trailing stop logic, and for this, we employ a function to encapsulate everything.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Trailing stop function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> applyTrailingStop(<span class="keyword">double</span> trailingPoints, CTrade &amp;trade_object, <span class="keyword">int</span> magicNo = <span class="number">0</span>) {
+&nbsp;&nbsp; <span class="comment">//--- Calculate trailing stop levels based on current market prices</span>
+&nbsp;&nbsp; <span class="keyword">double</span> buyStopLoss = <span class="functions">NormalizeDouble</span>(<span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_BID</span>) - trailingPoints * <span class="predefines">_Point</span>, <span class="predefines">_Digits</span>);
+&nbsp;&nbsp; <span class="keyword">double</span> sellStopLoss = <span class="functions">NormalizeDouble</span>(<span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_ASK</span>) + trailingPoints * <span class="predefines">_Point</span>, <span class="predefines">_Digits</span>);
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">//--- Loop through all open positions</span>
+&nbsp;&nbsp; <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="functions">PositionsTotal</span>() - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">ulong</span> ticket = <span class="functions">PositionGetTicket</span>(i);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (ticket &gt; <span class="number">0</span>) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span> (<span class="functions">PositionGetString</span>(<span class="macro">POSITION_SYMBOL</span>) == <span class="predefines">_Symbol</span> &amp;&amp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (magicNo == <span class="number">0</span> || <span class="functions">PositionGetInteger</span>(<span class="macro">POSITION_MAGIC</span>) == magicNo)) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Adjust stop loss for buy positions</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="functions">PositionGetInteger</span>(<span class="macro">POSITION_TYPE</span>) == <span class="macro">POSITION_TYPE_BUY</span> &amp;&amp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;buyStopLoss &gt; <span class="functions">PositionGetDouble</span>(<span class="macro">POSITION_PRICE_OPEN</span>) &amp;&amp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(buyStopLoss &gt; <span class="functions">PositionGetDouble</span>(<span class="macro">POSITION_SL</span>) || <span class="functions">PositionGetDouble</span>(<span class="macro">POSITION_SL</span>) == <span class="number">0</span>)) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; trade_object.PositionModify(ticket, buyStopLoss, <span class="functions">PositionGetDouble</span>(<span class="macro">POSITION_TP</span>));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Adjust stop loss for sell positions</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span> <span class="keyword">if</span> (<span class="functions">PositionGetInteger</span>(<span class="macro">POSITION_TYPE</span>) == <span class="macro">POSITION_TYPE_SELL</span> &amp;&amp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sellStopLoss &lt; <span class="functions">PositionGetDouble</span>(<span class="macro">POSITION_PRICE_OPEN</span>) &amp;&amp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (sellStopLoss &lt; <span class="functions">PositionGetDouble</span>(<span class="macro">POSITION_SL</span>) || <span class="functions">PositionGetDouble</span>(<span class="macro">POSITION_SL</span>) == <span class="number">0</span>)) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; trade_object.PositionModify(ticket, sellStopLoss, <span class="functions">PositionGetDouble</span>(<span class="macro">POSITION_TP</span>));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp; }
+}</pre> <p>Here, we define the "applyTrailingStop" function to dynamically adjust stop-loss levels for active positions. We begin by calculating "buyStopLoss" and "sellStopLoss" using the current bid/ask prices and the specified "trailingPoints". Next, we loop through all open positions, filtering them by symbol and magic number (if provided). If a buy position has a valid stop-loss level above its entry price, and it either exceeds the current stop-loss or is unset, we update it. Similarly, for sell positions, we ensure the new stop-loss is below the entry price before modifying it.</p> <p>We then call the function inside the&nbsp;<a href="/en/docs/event_handlers/ontick" target="_blank">OnTick</a>&nbsp;event handler, to process on every tick and not on every bar this time for real-time price checks as follows.</p> <pre class="code"><span class="comment">//--- Apply trailing stop to open positions if enabled</span>
+<span class="keyword">if</span> (enableTrailingStop) {
+&nbsp;&nbsp; applyTrailingStop(trailingStopPoints, obj_Trade, uniqueMagicNumber);
+}
+<span>
+</span></pre> <p>Upon compilation and running of the program, we have the following outcome.</p> <p style="text-align:center;"> <img width="750" height="742" src="https://c.mql5.com/2/126/MOB.gif" loading="lazy" title="MOB GIF" alt="MOB GIF" style="vertical-align:middle;"/></p> <p>From the visualization, we can see that the program identifies and verifies all the entry conditions and if validated, opens the respective position with the respective entry parameters, hence achieving our objective. The thing that remains is backtesting the program, and that is handled in the next section.</p> <p><br/></p> <h3 id="para3">Backtesting</h3> <p>After thorough backtesting, we have the following results.</p> <p>Backtest graph:</p> <p style="text-align:center;"> <img width="749" height="476" src="https://c.mql5.com/2/126/Screenshot_2025-03-20_021731.png" loading="lazy" title="GRAPH" alt="GRAPH" style="vertical-align:middle;"/></p> <p>Backtest report:</p> <p style="text-align:center;"> <img width="749" height="606" src="https://c.mql5.com/2/126/Screenshot_2025-03-20_021832.png" loading="lazy" title="REPORT" alt="REPORT" style="vertical-align:middle;"/></p> <p><br/></p> <h3>Conclusion<br/> </h3> <p>In conclusion, we have successfully implemented the <a href="/go?link=https://innercircletrader.net/tutorials/ict-mitigation-block-explained/" title="https://innercircletrader.net/tutorials/ict-mitigation-block-explained/" rel="nofollow" target="_blank">Mitigation Order Blocks</a> (MOB) Strategy in MQL5, allowing for precise detection, visualization, and automated trading based on smart money concepts. By integrating breakout validation, impulsive move recognition, and mitigation-based trade execution, our system effectively identifies and processes order blocks while adapting to market dynamics. Additionally, we incorporated trailing stops and risk management mechanisms to optimize trade performance and enhance robustness.</p> <div class="atten"> <p>Disclaimer: This article is for educational purposes only. Trading involves significant financial risk, and market conditions can be unpredictable. Proper backtesting and risk management are essential before live deployment.</p> </div> <p>By leveraging these techniques, you can refine your algorithmic trading strategies and improve order block-based trading efficiency. Keep testing, optimizing, and adapting your approach for long-term success. Best of luck!</p>
+      </div>
+<div id="cb_17547" class="attachBlock">
+  <strong>Attached files</strong> |
+  <div class="grouped-attachments-help">
+    <a title="Download all attachments in the single ZIP archive" href="/en/articles/download/17547.zip">
+      <i class="attach-icon attach-icon_zip"></i>Download ZIP
+    </a>
+  </div>
+    <div class="attachItem">
+      <a title="Download Mitigation_Order_Blocks.mq5" href="/en/articles/download/17547/mitigation_order_blocks.mq5"><i class="attach-icon attach-icon_mq5"></i>Mitigation_Order_Blocks.mq5</a>
+      <span class="attachSize">(19.27 KB)</span>
+    </div>
+</div>
+    </div>
+
+  <div class="copyright">
+    <p><strong>Warning:</strong> All rights to these materials are reserved by MetaQuotes Ltd. Copying or reprinting of these materials in whole or in part is prohibited.</p>
+      <p>This article was written by a user of the site and reflects their personal views. MetaQuotes Ltd is not responsible for the accuracy of the information presented, nor for any consequences resulting from the use of the solutions, strategies or recommendations described.</p>
+  </div>
+
+
+
+    <div class="article__author-with-articles">
+      
+
+
+<div class="article-footer__author">
+  <div class="article-footer__author-avatar">
+    <img id="avatar" src="https://c.mql5.com/avatar/2022/11/637df59b-9551_big.jpg" title="Allan Munene Mutiiria" alt="Allan Munene Mutiiria" loading="lazy" width="164" height="164">
+  </div>
+  <div class="article-footer__author-content">
+    <div class="article-footer__author-name">
+      <a href="/en/users/29210372" title="Allan Munene Mutiiria">Allan Munene Mutiiria</a>
+    </div>
+    <div class="article-footer__author-info">
+      <ul>
+          <li>
+            <i title="Lives" class="icons-profile icons-profile_geo"></i>
+            <a target="_blank" rel="nofollow" title="Lives" href="https://www.mql5.com/go?https://maps.google.com/?z=4&q=Kenya">Kenya</a>
+          </li>
+        <li>
+          <i title="Rating" class="icons-profile icons-profile_statistics"></i>
+          <a title="Rating" href="/en/users/29210372/achievements">194457</a>
+        </li>
+      </ul>
+    </div>
+    <div class="article-footer__author-contacts">
+          <li title="Website"><a target="_blank" rel="noreferrer noopener nofollow" href="https://forexalgo-trader.com/" class="icons-profile icons-profile_net"></a>
+      <a target="_blank" rel="noreferrer noopener nofollow" href="https://forexalgo-trader.com/" style="display: inline-block; vertical-align: top; margin-top: -2px;">https://forexalgo-trader.com/</a></li>
+
+    </div>
+    <div class="article-footer__author-bio"></div>
+  </div>
+</div>
+
+      <div class="other-author-articles ui">
+        <h4 class="other-author-articles__title">Other articles by this author</h4>
+        <ul class="other-author-articles__list">
+          <li><a href="/en/articles/22838" data-fz-event="MQL5+Article+From+Author+Article">MQL5 Trading Tools (Part 35): Adding Channel, Pitchfork, Gann, and Fibonacci Tools to the Canvas Drawing Layer</a></li>
+          <li><a href="/en/articles/22786" data-fz-event="MQL5+Article+From+Author+Article">MQL5 Trading Tools (Part 34): Replacing Native Chart Objects with an Interactive Canvas Drawing Layer</a></li>
+          <li><a href="/en/articles/22303" data-fz-event="MQL5+Article+From+Author+Article">MQL5 Trading Tools (Part 33): Building a Rich Content Markup Documentation System for MQL5 Programs</a></li>
+          <li><a href="/en/articles/22608" data-fz-event="MQL5+Article+From+Author+Article">Trading with the MQL5 Economic Calendar (Part 12): SQLite Storage and Deduplication</a></li>
+          <li><a href="/en/articles/22597" data-fz-event="MQL5+Article+From+Author+Article">Trading with the MQL5 Economic Calendar (Part 11): Modular Canvas News Dashboard</a></li>
+          <li><a href="/en/articles/22233" data-fz-event="MQL5+Article+From+Author+Article">MQL5 Trading Tools (Part 32): Crosshair, Magnifier, and Measure Mode</a></li>
+          <li><a href="/en/articles/22495" data-fz-event="MQL5+Article+From+Author+Article">Building AI-Powered Trading Systems in MQL5 (Part 9): Creating an AI Signal Dispatcher</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+  <div class="article__last-comments" id="articleAdditional">
+    
+
+<div class="comments-preview">
+    <div class="title">
+      <span></span><b>
+         Last comments |
+ <a href="/en/forum/483609">Go to discussion</a>
+      </b>
+        (7)
+    </div>
+    <div>
+        
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/avatar_na2.png" srcset="https://c.mql5.com/avatar/avatar_na2_big.png 2x" alt="davesarge1" title="davesarge1" data-user-login="davesarge1" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/davesarge1" data-user-login="davesarge1">davesarge1</a></b>
+              |
+              <span class="comment__date">12 Apr 2025 at 13:08</span>
+              <a id="comment_56437668"></a>
+              
+            </div>
+            <div class="content" id="content56437668">
+              It's not taking trades in the <a href="https://www.mql5.com/en/articles/239" title="Article: The Fundamentals of Testing in MetaTrader 5 " class="linkator"><span class="mark">strategy tester</span></a>. Default settings on all pairs.&nbsp; No error messages in the journal.&nbsp; Journal messages present; "No extension: Bar outside range" and "No impulsive movement detected". <div> <br/> <div> <br/> </div> </div>
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2022/11/637df59b-9551.jpg" srcset="https://c.mql5.com/avatar/2022/11/637df59b-9551_big.jpg 2x" alt="Allan Munene Mutiiria" title="Allan Munene Mutiiria" data-user-login="29210372" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/29210372" data-user-login="29210372">Allan Munene Mutiiria</a></b>
+              |
+              <span class="comment__date">14 Apr 2025 at 13:47</span>
+              <a id="comment_56451090"></a>
+              
+            </div>
+            <div class="content" id="content56451090">
+              <div class="fquote"> <strong><span style="color:#42639C;">davesarge1 <a href="/en/forum/483609#comment_56437668">#</a></span>:</strong><br/> It's not taking trades in the <a href="/en/articles/239" title="Article: The Fundamentals of Testing in MetaTrader 5 " class="linkator"><span class="mark">strategy tester</span></a>. Default settings on all pairs.&nbsp; No error messages in the journal.&nbsp; Journal messages present; "No extension: Bar outside range" and "No impulsive movement detected". <div> <br/> <div> <br/> </div> </div> </div> <p>Did you even read the article? Because we're sure the article pretty much provides all your answers.</p>
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2025/4/680C8606-3BDF.png" srcset="https://c.mql5.com/avatar/2025/4/680C8606-3BDF_big.png 2x" alt="Bao Thuan Thai" title="Bao Thuan Thai" data-user-login="ThuanThai" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/thuanthai" data-user-login="ThuanThai">Bao Thuan Thai</a></b>
+              |
+              <span class="comment__date">1 Aug 2025 at 23:35</span>
+              <a id="comment_57705153"></a>
+              
+            </div>
+            <div class="content" id="content57705153">
+              Thank you so much. Appreciate it! I’ll give it a shot
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/avatar_na2.png" srcset="https://c.mql5.com/avatar/avatar_na2_big.png 2x" alt="Chen Yurui" title="Chen Yurui" data-user-login="700802" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/700802" data-user-login="700802">Chen Yurui</a></b>
+              |
+              <span class="comment__date">8 Jan 2026 at 03:10</span>
+              <a id="comment_58893071"></a>
+              
+            </div>
+            <div class="content" id="content58893071">
+              Is it possible to make an EA that can both trade mitigation order blocks and retesting order blocks (i.e., it buys when price falls to a bullish block)?&nbsp;
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/avatar_na2.png" srcset="https://c.mql5.com/avatar/avatar_na2_big.png 2x" alt="Wesley De Almeida Junior" title="Wesley De Almeida Junior" data-user-login="WesleyAJ2021" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/wesleyaj2021" data-user-login="WesleyAJ2021">Wesley De Almeida Junior</a></b>
+              |
+              <span class="comment__date">2 Jun 2026 at 20:27</span>
+              <a id="comment_59841393"></a>
+              
+            </div>
+            <div class="content" id="content59841393">
+              <p>Good afternoon and congratulations on the excellent quality of your work.</p> <p>Have you tested this mini-index application in 1 minute?</p> <p>Thanks in advance!</p> <p>Wesley</p>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+  </div>
+
+
+    <div class="articles-bottom-list" id="articleAdditional">
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="From Basic to Intermediate: WHILE and DO WHILE Statements" src="https://c.mql5.com/2/90/logo-image_15375_417_4038__2.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/15375" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">From Basic to Intermediate: WHILE and DO WHILE Statements</a>
+                <div class="articles-bottom-list__desc">In this article, we will take a practical and very visual look at the first loop statement. Although many beginners feel intimidated when faced with the task of creating loops, knowing how to do it correctly and safely can only come with experience and practice. But who knows, maybe I can reduce your troubles and suffering by showing you the main issues and precautions to take when using loops in your code.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Developing a Replay System (Part 62): Playing the service (III)" src="https://c.mql5.com/2/90/logo-image_12231_394_3793__1.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/12231" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Developing a Replay System (Part 62): Playing the service (III)</a>
+                <div class="articles-bottom-list__desc">In this article, we will begin to address the issue of tick excess that can impact application performance when using real data. This excess often interferes with the correct timing required to construct a one-minute bar in the appropriate window.</div>
+              </div>
+          </div>
+        </div>
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Neural Networks in Trading: Hierarchical Vector Transformer (HiVT)" src="https://c.mql5.com/2/90/logo-15688.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/15688" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Neural Networks in Trading: Hierarchical Vector Transformer (HiVT)</a>
+                <div class="articles-bottom-list__desc">We invite you to get acquainted with the Hierarchical Vector Transformer (HiVT) method, which was developed for fast and accurate forecasting of multimodal time series.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Bacterial Chemotaxis Optimization (BCO)" src="https://c.mql5.com/2/92/Bacterial_Chemotaxis_Optimization___LOGO__2.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/15711" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Bacterial Chemotaxis Optimization (BCO)</a>
+                <div class="articles-bottom-list__desc">The article presents the original version of the Bacterial Chemotaxis Optimization (BCO) algorithm and its modified version. We will take a closer look at all the differences, with a special focus on the new version of BCOm, which simplifies the bacterial movement mechanism, reduces the dependence on positional history, and uses simpler math than the computationally heavy original version. We will also conduct the tests and summarize the results.</div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+<div class="clear-fix"></div>
+
+<div id='wdausxxqrpvhekbwjrjlhqjghyhesrqqau' class="r6irig5txiuua4k0m r6irig5txiuua4k0m_articles-view gg88d3drb"></div>
+    
+
+<div class="hidden" id="popupRegisterLogin">
+  <div class="register-login-popup">
+    <div class="register-login-popup__header">
+      <img src="https://c.mql5.com/i/registerlandings/logo-2.png" srcset="https://c.mql5.com/i/registerlandings/logo-2_2x.png 2x" alt="MQL5 - Language of trade strategies built-in the MetaTrader 5 client terminal" loading="lazy" width="74" height="24" />
+    </div>
+    <div class="register-login-popup__content">
+      <div class="register-login-popup__desc">
+        <div class="register-login-popup__title">You are missing trading opportunities:</div>
+        <ul>
+<li>Free trading apps</li>
+<li>Over 8,000 signals for copying</li>
+<li>Economic news for exploring financial markets</li>
+</ul>
+      </div>
+      <div class="register-login-popup__forms ui">
+        <div class="register-login-popup__tabs" id="registerLoginPopupTabs">
+          <span data-id="register" id="registerLoginPopupTab_register" class="register-login-popup__tab register-login-popup__tab_active">Registration</span>
+          <span data-id="login" id="registerLoginPopupTab_login" class="register-login-popup__tab">Log in</span>
+        </div>
+        <div id="registerLoginPopupTabContent_register">
+          <div class="ui auth-form__content">
+    
+  <script type='text/javascript'>/*<![CDATA[*/ if (!window.V) var V = []; /*]]>*/</script>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/en/auth_register_short" id="PopupRegisterquickRegisterForm" onsubmit="PopupRegisterquickRegistration.OnSubmit(this,&#39;en&#39;);if(Validate(this)) Ajax.form(this,{onready:PopupRegisterquickRegistration.OnSuccessPopup,onerror:PopupRegisterquickRegistration.OnError,onbeginrequest:PopupRegisterquickRegistration.DisableInputs,onendrequest:PopupRegisterquickRegistration.EnableInputs});return(false);" enctype = "multipart/form-data"><input type="hidden" name="__signature" value="81cd28bf366c917d0f633d51e88684b4"/>
+    <div class="auth-form__inputs">
+      <input type="hidden" value="0" name="IsValidate" id="PopupRegisterIsValidate" />
+
+      <!--[if lt IE 10]><div class="note">Login:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input type="text" id="PopupRegisterusername" name="username" class="input" maxlength="32" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.CheckUserName();}" onkeyup="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.ValidateUserName(this, 'Enter a valid login');}" placeholder="Login" title="May contain Latin letters, digits, dots, dashes,underscore characters. Cannot start or end with a dot. The allowed length is 3 to 32 characters." onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisterusername'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisterusername',10,'You may use Latin characters, numbers, underscores and periods.',validate_username]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisterusername">latin characters without spaces</label>
+      </div>
+      <!--[if lt IE 10]><div class="note">Your email:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input class="input" type="email" id="PopupRegisteremail" name="email" placeholder="Your email" title="Please enter the email (it may not exceed 256 characters). For example: john@example.com" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnChange(this);}" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisteremail'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisteremail',10,'Enter a valid email address',validate_email]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisteremail">a password will be sent to this email</label>
+      </div>
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Register" />
+    </div>
+    <span id="PopupRegisterquickRegisterSubmit">
+      <input type="submit" value="Register" id="PopupRegisterquickRegisterButton"  title="Sign up and receive an email with your password" class="button button_yellow"  />
+    </span>
+    <span id="PopupRegisterquickRegisterErrorMessage" class="quick-register-error-message field-validation-error" style="text-align: center; margin-top: 16px; display: none;">
+      An error occurred
+    </span>
+</form>
+    
+</div>
+<div class="auth-social">
+  <ul class="auth-social-list" id="socialList">
+    <li><a onclick="window.fpush({name: 'MQL5+Popup+Register+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/en/auth_oauth2?provider=Google&amp;amp;return=popup&amp;amp;reg=1" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Log in With Google</a></li>
+  </ul>
+</div>
+<div class="auth-block-agree">
+  <p>
+    You agree to <a target="_blank" href="/en/about/privacy">website policy</a> and <a target="_blank" href="/en/about/terms">terms of use</a>
+  </p>
+</div>
+
+
+        </div>
+        <div id="registerLoginPopupTabContent_login" class="hidden">
+            <div class="auth-form__text">
+    If you do not have an account, please <a href="https://www.mql5.com/en/auth_register" rel="nofollow" style="vertical-align: top">register</a>
+  </div>
+<div class="ui auth-form__content auth-form__content_login" id="loginFormWrapper">
+    
+  <div id="needCookies" class="need-cookies hidden">
+    <div class="danger-box">
+      <p>Allow the use of cookies to log in to the MQL5.com website.</p>
+<p>Please enable the necessary setting in your browser, otherwise you will not be able to log in.</p>
+    </div>
+  </div>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/en/auth_login" id="loginForm" onsubmit="if(window.quickLogin){return window.quickLogin.onSubmit(this);}var result = Validate(this); if(result) { preventDoubleSubmit(this); } return result;"><input id="RedirectAfterLoginUrl" name="RedirectAfterLoginUrl" type="hidden" value="" /><input id="RegistrationUrl" name="RegistrationUrl" type="hidden" value="" /><input data-val="true" data-val-required="The ShowOpenId field is required." id="ShowOpenId" name="ShowOpenId" type="hidden" value="True" /><input id="TrackingSection" name="TrackingSection" type="hidden" value="Articles" />    <input name="ViewType" type="hidden" value="5" />
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Login" />
+    <!--[if lt IE 10]><div class="note">Your login:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <input class="input qa-login" id="Login" name="Login" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Login" title="Your login" type="text" value="" />
+      <script type='text/javascript' id='validate_Login'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Login',1,'Enter login specified when signing up']);});mqGlobal.AddOnReady(function() {V.push(['Login',10,'Email cannot be used. Enter your login please',validateLogin]);}); /*]]>*/</script>
+    </div>
+    <!--[if lt IE 10]><div class="note">Password:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <div class="input-with-show">
+        <input autocomplete="off" class="input qa-password" id="Password" name="Password" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Password" title="Enter the password please" type="password" />
+        <span class="input-with-show__icon" title="Show password" onclick="if(window.quickLogin){window.quickLogin.showPass(this, 'Show password', 'Hide password');}"></span>
+      </div>
+      <script type='text/javascript' id='validate_Password'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Password',1,'Please enter the password']);}); /*]]>*/</script>
+    </div>
+    <script type="text/javascript">
+    function validateLogin(input) {
+      console.log('validate login ' + input.value);
+      return !/^\w+([-+.'']{1,2}\w+)* @\w+([-.]\w+)*\.\w+([-.]\w+)*$/i.test(input.value);
+    }
+    </script>
+    <div class="forgot" id="loginForgotBlock"><a id="loginForgotLink" href="https://www.mql5.com/en/auth_forgotten?return=popup">Forgot your login/password?</a></div>
+    <input type="submit" class="button button_yellow qa-submit" id="loginSubmit" value="Log in" title="Enter">
+</form></div>
+
+  <div class="auth-social" id="authSocialBlock">
+    <ul class="auth-social-list" id="socialList">
+      <li><a onclick="window.fpush({name: 'MQL5+Popup+Login+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/en/auth_oauth2?provider=Google&amp;amp;return=popup" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Log in With Google</a></li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script id="popupSection" type="application/json">{"section": "Articles"}</script>
+<script id="popupTranslate" data-type="translate" type="application/json">
+{
+  "popup":
+  {
+  "EmailTitle" : "The password has been sent to {0}",
+  "EmailDescription" : "Log in using the obtained password and the login specified during the registration",
+  "SubmitButtonText" : "Activate account",
+  "RegistrationTip" : "If you have not received the password email, check the spam folder or &lt;a href={0}&gt;repeat the registration&lt;/a&gt;"
+  }
+}
+</script>
+
+    
+
+    
+
+
+    </article>
+  </div>
+
+
+
+<div aria-hidden="true" class="footer  desktop" id="footer">
+  <ul class="links  links_desktop">
+      <li id="navFooterCommunity">
+        <nav>
+          <ul>
+            <li><a href="https://web.metatrader.app/terminal?mode=demo&amp;lang=en" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Footer+Trading">Online trading / WebTerminal</a></li>
+            <li><a href="/en/code" data-fz-event="MQL5+Footer+CodeBase">Free technical indicators and robots</a></li>
+            <li><a href="/en/articles" data-fz-event="MQL5+Footer+Articles">Articles about programming and trading</a></li>
+            <li><a href="/en/job" data-fz-event="MQL5+Footer+Job">Order trading robots on the Freelance</a></li>
+            <li><a href="/en/market" data-fz-event="MQL5+Footer+Market">Market of Expert Advisors and applications&#x9;</a></li>
+            <li><a href="/en/signals" data-fz-event="MQL5+Footer+Signals">Follow forex signals</a></li>
+            <li><a href="/en/vps" data-fz-event="MQL5+Footer+VPS">Low latency forex VPS</a></li>
+            <li><a href="/en/forum" data-fz-event="MQL5+Footer+Forum">Traders forum</a></li>
+            <li><a href="/en/blogs" data-fz-event="MQL5+Footer+Blogs">Trading blogs</a></li>
+            <li><a rel="nofollow" href="/en/charts" data-fz-event="MQL5+Footer+Charts">Charts</a></li>
+            <li><a href="/en/widgets" data-fz-event="MQL5+Footer+Widgets">Free widgets</a></li>
+          </ul>
+        </nav>
+      </li>
+      <li id="navFooterMt5">
+        <nav>
+          <ul>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> Trading Platform</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/releasenotes" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> latest updates</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/news" data-fz-event="MQL5+Footer+MetaTrader+5">News, implementations and technology</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> User Manual</a></li>
+            <li><a href="/en/docs" data-fz-event="MQL5+Footer+Docs">MQL5 language of trading strategies</a></li>
+            <li><a rel="nofollow noopener" href="https://cloud.mql5.com" data-fz-event="MQL5+Footer+Cloud">MQL5 Cloud Network</a></li>
+            <li><a rel="noopener" href="https://forge.mql5.io/?lang=en" data-fz-event="MQL5+Footer+Forge" target="_blank">MQL5 Algo Forge</a></li>
+              <li><a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Footer">Download <span class="nobr">MetaTrader 5</span></a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help/start_advanced/installation" data-fz-event="MQL5+Footer+MetaTrader+5">Install Platform</a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help/start_advanced/deinstallation" data-fz-event="MQL5+Footer+MetaTrader+5">Uninstall Platform</a></li>
+          </ul>
+        </nav>
+
+      </li>
+    <li id="navFooterWebsite">
+        <nav>
+          <ul>
+            <li><a rel="nofollow" href="/en/about" data-fz-event="MQL5+Footer+About">About</a></li>
+              <li><a href="/en/wall" data-fz-event="MQL5+Footer+Wall">Timeline</a></li>
+            <li><a rel="nofollow" href="/en/about/terms" data-fz-event="MQL5+Footer+About">Terms and Conditions</a></li>
+            <li><a rel="nofollow" href="/en/about/autopayments" data-fz-event="MQL5+Footer+About">Recurring Payment Agreement</a></li>
+            <li><a rel="nofollow" href="/en/about/agencyagreement" data-fz-event="MQL5+Footer+About">Agency Agreement – Offer</a></li>
+            <li><a rel="nofollow" href="/en/about/privacy" data-fz-event="MQL5+Footer+About">Privacy and Data Protection Policy</a></li>
+            <li><a rel="nofollow" href="/en/about/cookies" data-fz-event="MQL5+Footer+About">Cookies Policy</a></li>
+            <li>
+                <a rel="nofollow" href="/en/contact" data-fz-event="MQL5+Footer+Contacts">Contacts and requests</a>
+            </li>
+          </ul>
+        </nav>
+    </li>
+
+      <li>
+        <div class="footer__products">
+          <div class="footer__product">
+            <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com" class="footer__product-name">MetaTrader 5</a>
+            <div class="footer__product-links">
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon windows" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for Windows</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/MetaTrader5.pkg.zip?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon macos" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for MacOS</div></a>
+            <a rel="nofollow noopener" href="https://www.mql5.com/en/articles/625?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon linux" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for Linux</div></a>
+            <a rel="nofollow noopener" href="https://web.metatrader.app/terminal?mode=demo&amp;lang=en" class="icon web"><div  class="footer__product-link-hint footer__product-link-hint-short">Open MetaTrader 5 WebTerminal</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/ios?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=en" class="icon ios" data-fz-event="MetaTrader+5+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/jhZn8Ed1I1d.png)">Scan to install from App Store</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=en" class="icon android" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/kiF2Io6W-9d.png)">Scan to install from Google Play</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon huawei" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ZRt&#x2B;zI1l&#x2B;8O.png)">Scan to install from Huawei AppGallery</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon ark" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/L0Q9oag&#x2B;3eE.png)">Scan to get Android APK file</div></a>
+            </div>
+          </div>
+          <div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com/en/news/2270" class="footer__product-name">MQL5 Channels</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon ios" data-fz-event="MQL5+Channels+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/bZVfOJnYpcO.png)">Scan to install from App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon android" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/32MJFgw7BVs.png)">Scan to install from Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Su&#x2B;fe4n374e.png)">Scan to install from Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mql5channels/mql5channels.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/G6Mg4NfCPzO.png)">Scan to get Android APK file</div></a>
+              </div>
+            </div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.tradays.com/en/download?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MQL5+Footer+Download+Tradays" class="footer__product-name">Economic Calendar</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon ios" data-fz-event="Tradays+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CpD&#x2B;mhIw-1E.png)">Scan to install from App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon android" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Bgyx8UcmYap.png)">Scan to install from Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CrS7bbDAdAO.png)">Scan to install from Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/tradays/tradays.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/VZi8YPIb2op.png)">Scan to get Android APK file</div></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__networks">
+          <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow" title="Facebook"><i class="icons-networks icons-networks_fb"></i></a>
+          <a href="https://t.me/mql5dev" target="_blank" rel="nofollow" title="Telegram"><i class="icons-networks icons-networks_tg"></i></a>
+          <a href="https://x.com/mql5com" target="_blank" rel="nofollow" title="X (Twitter)"><i class="icons-networks icons-networks_tw"></i></a>
+          <a href="https://www.youtube.com/@MetaQuotesOfficial" target="_blank" rel="nofollow" title="YouTube"><i class="icons-networks icons-networks_yt"></i></a>
+          <a href="https://www.linkedin.com/company/mql5" target="_blank" rel="nofollow" title="LinkedIn"><i class="icons-networks icons-networks_linkedin"></i></a>
+          <span>Subscribe to algotrading news</span>
+        </div>
+  
+        <div class="footer__other">
+          <div class="footer__not-a-broker">Not a broker, no real trading accounts</div>
+          <div class="copyright">35 Dodekanisou str, Germasogeia, 4043,&nbsp;Limassol,&nbsp;Cyprus</div>
+          <div class="copyright">Copyright 2000-2026, <span class="nobr">MetaQuotes Ltd</span></div>
+        </div>
+      </li>
+  </ul>
+</div>
+
+
+
+<div class="shadow-layer" id="layer"></div>
+    
+
+  <div class="b-fixed-mt" id="bFixedMt" style="display: none;">
+    
+  </div>
+
+
+<script type='text/javascript'>
+		(function (a, e, f, g, b, c, d) { a[b] || (a.FintezaCoreObject = b, a[b] = a[b] || function () { (a[b].q = a[b].q || []).push(arguments) }, a[b].l = 1 * new Date, c = e.createElement(f), d = e.getElementsByTagName(f)[0], c.async = !0, c.defer = !0, c.src = g, d && d.parentNode && d.parentNode.insertBefore(c, d)) })
+      (window, document, "script", "/ff/core.js", "fz");
+		window.fz("register", "website", {
+      id: "sqjxkxkswybhifrohpyooonwgbvsfzmayq",
+			trackLinks: true
+		});
+        mqGlobal.AddOnReady(function () { Mql5Cookie.init('mql5.com', '5089794064418106020'); });
+mqGlobal.AddOnReady(function(){if(!window.Pocket){window.Pocket=new PocketManager();}});mqGlobal.AddOnReady(function(){if(!window.translateManager){window.translateManager=new Translate(undefined,'Error: failed to translate. Please try again later.');}if(document.querySelectorAll){var translateElements=document.querySelectorAll(".translateMenu");if(translateElements){var i=0,count=translateElements.length;for(i;i<count;i++){(function(i){var contentid=dataset(translateElements[i],"contentid"),sourcelang=dataset(translateElements[i],"sourcelang"),targetlang=dataset(translateElements[i],"targetlang"),moduleid=parseInt(dataset(translateElements[i],"moduleid")),typeid=parseInt(dataset(translateElements[i],"typeid")),entityid=parseInt(dataset(translateElements[i],"entityid"));Core.AddHandler(translateElements[i],"mouseover",function(){return translateManager.SetMenu(this,contentid,sourcelang,targetlang,moduleid,typeid,entityid);});})(i);}}}});window.fz("show","wdausxxqrpvhekbwjrjlhqjghyhesrqqau");window.mqGlobal.AddOnLoad(function(){window.fpush('MQL5+Article+Open');Articles.CheckOnScrollDown();});mqGlobal.AddOnReady(function(){window.PopupRegisterquickRegistration=new QuickRegistration('PopupRegister','Popup+Register','Articles');});function validate_username(input){var reg=/^([a-z0-9]){1}([\-._a-z0-9]){1,30}([\-_a-z0-9]){1}$/i,value=input.value,result=true;if(reg.test(value)){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Login',unit:'section',value:'Articles'});}return result;}function validate_email(input){var reg=/^\w+([-+.'']{1,2}\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/i,value=input.value,result=true,length_value=value.length;if(reg.test(value)&&length_value>=1&&length_value<=40){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Email',unit:'section',value:'Articles'});}return result;};mqGlobal.AddOnReady(function(){var username=$('PopupRegisterusername'),email=$('PopupRegisteremail');if(username)username.value='';if(email)email.value='';});mqGlobal.AddOnReady(function(){window.quickLogin=new QuickLogin('Popup+Login','Articles');});mqGlobal.AddOnLoad(function(){window.showLoginRegisterPopupAtEnd();});mqGlobal.AddOnLoad(function(){window.tooltipUserInfo.init();});mqGlobal.AddOnReady(function(){{window.initHeaderSearch('','https://www.mql5.com/en/search');}});</script><script type="text/javascript">mqGlobal.AddOnReady(function(){window.initSuggestions("headerSearchKeyword","en","https://search.mql5.com/api/query","https://www.mql5.com/en/users_search/suggestion");});window.fz("show","vgckrufggwxdtfscpyalmenexmvhljduja");mqGlobal.AddOnReady(function(){window.floatVerticalPanelNode=FloatVerticalPanel('This website uses cookies. Learn more about our <a href="/en/about/cookies">Cookies Policy</a>.','cookie_accept');});							if (typeof Attach !== "undefined")
+			Attach.setAcceptFilter(".zip, .txt, .log, .mqh, .ex5, .mq5, .mq4, .mqproj, .ex4, .mt5, .set, .tpl, .cl, .py, .sqlite, .csv, .ini, .ipynb, .onnx, .gif, .png, .jpg, .jpeg, .mp4, .webm");
+	</script>
+
+<script type="application/ld&#x2B;json">
+		[
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"url": "https://www.mql5.com",
+				"logo": "https://c.mql5.com/i/community/logo_mql5-2.png",
+				"sameAs": [
+					"https://www.facebook.com/mql5.community",
+					"https://www.x.com/mql5com",
+					"https://www.youtube.com/user/MetaQuotesOfficial"
+				 ]
+			}
+		
+, 
+{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"Forum","description":"Discussions of trading strategies and algorithmic trading. MQL5.community  the largest forex forum","url":"https://www.mql5.com/en/forum","children":[]},{"@type":"SiteNavigationElement","position":2,"name":"Market","description":"MetaTrader Market - a Market of trading robots, indicators, trading books and magazines","url":"https://www.mql5.com/en/market","children":[]},{"@type":"SiteNavigationElement","position":3,"name":"Signals","description":"Social trading, copy trading and account monitoring with MetaTrader - Trading Signals on MQL5.com","url":"https://www.mql5.com/en/signals","children":[]},{"@type":"SiteNavigationElement","position":4,"name":"Freelance","description":"Order trading robots, technical indicators and algorithmic trading applications. Forex jobs. Freelance on MQL5.com. Hire MetaTrader experts and specialists","url":"https://www.mql5.com/en/job","children":[]},{"@type":"SiteNavigationElement","position":5,"name":"Quotes","description":"","url":"https://www.mql5.com/en/quotes/overview","children":[]},{"@type":"SiteNavigationElement","position":6,"name":"MetaTrader","description":"","url":"https://www.metatrader.com","children":[]},{"@type":"SiteNavigationElement","position":7,"name":"WebTerminal","description":"WebTerminal for the MetaTrader trading platform. Online forex trading.","url":"https://web.metatrader.app/terminal?mode=demo","children":[]},{"@type":"SiteNavigationElement","position":8,"name":"Calendar","description":"","url":"https://www.mql5.com/en/economic-calendar","children":[]},{"@type":"SiteNavigationElement","position":9,"name":"VPS","description":"","url":"https://www.mql5.com/en/vps","children":[]},{"@type":"SiteNavigationElement","position":10,"name":"Articles","description":"","url":"https://www.mql5.com/en/articles","children":[]},{"@type":"SiteNavigationElement","position":11,"name":"CodeBase","description":"Download trading robots, technical indicators and scripts with source code - MQL5 Code Base for MetaTrader 5","url":"https://www.mql5.com/en/code","children":[]},{"@type":"SiteNavigationElement","position":12,"name":"Algo Forge","description":"","url":"https://forge.mql5.io","children":[]},{"@type":"SiteNavigationElement","position":13,"name":"Documentation","description":"MetaQuotes Language 5 (MQL5) Reference - Documentation on MQL5.com","url":"https://www.mql5.com/en/docs","children":[]}]}		
+,
+{"@context":"https://schema.org","@type":"TechArticle","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.mql5.com/en/articles/17547"},"headline":"Automating Trading Strategies in MQL5 (Part 12): Implementing the Mitigation Order Blocks (MOB) Strategy","image":["https://c.mql5.com/2/126/Screenshot_2025-03-20_121647.png","https://c.mql5.com/2/126/Screenshot_2025-03-20_002653.png","https://c.mql5.com/2/126/Screenshot_2025-03-20_010100.png","https://c.mql5.com/2/126/Screenshot_2025-03-20_013215.png","https://c.mql5.com/2/126/Screenshot_2025-03-20_013621.png","https://c.mql5.com/2/126/MOB.gif","https://c.mql5.com/2/126/Screenshot_2025-03-20_021731.png","https://c.mql5.com/2/126/Screenshot_2025-03-20_021832.png"],"datePublished":"2025-03-27T11:51:51+00:00Z","dateModified":"2025-03-27T11:53:38+00:00Z","author":{"@type":"Person","name":"Allan Munene Mutiiria","url":"https://www.mql5.com/en/users/29210372"},"editor":{"@type":"Organization","name":"MetaQuotes","url":"https://www.mql5.com/en/users/metaquotes","address":{"@type":"PostalAddress","addressCountry":"CY"}},"publisher":{"@type":"Organization","name":"MQL5 Community","url":"https://www.mql5.com","logo":{"@type":"ImageObject","url":"https://c.mql5.com/i/community/logo_mql5-2.png"}},"description":"In this article, we build an MQL5 trading system that automates order block detection for Smart Money trading. We outline the strategys rules, implement the logic in MQL5, and integrate risk management for effective trade execution. Finally, we backtest the system to assess its performance and refine it for optimal results."}
+,
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":"https://www.mql5.com/en/articles","name":"Articles"},{"@type":"ListItem","position":2,"item":"https://www.mql5.com/en/articles/mt5","name":"MetaTrader 5"},{"@type":"ListItem","position":3,"item":"https://www.mql5.com/en/articles/mt5/trading","name":"Trading"}]}
+
+		]
+	</script>
+</body>
+</html>

@@ -1,0 +1,1634 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+
+  <meta name="robots" content="max-snippet:250,max-image-preview:large">
+  <meta name="description" content="In this article, we will learn how to create an indicator that detects, draws, and alerts on the mitigation of order blocks. We will also take a detailed look at how to identify these blocks on the chart, set accurate alerts, and visualize their position using rectangles to better understand the price action. This indicator will serve as a key tool for traders who follow the Smart Money Concepts and the Inner Circle Trader methodology.">
+  <meta property="og:url" content="https://www.mql5.com/en/articles/15899">
+  <meta property="og:title" content="Developing Advanced ICT Trading Systems: Implementing Order Blocks in an Indicator">
+  <meta property="og:description" content="In this article, we will learn how to create an indicator that detects, draws, and alerts on the mitigation of order blocks. We will also take a detailed look at how to identify these blocks on the chart, set accurate alerts, and visualize their position using rectangles to better understand the price action. This indicator will serve as a key tool for traders who follow the Smart Money Concepts and the Inner Circle Trader methodology.">
+      <meta property="og:image" content="https://c.mql5.com/2/99/Desarrollo_de_Sistemas_Avanzados_de_Trading_ICT_1200x628.jpg">
+      <meta property="og:image:secure_url" content="https://c.mql5.com/2/99/Desarrollo_de_Sistemas_Avanzados_de_Trading_ICT_1200x628.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2025-06-24T14:14:00.0000000Z">
+  <meta property="article:author" content="https://www.mql5.com/en/users/nique_372">
+  <meta property="article:section" content="MetaTrader 5">
+  <meta property="article:tag" content="Examples">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@mql5com">
+  <meta name="twitter:image" content="https://c.mql5.com/2/99/Desarrollo_de_Sistemas_Avanzados_de_Trading_ICT_1200x628.jpg">
+  <meta name="theme-color" content="#4a76b8">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-config" content="none">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta property="qc:admins" content="36367170677651456375">
+  <meta property="wb:webmaster" content="073d7690269bcd81">
+  <link rel="shortcut icon" href="https://c.mql5.com/i/favicon4.ico">
+  <link rel="dns-prefetch" href="https://c.mql5.com">
+  <link href="https://c.mql5.com/styles/core.444bc25de4c9131a69fedfe5ac42a082.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/all.266d64b83529847f568747dd160d42b0.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/articles.bc4209e4de0b5296041832431b46f3dd.css" type="text/css" rel="stylesheet" media="all">
+  <link href="/en/articles/rss" rel="alternate" type="application/rss+xml" title="Articles on the development and application of MetaTrader 5 trading robots and technical indicators">
+  <link rel="canonical" href="https://www.mql5.com/en/articles/15899">
+  <link rel="alternate" hreflang="en" href="https://www.mql5.com/en/articles/15899">
+  <link rel="alternate" hreflang="ru" href="https://www.mql5.com/ru/articles/15899">
+  <link rel="alternate" hreflang="zh" href="https://www.mql5.com/zh/articles/15899">
+  <link rel="alternate" hreflang="es" href="https://www.mql5.com/es/articles/15899">
+  <link rel="alternate" hreflang="de" href="https://www.mql5.com/de/articles/15899">
+  <link rel="alternate" hreflang="ja" href="https://www.mql5.com/ja/articles/15899">
+  <link rel="alternate" hreflang="pt" href="https://www.mql5.com/pt/articles/15899">
+  <title>Developing Advanced ICT Trading Systems: Implementing Order Blocks in an Indicator - MQL5 Articles</title>
+
+
+
+<script type="text/javascript">
+  !function(){window.mqGlobal={};var t=!1,n=!1,e=[],o=[],i=[];function d(t){var n;for(n=0;n<t.length;n+=1)t[n]()}function c(){t||(t=!0,d(e),d(o),o=[],e=[])}function a(){c(),n||(n=!0,d(i),i=[])}if(mqGlobal.AddOnReady=function(n,i){t?n(document):i?e.push(n):o.push(n)},mqGlobal.AddOnLoad=function(t){n?t(document):i.push(t)},mqGlobal.AddOnActiveWindowChange=function(t){this._onvisibility||(this._onvisibility=[]),this._onvisibility[this._onvisibility.length]=t},document.addEventListener)document.addEventListener("DOMContentLoaded",c,!1),window.addEventListener("load",a,!1);else if(document.attachEvent&&(document.attachEvent("onreadystatechange",(function(){switch(document.readyState){case"interactive":c();break;case"complete":a()}})),window.attachEvent("onload",a),document.documentElement.doScroll&&window==window.top)){!function n(){if(!t&&document.body)try{document.documentElement.doScroll("left"),c()}catch(t){setTimeout(n,0)}}()}}();
+  mqGlobal.CookieDomain = ".mql5.com";
+  mqGlobal.Language = 'en';
+  mqGlobal.IsMobile = false;
+  mqGlobal.ClearRteStorage = function (e) { if (window.GStorage || (window.GStorage = globalStorage()), window.GStorage.supported) try { var o = e; window.GStorage.getItem("rte_autosave_uid", function (e, t) { t == o && (window.GStorage.removeItem("rte_autosave_text"), window.GStorage.removeItem("rte_autosave_date"), window.GStorage.removeItem("rte_autosave_uid")) }) } catch (e) { } };
+</script>
+  
+
+    <script src="https://c.mql5.com/js/all.c09fd283bed20d28a52c95cd70a12a27.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/vendor.1be6e9a4a90b28525f93c4c69a5058a1.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/articles.cd4c73c476b2781eecdf04f5583514b5.js" type="text/javascript" defer="defer"></script>
+
+
+</head>
+
+<body id="cover" class="cover">
+
+
+  <nav class="head">
+    <a href="https://www.mql5.com" class="head__logo" title="MQL5 - Language of trade strategies built-in the MetaTrader 5 client terminal"></a>
+      <div class="head__content">
+        <div class="main-menu" id="mainmenu">
+          
+                    <ul class="main-menu__top-level" id="menuTopLevel">
+                    <li><a href="/en/forum" data-fz-event="MQL5+Menu+Forum">Forum</a></li>
+                    <li><a href="/en/market" data-fz-event="MQL5+Menu+Market">Market</a></li>
+                    <li><a href="/en/signals" data-fz-event="MQL5+Menu+Signals">Signals</a></li>
+                    <li><a href="/en/job" data-fz-event="MQL5+Menu+Job">Freelance</a></li>
+                    <li><a href="/en/vps" data-fz-event="MQL5+Menu+VPS">VPS</a></li>
+                    <li><a href="/en/quotes/overview" data-fz-event="MQL5+Menu+Overview">Quotes</a></li>
+                    <li><a href="https://www.metatrader.com" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+MetaTrader">MetaTrader</a></li>
+                  </ul><ul class="main-menu__second-level" id="menuSecondLevel">
+                    <li class="main-menu__selected"><a href="/en/articles" data-fz-event="MQL5+Menu+Articles"><img src="https://c.mql5.com/i/menu/icon-articles4.svg" alt="" width="16" height="16"/>Articles</a></li>
+                    <li><a href="/en/code" data-fz-event="MQL5+Menu+CodeBase"><img src="https://c.mql5.com/i/menu/icon-code4.svg" alt="" width="16" height="16"/>CodeBase</a></li>
+                    <li><a href="https://forge.mql5.io/?lang=en" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+AlgoForge"><img src="https://c.mql5.com/i/menu/icon-algoforge4.svg" alt="" width="16" height="16"/>Algo Forge</a></li>
+                    <li><a href="/en/docs" data-fz-event="MQL5+Menu+Docs"><img src="https://c.mql5.com/i/menu/icon-docs4.svg" alt="" width="16" height="16"/>Documentation</a></li>
+                    <li><a href="/en/book" data-fz-event="MQL5+Menu+Book"><img src="https://c.mql5.com/i/menu/icon-book4.svg" alt="" width="16" height="16"/>AlgoBook</a></li>
+                    <li><a href="/en/neurobook" data-fz-event="MQL5+Menu+Neurobook"><img src="https://c.mql5.com/i/menu/icon-neurobook4.svg" alt="" width="16" height="16"/>NeuroBook</a></li>
+                    <li><a href="/en/economic-calendar" data-fz-event="MQL5+Menu+Economic+Calendar"><img src="https://c.mql5.com/i/menu/icon-economic-calendar4.svg" alt="" width="16" height="16"/>Calendar</a></li>
+                    <li><a href="https://web.metatrader.app/terminal?mode=demo&lang=en" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Menu+Trading"><img src="https://c.mql5.com/i/menu/icon-trading4.svg" alt="" width="16" height="16"/>WebTerminal</a></li>
+                    <li class="main-menu__mobile"><a href="/en/about">About</a></li>
+                    <li class="main-menu__second-tools"><a rel="noopener" target="_blank" href="https://t.me/mql5dev" title="Follow us on socials for top articles and CodeBase updates" class="button-mt" data-vars-fz="Algo+Trading+Channel+Submenu"><img width="18" height="18" src="https://c.mql5.com/i/sidebar/tg.svg" alt="" loading="lazy">Algo Trading Channel</a></li>
+                    </ul>
+        </div>
+          <div class="main-menu__active">
+            <a id="mainMenuSelected" href="#">
+              <span class="main-menu__primary">Articles</span><span class="main-menu__secondary">Sections</span>
+            </a>
+          </div>
+<form action="https://www.mql5.com/en/search" onsubmit="return false;" autocomplete="off" id="headerSearchForm" class="header-search" method="post">
+<button type="button" id="headerSearchButton" title="Search" class="header-search__button"></button><div class="header-search__input"><input name="keyword" type="text" enterkeyhint="search" title="Enter search text" placeholder="Search" id="headerSearchKeyword"/><label for="headerSearchKeyword" class="header-search__placeholder">Type <span>/</span> to search:  @user, $symbol, ...</label><button id="headerSearchSubmit" class="header-search__submit"></button></div><button type="button" id="headerSearchClean" title="Close" class="header-search__clean"></button></form>        <input class="blurHandler" id="mainMenuBlurHandler" type="checkbox">
+      </div>
+      <div class="head__toolbar" id="headerToolbar">
+          <div class="container loginRegister">
+            <nav>
+              <ul id="loginRegisterButtons"><li><a class="login" title="Please sign in. OpenID supported" href="https://www.mql5.com/en/auth_login" rel="nofollow" data-fz-event="MQL5+Menu+Siginin">Log in</a></li><li><a class="registration en" title="Please register" href="https://www.mql5.com/en/auth_register" rel="nofollow" data-fz-event="MQL5+Menu+Register" onclick="window.fpush('MQL5+Button+Click');">Create an account</a></li></ul>
+            </nav>
+          </div>
+        <div class="toggle-button" id="sidebarToggleButton">
+          <i></i>
+        </div>
+
+        <div class="group-menu" id="groupMenu">
+
+
+          <div class="container lang-menu-container">
+            <div id="langMenuContainer" class="lang-menu">
+              <input class="blurHandler" id="langmenuBlurHandler" type="checkbox">
+              <nav>
+                <ul class="lang-menu__list" id="langmenu">
+                  <li class="lang-menu__list-item lang-menu__list-item_selected"><a href="/en/articles" aria-label="English (English)"><i class="icons-languages icons-languages_en"></i><span>English</span></a></li>
+<li class="lang-menu__list-item"><a href="/ru/articles" aria-label="Русский (Russian)"><i class="icons-languages icons-languages_ru"></i><span>Русский</span></a></li>
+<li class="lang-menu__list-item"><a href="/zh/articles" aria-label="中文 (Chinese)"><i class="icons-languages icons-languages_zh"></i><span>中文</span></a></li>
+<li class="lang-menu__list-item"><a href="/es/articles" aria-label="Español (Spanish)"><i class="icons-languages icons-languages_es"></i><span>Español</span></a></li>
+<li class="lang-menu__list-item"><a href="/pt/articles" aria-label="Português (Portuguese)"><i class="icons-languages icons-languages_pt"></i><span>Português</span></a></li>
+<li class="lang-menu__list-item"><a href="/ja/articles" aria-label="日本語 (Japanese)"><i class="icons-languages icons-languages_ja"></i><span>日本語</span></a></li>
+<li class="lang-menu__list-item"><a href="/de/articles" aria-label="Deutsch (German)"><i class="icons-languages icons-languages_de"></i><span>Deutsch</span></a></li>
+<li class="lang-menu__list-item"><a href="/ko/articles" aria-label="한국어 (Korean)"><i class="icons-languages icons-languages_ko"></i><span>한국어</span></a></li>
+<li class="lang-menu__list-item"><a href="/fr/articles" aria-label="Français (French)"><i class="icons-languages icons-languages_fr"></i><span>Français</span></a></li>
+<li class="lang-menu__list-item"><a href="/it/articles" aria-label="Italiano (Italian)"><i class="icons-languages icons-languages_it"></i><span>Italiano</span></a></li>
+<li class="lang-menu__list-item"><a href="/tr/articles" aria-label="Türkçe (Turkish)"><i class="icons-languages icons-languages_tr"></i><span>Türkçe</span></a></li>
+
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+  </nav>
+
+
+
+  <div id="left-sidebar-selector" class="left-sidebar__selector left-sidebar__selector_padding">
+    <div class="left-sidebar__title">
+MetaTrader 5 /     Examples
+    </div>
+    <i class="icons-ux icons-ux_arrow-down-black"></i>
+  </div>
+  <div class="articles-container block-with-sidebar">
+    <aside class="left-sidebar left-sidebar_270" id="left-sidebar">
+      
+  <ul class="tree-menu-ul"><li class="tree-menu__item tree-menu__item_selected"><a class="tree-menu__link" href="/en/articles/examples"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples.svg" alt="" loading="lazy"/>Examples</a><ul class="tree-menu__list tree-menu__list_nested"><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/examples_indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_indicators.svg" alt="" loading="lazy"/>Indicators</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/examples_experts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_experts.svg" alt="" loading="lazy"/>Experts</a></li></ul></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/strategy_tester"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/strategy_tester.svg" alt="" loading="lazy"/>Tester</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/trading"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading.svg" alt="" loading="lazy"/>Trading</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/trading_systems"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading_systems.svg" alt="" loading="lazy"/>Trading systems</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/integration"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/integration.svg" alt="" loading="lazy"/>Integration</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/indicator.svg" alt="" loading="lazy"/>Indicators</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/expert_advisors"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/expert.svg" alt="" loading="lazy"/>Expert Advisors</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/statistics"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/statistics.svg" alt="" loading="lazy"/>Statistics and analysis</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/machine_learning"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/machine_learning.svg" alt="" loading="lazy"/>Machine learning</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/interviews"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/interviews.svg" alt="" loading="lazy"/>Interviews</a></li></ul>
+  
+
+    <div class="hints-panel">
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_like"></i>
+        <div class="hints-panel__content">
+          Do you like the article?<br>
+          Share it with others —<br>post a <a href="https://www.mql5.com/en/articles/15899" target="_blank">link</a> to it!
+        </div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_fb-square icons-hints_24px"></i><div class="hints-panel__content">
+Find us on <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow">Facebook</a>!<br> Join our fan page</div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_mt-5"></i>
+        <div class="hints-panel__content">
+          Use new possibilities of <a href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Article" rel="nofollow sponsored noopener noreferrer">MetaTrader 5</a>
+        </div>
+      </div>
+    </div>
+<div id='vgckrufggwxdtfscpyalmenexmvhljduja' class="roeid8y6hsc3ntv1l gg88d3drb"></div>      <div class="similar-author-articles ui">
+        <h4 class="similar-author-articles__title">Similar articles</h4>
+        <ul class="similar-author-articles__list">
+            <li>
+              <a href="/en/articles/22691" data-fz-event="MQL5+Article+Similar+Article">Step-by-Step Implementation of a Local Stop Loss System in MQL5</a>
+            </li>
+            <li>
+              <a href="/en/articles/22563" data-fz-event="MQL5+Article+Similar+Article">How to Detect and Normalize Chart Objects in MQL5 (Part 2): Collecting and Structuring Data from Complex Analytical Objects</a>
+            </li>
+            <li>
+              <a href="/en/articles/17608" data-fz-event="MQL5+Article+Similar+Article">Developing a Multi-Currency Expert Advisor (Part 28): Adding a Position Closing Manager</a>
+            </li>
+            <li>
+              <a href="/en/articles/18111" data-fz-event="MQL5+Article+Similar+Article">Implementing a Breakeven Mechanism in MQL5 (Part 2): ATR- and RRR-Based Breakeven</a>
+            </li>
+            <li>
+              <a href="/en/articles/22666" data-fz-event="MQL5+Article+Similar+Article">Interactive Supply and Demand Zone Manager in MQL5: From Manual to Automated Lifecycle</a>
+            </li>
+        </ul>
+      </div>
+    <div class="freelance-hint">
+      <img src="https://c.mql5.com/i/articles/icon_freelance.svg" width="24" height="24" loading="lazy" />
+      <div class="freelance-hint__text">
+        Use the ideas from this article<br>to order your own robot<br>on Freelance
+      </div>
+        <a target="_blank" class="button button_blue-gray-border" title="Go to Freelance" href="/en/job/new" data-fz-event="MQL5+Article+New+Job">Go to Freelance</a>
+    </div>
+
+    </aside>
+    <article class="content-with-sidebar articles-content splashed">
+      
+
+
+  <header class="article-header" style="background-color: rgb(110,138,128)">
+    <section class="article-tools-panel">
+        <div class="article-tools-panel__item">
+          <span class="popup framed client flags">
+            <a class="dropdown" href="javascript:void(false);">
+              <span class="icons-languages icons-languages_en"></span><i></i>
+            </a>
+            <span class="popup">
+              <span class="tip">
+                <span></span>
+              </span>
+              <span class="items">
+                    <a href="/ru/articles/15899">Русский</a>
+                    <a href="/zh/articles/15899">中文</a>
+                    <a href="/es/articles/15899">Español</a>
+                    <a href="/de/articles/15899">Deutsch</a>
+                    <a href="/ja/articles/15899">日本語</a>
+                    <a href="/pt/articles/15899">Português</a>
+              </span>
+            </span>
+          </span>
+        </div>
+        
+      <div class="article-tools-panel__item">
+        <a href="#pocket" title="Pocket allows you to insert a complete content description to the appropriate comment" onclick="return Pocket.Add(this,'en',2,1,15899);" class="article-tools-panel__rounded">
+          <i class="article-pocket-icon"></i>
+        </a>
+      </div>
+      <div class="article-tools-panel__item">
+        <a href="/en/articles/15899?print=" target="_blank" class="article-tools-panel__rounded" rel="nofollow" title="Printer friendly version">
+          <i class="article-print-icon"></i>
+        </a>
+      </div>
+
+    </section>
+    <section class="article-header__image-box">
+        <img class="article-header__image-preview" loading="lazy" width="32" height="16" alt="preview" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAsICAoIBwsKCQoNDAsNERwSEQ8PESIZGhQcKSQrKigkJyctMkA3LTA9MCcnOEw5PUNFSElIKzZPVU5GVEBHSEX/2wBDAQwNDREPESESEiFFLicuRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUX/wAARCAAQACADASIAAhEBAxEB/8QAFwABAAMAAAAAAAAAAAAAAAAABgIDBP/EAB4QAAICAgIDAAAAAAAAAAAAAAERAAIDEgQFITKh/8QAFwEAAwEAAAAAAAAAAAAAAAAAAAIDBP/EABkRAAMAAwAAAAAAAAAAAAAAAAABAhESE//aAAwDAQACEQMRAD8AYcosFmFu0sWQCVE3LyUAKMOdhkFn4iyZnGQrmodyU5Ol7Cs05gGtZWNQPX7KbBypn//Z">
+      <div class="article-header__gradient" style="background: linear-gradient(90deg, rgba(110,138,128, 1) 0%, rgba(110,138,128, 0.72) 8.31%, rgba(110,138,128, 0) 17.1%), linear-gradient(270deg, rgba(110,138,128, 1) 0%, rgba(110,138,128, 0.72) 8.06%, rgba(110,138,128, 0) 16.59%), linear-gradient(0deg, rgba(110,138,128, 1) 8.26%, rgba(110,138,128, 0.8) 65%, rgba(110,138,128, 0) 100%);"></div>
+        <picture>
+          <source srcset="https://c.mql5.com/2/99/Desarrollo_de_Sistemas_Avanzados_de_Trading_ICT_600x314.jpg, https://c.mql5.com/2/99/Desarrollo_de_Sistemas_Avanzados_de_Trading_ICT_1200x628.jpg 2x" media="(min-width:700px)">
+          <img class="article-header__image" loading="lazy" width="600" height="314" srcset="https://c.mql5.com/2/99/Desarrollo_de_Sistemas_Avanzados_de_Trading_ICT_300x157.jpg, https://c.mql5.com/2/99/Desarrollo_de_Sistemas_Avanzados_de_Trading_ICT_600x314.jpg 2x" src="https://c.mql5.com/2/99/Desarrollo_de_Sistemas_Avanzados_de_Trading_ICT_600x314.jpg" alt="Developing Advanced ICT Trading Systems: Implementing Order Blocks in an Indicator" onerror="this.style.display='none';">
+        </picture>
+    </section>
+    <section class="article-header__content">
+      <h1>Developing Advanced ICT Trading Systems: Implementing Order Blocks in an Indicator</h1>
+      <div class="article-header__info">
+        <a href="/en/articles/mt5">MetaTrader 5</a>
+          &mdash;
+          <a href="/en/articles/mt5/examples">Examples</a>
+        | <time datetime="2025-06-24T14:14Z" title="14:14" datetime-type="datetime">24 June 2025, 14:14</time>
+      </div>
+      <div class="article-header__indicators">
+        <span title="Views">
+          <img src="https://c.mql5.com/i/icons.svg#views-usage" width="20" height="20" alt="" />
+          19 477
+        </span>
+        
+          <a title="Comments" href="/en/forum/489668">
+            <img src="https://c.mql5.com/i/icons.svg#comments-usage" width="20" height="20" alt="" />
+            18
+          </a>
+      </div>
+      <div class="article-header__author">
+          <div class="article-header__avatar">
+            <img src="https://c.mql5.com/avatar/2024/8/66bbab57-2d8c.png" srcset="https://c.mql5.com/avatar/2024/8/66bbab57-2d8c_big.png 2x" data-user-login="Nique_372" title="Niquel Mendoza" alt="Niquel Mendoza" loading="lazy" width="60" height="60">
+          </div>
+<a class="author" href="/en/users/nique_372" data-user-login="Nique_372">Niquel Mendoza</a>      </div>
+    </section>
+  </header>
+
+    <div class="content">
+      <div class="inner formatted-content">
+        <ul> <li><a href="/en/articles/15899#introduccion" target="_blank">1.0: Introduction</a></li> </ul> <ul> <li><a href="/en/articles/15899#fundamentos" target="_blank">1.1: Fundamentals of Order Block Creation</a></li> <li><a href="/en/articles/15899#logica_basica" target="_blank">1.1.1: Price Action-Based Logic (Basic Level)</a></li> <li><a href="/en/articles/15899#logica_intermedia" target="_blank">1.1.2: Price Action-Based Logic and Indicators (Intermediate Level)</a></li> </ul> <ul> <li><a href="/en/articles/15899#desarrollo" target="_blank">2.0: Developing the Order Blocks indicator</a></li> <li><a href="/en/articles/15899#inputs_parametros" target="_blank">2.1: Configuring Inputs and Indicator Parameters</a></li> <li><a href="/en/articles/15899#estructuras_funciones" target="_blank">2.2: Creating Key Structures and Functions</a></li> <li><a href="/en/articles/15899#deteccion_order_blocks" target="_blank">2.3: Order Block Detection Logic</a></li> <li><a href="/en/articles/15899#visualizacion" target="_blank">2.4: Visualization: Colors and Verifying Order Block Mitigation</a></li> <li><a href="/en/articles/15899#alertas_mitigacion" target="_blank">2.5: Implementing Alerts for Order Block Mitigation and Object Removal</a></li> </ul> <ul> <li><a href="/en/articles/15899#conclusion" target="_blank">3.0: Conclusion</a></li> </ul> <h3 id="introduccion"><br/></h3> <h3 id="introduccion">1.0: Introduction&nbsp;</h3> <p>Welcome and thank you for reading this article. Today you will learn how to develop an indicator based on the order block theory of Smart Money Concepts and Inner Circle Trader. &nbsp;</p> <h4 id="fundamentos">1.1: Fundamentals of Order Block Creation&nbsp;</h4> <p></p> <p><b>Order Blocks</b> are zones on the chart where pending orders are likely waiting to be filled.</p> <p>This typically occurs when a large market participant, such as a financial institution, wants to enter a significant position but lacks sufficient liquidity to execute the entire order at once without impacting the market. According to the basic laws of supply and demand, executing a portion of the order drives the price higher (in the case of a buy) in an aggressive search for sellers who can provide the liquidity needed to complete the trade.</p> <p>Because the institutional participant cannot execute the full order in one go without causing a substantial price shift, they break the order into smaller parts. This allows them to complete the trade without the price moving significantly before they've fully entered their position.</p> <p>From this concept, we can identify these zones on a price chart as areas of strong imbalance between supply and demand (whether for buying or selling). Below, we'll explore three ways to identify these zones and how to implement them in code.</p> <h4 id="logica_basica">1.1.1: Price Action-Based Logic (Basic Level)&nbsp;</h4><br/> <p>Before diving into the logic behind order blocks, let's briefly review the components of a candlestick, which is essential for understanding the mechanics.</p> <p>A candlestick consists of four price points:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</p> <table cellspacing="0" cellpadding="3" width="100%" class="standart"> <thead> <tr> <th>Price</th> <th>Description</th> </tr> </thead> <tbody> <tr> <td>&nbsp; High </td> <td>The maximum price reached during the candlestick's time frame<br/></td> </tr> <tr> <td>&nbsp; Low </td> <td>The minimum price reached during the candlestick's time frame<br/></td> </tr> <tr> <td>&nbsp;&nbsp;Open </td> <td>The price at which the candlestick opens<br/></td> </tr> <tr> <td>&nbsp; Close </td> <td>The price at which the candlestick closes&nbsp; &nbsp;<br/></td> </tr> </tbody> </table> <p>Let's look at an example on the chart to better understand this:</p> <p style="text-align:center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <img width="410" height="411" src="https://c.mql5.com/2/149/OHCL__1.png" loading="lazy" title="OHCL" alt="OHCL" style="vertical-align:middle;"/></p> <p>To start, according to order block theory, the first important element is identifying a market imbalance. This imbalance is often visible on the chart as a sequence of multiple consecutive candlesticks in the same direction, indicating a clear trend.</p> <p><u>Example: Upward trend with 4 consecutive candlesticks</u></p> <p>In this case, we'll focus on an uptrend formed by four consecutive bullish candlesticks, following these rules:&nbsp; &nbsp; &nbsp;&nbsp;</p> <table cellspacing="0" cellpadding="3" width="100%" class="standart"> <thead> <tr> <th>Candlestick</th> <th>Description</th> </tr> </thead> <tbody> <tr> <td>Previous candlestick</td> <td>This candlestick precedes the upward movement of 4 consecutive candlesticks. It typically closes below the starting level of the upward movement.<br/></td> </tr> <tr> <td>First candlestick </td> <td>Marks the beginning of the upward movement. Its close is above the open of the <i>previous candlestick</i>.<br/></td> </tr> <tr> <td>Second, Third, and Fourth candlesticks <br/></td> <td>These candlestick continue the upward momentum, each closing above the previous candlestick's close.</td> </tr> </tbody> </table> <p></p><u>Rules:</u> <ul> <li><b>Upwrad Movement Condition</b>: To qualify as a valid movement, the four candlesticks must be consecutively bullish. The first candlestick starts the imbalance, and the following ones confirm it.</li> <li><b>Order Block Identification</b>: The <i>order block</i> is identified in the zone encompassing the previous candle and the first bullish candle, representing the area where buyers took control.</li> </ul> <p>Below, we can see a graphical example showing four consecutive bullish candles, clearly indicating a price imbalance.</p> <p style="text-align:center;"> <img width="456" height="388" src="https://c.mql5.com/2/149/1.-Candles_4_eXAMPLE__1.png" loading="lazy" title="Simple OB Example" alt="Simple OB Example" style="vertical-align:middle;"/></p> <p><u>Rules for identifying Order Blocks based on consecutive candlesticks:</u></p> <table width cellpadding="3" cellspacing="0" class="standart"> <thead> <tr> <th><b>Aspect</b></th> <th><b>Bullish Order Block</b></th> <th><b>Bearish Order Block</b></th> </tr> </thead> <tbody> <tr> <td>Candlestick Condition</td> <td>Candlesticks 1, 2, 3, and 4 must all be bullish. Each closes above its open.</td> <td>Candlesticks 1, 2, 3, and 4 must all be bearish. Each closes below its open.</td> </tr> <tr> <td>Extremum Validation of Candlestick 2</td> <td>The low of candlestick 2 must be above the midpoint of candlestick 1's body. <br/>(Exception: Hammer)</td> <td>The high of candlestick 2 must be below the midpoint of candlestick 1's body. <br/>(Exception: Inverted hammer)</td> </tr> <tr> <td>Candlestick 2 Body Condition</td> <td>At least 40% of body of candlestick 2 must exceed the high of candlestick 1.</td> <td>At least 40% of body of candlestick 2 must be below the low of candlestick 1.</td> </tr> <tr> <td>Extremum Validation of Candlestick 3&nbsp;</td> <td>The low of candlestick 3 must be above 25% of 2nd candlestick's body.</td> <td>The high of candlestick 3 must be below 25% of 2nd candlestick's body.</td> </tr> <tr> <td>Candlestick 3 Body Condition</td> <td>Half of 3rd candlestick's body must exceed the high of candlestick 2.</td> <td>Half of 3rd candlestick's body must be below the low of candlestick 2.</td> </tr> </tbody> </table> <p><u>Purpose of the rules:</u></p> <p>These criteria are designed to ensure that the 4-candlestick pattern is strong enough to validate an Order Block and to confirm that the pending orders within the zone have not yet been filled.</p> <p><b>1.1.2: Price Action-Based Logic and Indicators (Intermediate Level)</b></p> <p>In this more advanced approach, we not only rely on price action but also apply indicators to validate the strength of the movement, specifically, the indicator of volume.</p> <p><u>Principles of the Strategy</u></p> <p>As previously discussed, significant market movements often begin with relatively low volume, followed by a sharp increase in volume once major orders are executed. This volume surge typically spans 2 or 3 candlesticks, signaling the formation of an <i>Order Block</i>.</p> <p>We can break down this logic into two main scenarios:</p> <p><b>Case 1: <i>Order Block</i> with Increasing Volume</b></p> <p>In this scenario, the <i>Order Block</i> is formed when volume begins to rise significantly. The conditions are as follows:</p> <ol> <li><b>Start of movement</b>: It begins by a low-volume candlestick that marks the beginning of accumulation.</li> <li><b>Volume increase</b>: On the next candlestick, volume increases significantly, signaling order execution. This increase may persist over 2 to 3 consecutive candlesticks.</li> <li><b><i>Order Block</i></b> confirmation: The <i>Orde Block</i> is identified in the zone where volume begins to increase and pending orders are presumed to have been filled.</li> </ol> <p>Bullish Example:&nbsp;</p> <p style="text-align:center;"> <img width="353" height="424" src="https://c.mql5.com/2/149/Bullish_Increasing_Volume_Example_2__1.png" loading="lazy" title=" Bullish Increasing Volume" alt=" Bullish Increasing Volume" style="vertical-align:middle;"/></p> <p>Bearish example:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p> <p style="text-align:center;"> <img width="387" height="383" src="https://c.mql5.com/2/149/Bearish_Increasing_Volume__1.png" loading="lazy" title="Bearish Increasing Volume" alt="Bearish Increasing Volume" style="vertical-align:middle;"/></p> <p><b>Case 2: <i>Order Block</i> with a single volume spike</b></p> <p>In this case, the <i>Order Block</i> is identified when a significant volume spike is observed in a key candlestick, referred to as the <b>first candlestick</b>. The <i>order block</i> pattern is validated through both price action and volume analysis and consists of 3 consecutive candlesticks - either bullish or bearish.</p> <p><u>Rules:</u></p> <table cellspacing="0" cellpadding="3" width="100%" class="standart"> <thead> <tr> <th>Aspect</th> <th>Bullish Order Block</th> <th>Bearish Order block</th> </tr> </thead> <tbody> <tr> <td>Volume spike on candlestick 1<br/></td> <td>Candlestick 1 must have the highest volume among the three and its volume must exceed both the prior candlestick and candlestick 2.<br/></td> <td><i>Candlestick 1</i> must have the highest volume among the three and its volume must exceed both the prior candlestick and candlestick 2.<br/></td> </tr> <tr> <td>Checking the Extremum of Candlestick 2<br/></td> <td>The <i>low</i> of candlestick 2 must be above the midpoint of body candlestick 1, indicating the <i>Order Block</i> accumulation zone remains untouched.<br/><i>(Exception: if candlestick 1 is a hammer)</i><br/></td> <td>The <i>high</i> of candlestick 2 must be below the midpoint of body <i>candlestick 1</i>, indicating the <i>Order Block</i> accumulation zone remains untouched.<br/><i>(Exception: if candlestick 1 is an inverted hammer)</i><i></i></td> </tr> <tr> <td>Condition 60% candlestick body 2</td> <td>60% of 2nd candlestick's body must extend above the <i>high of candlestick 1</i>, indicating continuation of bullish momentum.</td> <td>60% of 2nd candlestick's body must be below the <i>low of candlestick 1</i>, indicating continuation of bearish momentum.</td> </tr> <tr> <td>Checking the Extremum of Candlestick 3</td> <td>The <i>high</i> of candlestick 3 must be higher than the open price of candlestick 2, confirming continued bearish momentum.</td> <td>The <i>low</i> of candlestick 3 must be lower than the open price of candlestick 2, confirming continued bullish momentum.</td> </tr> </tbody> </table> <p>Bullish Example:&nbsp;</p> <p style="text-align:center;"> <img width="541" height="406" src="https://c.mql5.com/2/149/Volume_Peak_am__1.png" loading="lazy" title="Bullish Volume Peak" alt="Bullish Volume Peak" style="vertical-align:middle;"/></p> <p>&nbsp;Bearish example:</p> <p style="text-align:center;"> <img width="642" height="435" src="https://c.mql5.com/2/149/Bearish_Volume_Peak__1.png" loading="lazy" title="Bearish Volume Peak" alt="Bearish Volume Peak" style="vertical-align:middle;"/></p> <p><br/></p> <p><span>2.0: Developing the Order Blocks indicator</span></p> <h4 id="inputs_parametros">2.1: Configuring Inputs and Indicator Parameters</h4><br/> <p>Finally, after covering a substantial amount of theory, we're moving on to the part many of you have likely been waiting for - coding everything we've learned so far.&nbsp;</p> <p>1. We start by crating a new program of type "Custom Indicator":</p> <p style="text-align:center;"> <img width="540" height="403" src="https://c.mql5.com/2/149/MT_1__3.png" loading="lazy" alt style="vertical-align:middle;"/></p> <p>2. Next we write the name of the indicator and the name of the author.</p> <p style="text-align:center;"> <img width="540" height="403" src="https://c.mql5.com/2/149/MT_2__3.png" loading="lazy" alt style="vertical-align:middle;"/></p> <p>3. Then we select "OnCalculate()" for subsequent calculations.</p> <p style="text-align:center;"> <img width="540" height="403" src="https://c.mql5.com/2/149/MT_3__3.png" loading="lazy" alt style="vertical-align:middle;"/></p> <p>&nbsp;4. Press Done to finish.</p> <p style="text-align:center;"> <img width="540" height="403" src="https://c.mql5.com/2/149/MT_4__3.png" loading="lazy" alt style="vertical-align:middle;"/></p> <p>At this stage, we won't define any plots yet.</p> <pre class="code"><span class="macro">indicator_buffers</span> 
+<span class="macro">indicator_plots</span> 
+</pre> <p>To avoid the error: "no indicator plot defined for indicator00"</p> <p>we add the following placeholder code at the top:</p> <pre class="code"><span class="preprocessor">#property&nbsp;&nbsp;</span><span class="macro">indicator_buffers</span> <span class="number">1</span>
+<span class="preprocessor">#property&nbsp;&nbsp;</span><span class="macro">indicator_plots</span> <span class="number">1</span>
+</pre> <p>This will remove the warning, allowing us to proceed with configuration and logic implementation.</p> <p>Let's configure our inputs first:</p> <li> <p><b>Colors<i> for bullish and bearish </i>order blocks</b>:</p> <p>These settings allow users to choose the colors that will visually represent bullish and bearish <i>Order Blocks</i>, making it easier to distinguish them at a glance.</p></li> <li> <p><b>Rectangle customization options</b>:</p> <p>These options control how the rectangles used to mark <i>Order Blocks</i> are displayed:</p> <ul> <li><b>Border width</b>: Sets the thickness of the rectangle borders.</li> <li><b>On the background</b>: Defines whether the rectangle appears behind or on top of the candlesticks.</li> <li><b>Selectable</b>: Allows users to enable or disable the ability to click and move the rectangles on the chart.</li> </ul></li> <li> <p><b><i>Order Block</i> search range</b>:</p> <p>This parameter defines how many bars back from the current candlestick the indicator will search for valid <i>Order Blocks</i>. Adjusting this allows the indicator to adapt to different strategies or timeframes.</p></li> <li> <p><b>Organizing Inputs with Grouping:</b></p> <p><i>Inputs</i> are adjustable parameters that the user can modify outside the program. To enhance readability and organization, we use the following concept:&nbsp; &nbsp; &nbsp;</p> <pre class="code"><span class="keyword">sinput</span></pre> <p>Using the above keyword allows us to better organize the parameters by grouping them into categories using the property:</p> <pre class="code">group</pre></li> <p>This not only improves the structure of the code, but also makes it easier for the user to recognize the different sets of parameters related to specific aspects of the indicator, such as setting up rectangles or analyzing <i>order blocks</i>.</p> <pre class="code"><span class="keyword">sinput</span> group <span class="string">"--- Order Block Indicator settings ---"</span>
+<span class="keyword">input</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span>&nbsp;&nbsp;Rango_universal_busqueda = <span class="number">500</span>; <span class="comment">// Universal range for searching order blocks</span>
+<span class="keyword">input</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span>&nbsp;&nbsp;Witdth_order_block = <span class="number">1</span>;         <span class="comment">// Width of the order block lines</span>
+
+<span class="keyword">input</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">bool</span> Back_order_block = <span class="macro">true</span>; <span class="comment">// Enable object to be drawn in the background</span>
+<span class="keyword">input</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">bool</span> Fill_order_block = <span class="macro">true</span>; <span class="comment">// Enable fill for the order block rectangle</span>
+
+<span class="keyword">input</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">color</span> Color_Order_Block_Bajista = <span class="macro">clrRed</span>;   <span class="comment">// Assign red color for bearish order block</span>
+<span class="keyword">input</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">color</span> Color_Order_Block_Alcista = <span class="macro">clrGreen</span>; <span class="comment">// Assign green color for bullish order block</span>
+</pre><br/> <h4 id="estructuras_funciones">2.2: Creating Key Structures and Functions</h4> <p><span class="important"></span></p> <p>In this section, we will define the main structures and functions for managing <i>order blocks</i> in our indicator. This will allow us to store and organize key information for each <i>order block</i>, and manage data efficiently using dynamic <i>arrays</i>.</p> <p><u>1. Variable for storing the time of the last candlestick</u></p> <p>First we will create a variable that will store the time of the last candle processed. This is necessary to avoid duplication of <i>order blocks</i> on the same candlestick and to ensure correct tracking over time.</p> <pre class="code"><span class="keyword">datetime</span> tiempo_ultima_vela;
+</pre> <p></p> <p><u>2. Handler for the ATR indicator:</u></p> <p>The second step is to create an indicator <i>handler</i>:</p> <pre class="code"><i>ATR</i>&nbsp;(Average True Range)
+</pre> <p></p> <p>This will help us measure market volatility and complement the indicator's logic. This <i>handler</i> is initialized at the very beginning so that it can be used in the calculation of <i>order blocks</i>.</p> <pre class="code"><span class="keyword">int</span> atr_i;
+</pre> <p></p> <p><u>3. Creating a structure for storing <i>order block</i> data</u></p> <p>Now we will create a structure that will store the relevant data for each <i>order block</i>. This structure is very important as it contains information about the time, prices, the name of the block and whether it was mitigated or not. In addition, we will create a dynamic array that will store all the detected <i>order blocks</i>.</p> <pre class="code"><span class="keyword">struct</span> OrderBlock
+{
+&nbsp;&nbsp; <span class="keyword">datetime</span> time1;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Time of the candle prior to the first candle of the order block</span>
+&nbsp;&nbsp; <span class="keyword">double</span> price1;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Upper price level of the order block (level 1)</span>
+&nbsp;&nbsp; <span class="keyword">double</span> price2;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Lower price level of the order block (level 2)</span>
+&nbsp;&nbsp; <span class="keyword">string</span> name;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Name of the order block</span>
+&nbsp;&nbsp; <span class="keyword">bool</span> mitigated;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Status of the order block (true if mitigated, false if not)</span>
+};
+</pre> <p></p> <p><b>Description of Structure Fields</b></p> <p>The OrderBlock structure consists of the following fields:</p> <ul> <li> <p><b>time1</b>: This field stores the time of the candlestick preceding the first candlestick of the <i>order block</i>. It is useful to know when a block was formed and to compare the time.</p></li> <li> <p><b>price1</b>: Represents the high price or the first key price of the <i>order block</i>. This will be the high price in case of a bullish <i>order block</i>.</p></li> <li> <p><b>price2</b>: Represents the low price or the second key price of the <i>order block</i>. This is the low price in case of a bullish <i>order block</i>.</p></li> <li> <p><b>name</b>: Will store a unique name for identifying <i>order blocks</i> on the chart. This name will be used to clearly label the block and make it visually recognizable.</p></li> <li> <p><b>mitigated</b>: Indicates whether the <i>order block</i> has been mitigated or not. If the order block was mitigated (i.e. the price touched or exceeded the block levels), this value will be true, otherwise false.</p></li> </ul> <p><u>4. Dynamic array to store <i>order blocks</i></u></p> <p>Finally, we will create a dynamic array containing all identified <i>order blocks</i>. These arrays will allow us to store multiple blocks in memory and manage them dynamically, turning order blocks on or off as needed over time.</p> <pre class="code">OrderBlocks ob_bajistas[];
+OrderBlocks ob_alcistas[];
+</pre> <p><b> The OnInit() function:</b></p> <p>The OnInit() function is responsible for initializing all the elements of the indicator and performing checks to make sure everything is ok before the indicator starts working. Below we will explain step by step what is happening in the code.</p> <p><u>1. Initialize Variables</u></p> <p>At the beginning, the initial value of the variable is set:</p> <pre class="code"><span class="string">"tiempo_ultima_vela"</span></pre> <p>A 0. This variable is important because it will store the time of the last processed candlestick, which will avoid duplication and properly manage the indicator flow.</p> <pre class="code">tiempo_ultima_vela = <span class="number">0</span>;</pre> <p>Then the indicator <i>handler</i> is launched:</p> <pre class="code"><span class="string">"ATR"</span> (Average True Range)</pre> <p>The ATR period is 14 candlesticks. <i>ATR</i> will then be used to measure market volatility and will contribute to the logic of <i>order blocks</i>.</p> <pre class="code">atr_i = <span class="indicators">iATR</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, <span class="number">14</span>);
+
+</pre> <p></p> <p><u>2. Checking Input Parameters</u></p> <p>After initialization, the code checks the value of the following variable:</p> <pre class="code">Rango_universal_busqueda</pre> <p>It's less than 40. This variable defines the range in which the indicator will search for <i>order blocks</i>. If this range is too small, it may affect the accuracy and effectiveness of the indicator, so a warning message is displayed and the indicator stops, returning the INIT_PARAMETERS_INCORRECT value.</p> <pre class="code"><span class="keyword">if</span> (Rango_universal_busqueda &lt; <span class="number">40</span>)
+{
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Search range too small"</span>);
+&nbsp;&nbsp; <span class="keyword">return</span> (<span class="macro">INIT_PARAMETERS_INCORRECT</span>);
+}
+</pre> <p>This check allows you to ensure that the search range is of the appropriate size for the indicator to work properly, and to avoid incorrect settings that may affect its operation.</p> <p><u>3. Checking the Initialization of the ATR Indicator</u></p> <p>The next step is to check if the initialization of the ATR indicator <i>handler</i> is correct.</p> <p>If:&nbsp;</p> <pre class="code"><span class="string">"atr_i"</span></pre> <p>Equals:</p> <pre class="code"><span class="macro">INVALID_HANDLE</span></pre> <p>This means that an error occurred while trying to create the indicator, so an error message is displayed and the following is returned:</p> <pre class="code"><span class="macro">INIT_FAILED</span></pre> <p>This terminates the indicator.</p> <pre class="code"><span class="keyword">if</span> (atr_i == <span class="macro">INVALID_HANDLE</span>)
+{
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Error copying data for indicators"</span>);
+&nbsp;&nbsp; <span class="keyword">return</span> (<span class="macro">INIT_FAILED</span>);
+}
+</pre> <p><u>4. Resizing of Dynamic Arrays</u></p> <p>The dynamic arrays that store bearish and bullish <i>order blocks</i> are resized as necessary, while their initial size is set to 0. This ensures that both arrays are empty at the start of the program, ready to store new <i>order blocks</i>.</p> <pre class="code"><span class="functions">ArrayResize</span>(ob_bajistas, <span class="number">0</span>);
+<span class="functions">ArrayResize</span>(ob_alcistas, <span class="number">0</span>);
+</pre> <p></p> <p>Using dynamic arrays is very important to control the number of detected <i>order blocks</i>, as it allows these arrays to grow or shrink as needed. </p> <p><b>Initialization Completed Successfully</b></p> <p>If all checks and initializations are completed without errors, then the function:</p> <pre class="code"><span class="functions">OnInit</span>()</pre> <p>Returns:</p> <pre class="code"><span class="macro">INIT_SUCCEEDED</span></pre> <p>This means that the indicator is properly initialized and ready to start running on the chart.</p> <pre class="code"><span class="keyword">return</span> (<span class="macro">INIT_SUCCEEDED</span>);</pre> <p>Complete code:</p> <pre class="code"><span class="keyword">int</span> <span class="functions">OnInit</span>()
+&nbsp;&nbsp;{
+<span class="comment">//--- indicator buffers mapping</span>
+&nbsp;&nbsp; tiempo_ultima_vela = <span class="number">0</span>;
+&nbsp;&nbsp; atr_i = <span class="indicators">iATR</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>,<span class="number">14</span>);
+
+&nbsp;&nbsp; <span class="keyword">if</span>(Rango_universal_busqueda &lt; <span class="number">40</span>)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Search range too small"</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> (<span class="macro">INIT_PARAMETERS_INCORRECT</span>);
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp; <span class="keyword">if</span>(atr_i== <span class="macro">INVALID_HANDLE</span>)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Error copying data of indicators"</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>(<span class="macro">INIT_FAILED</span>);
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp; <span class="functions">ArrayResize</span>(ob_bajistas,<span class="number">0</span>);
+&nbsp;&nbsp; <span class="functions">ArrayResize</span>(ob_alcistas,<span class="number">0</span>);
+
+
+<span class="comment">//---</span>
+&nbsp;&nbsp; <span class="keyword">return</span>(<span class="macro">INIT_SUCCEEDED</span>);
+&nbsp;&nbsp;}
+</pre> <p>Now we'll add code to the indicator's deinitialization event to free up memory:</p> <pre class="code"><span class="keyword">void</span> <span class="functions">OnDeinit</span>(<span class="keyword">const</span> <span class="keyword">int</span> reason)
+&nbsp;&nbsp;{
+<span class="comment">//---</span>
+&nbsp;&nbsp;Eliminar_Objetos();
+
+&nbsp;&nbsp;<span class="functions">ArrayFree</span>(ob_bajistas);
+&nbsp;&nbsp;<span class="functions">ArrayFree</span>(ob_alcistas);
+&nbsp;&nbsp; 
+&nbsp;&nbsp;}
+</pre> <pre class="code">Eliminar_Objetos();</pre> <p>This will be the function we will use later to remove any rectangles we create.</p> <p><b>Checking for the Appearance of a New Candlestick</b></p> <p><span class="important"></span></p> <p>The purpose of this code is to optimize the indicator by ensuring that it only executes when a new candlestick opens, rather than every time the price changes. Running an indicator every time the price changes would waste computer resources, especially if we are analyzing multiple assets or using multiple indicators.</p> <p>To do this, the time of the last processed candlestick is checked. If a new candlestick is detected, the indicator processing is activated. Below is a description of each part of the code.</p> <p><u>1. Initialization&nbsp;</u></p> <p>We have a bool variable:&nbsp;</p> <pre class="code"><span class="string">"new_vela"</span></pre> <p>It acts as a trigger. The default value is false which means no new candlestick has been opened.</p> <pre class="code"><span class="keyword">bool</span> new_vela = <span class="keyword">false</span>; <span class="comment">// We assign the trigger that tells us whether a new candle has opened to false</span></pre> <p><u>2. Checking for the emergence of a new candlestick</u></p> <p>The next step is to check the time of the last processed candlestick:</p> <pre class="code">tiempo_ultima_vela</pre> <p>Check if it differs from the time of the current candlestick on the chart. Function:</p> <pre class="code"><span class="functions">iTime</span>()</pre> <p>Returns the open time of a specified candlestick, in this case the most recent candle (which is indexed as 0). If the time does not match, it means that a new candlestick has appeared.</p> <pre class="code"><span class="keyword">if</span>(tiempo_ultima_vela != <span class="functions">iTime</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, <span class="number">0</span>)) <span class="comment">// Check if the current time is different from the stored time</span>
+{
+&nbsp;&nbsp;&nbsp;&nbsp;new_vela = <span class="macro">true</span>;                                        <span class="comment">// If it doesn't match, set the new candle indicator to true</span>
+&nbsp;&nbsp;&nbsp;&nbsp;tiempo_ultima_vela = <span class="functions">iTime</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, <span class="number">0</span>); <span class="comment">// Update the last processed candle time</span>
+}
+</pre> <p>This block of code performs two tasks:</p> <ol> <li><b>Checks</b> whether a new candlestick has formed.</li> <li><b>Updates</b> the last_sail_time variable with the time of the new candlestick for future use.</li> </ol> <p><b>Executing the main code</b></p> <p>If variable:&nbsp;</p> <pre class="code">new_vela</pre> <p>is true, this means a new candle has opened. In this case, we can execute the main indicator code that handles <i>order blocks</i>, or any other appropriate logic. By performing this check, we avoid executing the code on every price tick, but only when a new candlestick appears on the chart.</p> <pre class="code"><span class="keyword">if</span>(new_vela == <span class="keyword">true</span>)
+{
+&nbsp;&nbsp; <span class="comment">// Here we will place the main code of the indicator that will run only when a new candlestick opens</span>
+}
+</pre> <p><b>Creating Arrays to Store Candlestick, Volume, and ATR Data</b></p> <p>This block includes arrays that store key information about candlesticks, tick volume, and ATR. This data is necessary for price behavior analysis and identification of <i>order blocks</i>.</p> <p><u>1. Declaring Arrays</u></p> <p>We declare arrays of types double, datetime, and long to store the corresponding values:</p> <pre class="code"><span class="keyword">double</span> openArray[];  <span class="comment">// Stores Open price of candlesticks</span>
+<span class="keyword">double</span> closeArray[];<span class="comment"> // Stores Close price of candlesticks</span>
+<span class="keyword">double</span> highArray[];  <span class="comment">// Stores High price of candlesticks</span>
+<span class="keyword">double</span> lowArray[];<span class="comment">   // Stores Low price of candlesticks</span>
+<span class="keyword">datetime</span> Time[];<span class="comment">     // Stores the time of each candlestick</span>
+<span class="keyword">double</span> atr[];<span class="comment">        // Stores ATR values, which indicator market volatility</span>
+<span class="keyword">long</span> Volumen[];      <span class="comment">// Stores tick volume, representing the number of transactions in each candlestick</span>
+</pre> <p><u>2. Setting Up Arrays as Time Series</u></p> <p>We use the ArraySetAsSeries() function to make arrays act as time series. This means that index 0 will represent the most recent candlestick, making it easier to access the latest candlestick data:</p> <pre class="code"><span class="functions">ArraySetAsSeries</span>(openArray, <span class="macro">true</span>);
+<span class="functions">ArraySetAsSeries</span>(closeArray, <span class="macro">true</span>);
+<span class="functions">ArraySetAsSeries</span>(highArray, <span class="macro">true</span>);
+<span class="functions">ArraySetAsSeries</span>(lowArray, <span class="macro">true</span>);
+<span class="functions">ArraySetAsSeries</span>(Time, <span class="macro">true</span>);
+<span class="functions">ArraySetAsSeries</span>(Volumen, <span class="macro">true</span>);
+<span class="functions">ArraySetAsSeries</span>(atr, <span class="macro">true</span>);
+</pre> <p><u>3. Copying Candlestick and ATR Data</u></p> <p>Then we use functions CopyOpen, CopyClose, CopyHigh, CopyLow, CopyTime and CopyTickVolume to copy the candlestick and tick volume data into the desired arrays. CopyBuffer is also used to obtain ATR values:</p> <pre class="code"><span class="keyword">int</span> copiedBars = <span class="functions">CopyOpen</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, <span class="number">0</span>, (Rango_universal_busqueda * <span class="number">2</span>), openArray);
+<span class="keyword">if</span>(copiedBars &lt; <span class="number">0</span>)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Error copying data from Open: "</span>, <span class="functions">GetLastError</span>());
+}
+<span class="functions">CopyClose</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, <span class="number">0</span>, (Rango_universal_busqueda * <span class="number">2</span>), closeArray);
+<span class="functions">CopyHigh</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, <span class="number">0</span>, (Rango_universal_busqueda * <span class="number">2</span>), highArray);
+<span class="functions">CopyLow</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, <span class="number">0</span>, (Rango_universal_busqueda * <span class="number">2</span>), lowArray);
+<span class="functions">CopyTime</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, <span class="number">0</span>, (Rango_universal_busqueda * <span class="number">2</span>), Time);
+<span class="functions">CopyTickVolume</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, <span class="number">0</span>, (Rango_universal_busqueda * <span class="number">2</span>), Volumen);
+<span class="functions">CopyBuffer</span>(atr_i, <span class="number">0</span>, <span class="number">0</span>, (Rango_universal_busqueda * <span class="number">2</span>), atr);
+</pre> <p><u>4. Error Handling</u></p> <p>When copying open data, we check whether the number of bars copied is negative, which indicates an error. In this case, to help debug, an error message is displayed using the GetLastError() function.</p> <p><b>Preparing to Code the Order Block Detection Logic</b></p> <p>Before implementing the <i>order blocks</i> detection logic, we will implement a number of necessary preparations:</p> <ol> <li> <p><b>Detecting Previous Bullish Candlesticks</b>: We will create a function that identifies whether there are bullish candlesticks prior to the first candlestick of the pattern. If found, we will assign the value of this first candlestick to the closest one, allowing us to draw the <i>Order Block</i> from the beginning of the move.</p></li> <li> <p><b>Drawing Rectangles</b>: We implement a special function to draw rectangles to visually represent <i>order blocks</i> on the chart.</p></li> <li> <p><b>Array Management</b>: We will develop functions to add the detected <i>order blocks</i> into the corresponding arrays. This includes:</p></li> <ul> <li><b>Checking Duplication</b>: A function that allows you to make sure that the <i>order block</i> that we are trying to add has not been recorded before. So only new <i>order blocks</i> will be added.</li> </ul> <li> <p><b>Order Block Mitigation</b>: We will create a function that checks whether an <i>Order Block</i> has been mitigated.</p></li> <li> <p><b>Order Block Removal</b>: We will add a function to mark <i>order blocks</i> as removed to keep our notifications tidy and clean.</p></li> </ol> <p>With these functions we can start adding <i>order blocks</i> into arrays and ensure that only new blocks are registered. From this point on, we will not provide line-by-line explanations due to the amount of code, but instead provide a brief description of each relevant section.</p> <p><b>1. Function</b></p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp; Functions to Manage and Add Values to the Arrays    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> AddIndexToArray_alcistas(OrderBlocks &amp;newVela_Order_block_alcista)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">if</span>(!IsDuplicateOrderBlock_alcista(newVela_Order_block_alcista))&nbsp;&nbsp;<span class="comment">// Here we check if the structure we are about to add already exists in the array</span>
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> num_orderblocks_alcista = <span class="functions">ArraySize</span>(ob_alcistas);         <span class="comment">// We assign the variable "num_orderblocks_alcista" the current size of the ob_alcistas array</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayResize</span>(ob_alcistas, num_orderblocks_alcista + <span class="number">1</span>); <span class="comment">       // Resize the array by increasing its size by 1 to make space for a new order block</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ob_alcistas[num_orderblocks_alcista] = newVela_Order_block_alcista; <span class="comment">// Assign the new order block to the new index (last position) in the array</span>
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;}
+
+<span class="keyword">bool</span> IsDuplicateOrderBlock_alcista(<span class="keyword">const</span> OrderBlocks &amp;newBlock)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="functions">ArraySize</span>(ob_alcistas); i++) <span class="comment">//Start a loop to go through all positions of the ob_alcistas array</span>
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(ob_alcistas[i].time1 == newBlock.time1 &amp;&amp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ob_alcistas[i].name == newBlock.name
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;) <span class="comment">// Check if both time1 and name of the order block already exist in the array</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">return</span> <span class="macro">true</span>; <span class="comment">// If they do, return true (i.e., it is a duplicate)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">break        </span><span class="comment">// Exit the loop</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">return</span> <span class="macro">false</span>; <span class="comment">// If no duplicate is found, return false</span>
+&nbsp;&nbsp;}
+
+<span class="comment">// This would be the same logic but for bearish order blocks</span>
+<span class="keyword">void</span> AddIndexToArray_bajistas(OrderBlocks &amp;newVela_Order_block_bajista)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">if</span>(!IsDuplicateOrderBlock_bajista(newVela_Order_block_bajista))
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> num_orderblocks_bajistas = <span class="functions">ArraySize</span>(ob_bajistas);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayResize</span>(ob_bajistas, num_orderblocks_bajistas + <span class="number">1</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ob_bajistas[num_orderblocks_bajistas] = newVela_Order_block_bajista;
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;}
+
+<span class="keyword">bool</span> IsDuplicateOrderBlock_bajista(<span class="keyword">const</span> OrderBlocks &amp;newBlock)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="functions">ArraySize</span>(ob_bajistas); i++)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(ob_bajistas[i].time1 == newBlock.time1 &amp;&amp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ob_bajistas[i].name == newBlock.name
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">return</span> <span class="macro">true</span>; <span class="comment">// Duplicate found</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">break</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">return</span> <span class="macro">false</span>;      <span class="comment">// No duplicate found</span>
+&nbsp;&nbsp;}
+</pre> <p></p> <p>Now that we have implemented the functions that will help us check if <i>order block</i> is not a duplicate and add it to the dynamic array, it's time to explain how we will draw these <i>order blocks</i> on the chart.</p> <p>For this, we will use two key prices points:</p> <ul> <li> <p><b>Price 1:</b> In case of a bullish <i>order block</i>, this price will represent the base of the rectangle. For a bearish <i>order block</i>, this will be the upper parallel side.</p></li> <li> <p><b>Price 2:</b> In a bullish <i>order block</i>, this price will correspond to the upper parallel side of the rectangle. In the bearish <i>order block</i>, this will be the base of the rectangle.</p></li> </ul> <p></p> <p>Bullish Example:</p> <p style="text-align:center;">&nbsp; &nbsp;&nbsp; <img width="340" height="385" src="https://c.mql5.com/2/149/Price_2__1.png" loading="lazy" title="Bullish OB" alt="Bullish OB" style="vertical-align:middle;"/></p> <p>&nbsp;Bearish example:</p> <p style="text-align:center;">&nbsp; &nbsp;&nbsp;&nbsp; <img width="511" height="361" src="https://c.mql5.com/2/149/Bearish_Order_Block__1.png" loading="lazy" title="Bearish Order Block" alt="Bearish Order Block" style="vertical-align:middle;"/></p> <p>Let's mnow move on to demonstrating functions for mitigation in order blocks.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Functions for Order Blocks&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">datetime</span>&nbsp;&nbsp;mitigados_alcsitas(<span class="keyword">double</span> price, <span class="keyword">double</span> &amp;openArray[], <span class="keyword">double</span> &amp;closeArray[], <span class="keyword">double</span> &amp;highArray[], <span class="keyword">double</span> &amp;lowArray[], <span class="keyword">datetime</span> &amp;Time[], <span class="keyword">datetime</span> start, <span class="keyword">datetime</span> end)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">int</span> startIndex = <span class="functions">iBarShift</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>,start); <span class="comment">// Using iBarShift we find the index of the candle by passing the "start" time</span>
+&nbsp;&nbsp; <span class="keyword">int</span> endIndex = <span class="functions">iBarShift</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, end);   <span class="comment">// Using iBarShift we find the index of the candle by passing the "end" time</span>
+&nbsp;&nbsp; <span class="functions">NormalizeDouble</span>(price,<span class="predefines">_Digits</span>); <span class="comment">// Normalize the price we will work with</span>
+
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = startIndex - <span class="number">2</span> ; i &gt;= endIndex + <span class="number">1</span> ; i--) <span class="comment">// Start a loop from start (time1 of the order block) to end (time[1])</span>
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//terminated by endIndex which will be time[0] + 1 = time[1]&nbsp;&nbsp;--&gt; We are searching for mitigation from past to present (backward)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">NormalizeDouble</span>(lowArray[i],<span class="predefines">_Digits</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">NormalizeDouble</span>(openArray[i],<span class="predefines">_Digits</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">NormalizeDouble</span>(highArray[i],<span class="predefines">_Digits</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">NormalizeDouble</span>(openArray[i],<span class="predefines">_Digits</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//Normalizamos todas laas variable</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(price &gt; lowArray[i] || price &gt; openArray[i] || price &gt; closeArray[i] || price &gt; highArray[i]) <span class="comment">// Check if OHLC closed below price</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">return</span> Time[i]; <span class="comment">//If mitigation is found, return the time of the candle where it happened</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"el orderblock tuvo mitigaciones"</span>, <span class="functions">TimeToString</span>(end));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp; <span class="keyword">return</span> <span class="number">0</span>; <span class="comment">//If no mitigation was found, return 0</span>
+&nbsp;&nbsp;}
+
+<span class="comment">// the same in the bearish case but changing something</span>
+<span class="comment">// instead of the price closing below the price</span>
+<span class="keyword">datetime</span>&nbsp;&nbsp;mitigado_bajista(<span class="keyword">double</span> price, <span class="keyword">double</span> &amp;openArray[], <span class="keyword">double</span> &amp;closeArray[], <span class="keyword">double</span> &amp;highArray[], <span class="keyword">double</span> &amp;lowArray[], <span class="keyword">datetime</span> &amp;Time[], <span class="keyword">datetime</span> start, <span class="keyword">datetime</span> end)
+&nbsp;&nbsp;{
+
+&nbsp;&nbsp; <span class="keyword">int</span> startIndex = <span class="functions">iBarShift</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>,start);
+&nbsp;&nbsp; <span class="keyword">int</span> endIndex = <span class="functions">iBarShift</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, end);
+&nbsp;&nbsp; <span class="functions">NormalizeDouble</span>(price,<span class="predefines">_Digits</span>);
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = startIndex - <span class="number">2</span> ; i &gt;= endIndex + <span class="number">1</span> ; i--)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">NormalizeDouble</span>(lowArray[i],<span class="predefines">_Digits</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">NormalizeDouble</span>(openArray[i],<span class="predefines">_Digits</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">NormalizeDouble</span>(highArray[i],<span class="predefines">_Digits</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">NormalizeDouble</span>(openArray[i],<span class="predefines">_Digits</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(highArray[i] &gt; price || closeArray[i] &gt; price || openArray[i] &gt; price || lowArray[i] &gt; price)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">return</span> Time[i]; <span class="comment">// returns the time of the candle found</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"el orderblock tuvo mitigaciones"</span>, <span class="functions">TimeToString</span>(end));
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp; <span class="keyword">return</span> <span class="number">0</span>; <span class="comment">// not mitigated so far</span>
+&nbsp;&nbsp;}
+
+<span class="keyword">datetime</span> esOb_mitigado_array_alcista(OrderBlocks &amp;newblock, <span class="keyword">datetime</span> end)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">int</span> endIndex = <span class="functions">iBarShift</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, end);
+&nbsp;&nbsp; <span class="functions">NormalizeDouble</span>(newblock.price2,<span class="predefines">_Digits</span>);
+
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span> ; i &lt;&nbsp;&nbsp;endIndex -<span class="number">2</span>&nbsp;&nbsp;; i++)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> low = <span class="functions">NormalizeDouble</span>(<span class="functions">iLow</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>,i),<span class="predefines">_Digits</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> close = <span class="functions">NormalizeDouble</span>(<span class="functions">iClose</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>,i),<span class="predefines">_Digits</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> open = <span class="functions">NormalizeDouble</span>(<span class="functions">iOpen</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>,i),<span class="predefines">_Digits</span>);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>((newblock.price2 &gt;= low || newblock.price2 &gt;= open) || newblock.price2 &gt;= close)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newblock.mitigated = <span class="macro">true</span>;
+
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">return</span> <span class="functions">iTime</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>,i); <span class="comment">// returns the time of the found candle</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp; <span class="keyword">return</span> <span class="number">0</span>; <span class="comment">// not mitigated so far</span>
+&nbsp;&nbsp;}
+
+<span class="keyword">datetime</span> esOb_mitigado_array_bajista(OrderBlocks &amp;newblock, <span class="keyword">datetime</span> end)
+&nbsp;&nbsp;{
+
+&nbsp;&nbsp; <span class="keyword">int</span> endIndex = <span class="functions">iBarShift</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, end);
+&nbsp;&nbsp; <span class="functions">NormalizeDouble</span>(newblock.price2,<span class="predefines">_Digits</span>);
+
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span> ; i&lt;&nbsp;&nbsp;endIndex -<span class="number">2</span>&nbsp;&nbsp;; i++)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> high = <span class="functions">NormalizeDouble</span>(<span class="functions">iHigh</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>,i),<span class="predefines">_Digits</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> close = <span class="functions">NormalizeDouble</span>(<span class="functions">iClose</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>,i),<span class="predefines">_Digits</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> open = <span class="functions">NormalizeDouble</span>(<span class="functions">iOpen</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>,i),<span class="predefines">_Digits</span>);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>((high &gt;= newblock.price2 || close &gt;= newblock.price2) || open &gt;= newblock.price2)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newblock.mitigated = <span class="macro">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// returns the time of the found candlestick</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">return</span> <span class="functions">iTime</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>,i);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp; <span class="keyword">return</span> <span class="number">0</span>; <span class="comment">// not mitigated so far</span>
+&nbsp;&nbsp;}
+
+</pre> <p>These functions are responsible for checking the state of <i>order blocks</i>:</p> <ul> <li> <p><b>Mitigation Check Function</b>: This function checks for the mitigation of <i>order blocks</i> adn is used to evaluate the added structure.</p></li> <li> <p><b>Mitigation Activation Function</b>: The second function, which includes the "array" keyword, activates the mitigation status for <i>order blocks</i>.</p></li> </ul> <p>Next we will look at functions for drawing rectangles and finding the nearest bullish or bearish candlestick.</p> <p>The function of determining the nearest bullish or bearish candlestick is very important. Its purpose is to ensure the correct detection of the corresponding candlestick when detecting <i>order blocks</i>, especially in situations where the <i>order block</i> is formed at the beginning of a strong movement. This will avoid false detection in the middle or at the end of a movement, which may reduce the effectiveness of the analysis.</p> <p>Bullish Example:</p> <p style="text-align:center;"> <img width="387" height="436" src="https://c.mql5.com/2/149/Example_Function_OB_72y__1.png" loading="lazy" title="Example Function OB+" alt="Example Function OB+" style="vertical-align:middle;"/></p> <p>Here are the functions:</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//|&nbsp;&nbsp;Functions to find the nearest bullish or bearish candle         |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">int</span> FindFurthestAlcista(<span class="keyword">datetime</span> start, <span class="keyword">int</span> numVelas)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">int</span> startVela = <span class="functions">iBarShift</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, start); <span class="comment">// Function to find the furthest bullish candle in a consecutive sequence</span>
+<span class="comment">// Initialize variables</span>
+&nbsp;&nbsp; <span class="keyword">int</span> furthestVela = <span class="number">0</span>;
+&nbsp;&nbsp; <span class="keyword">int</span> counter_seguidas = <span class="number">0</span>;
+
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = startVela&nbsp;&nbsp;+ <span class="number">1</span>; i &lt;= startVela + numVelas ; i++)&nbsp;&nbsp;<span class="comment">// Since the candle at "start" is already known to be bullish, we skip it (+1)</span>
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//then it is obvious that the candle at time 1 is bullish (in this function), that's why we increase +1, then we check that i is less than or equal to the index of startVela + num candles</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//here num candles would be the number of candles to search for</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> Close = <span class="functions">NormalizeDouble</span>(<span class="functions">iClose</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>,i),<span class="predefines">_Digits</span>); <span class="comment">//we get the open by index</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> Open = <span class="functions">NormalizeDouble</span>(<span class="functions">iOpen</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>,i),<span class="predefines">_Digits</span>);&nbsp;&nbsp;<span class="comment">//we get the close by index</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(Close &gt; Open || Close == Open)&nbsp;&nbsp;<span class="comment">// we check if it's a bullish candle (close &gt; open), that is, the close must be greater than the open</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; counter_seguidas++; <span class="comment">// if this is true, we increase a variable by 1, which we will use later</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(Open &gt; Close)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;furthestVela = startVela&nbsp;&nbsp;+ <span class="number">1</span> + counter_seguidas; <span class="comment">//if the found candle is not bullish, it is obviously bearish, therefore we assign the index of the previous candle to the one that started the bullish move</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// startVela: is the candle we passed, then we add 1 because as we said before, we will draw the order block one candle before the bullish move (i.e., bearish candle)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// to this we add the counter of consecutive candles</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">break</span>; <span class="comment">// exit the loop</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+<span class="comment">//we check if the body of the candle before the move is more than 30% larger than the candle that starts the move; if it is, we revert to the normal value</span>
+&nbsp;&nbsp; <span class="keyword">double</span> body1 = <span class="functions">NormalizeDouble</span>(<span class="functions">iClose</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>,(furthestVela -<span class="number">1</span>)),<span class="predefines">_Digits</span>) - <span class="functions">NormalizeDouble</span>(<span class="functions">iOpen</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>,(furthestVela -<span class="number">1</span>)),<span class="predefines">_Digits</span>);;
+&nbsp;&nbsp; <span class="keyword">double</span> body_furtles =&nbsp;&nbsp;<span class="functions">NormalizeDouble</span>(<span class="functions">iOpen</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>,furthestVela),<span class="predefines">_Digits</span>) -&nbsp;&nbsp;<span class="functions">NormalizeDouble</span>(<span class="functions">iClose</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>,furthestVela),<span class="predefines">_Digits</span>);
+
+&nbsp;&nbsp; <span class="keyword">if</span>(body_furtles &gt; (<span class="number">1.3</span> * body1))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;furthestVela--;
+
+&nbsp;&nbsp; <span class="keyword">return</span> furthestVela; <span class="comment">// return the index of the found candle</span>
+&nbsp;&nbsp;}
+
+<span class="comment">// Function to search for the furthest bearish candle with consecutive bearish candles</span>
+<span class="keyword">int</span> FindFurthestBajista(<span class="keyword">datetime</span> start, <span class="keyword">int</span> numVelas)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">int</span> startVela = <span class="functions">iBarShift</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, start); <span class="comment">// Index of the initial candle</span>
+&nbsp;&nbsp; <span class="keyword">int</span> furthestVela = <span class="number">0</span>; <span class="comment">    // Initialize variable</span>
+&nbsp;&nbsp; <span class="keyword">int</span> counter_seguidas = <span class="number">0</span>; <span class="comment">// Counter of consecutive bearish candles
+</span>
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = startVela + <span class="number">1</span>; i &lt;= startVela + numVelas; i++)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> Close = <span class="functions">NormalizeDouble</span>(<span class="functions">iClose</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, i), <span class="predefines">_Digits</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> Open = <span class="functions">NormalizeDouble</span>(<span class="functions">iOpen</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, i), <span class="predefines">_Digits</span>);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// If the candle is bearish</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(Close &lt; Open || Close == Open)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; counter_seguidas++; <span class="comment">// Increase the counter of consecutive bearish candles</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// If the candle is bullish, we stop</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(Close &gt; Open)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Return the candle where the bearish sequence is interrupted by a bullish one</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;furthestVela = startVela + <span class="number">1</span> + counter_seguidas;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">break</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp; <span class="keyword">return</span> furthestVela;
+&nbsp;&nbsp;}
+</pre> <p>Now we just need to create a function to draw rectangles:</p> <pre class="code"> <span class="keyword">void</span> RectangleCreate(<span class="keyword">long</span> chart_ID, <span class="keyword">string</span> name, <span class="keyword">const</span> <span class="keyword">int</span> sub_window, <span class="keyword">datetime</span> time1, <span class="keyword">double</span> price1, <span class="keyword">datetime</span> time2, <span class="keyword">double</span> price2, <span class="keyword">color</span> clr, <span class="keyword">int</span> width, <span class="keyword">bool</span> fill, <span class="keyword">bool</span> back , <span class="macro">ENUM_LINE_STYLE</span> style , <span class="keyword">bool</span> select = <span class="macro">false</span>)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="functions">ResetLastError</span>(); <span class="comment">// reset the error</span>
+
+ <span class="comment">// check and create rectangles</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(!<span class="functions">ObjectCreate</span>(chart_ID, name, <span class="macro">OBJ_RECTANGLE</span>, sub_window, time1, price1, time2, price2))
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="keyword">__FUNCTION__</span>, <span class="string">": Failed to create a rectangle! Error code = "</span>, <span class="functions">GetLastError</span>()&nbsp;&nbsp;, <span class="string">"The name of the rectangle is: "</span> , name); <span class="comment">//if creation fails, print the function + error code and rectangle name</span>
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp;<span class="comment">// set the properties of the rectangles</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(chart_ID, name, <span class="macro">OBJPROP_COLOR</span>, clr);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(chart_ID, name, <span class="macro">OBJPROP_STYLE</span>, <span class="macro">STYLE_SOLID</span>);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(chart_ID, name, <span class="macro">OBJPROP_WIDTH</span>, width);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(chart_ID, name, <span class="macro">OBJPROP_FILL</span>, fill);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(chart_ID, name, <span class="macro">OBJPROP_BACK</span>, back);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(chart_ID, name, <span class="macro">OBJPROP_SELECTABLE</span>, select);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(chart_ID, name, <span class="macro">OBJPROP_SELECTED</span>, select);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(Chart_ID, name, <span class="macro">OBJPROP_STYLE</span> ,style);&nbsp;&nbsp;
+&nbsp;&nbsp;}
+</pre> <p>Once all these functions are ready, we will move on to the next part.</p> <h4 id="deteccion_order_blocks">2.3: Order Block Detection Logic</h4><u><br/></u> <p>The logic we developed for this system is as follows:</p> <ol> <li><b>Detect</b> order blocks using the logic described above.</li> <li><b>Assign</b> values to structures.&nbsp;</li> <li><b>Add</b> structure to the array that will store order blocks.</li> <li><b>Check</b> mitigation of order blocks.</li> <li><b>Draw</b> order blocks.</li> <li><b>Alert.&nbsp;</b></li> </ol> Based on this, we can begin programming the indicator. <p></p> <p>First, we create structures to store the order block values:</p> <ul> <li>We create 4 variables that will have the form of the OrderBlocks structure.</li> <li>2 to save bullish order blocks (indicator and Price Action order blocks).</li> <li>2 to save bearish order blocks (indicator and Price Action order blocks).</li> </ul> <p></p> <p></p> <pre class="code">OrderBlocks&nbsp;&nbsp;newVela_Order_block_alcista;
+OrderBlocks&nbsp;&nbsp;newVela_Order_block_volumen;
+OrderBlocks newVela_Order_Block_bajista;
+OrderBlocks newVela_Order_Block_bajista_2;
+</pre> <p>After adding these structures, we already have variables in which the order block values will be stored.</p> <p>Now we just use logic to detect order blocks. So, let's begin. </p> <p>We'll start with logic:</p> <ul> <li>We need to search for order blocks in the candlestick range and assign them an index, which is similar to searching for a candlestick pattern with the conditions we set in the logic.</li> <li>For this we will use 'for' loop.</li> </ul> <p></p> <p>Here's the code:<span style="color:rgb(0, 0, 0);background-color:rgb(251, 249, 245);">&nbsp; &nbsp;&nbsp;</span></p> <pre class="code"><span class="keyword">for</span><span>(</span><span class="keyword">int</span><span><span>&nbsp;</span>i = Rango_universal_busqueda&nbsp;&nbsp;; i&nbsp;&nbsp;&gt;<span>&nbsp;</span></span><span class="number">5</span><span>&nbsp;&nbsp;; i--)</span>
+   {
+
+<span class="comment">//checking errors</span>
+<span class="keyword">if</span>(i + <span class="number">3</span>&gt; <span class="functions">ArraySize</span>(highArray)&nbsp;&nbsp;|| i + <span class="number">3</span> &gt; <span class="functions">ArraySize</span>(atr))
+<span class="keyword">continue</span>;
+<span class="keyword">if</span>(i &lt; <span class="number">0</span>)
+<span class="keyword">continue</span>;
+
+<span class="comment">//--------Variable Declaration--------------------------------------------//</span>
+
+<span class="comment">// Update candle indices</span>
+<span class="keyword">int</span> one_vela = i ; <span class="comment">// central candlestick</span>
+<span class="keyword">int</span>&nbsp;&nbsp;vela_atras_two = i +<span class="number">2</span>;
+<span class="keyword">int</span> vela_atras_one = one_vela +<span class="number">1</span>;
+<span class="keyword">int</span> two_vela = one_vela - <span class="number">1</span>;
+<span class="keyword">int</span> tree_vela = one_vela - <span class="number">2</span>;
+<span class="keyword">int</span> four_vela = one_vela -<span class="number">3</span>;
+
+<span class="functions">NormalizeDouble</span>(highArray[vela_atras_one],<span class="predefines">_Digits</span>);
+<span class="functions">NormalizeDouble</span>(lowArray[vela_atras_one ], <span class="predefines">_Digits</span>);
+<span class="functions">NormalizeDouble</span>(closeArray[vela_atras_one ],<span class="predefines">_Digits</span>);
+<span class="functions">NormalizeDouble</span>(openArray[vela_atras_one ],<span class="predefines">_Digits</span>);
+
+<span class="functions">NormalizeDouble</span>(highArray[two_vela],<span class="predefines">_Digits</span>);
+<span class="functions">NormalizeDouble</span>(lowArray[two_vela], <span class="predefines">_Digits</span>);
+<span class="functions">NormalizeDouble</span>(closeArray[two_vela],<span class="predefines">_Digits</span>);
+<span class="functions">NormalizeDouble</span>(openArray[two_vela],<span class="predefines">_Digits</span>);
+
+<span class="functions">NormalizeDouble</span>(highArray[tree_vela],<span class="predefines">_Digits</span>);
+<span class="functions">NormalizeDouble</span>(lowArray[tree_vela], <span class="predefines">_Digits</span>);
+<span class="functions">NormalizeDouble</span>(closeArray[tree_vela],<span class="predefines">_Digits</span>);
+<span class="functions">NormalizeDouble</span>(openArray[tree_vela],<span class="predefines">_Digits</span>);
+
+<span class="functions">NormalizeDouble</span>(highArray[one_vela],<span class="predefines">_Digits</span>);
+<span class="functions">NormalizeDouble</span>(lowArray[one_vela], <span class="predefines">_Digits</span>);
+<span class="functions">NormalizeDouble</span>(closeArray[one_vela],<span class="predefines">_Digits</span>);
+<span class="functions">NormalizeDouble</span>(openArray[one_vela],<span class="predefines">_Digits</span>);
+
+<span class="comment">// Calculate average body size of previous candles</span>
+<span class="keyword">double</span> body1 = closeArray[one_vela] - openArray[one_vela];
+<span class="keyword">double</span> body2 = closeArray[two_vela] - openArray[two_vela];
+<span class="keyword">double</span> body3 = closeArray[tree_vela] - openArray[two_vela];
+
+<span class="comment">// Volume condition</span>
+<span class="keyword">long</span> Volumen_one_vela = Volumen[one_vela];
+<span class="keyword">long</span> Volumen_two_vela = Volumen[two_vela];
+<span class="keyword">long</span> volumen_vela_atras_one = Volumen[vela_atras_one];
+</pre> <p></p> <ul> <li>Basically, in this code we are creating a loop that will move from the maximum value of the candlestick, which will be:</li> </ul> <p></p> <pre class="code">(Rango_universal_busqueda)</pre> <p>and ends at index 6:</p> <pre class="code">i&nbsp;&nbsp;&gt; <span class="number">5</span></pre> <p>In the case i &gt; 5&nbsp;</p> <p>We subtract 1 from the value of i.</p> <ul> <li>We massively normalize the OHCL of the candlesticks we will work with.</li> <li>We assign the candlestick body as: close - open.</li> <li>We obtain the tick value, this only for the peak case:</li> </ul> <p></p> <pre class="code"><span class="comment">//Volume </span>
+<span class="keyword">long</span> Volumen_one_vela = Volumen[one_vela];
+<span class="keyword">long</span> Volumen_two_vela = Volumen[two_vela];
+<span class="keyword">long</span> volumen_vela_atras_one = Volumen[vela_atras_one];
+</pre> <p>Now we'll add one more case, that's atr which we basically analyze to see strong price movements in one direction. &nbsp;</p> <ul> <li>In this code snippet, which is shown below, you can see the basic logical conditions and the atr indicator:</li> </ul> <ul></ul> <pre class="code"><span class="comment">//Boolean variables to detect if the case is met (only Price Action)</span>
+<span class="keyword">bool</span> esVelaCorrecta_case_normal =<span class="macro">false</span>;
+<span class="keyword">bool</span>&nbsp;&nbsp;esVela_Martillo = <span class="macro">false</span>;
+
+<span class="comment">//Here we check that 4 consecutive bullish candles have formed with close &gt; open</span>
+<span class="keyword">if</span>(
+&nbsp;&nbsp; closeArray[one_vela] &gt; openArray[one_vela] &amp;&amp;
+&nbsp;&nbsp; closeArray[two_vela] &gt; openArray[two_vela] &amp;&amp;
+&nbsp;&nbsp; closeArray[tree_vela] &gt; openArray[tree_vela] &amp;&amp;
+&nbsp;&nbsp; closeArray[four_vela] &gt; openArray[four_vela]
+)
+&nbsp;&nbsp;{
+
+&nbsp;&nbsp; esVelaCorrecta_case_normal =<span class="macro">true</span>; <span class="comment">// if true, assign true to "esVelaCorrecta_case_normal"</span>
+&nbsp;&nbsp;}
+<span class="keyword">else</span>
+&nbsp;&nbsp; esVelaCorrecta_case_normal =<span class="macro">false</span>; <span class="comment">// otherwise assign false</span>
+
+<span class="keyword">bool</span> fuerte_movimiento_alcista =<span class="macro">false</span>; <span class="comment">// create a variable that activates only if a strong bullish movement occurs</span>
+
+<span class="comment">// Check if a movement of 6 consecutive bullish candles was created</span>
+<span class="keyword">if</span>(
+&nbsp;&nbsp; closeArray[one_vela + <span class="number">2</span>] &gt; openArray[one_vela + <span class="number">2</span>] &amp;&amp;
+&nbsp;&nbsp; closeArray[one_vela + <span class="number">1</span>] &gt; openArray[one_vela +<span class="number">1</span>] &amp;&amp;
+&nbsp;&nbsp; closeArray[one_vela] &gt; openArray[one_vela] &amp;&amp;
+&nbsp;&nbsp; closeArray[two_vela] &gt; openArray[two_vela] &amp;&amp;
+&nbsp;&nbsp; closeArray[tree_vela] &gt; openArray[tree_vela] &amp;&amp;
+&nbsp;&nbsp; closeArray[four_vela] &gt; openArray[four_vela]
+)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; fuerte_movimiento_alcista = <span class="macro">true</span>; <span class="comment">// if true assign true to "fuerte_movimiento_alcista"</span>
+&nbsp;&nbsp;}
+
+<span class="comment">//verificamos si es vela martillo</span>
+<span class="keyword">if</span>(openArray[one_vela] - lowArray[one_vela] &gt; closeArray[one_vela] - openArray[one_vela]) <span class="comment">// check if lower wick is larger than the candle body</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp; esVela_Martillo = <span class="macro">true</span>; <span class="comment">// if so set "esVela_Martillo" to true</span>
+&nbsp;&nbsp;}
+
+<span class="keyword">bool</span> atr_case = <span class="macro">false</span>;
+
+<span class="keyword">if</span>(atr[vela_atras_two] &gt; atr[one_vela] &amp;&amp; atr[two_vela] &gt; atr[one_vela] &amp;&amp; atr[two_vela] &gt; atr[vela_atras_two] &amp;&amp; closeArray[one_vela] &gt; openArray[one_vela]
+&nbsp;&nbsp; &amp;&amp; closeArray[four_vela] &gt; openArray[four_vela] &amp;&amp; closeArray[tree_vela] &gt; openArray[tree_vela])
+&nbsp;&nbsp; atr_case = <span class="macro">true</span>;&nbsp;&nbsp;<span class="comment">// in this code we look for ATR to first fall in one candle</span>
+<span class="comment">//then rise, and candles 1, 3, 4 must be bullish; second candle not necessary for this case</span>
+
+<span class="comment">//Verification for normal case</span>
+<span class="keyword">if</span>((esVelaCorrecta_case_normal == <span class="macro">true</span> &amp;&amp; ((lowArray[two_vela] &gt; ((body1 *<span class="number">0.5</span>)+openArray[one_vela]) &amp;&amp; ((body2 * <span class="number">0.4</span>)+openArray[two_vela]) &gt; highArray[one_vela]) || esVela_Martillo == <span class="macro">true</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&amp;&amp; lowArray[tree_vela] &gt; ((body2 * <span class="number">0.25</span>) +openArray[two_vela])) || fuerte_movimiento_alcista == <span class="macro">true</span> || atr_case == <span class="macro">true</span>)&nbsp;&nbsp;
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">int</span> furthestAlcista = FindFurthestAlcista(Time[one_vela],<span class="number">20</span>); <span class="comment">// call function to find previous bullish candles before "one_vela"</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(furthestAlcista &gt; <span class="number">0</span>) <span class="comment">// whether or not found, will be &gt; 0 since it returns previous candle index if none found</span>
+&nbsp;&nbsp;&nbsp;&nbsp; {
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time1 = Time[furthestAlcista];     <span class="comment">//assign time of furthestAlcista candle to time1</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> price2 = openArray[furthestAlcista]; <span class="comment">//assign open of furthestAlcista as price2 (usually drawn on a bearish candle)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> price1 = lowArray[furthestAlcista];  <span class="comment">//assign low of furthestAlcista as price1</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//assign mentioned variables to the structure</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newVela_Order_block_alcista.price1 = price1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newVela_Order_block_alcista.time1 = time1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newVela_Order_block_alcista.price2 = price2;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case_OrderBlockAlcista_normal = <span class="macro">true</span>; <span class="comment">//if all true, activate normal bullish case</span>
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case_OrderBlockAlcista_normal =<span class="macro">false</span>;
+
+&nbsp;&nbsp;}
+<span class="comment">//versión bajista</span>
+
+<span class="keyword">bool</span> case_OrderBlockBajista_normal = <span class="macro">false</span>;
+<span class="keyword">bool</span> case_OrderBlockBajista_volumen = <span class="macro">false</span>;
+
+<span class="comment">//---------------Conditions for Order Blocks--------------------//</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Conditions For Bearish Order Block case_normal       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">if</span>(closeArray[one_vela] &lt; openArray[one_vela]&nbsp;&nbsp;&amp;&amp;
+&nbsp;&nbsp; closeArray[two_vela] &lt; openArray[two_vela]&nbsp;&nbsp;&amp;&amp;
+&nbsp;&nbsp; closeArray[tree_vela] &lt; openArray[tree_vela]&nbsp;&nbsp;&amp;&amp;
+&nbsp;&nbsp; closeArray[one_vela-<span class="number">3</span>]&lt; openArray[one_vela-<span class="number">3</span>]
+&nbsp;&nbsp;)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; esVelaCorrecta_case_normal =<span class="macro">true</span>;
+&nbsp;&nbsp;}
+<span class="keyword">else</span>
+&nbsp;&nbsp; esVelaCorrecta_case_normal =<span class="macro">false</span>;
+
+<span class="keyword">bool</span> a = <span class="macro">false</span>;
+
+<span class="keyword">if</span>(atr[vela_atras_two] &gt; atr[one_vela] &amp;&amp; atr[two_vela] &gt; atr[one_vela] &amp;&amp; atr[two_vela] &gt; atr[vela_atras_two] &amp;&amp; esVelaCorrecta_case_normal)
+&nbsp;&nbsp; a= <span class="macro">true</span>;
+
+<span class="keyword">bool</span> fuerte_movimiento_bajista =<span class="macro">false</span>;
+
+<span class="keyword">if</span>(
+&nbsp;&nbsp; closeArray[one_vela + <span class="number">2</span>] &lt; openArray[one_vela + <span class="number">2</span>] &amp;&amp;
+&nbsp;&nbsp; closeArray[one_vela + <span class="number">1</span>] &lt; openArray[one_vela +<span class="number">1</span>] &amp;&amp;
+&nbsp;&nbsp; closeArray[one_vela] &lt; openArray[one_vela] &amp;&amp;
+&nbsp;&nbsp; closeArray[two_vela] &lt; openArray[two_vela] &amp;&amp;
+&nbsp;&nbsp; closeArray[tree_vela] &lt; openArray[tree_vela] &amp;&amp;
+&nbsp;&nbsp; closeArray[one_vela - <span class="number">3</span>] &lt;= openArray[one_vela - <span class="number">3</span>]
+)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; fuerte_movimiento_bajista = <span class="macro">true</span>;
+&nbsp;&nbsp;}
+
+<span class="comment">// Verification for normal bearish case</span>
+<span class="keyword">if</span>((esVelaCorrecta_case_normal == <span class="macro">true</span> &amp;&amp; highArray[two_vela] &lt; ((body1 *<span class="number">0.70</span>)+closeArray[one_vela]) &amp;&amp; ((body2 * <span class="number">0.4</span>)+closeArray[two_vela]) &lt; lowArray[one_vela] &amp;&amp; highArray[tree_vela] &lt; highArray[two_vela])
+&nbsp;&nbsp; || a == <span class="macro">true</span> || fuerte_movimiento_bajista == <span class="macro">true</span>
+&nbsp;&nbsp;)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">int</span> furthestBajista = FindFurthestBajista(Time[one_vela], <span class="number">20</span>);
+&nbsp;&nbsp; <span class="keyword">if</span>(furthestBajista != -<span class="number">1</span>)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time1 = Time[furthestBajista];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> price1 = closeArray[furthestBajista];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> price2 = lowArray[furthestBajista];
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newVela_Order_Block_bajista.price1 = price1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newVela_Order_Block_bajista.time1 = time1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newVela_Order_Block_bajista.price2 = price2 ;
+
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case_OrderBlockBajista_normal =<span class="macro">false</span>;
+&nbsp;&nbsp;}
+<span class="comment">//+------------------------------------------------------------------+</span>
+</pre> <p>Let's talk about each function with appropriate comments. So, we are looking to identify certain patterns, and when we find them, we activate the Boolean variables.</p> <p>Next we check for bullish candlessticks before <i>one_candle</i>, which is the candlestick which which the movement begins.</p> <p>Finally, we assign price and time values to <i>order blocks</i>.</p> <p>Now we move on to the volume case, where we will look at both volume peaks and rising volume.</p> <pre class="code"><span class="comment">//condition orderblock volume --------------------------------//</span>
+<span class="keyword">if</span>(Volumen_one_vela&nbsp;&nbsp;&gt; Volumen_two_vela &amp;&amp; Volumen_one_vela &gt; volumen_vela_atras_one)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; VolumenCorrecto = <span class="macro">true</span>; <span class="comment">//here we check the volume peak</span>
+&nbsp;&nbsp;}
+<span class="keyword">else</span>
+&nbsp;&nbsp; VolumenCorrecto = <span class="macro">false</span>;
+
+<span class="comment">//so that the bullish candle behind is bearish and 2 bullish</span>
+<span class="keyword">if</span>(closeArray[one_vela] &gt; openArray[one_vela]&nbsp;&nbsp;&amp;&amp;
+&nbsp;&nbsp; closeArray[two_vela] &gt; openArray[two_vela])
+&nbsp;&nbsp;{
+&nbsp;&nbsp; VelaCorrecta_casevolumen = <span class="macro">true</span>;
+&nbsp;&nbsp;}
+
+<span class="comment">//consecutive case</span>
+<span class="keyword">bool</span> case_vol_2 = <span class="macro">false</span>;
+<span class="keyword">if</span>(Volumen[one_vela] &gt; volumen_vela_atras_one &amp;&amp; Volumen[two_vela] &gt; Volumen[one_vela] &amp;&amp; openArray[tree_vela] &lt; closeArray[tree_vela] &amp;&amp; openArray[four_vela] &lt; closeArray[four_vela])
+&nbsp;&nbsp; case_vol_2 = <span class="macro">true</span>;
+
+<span class="comment">//here we verify that the highlights do not mitigate the order block</span>
+<span class="keyword">if</span>((VolumenCorrecto == <span class="macro">true</span> &amp;&amp; VelaCorrecta_casevolumen == <span class="macro">true</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&amp;&amp; ((lowArray[two_vela] &gt; ((body1 * <span class="number">0.5</span>)+openArray[one_vela]) &amp;&amp; ((body2 *<span class="number">0.6</span>)+openArray[two_vela]) &gt; highArray[one_vela]) || esVela_Martillo == <span class="macro">true</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&amp;&amp; highArray[tree_vela] &gt; openArray[two_vela]) || case_vol_2 == <span class="macro">true</span>)
+&nbsp;&nbsp;{
+<span class="comment">//I already explained all this above, it is literally the same, we look for the closest bullish trend and assign a value to the one before it</span>
+&nbsp;&nbsp; <span class="keyword">int</span> furthestAlcista = FindFurthestAlcista(Time[one_vela],<span class="number">20</span>);
+&nbsp;&nbsp; <span class="keyword">if</span>(furthestAlcista &gt; <span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time1 = Time[furthestAlcista];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> price2 = openArray[furthestAlcista];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> price1 = lowArray[furthestAlcista];
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newVela_Order_block_volumen.price1 = price1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newVela_Order_block_volumen.time1 = time1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newVela_Order_block_volumen.price2 = price2;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case_orderblock_vol= <span class="macro">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case_orderblock_vol =<span class="macro">false</span>;
+
+&nbsp;&nbsp;}
+<span class="comment">//Bearish version</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Condition for Bullish Order Block Case case_Volumen&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+
+<span class="keyword">bool</span> VelaCorrecta_casevolumen = <span class="macro">false</span>;
+<span class="keyword">bool</span> VolumenCorrecto;
+<span class="comment">//condition orderblock volume --------------------------------//</span>
+<span class="comment">//by peak volume</span>
+<span class="keyword">if</span>(Volumen_one_vela&nbsp;&nbsp;&gt; Volumen_two_vela &amp;&amp; Volumen_one_vela &gt; volumen_vela_atras_one)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; VolumenCorrecto = <span class="macro">true</span>;
+&nbsp;&nbsp;}
+<span class="keyword">else</span>
+&nbsp;&nbsp; VolumenCorrecto = <span class="macro">false</span>;
+<span class="comment">//we look here for 2 consecutive bearish candles</span>
+<span class="keyword">if</span>(closeArray[one_vela] &lt; openArray[one_vela]&nbsp;&nbsp;&amp;&amp;
+&nbsp;&nbsp; closeArray[two_vela] &lt; openArray[two_vela])
+&nbsp;&nbsp;{
+
+&nbsp;&nbsp; VelaCorrecta_casevolumen = <span class="macro">true</span>; <span class="comment">//we set the variable "VelaCorrecta_casevolumen" to true</span>
+&nbsp;&nbsp;}
+<span class="comment">//we look for an increasing volume in addition to the 3rd candle and 4th candle being bearish</span>
+<span class="keyword">bool</span> case_vol_2 = <span class="macro">false</span>;
+<span class="keyword">if</span>(Volumen[one_vela] &gt; volumen_vela_atras_one &amp;&amp; Volumen[two_vela] &gt; Volumen[one_vela] &amp;&amp; openArray[tree_vela] &gt; closeArray[tree_vela] &amp;&amp; openArray[four_vela] &gt; closeArray[four_vela])
+&nbsp;&nbsp; case_vol_2 = <span class="macro">true</span>;
+
+<span class="keyword">if</span>((VolumenCorrecto == <span class="macro">true</span> &amp;&amp; VelaCorrecta_casevolumen == <span class="macro">true</span> &amp;&amp; highArray[two_vela] &lt; ((body1 * <span class="number">0.5</span>)+closeArray[one_vela]) &amp;&amp; ((body2 *<span class="number">0.5</span>)+closeArray[two_vela]) &lt; lowArray[one_vela]) || case_vol_2 == <span class="macro">true</span>)&nbsp;&nbsp; <span class="comment">// verificamos si se cumple</span>
+&nbsp;&nbsp;{
+<span class="comment">// the peak volume case or increasing volume case</span>
+&nbsp;&nbsp; <span class="keyword">int</span> furthestBajista = FindFurthestBajista(Time[one_vela],<span class="number">20</span>); <span class="comment">//we look for the bearish candle closest to the 1st candle</span>
+
+&nbsp;&nbsp; <span class="keyword">if</span>(furthestBajista &gt; <span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//if this is true, which as I said before it will always be, we assign the candle values</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//to the structure variables to draw the rectangles</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time1 = Time[furthestBajista];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> price1 = closeArray[furthestBajista];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> price2 = lowArray[furthestBajista];
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newVela_Order_Block_bajista_2.price1 = price1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newVela_Order_Block_bajista_2.time1 = time1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newVela_Order_Block_bajista_2.price2 = price2 ;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case_OrderBlockBajista_volumen = <span class="macro">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case_OrderBlockBajista_volumen = <span class="macro">false</span>;
+&nbsp;&nbsp;}
+<span class="comment">//+------------------------------------------------------------------+</span>
+
+</pre> <p>Now that we have implemented detection of <i>order blocks</i>, we need to add them to the array so that later they can be displayed on the chart.</p> <p>In this code, we will perform the following actions:</p> <ol> <li>We initialize the variable 'mitigated' to false.</li> <li>We set a name for an <i>order block</i> based on its type and set time according to <i>one_sail</i>.</li> <li>Finally, we add the <i>order block</i> into a dynamic array.</li> </ol> <pre class="code"><span class="keyword">if</span>(case_OrderBlockAlcista_normal == <span class="macro">true</span>
+&nbsp;&nbsp; &amp;&amp; mitigados_alcsitas(newVela_Order_block_alcista.price2,openArray,closeArray,highArray,lowArray,Time,newVela_Order_block_alcista.time1,Time[<span class="number">0</span>]) == <span class="number">0</span>)&nbsp;&nbsp;<span class="comment">//we verify that the order block has not been mitigated</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp; newVela_Order_block_alcista.mitigated = <span class="macro">false</span>; <span class="comment">//we activate the order block status as unmitigated = false</span>
+&nbsp;&nbsp; newVela_Order_block_alcista.name =&nbsp;&nbsp;<span class="string">"Order Block Alcista normal"</span> + <span class="functions">TimeToString</span>(newVela_Order_block_alcista.time1) ;&nbsp;&nbsp;<span class="comment">//we assign the name "Normal Bullish Order Block" + the time of one_Vela</span>
+&nbsp;&nbsp; AddIndexToArray_alcistas(newVela_Order_block_alcista); <span class="comment">//we add to the array to then check if they are being mitigated and draw them</span>
+
+&nbsp;&nbsp;}
+<span class="comment">//the same would be for the volume case</span>
+<span class="keyword">if</span>(case_orderblock_vol == <span class="macro">true</span>
+&nbsp;&nbsp; &amp;&amp; mitigados_alcsitas(newVela_Order_block_volumen.price2,openArray,closeArray,highArray,lowArray,Time,newVela_Order_block_volumen.time1,Time[<span class="number">0</span>]) == <span class="number">0</span>)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; newVela_Order_block_volumen.mitigated = <span class="macro">false</span>;
+&nbsp;&nbsp; newVela_Order_block_volumen.name =&nbsp;&nbsp;<span class="string">"Order Block Alcista vol"</span> + <span class="functions">TimeToString</span>(newVela_Order_block_volumen.time1) ;
+&nbsp;&nbsp; AddIndexToArray_alcistas(newVela_Order_block_volumen);
+
+&nbsp;&nbsp;}
+
+&nbsp;&nbsp;} <span class="comment"></span>
+
+<span class="comment">//--- Bearish version</span>
+
+<span class="keyword">if</span>(case_OrderBlockBajista_normal == <span class="macro">true</span>&nbsp;&nbsp;&amp;&amp; mitigado_bajista(newVela_Order_Block_bajista.price2,openArray, closeArray, highArray, lowArray, Time, Time[<span class="number">0</span>],newVela_Order_Block_bajista.time1) == <span class="number">0</span>
+&nbsp;&nbsp;) <span class="comment">//we check if the bearish order block was not mitigated and the normal case is true</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp; newVela_Order_Block_bajista.mitigated = <span class="macro">false</span>; <span class="comment">//we initialize the state of the order block as unmitigated = false</span>
+&nbsp;&nbsp; newVela_Order_Block_bajista.name = (<span class="string">"Order Block Bajista "</span>)+ <span class="functions">TimeToString</span>(newVela_Order_Block_bajista.time1) ; <span class="comment">//we assign the name as "Bearish Block Order" + the time of the 1st candle</span>
+&nbsp;&nbsp; AddIndexToArray_bajistas(newVela_Order_Block_bajista); <span class="comment">//we add the structure to the array</span>
+&nbsp;&nbsp;}
+
+<span class="keyword">if</span>(case_OrderBlockBajista_volumen == <span class="macro">true</span>&nbsp;&nbsp; &amp;&amp; mitigado_bajista(newVela_Order_Block_bajista_2.price2, openArray,closeArray,highArray,lowArray,Time,Time[<span class="number">0</span>],newVela_Order_Block_bajista_2.time1)== <span class="number">0</span>
+&nbsp;&nbsp;)<span class="comment">//we check if the bearish order block was not mitigated and the volume case is true</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp; newVela_Order_Block_bajista_2.mitigated = <span class="macro">false</span>; <span class="comment">//we initialize the state of the order block as unmitigated = false</span>
+&nbsp;&nbsp; newVela_Order_Block_bajista_2.name = (<span class="string">"Order Block Bajista "</span>) + <span class="functions">TimeToString</span>(newVela_Order_Block_bajista_2.time1) ; <span class="comment">//we assign the name as "Bearish Block Order" + the time of the 1st candle</span>
+&nbsp;&nbsp; AddIndexToArray_bajistas(newVela_Order_Block_bajista_2); <span class="comment">//we add the structure to the array</span>
+
+&nbsp;&nbsp;}
+&nbsp;&nbsp;} <span class="comment"></span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+</pre> <p>Now we can move on to drawing and verifying the mitigation.</p> <h4 id="visualizacion">2.4: Visualization: Colors and Checking Order Block Mitigation</h4><u><br/></u> <p>In this section, we will look at how to update order blocks, draw them and activate their mitigated state.</p> <ul> <li>&nbsp;We will draw them by iterating over "ob_bullish" and "ob_bearish" the arrays, as we have already said, that store information about order blocks.</li> <li>&nbsp;We will move objects using "ObjectMove" because we don't want to redraw everything again, as this reduces the efficiency of the program and also consumes more computer resources.</li> </ul> <p></p> <p>Now that we've done all this, let's look at the code I prepared to meet these requirements:</p> <pre class="code"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="functions">ArraySize</span>(ob_alcistas); i++) <span class="comment">//We iterate through all the indexes of the array where the order blocks information is stored</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">datetime</span> mitigadoTime = esOb_mitigado_array_alcista(ob_alcistas[i],ob_alcistas[i].time1); <span class="comment">//we call the function that will tell us if index i has been mitigated or not. If it is, we activate its state to true</span>
+
+&nbsp;&nbsp; <span class="keyword">if</span>(ob_alcistas[i].mitigated == <span class="macro">false</span>)&nbsp;&nbsp;<span class="comment">//we verify that it has not been mitigated</span>
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(mitigadoTime == <span class="number">0</span>) <span class="comment">//We condition that the order block has not been touched by the price</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">ObjectFind</span>(<span class="functions">ChartID</span>(),ob_alcistas[i].name) &lt; <span class="number">0</span>) <span class="comment">//we check if the object exists in the graph with ObjectFind</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RectangleCreate(<span class="functions">ChartID</span>(), ob_alcistas[i].name, <span class="number">0</span>, ob_alcistas[i].time1, ob_alcistas[i].price1,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Time[<span class="number">0</span>], ob_alcistas[i].price2,Color_Order_Block_Alcista, Witdth_order_block, Fill_order_block, Back_order_block,<span class="macro">STYLE_SOLID</span>); <span class="comment">//  we create the rectangle with the data</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectMove</span>(<span class="functions">ChartID</span>(),ob_alcistas[i].name,<span class="number">1</span>,Time[<span class="number">0</span>],ob_alcistas[i].price2);&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//on the contrary, if the object exists, the only thing we will do is update it to the current time using anchor point 1</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;}
+
+<span class="comment">// Draw all order blocks from the orderBlocks array</span>
+<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="functions">ArraySize</span>(ob_bajistas); i++)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">datetime</span> mitigadoTime = esOb_mitigado_array_bajista(ob_bajistas[i],ob_bajistas[i].time1);
+
+&nbsp;&nbsp; <span class="keyword">if</span>(ob_bajistas[i].mitigated == <span class="macro">false</span>)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(mitigadoTime == <span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">ObjectFind</span>(<span class="functions">ChartID</span>(),ob_bajistas[i].name) &lt; <span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RectangleCreate(<span class="functions">ChartID</span>(), ob_bajistas[i].name,<span class="number">0</span>, ob_bajistas[i].time1, ob_bajistas[i].price1,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Time[<span class="number">0</span>], ob_bajistas[i].price2,Color_Order_Block_Bajista,Witdth_order_block,Fill_order_block,Back_order_block,<span class="macro">STYLE_SOLID</span>);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectMove</span>(<span class="functions">ChartID</span>(),ob_bajistas[i].name,<span class="number">1</span>,Time[<span class="number">0</span>],ob_bajistas[i].price2);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp;}
+<span class="comment">//+------------------------------------------------------------------+</span>
+</pre> <ul> <li>The order block detection is performed inside the for loop which, in turn, is executed with the following condition:</li> </ul> <pre class="code">new_vela == <span class="macro">true</span></pre> <ul> <li>A rectangle is drawn outside the loop, but also with the condition:</li> </ul> <pre class="code">new_vela == <span class="macro">true</span></pre> <h4 id="alertas_mitigacion">2.5: Implementing Alerts for Order Block Mitigation and Object Removal</h4><br/> <p>In this section, we will look at how to implement alerts when order blocks are relaxed, and create the function we mentioned at the beginning:</p> <pre class="code">Eliminar_Objetos()</pre> <p>Let's start with the definition of logic:</p> <ol> <li>We will need to call the following functions:</li> </ol> <p></p> <pre class="code">esOb_mitigado_array_bajista  </pre> <p></p> <pre class="code">esOb_mitigado_array_alcista</pre> <p>When we detect that the order block was mitigated, we return the time of the mitigation candlestick and also set the order block status to true, which is equivalent to the order block being mitigated.</p> <p>Therefore, to find out whether an order block is mitigated or not, we will use its state:</p> <pre class="code">mitigated</pre> <p>Now, looking at the structure of the order block, we see that it has its price, time, state, and name:</p> <pre class="code"><span class="keyword">struct</span> OrderBlocks
+{
+ <span class="keyword">datetime</span> time1;
+ <span class="keyword">double</span> price1;
+ <span class="keyword">double</span> price2;
+ <span class="keyword">string</span> name;
+ <span class="keyword">bool</span> mitigated;
+ 
+};
+</pre> <p>&nbsp;From this structure, we are particularly interested in 2 variables for alerts:</p> <pre class="code"> <span class="keyword">string</span> name;
+ <span class="keyword">bool</span> mitigated;
+</pre> <p></p> <ul> <li>mitigated: This boolean variable lets us know if the order block has been mitigated.</li> <li>name: Using this parameter, we check if the mitigated order block has been previously mitigated.</li> </ul> Remember that once "mitigated" is activated, the order block will always be mitigated, so we need to have a filter to prevent the indicator from showing alerts from time to time: this filter will be the name of the order block. <p>We still need:</p> <ul> <li>Two arrays; these arrays will be of type string and also dynamic, since we will be updating their size as more order blocks are mitigated.</li> <li>A function to add entries to the string arrays.</li> <li>A function to check if the string we pass as the order block name already exists in the array.</li> </ul> <p>Alright, I've integrated the missing functions and arrays:</p> <ul> <li>We go to the global section of the program where we write:</li> </ul> <p></p> <pre class="code"><span class="keyword">string</span> pricetwo_eliminados_oba[];
+<span class="keyword">string</span> pricetwo_eliminados_obb[];
+</pre> <p></p> <p>These will be the arrays we need.</p> <p>Then we will create the following functions:</p> <pre class="code">&nbsp;&nbsp;<span class="keyword">bool</span> Es_Eliminado_PriceTwo(<span class="keyword">string</span> pName_ob , <span class="keyword">string</span> &amp;pArray_price_two_eliminados[])
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">bool</span> a = <span class="macro">false</span>; <span class="comment">// we create the variable "a" and initialize it to false</span>
+&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; <span class="functions">ArraySize</span>(pArray_price_two_eliminados) ; i++) <span class="comment">// we traverse all the indices of the array passed as a reference</span>
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(pName_ob == pArray_price_two_eliminados[i]) <span class="comment">// we will compare all the positions in the array with the variable "pName_ob"</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="comment">// if the comparison is identical the variable "a" becomes true</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a = <span class="macro">true</span>; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">break</span>; <span class="comment">// we exit the loop</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+&nbsp;&nbsp;&nbsp;&nbsp; } 
+&nbsp;&nbsp;<span class="keyword">return</span> a; <span class="comment">//we return the value of "a"</span>
+ }&nbsp;&nbsp; 
+ 
+ <span class="comment">//function to add values and assign a new size to the array passed by reference </span>
+ <span class="keyword">void</span> Agregar_Index_Array_1(<span class="keyword">string</span> &amp;array[], <span class="keyword">string</span> pValor_Aagregar) {
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> num_array = <span class="functions">ArraySize</span>(array);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="functions">ArrayResize</span>(array, num_array + <span class="number">1</span>) == num_array + <span class="number">1</span>) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;array[num_array] = pValor_Aagregar;
+&nbsp;&nbsp;&nbsp;&nbsp;} <span class="keyword">else</span> {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Error resizing array"</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}
+</pre> <ul> <li>These functions will help us ensure that when an order block is mitigated, it hasn't already been mitigated before, to avoid massive alert spam.</li> </ul> <p>Now we move to the part inside OnCalculate() to finish programming the alerts:</p> <ul> <li>We start by creating a loop through all the indices of the order blocks array.</li> <li>We check with an if() the status of the order block, and also verify that the name of the order block is NOT in the string array where we store the names of mitigated order blocks.</li> <li>If all of this is true, we notify the user with an alert that an order block was mitigated.</li> <li>We add the name of the order block to the string array to avoid repetitions.</li> <li>We finish by exiting the loop with a break.</li> </ul> <pre class="code"><span class="comment">// Loop through the order blocks</span>
+<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="functions">ArraySize</span>(ob_alcistas); i++)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">if</span>(ob_alcistas[i].mitigated == <span class="macro">true</span> &amp;&amp; Es_Eliminado_PriceTwo(ob_alcistas[i].name, pricetwo_eliminados_oba) == <span class="macro">false</span>)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Alert</span>(<span class="string">"El order block alcista esta siendo mitigado: "</span>, <span class="functions">TimeToString</span>(ob_alcistas[i].time1));
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Agregar_Index_Array_1(pricetwo_eliminados_oba, ob_alcistas[i].name);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">break</span>;
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;}
+
+<span class="comment">// Loop through the order blocks</span>
+<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="functions">ArraySize</span>(ob_bajistas); i++)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">if</span>(ob_bajistas[i].mitigated == <span class="macro">true</span> &amp;&amp; Es_Eliminado_PriceTwo(ob_bajistas[i].name, pricetwo_eliminados_obb) == <span class="macro">false</span>)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Alert</span>(<span class="string">"El order block bajista esta siendo mitigado: "</span>, <span class="functions">TimeToString</span>(ob_bajistas[i].time1));
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Agregar_Index_Array_1(pricetwo_eliminados_obb, ob_bajistas[i].name);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">break</span>;
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;}
+<span class="comment">//+------------------------------------------------------------------+</span>
+</pre> <p>Now that we're done with alerts, let's move on to deleting objects:</p> <pre class="code"><span class="keyword">bool</span>&nbsp;&nbsp;<span class="functions">ObjectDelete</span>(
+&nbsp;&nbsp; <span class="keyword">long</span>&nbsp;&nbsp;&nbsp;&nbsp;chart_id,&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// chart identifier</span>
+&nbsp;&nbsp; <span class="keyword">string</span>&nbsp;&nbsp;name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// object name</span>
+&nbsp;&nbsp; );
+</pre> <p>Next we need the current chart ID:</p> <pre class="code"><span class="functions">ChartID</span>()</pre> <p>Order block name:</p> <pre class="code">name</pre> <p>With all this in mind, we need to loop through all of our order block positions and then call:</p> <pre class="code"><span class="functions">ObjectDelete</span>() </pre> <p>To delete all objects we have created:</p> <pre class="code">&nbsp;&nbsp;<span class="keyword">void</span> Eliminar_Objetos()
+&nbsp;&nbsp;{
+&nbsp;&nbsp;
+&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; <span class="functions">ArraySize</span>(ob_alcistas) ; i++) <span class="comment">// we iterate through the array of bullish order blocks </span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="functions">ObjectDelete</span>(<span class="functions">ChartID</span>(),ob_alcistas[i].name); <span class="comment">// we delete the object using the name of the order block</span>
+&nbsp;&nbsp;}
+&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> n = <span class="number">0</span> ; n &lt; <span class="functions">ArraySize</span>(ob_bajistas) ; n++) <span class="comment">// we iterate through the array of bearish order blocks </span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;<span class="functions">ObjectDelete</span>(<span class="functions">ChartID</span>(),ob_bajistas[n].name);&nbsp;&nbsp;<span class="comment">// we delete the object using the name of the order block</span>
+&nbsp;&nbsp;}
+&nbsp;&nbsp;
+ }
+</pre> <p>At this point we have finished working on the indicator, but we still need to change the functions:</p> <pre class="code"><span class="functions">OnInit</span>() </pre> <p>We need to ensure it properly handles the new variables and arrays we added.</p> <p>So, we change it to:&nbsp;</p> <pre class="code"><span class="functions">OnDeinit</span>()</pre> <p>We also make sure to free up the resources used by the indicator by deleting the graphical objects and freeing up the memory of the dynamic arrays where the <i>order block</i> data is stored.</p> <p>It is also important to make sure that the ATR handler is properly freed if we have initialized it correctly, to avoid memory leaks or errors when closing the indicator. We do it as follows:</p> <pre class="code"><span class="keyword">if</span>(atr_i != <span class="macro">INVALID_HANDLE</span>) 
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">IndicatorRelease</span>(atr_i);
+</pre> <p>Final implementation of</p> <pre class="code"><span class="functions">OnDeinit</span>()</pre> <p>is as follows:</p> <pre class="code"> <span class="keyword">void</span> <span class="functions">OnDeinit</span>(<span class="keyword">const</span> <span class="keyword">int</span> reason)
+&nbsp;&nbsp;{
+<span class="comment">//---</span>
+&nbsp;&nbsp;Eliminar_Objetos();
+
+&nbsp;&nbsp;<span class="functions">ArrayFree</span>(ob_bajistas);
+&nbsp;&nbsp;<span class="functions">ArrayFree</span>(ob_alcistas);
+&nbsp;&nbsp;<span class="functions">ArrayFree</span>(pricetwo_eliminados_oba);
+&nbsp;&nbsp;<span class="functions">ArrayFree</span>(pricetwo_eliminados_obb); 
+
+&nbsp;&nbsp;<span class="keyword">if</span>(atr_i&nbsp;&nbsp;!= <span class="macro">INVALID_HANDLE</span>) <span class="functions">IndicatorRelease</span>(atr_i );
+
+&nbsp;&nbsp;}
+
+<span class="comment">//---</span>
+
+<span class="keyword">int</span> <span class="functions">OnInit</span>()
+&nbsp;&nbsp;{
+<span class="comment">//--- indicator buffers mapping</span>
+&nbsp;&nbsp;tiempo_ultima_vela = <span class="number">0</span>;
+&nbsp;&nbsp;&nbsp;&nbsp; atr_i = <span class="indicators">iATR</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>,<span class="number">14</span>);
+&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(Rango_universal_busqueda &lt; <span class="number">40</span>)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Search range too small"</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> (<span class="macro">INIT_PARAMETERS_INCORRECT</span>);
+&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>( atr_i== <span class="macro">INVALID_HANDLE</span>)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Error copying data for indicators"</span>);&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>(<span class="macro">INIT_FAILED</span>);
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;
+&nbsp;&nbsp;<span class="functions">ArrayResize</span>(ob_bajistas,<span class="number">0</span>);
+&nbsp;&nbsp;<span class="functions">ArrayResize</span>(ob_alcistas,<span class="number">0</span>);
+&nbsp;&nbsp;<span class="functions">ArrayResize</span>(pricetwo_eliminados_oba,<span class="number">0</span>);
+&nbsp;&nbsp;<span class="functions">ArrayResize</span>(pricetwo_eliminados_obb,<span class="number">0</span>);
+&nbsp;&nbsp; 
+<span class="comment">//---</span>
+&nbsp;&nbsp; <span class="keyword">return</span>(<span class="macro">INIT_SUCCEEDED</span>);
+&nbsp;&nbsp;}
+</pre> <p><br/></p> <h3></h3> <h3 id="conclusion">3.0: Conclusion&nbsp;</h3> <p>In this article, you have learned how to:</p> <ul> <li>Create an indicator based on Smart Money and Inner Circle Trader concepts.</li> <li>Configure alerts.</li> <li>Draw rectangles on the chart.</li> </ul> <p>Our final result:</p> <p><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span> <img width="1300" height="730" src="https://c.mql5.com/2/149/Order-block-exapmle-GIF-__1.gif" loading="lazy" title="Order-block-example-GIF" alt="Order-block-example-GIF" style="vertical-align:middle;"/></p> <p style="text-align:left;">If you've made it this far, I sincerely thank you for your enthusiasm and patience in learning more advanced trading concepts. Programming offers a wide range of possibilities, from basic concepts like highs and lows of a period to the creation of intelligent trading robots. I invite you to keep exploring more articles to advance in this fascinating world of programming.</p> <p>I would be very happy if you share this article with someone who might need it.</p> <p>As a thank-you for your reading, I've prepared a file that includes all the code for the indicator we discussed here. Also, I want to mention that this series doesn't end here, and I plan to develop more parts. Below is a possible outline of future articles:</p> <p>Part Two:</p> <ul> <li>Integrate buffers and plots for this indicator (buy and sell signal buffer).</li> <li>Implement take profit (TP) and stop loss (SL) levels once a signal is triggered (two lines for TP and two for SL).</li> <li>Introduce a new advanced method for detecting <i>Order Blocks</i> (based on the order book).</li> </ul> <p>If I receive enough support, I plan to create a third part where we will build an Expert Advisor (EA) using the indicator buffers we've developed.</p>
+      </div>
+          <p style="text-align: right;">
+            <small>
+              Translated from Spanish by MetaQuotes Ltd. <br>Original article: <a href="/es/articles/15899" target="_blank">https://www.mql5.com/es/articles/15899</a>
+            </small>
+          </p>
+<div id="cb_15899" class="attachBlock">
+  <strong>Attached files</strong> |
+  <div class="grouped-attachments-help">
+    <a title="Download all attachments in the single ZIP archive" href="/en/articles/download/15899.zip">
+      <i class="attach-icon attach-icon_zip"></i>Download ZIP
+    </a>
+  </div>
+    <div class="attachItem">
+      <a title="Download Order_Block_Indicator_New.mq5" href="/en/articles/download/15899/order_block_indicator_new.mq5"><i class="attach-icon attach-icon_mq5"></i>Order_Block_Indicator_New.mq5</a>
+      <span class="attachSize">(85.47 KB)</span>
+    </div>
+</div>
+    </div>
+
+  <div class="copyright">
+    <p><strong>Warning:</strong> All rights to these materials are reserved by MetaQuotes Ltd. Copying or reprinting of these materials in whole or in part is prohibited.</p>
+      <p>This article was written by a user of the site and reflects their personal views. MetaQuotes Ltd is not responsible for the accuracy of the information presented, nor for any consequences resulting from the use of the solutions, strategies or recommendations described.</p>
+  </div>
+
+
+
+    <div class="article__author-with-articles">
+      
+
+
+<div class="article-footer__author">
+  <div class="article-footer__author-avatar">
+    <img id="avatar" src="https://c.mql5.com/avatar/2024/8/66bbab57-2d8c_big.png" title="Niquel Mendoza" alt="Niquel Mendoza" loading="lazy" width="164" height="164">
+  </div>
+  <div class="article-footer__author-content">
+    <div class="article-footer__author-name">
+      <a href="/en/users/nique_372" title="Niquel Mendoza">Niquel Mendoza</a>
+    </div>
+    <div class="article-footer__author-info">
+      <ul>
+          <li>
+            <i title="Lives" class="icons-profile icons-profile_geo"></i>
+            <a target="_blank" rel="nofollow" title="Lives" href="https://www.mql5.com/go?https://maps.google.com/?z=4&q=Peru">Peru</a>
+          </li>
+        <li>
+          <i title="Rating" class="icons-profile icons-profile_statistics"></i>
+          <a title="Rating" href="/en/users/nique_372/achievements">6075</a>
+        </li>
+      </ul>
+    </div>
+    <div class="article-footer__author-contacts">
+      
+    </div>
+    <div class="article-footer__author-bio"></div>
+  </div>
+</div>
+
+      <div class="other-author-articles ui">
+        <h4 class="other-author-articles__title">Other articles by this author</h4>
+        <ul class="other-author-articles__list">
+          <li><a href="/en/articles/19682" data-fz-event="MQL5+Article+From+Author+Article">Implementing Partial Position Closing in MQL5</a></li>
+          <li><a href="/en/articles/18111" data-fz-event="MQL5+Article+From+Author+Article">Implementing a Breakeven Mechanism in MQL5 (Part 2): ATR- and RRR-Based Breakeven</a></li>
+          <li><a href="/en/articles/17957" data-fz-event="MQL5+Article+From+Author+Article">Implementing of a Breakeven Mechanism in MQL5 (Part 1): Base Class and Fixed-Points Breakeven Mode</a></li>
+          <li><a href="/en/articles/17640" data-fz-event="MQL5+Article+From+Author+Article">Risk Management (Part 5): Integrating the Risk Management System into an Expert Advisor</a></li>
+          <li><a href="/en/articles/17508" data-fz-event="MQL5+Article+From+Author+Article">Risk Management (Part 4): Completing the Key Class Methods</a></li>
+          <li><a href="/en/articles/17249" data-fz-event="MQL5+Article+From+Author+Article">Risk Management (Part 3): Building the Main Class for Risk Management</a></li>
+          <li><a href="/en/articles/16985" data-fz-event="MQL5+Article+From+Author+Article">Risk Management (Part 2): Implementing Lot Calculation in a Graphical Interface</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+  <div class="article__last-comments" id="articleAdditional">
+    
+
+<div class="comments-preview">
+    <div class="title">
+      <span></span><b>
+         Last comments |
+ <a href="/en/forum/489668">Go to discussion</a>
+      </b>
+        (18)
+    </div>
+    <div>
+        
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/avatar_na2.png" srcset="https://c.mql5.com/avatar/avatar_na2_big.png 2x" alt="CapeCoddah" title="CapeCoddah" data-user-login="CapeCoddah" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/capecoddah" data-user-login="CapeCoddah">CapeCoddah</a></b>
+              |
+              <span class="comment__date">14 Jul 2025 at 10:56</span>
+              <a id="comment_57509453"></a>
+              
+            </div>
+            <div class="content" id="content57509453">
+              <p>Hello,</p> <p>I was just testing my EA in the <a href="https://www.mql5.com/en/articles/239" title="Article: The Fundamentals of Testing in MetaTrader 5 " class="linkator"><span class="mark">Strategy Tester</span></a>, EURUSD H4 1/1/2025-2//1/2025, and observed at the end of the run, there were two problems with the Block Order indicator.</p> <p>First, it selected a block order on 2/3/2025 which is outside of the test window and secondly, it placed the block text in the Chart Shift area.</p> <p><br/></p> <p>Enjoy</p> <p><br/></p> <p>CapeCoddah</p>
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/avatar_na2.png" srcset="https://c.mql5.com/avatar/avatar_na2_big.png 2x" alt="CapeCoddah" title="CapeCoddah" data-user-login="CapeCoddah" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/capecoddah" data-user-login="CapeCoddah">CapeCoddah</a></b>
+              |
+              <span class="comment__date">16 Jul 2025 at 10:34</span>
+              <a id="comment_57539369"></a>
+              
+            </div>
+            <div class="content" id="content57539369">
+              <p>Here is an English Translated version of your first indicator.&nbsp; I decided I needed to understand your many code comments in English and reconsidered Google Translate as DeepL did not impress me.&nbsp; I first changed all // comments into #/# to allow Google translate the // line comments.. and then converted the text file into a MS Word document for input to Translate.&nbsp; After the translation, I opened the new document and saved it as a text file, renamed it and began syntaxing the new source.&nbsp; &nbsp;I estimate that Translate did 90% of the work but it did add spaces and characters that required manual conversion.&nbsp; After a days work, it compiled with out errors.&nbsp;&nbsp;<b>AMAZINGLY</b>&nbsp;it worked on the first try! I compared it to your original indicator for 1000 bars and they were identical.</p>
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2024/8/66bbab57-2d8c.png" srcset="https://c.mql5.com/avatar/2024/8/66bbab57-2d8c_big.png 2x" alt="Niquel Mendoza" title="Niquel Mendoza" data-user-login="Nique_372" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/nique_372" data-user-login="Nique_372">Niquel Mendoza</a></b>
+              |
+              <span class="comment__date">16 Jul 2025 at 15:07</span>
+              <a id="comment_57544661"></a>
+              
+            </div>
+            <div class="content" id="content57544661">
+              <div class="fquote"> <strong><span style="color:#42639C;">CapeCoddah <a href="/en/forum/489668/page2#comment_57539369">#</a></span> :</strong><br/> <p><span>Here is an English Translated version of your first indicator.&nbsp; I decided I needed to understand your many code comments in English and reconsidered Google Translate as DeepL did not impress me.&nbsp; I first changed all // comments into #/# to allow Google translate the // line comments.. and then converted the text file into a MS Word document for input to Translate.&nbsp; After the translation, I opened the new document and saved it as a text file, renamed it and began syntaxing the new source.&nbsp; &nbsp;I estimate that Translate did 90% of the work but it did add spaces and characters that required manual conversion.&nbsp; After a days work, it compiled with out errors.&nbsp;&nbsp;</span><b>AMAZINGLY</b><span>&nbsp;it worked on the first try! I compared it to your original indicator for 1000 bars and they were identical.</span></p> </div> Hi CapeCoddah, I thought the code you created was excellent. Sorry for not responding sooner; I'm involved in several projects, which has limited my availability to help you. However, today I can dedicate some time to working on an improved version of the indicator. I'm sharing the code below.
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/avatar_na2.png" srcset="https://c.mql5.com/avatar/avatar_na2_big.png 2x" alt="CapeCoddah" title="CapeCoddah" data-user-login="CapeCoddah" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/capecoddah" data-user-login="CapeCoddah">CapeCoddah</a></b>
+              |
+              <span class="comment__date">18 Jul 2025 at 12:48</span>
+              <a id="comment_57571160"></a>
+              
+            </div>
+            <div class="content" id="content57571160">
+              <p><b>Unfortunately</b>&nbsp;it appears that your indicator is structurally flawed and useless for trading as it is performing its calculations on future variables that are unknownat the time of the calculation as highlighted in the code below in bold.&nbsp;&nbsp;</p> <p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; for( int i = Universal_search_range ; i &gt; 5 ; i--) {<br/>&nbsp; &nbsp; &nbsp; //error checking<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if( i + 3 &gt; ArraySize(highArray) || i + 3 &gt; ArraySize(atr))<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; continue ;<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if( i &lt; 0) continue;<br/>&nbsp; &nbsp; &nbsp;&nbsp;<br/>&nbsp; &nbsp; &nbsp; // Update candlestick indices<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;one_candle = i ; //central candle<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;candle_behind_two = i +2;<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;candle_behind_one = one_candle +1;<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <b>&nbsp;two_candle = one_candle - 1;<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;three_candle = one_candle - 2;<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;four_candle = one_candle -3;</b><br/>&nbsp; &nbsp; &nbsp;&nbsp;<br/>&nbsp; &nbsp; &nbsp; // Calculate the average volume of previous candles<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;body1 = <a href="https://www.mql5.com/en/docs/matrix/matrix_operations" target="_blank" title=" MQL5 Documentation: operation MathAbs" class="linkator"><span class="mark">MathAbs</span></a>(closeArray[one_candle] - openArray[one_candle]);<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;body2 = MathAbs(closeArray[two_candle] - openArray[two_candle]);<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;body3 = MathAbs(closeArray[three_candle] - openArray[three_candle]);<br/><br/></p>
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2024/8/66bbab57-2d8c.png" srcset="https://c.mql5.com/avatar/2024/8/66bbab57-2d8c_big.png 2x" alt="Niquel Mendoza" title="Niquel Mendoza" data-user-login="Nique_372" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/nique_372" data-user-login="Nique_372">Niquel Mendoza</a></b>
+              |
+              <span class="comment__date">27 Jul 2025 at 13:23</span>
+              <a id="comment_57651354"></a>
+              
+            </div>
+            <div class="content" id="content57651354">
+              <div class="fquote"> <strong><span style="color:#42639C;">CapeCoddah <a href="/en/forum/489668/page2#comment_57571160">#</a></span>:</strong><br/> <p><b>Unfortunately</b>&nbsp;it appears that your indicator is structurally flawed and useless for trading as it is performing its calculations on future variables that are unknownat the time of the calculation as highlighted in the code below in bold.&nbsp;&nbsp;</p> <p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; for( int i = Universal_search_range ; i &gt; 5 ; i--) {<br/>&nbsp; &nbsp; &nbsp; //error checking<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if( i + 3 &gt; ArraySize(highArray) || i + 3 &gt; ArraySize(atr))<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; continue ;<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if( i &lt; 0) continue;<br/>&nbsp; &nbsp; &nbsp;&nbsp;<br/>&nbsp; &nbsp; &nbsp; // Update candlestick indices<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;one_candle = i ; //central candle<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;candle_behind_two = i +2;<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;candle_behind_one = one_candle +1;<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <b>&nbsp;two_candle = one_candle - 1;<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;three_candle = one_candle - 2;<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;four_candle = one_candle -3;</b><br/>&nbsp; &nbsp; &nbsp;&nbsp;<br/>&nbsp; &nbsp; &nbsp; // Calculate the average volume of previous candles<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;body1 = MathAbs(closeArray[one_candle] - openArray[one_candle]);<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;body2 = MathAbs(closeArray[two_candle] - openArray[two_candle]);<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;body3 = MathAbs(closeArray[three_candle] - openArray[three_candle]);<br/><br/></p> </div> <p>Hello <span>CapeCoddah</span>, I think that is not the case, since for example the indicator does all the calculations using arrays in series (although it is not common, they are normally done without series) in the context of the first loop shown, that loop is used to detect order blocks, what is done is go from the "Universal_search_range" candle (Remember that in series candle 0 is the most recent) to candle 6 so at no time do I see future candles being used and if that were the case then two_candle or another index would result in a value less than 0 causing out of range. So the candle four_candle = one_candle - 3, would be the closest to 0 in the case that the loop ends where i = 6 then four_candle = 3, so taking into account that the current candle is 0 then, I can say that at no time am I using future candles. The name may sound confusing, I know, but I did it that way because it was easier for me to understand, given that when it came to obtaining the order blocks, one_vela was like the central candle. So if I was looking for a strong move, I would evaluate the candles that followed it (in series, this would be subtraction).</p>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+  </div>
+
+
+    <div class="articles-bottom-list" id="articleAdditional">
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Developing a Replay System (Part 73): An Unusual Communication (II)" src="https://c.mql5.com/2/100/Desenvolvendo_um_sistema_de_Replay_Parte_73_Uma_comunicaimo_inusitada_II___LOGO.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/12363" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Developing a Replay System (Part 73): An Unusual Communication (II)</a>
+                <div class="articles-bottom-list__desc">In this article, we will look at how to transmit information in real time between the indicator and the service, and also understand why problems may arise when changing the timeframe and how to solve them. As a bonus, you will get access to the latest version of the replay /simulation app.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Installing MetaTrader 5 and Other MetaQuotes Apps on HarmonyOS NEXT" src="https://c.mql5.com/2/151/18612-installing-metatrader-5-and-logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/18612" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Installing MetaTrader 5 and Other MetaQuotes Apps on HarmonyOS NEXT</a>
+                <div class="articles-bottom-list__desc">Easily install MetaTrader 5 and other MetaQuotes apps on HarmonyOS NEXT devices using DroiTong. A detailed step-by-step guide for your phone or laptop.</div>
+              </div>
+          </div>
+        </div>
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Sending Messages from MQL5 to Discord, Creating a Discord-MetaTrader 5 Bot" src="https://c.mql5.com/2/152/18550-sending-messages-from-mql5-logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/18550" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Sending Messages from MQL5 to Discord, Creating a Discord-MetaTrader 5 Bot</a>
+                <div class="articles-bottom-list__desc">Similar to Telegram, Discord is capable of receiving information and messages in JSON format using it&#x27;s communication API&#x27;s, In this article, we are going to explore how you can use discord API&#x27;s to send trading signals and updates from MetaTrader 5 to your Discord trading community.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Atomic Orbital Search (AOS) algorithm" src="https://c.mql5.com/2/101/Atomic_Orbital_Search__LOGO.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/16276" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Atomic Orbital Search (AOS) algorithm</a>
+                <div class="articles-bottom-list__desc">The article considers the Atomic Orbital Search (AOS) algorithm, which uses the concepts of the atomic orbital model to simulate the search for solutions. The algorithm is based on probability distributions and the dynamics of interactions in the atom. The article discusses in detail the mathematical aspects of AOS, including updating the positions of candidate solutions and the mechanisms of energy absorption and release. AOS opens new horizons for applying quantum principles to computing problems by offering an innovative approach to optimization.</div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+<div class="clear-fix"></div>
+
+<div id='wdausxxqrpvhekbwjrjlhqjghyhesrqqau' class="r6irig5txiuua4k0m r6irig5txiuua4k0m_articles-view gg88d3drb"></div>
+    
+
+<div class="hidden" id="popupRegisterLogin">
+  <div class="register-login-popup">
+    <div class="register-login-popup__header">
+      <img src="https://c.mql5.com/i/registerlandings/logo-2.png" srcset="https://c.mql5.com/i/registerlandings/logo-2_2x.png 2x" alt="MQL5 - Language of trade strategies built-in the MetaTrader 5 client terminal" loading="lazy" width="74" height="24" />
+    </div>
+    <div class="register-login-popup__content">
+      <div class="register-login-popup__desc">
+        <div class="register-login-popup__title">You are missing trading opportunities:</div>
+        <ul>
+<li>Free trading apps</li>
+<li>Over 8,000 signals for copying</li>
+<li>Economic news for exploring financial markets</li>
+</ul>
+      </div>
+      <div class="register-login-popup__forms ui">
+        <div class="register-login-popup__tabs" id="registerLoginPopupTabs">
+          <span data-id="register" id="registerLoginPopupTab_register" class="register-login-popup__tab register-login-popup__tab_active">Registration</span>
+          <span data-id="login" id="registerLoginPopupTab_login" class="register-login-popup__tab">Log in</span>
+        </div>
+        <div id="registerLoginPopupTabContent_register">
+          <div class="ui auth-form__content">
+    
+  <script type='text/javascript'>/*<![CDATA[*/ if (!window.V) var V = []; /*]]>*/</script>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/en/auth_register_short" id="PopupRegisterquickRegisterForm" onsubmit="PopupRegisterquickRegistration.OnSubmit(this,&#39;en&#39;);if(Validate(this)) Ajax.form(this,{onready:PopupRegisterquickRegistration.OnSuccessPopup,onerror:PopupRegisterquickRegistration.OnError,onbeginrequest:PopupRegisterquickRegistration.DisableInputs,onendrequest:PopupRegisterquickRegistration.EnableInputs});return(false);" enctype = "multipart/form-data"><input type="hidden" name="__signature" value="d80caa1bd39b0d211974420f98a90aec"/>
+    <div class="auth-form__inputs">
+      <input type="hidden" value="0" name="IsValidate" id="PopupRegisterIsValidate" />
+
+      <!--[if lt IE 10]><div class="note">Login:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input type="text" id="PopupRegisterusername" name="username" class="input" maxlength="32" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.CheckUserName();}" onkeyup="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.ValidateUserName(this, 'Enter a valid login');}" placeholder="Login" title="May contain Latin letters, digits, dots, dashes,underscore characters. Cannot start or end with a dot. The allowed length is 3 to 32 characters." onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisterusername'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisterusername',10,'You may use Latin characters, numbers, underscores and periods.',validate_username]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisterusername">latin characters without spaces</label>
+      </div>
+      <!--[if lt IE 10]><div class="note">Your email:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input class="input" type="email" id="PopupRegisteremail" name="email" placeholder="Your email" title="Please enter the email (it may not exceed 256 characters). For example: john@example.com" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnChange(this);}" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisteremail'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisteremail',10,'Enter a valid email address',validate_email]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisteremail">a password will be sent to this email</label>
+      </div>
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Register" />
+    </div>
+    <span id="PopupRegisterquickRegisterSubmit">
+      <input type="submit" value="Register" id="PopupRegisterquickRegisterButton"  title="Sign up and receive an email with your password" class="button button_yellow"  />
+    </span>
+    <span id="PopupRegisterquickRegisterErrorMessage" class="quick-register-error-message field-validation-error" style="text-align: center; margin-top: 16px; display: none;">
+      An error occurred
+    </span>
+</form>
+    
+</div>
+<div class="auth-social">
+  <ul class="auth-social-list" id="socialList">
+    <li><a onclick="window.fpush({name: 'MQL5+Popup+Register+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/en/auth_oauth2?provider=Google&amp;amp;return=popup&amp;amp;reg=1" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Log in With Google</a></li>
+  </ul>
+</div>
+<div class="auth-block-agree">
+  <p>
+    You agree to <a target="_blank" href="/en/about/privacy">website policy</a> and <a target="_blank" href="/en/about/terms">terms of use</a>
+  </p>
+</div>
+
+
+        </div>
+        <div id="registerLoginPopupTabContent_login" class="hidden">
+            <div class="auth-form__text">
+    If you do not have an account, please <a href="https://www.mql5.com/en/auth_register" rel="nofollow" style="vertical-align: top">register</a>
+  </div>
+<div class="ui auth-form__content auth-form__content_login" id="loginFormWrapper">
+    
+  <div id="needCookies" class="need-cookies hidden">
+    <div class="danger-box">
+      <p>Allow the use of cookies to log in to the MQL5.com website.</p>
+<p>Please enable the necessary setting in your browser, otherwise you will not be able to log in.</p>
+    </div>
+  </div>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/en/auth_login" id="loginForm" onsubmit="if(window.quickLogin){return window.quickLogin.onSubmit(this);}var result = Validate(this); if(result) { preventDoubleSubmit(this); } return result;"><input id="RedirectAfterLoginUrl" name="RedirectAfterLoginUrl" type="hidden" value="" /><input id="RegistrationUrl" name="RegistrationUrl" type="hidden" value="" /><input data-val="true" data-val-required="The ShowOpenId field is required." id="ShowOpenId" name="ShowOpenId" type="hidden" value="True" /><input id="TrackingSection" name="TrackingSection" type="hidden" value="Articles" />    <input name="ViewType" type="hidden" value="5" />
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Login" />
+    <!--[if lt IE 10]><div class="note">Your login:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <input class="input qa-login" id="Login" name="Login" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Login" title="Your login" type="text" value="" />
+      <script type='text/javascript' id='validate_Login'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Login',1,'Enter login specified when signing up']);});mqGlobal.AddOnReady(function() {V.push(['Login',10,'Email cannot be used. Enter your login please',validateLogin]);}); /*]]>*/</script>
+    </div>
+    <!--[if lt IE 10]><div class="note">Password:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <div class="input-with-show">
+        <input autocomplete="off" class="input qa-password" id="Password" name="Password" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Password" title="Enter the password please" type="password" />
+        <span class="input-with-show__icon" title="Show password" onclick="if(window.quickLogin){window.quickLogin.showPass(this, 'Show password', 'Hide password');}"></span>
+      </div>
+      <script type='text/javascript' id='validate_Password'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Password',1,'Please enter the password']);}); /*]]>*/</script>
+    </div>
+    <script type="text/javascript">
+    function validateLogin(input) {
+      console.log('validate login ' + input.value);
+      return !/^\w+([-+.'']{1,2}\w+)* @\w+([-.]\w+)*\.\w+([-.]\w+)*$/i.test(input.value);
+    }
+    </script>
+    <div class="forgot" id="loginForgotBlock"><a id="loginForgotLink" href="https://www.mql5.com/en/auth_forgotten?return=popup">Forgot your login/password?</a></div>
+    <input type="submit" class="button button_yellow qa-submit" id="loginSubmit" value="Log in" title="Enter">
+</form></div>
+
+  <div class="auth-social" id="authSocialBlock">
+    <ul class="auth-social-list" id="socialList">
+      <li><a onclick="window.fpush({name: 'MQL5+Popup+Login+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/en/auth_oauth2?provider=Google&amp;amp;return=popup" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Log in With Google</a></li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script id="popupSection" type="application/json">{"section": "Articles"}</script>
+<script id="popupTranslate" data-type="translate" type="application/json">
+{
+  "popup":
+  {
+  "EmailTitle" : "The password has been sent to {0}",
+  "EmailDescription" : "Log in using the obtained password and the login specified during the registration",
+  "SubmitButtonText" : "Activate account",
+  "RegistrationTip" : "If you have not received the password email, check the spam folder or &lt;a href={0}&gt;repeat the registration&lt;/a&gt;"
+  }
+}
+</script>
+
+    
+
+    
+
+
+    </article>
+  </div>
+
+
+
+<div aria-hidden="true" class="footer  desktop" id="footer">
+  <ul class="links  links_desktop">
+      <li id="navFooterCommunity">
+        <nav>
+          <ul>
+            <li><a href="https://web.metatrader.app/terminal?mode=demo&amp;lang=en" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Footer+Trading">Online trading / WebTerminal</a></li>
+            <li><a href="/en/code" data-fz-event="MQL5+Footer+CodeBase">Free technical indicators and robots</a></li>
+            <li><a href="/en/articles" data-fz-event="MQL5+Footer+Articles">Articles about programming and trading</a></li>
+            <li><a href="/en/job" data-fz-event="MQL5+Footer+Job">Order trading robots on the Freelance</a></li>
+            <li><a href="/en/market" data-fz-event="MQL5+Footer+Market">Market of Expert Advisors and applications&#x9;</a></li>
+            <li><a href="/en/signals" data-fz-event="MQL5+Footer+Signals">Follow forex signals</a></li>
+            <li><a href="/en/vps" data-fz-event="MQL5+Footer+VPS">Low latency forex VPS</a></li>
+            <li><a href="/en/forum" data-fz-event="MQL5+Footer+Forum">Traders forum</a></li>
+            <li><a href="/en/blogs" data-fz-event="MQL5+Footer+Blogs">Trading blogs</a></li>
+            <li><a rel="nofollow" href="/en/charts" data-fz-event="MQL5+Footer+Charts">Charts</a></li>
+            <li><a href="/en/widgets" data-fz-event="MQL5+Footer+Widgets">Free widgets</a></li>
+          </ul>
+        </nav>
+      </li>
+      <li id="navFooterMt5">
+        <nav>
+          <ul>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> Trading Platform</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/releasenotes" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> latest updates</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/news" data-fz-event="MQL5+Footer+MetaTrader+5">News, implementations and technology</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> User Manual</a></li>
+            <li><a href="/en/docs" data-fz-event="MQL5+Footer+Docs">MQL5 language of trading strategies</a></li>
+            <li><a rel="nofollow noopener" href="https://cloud.mql5.com" data-fz-event="MQL5+Footer+Cloud">MQL5 Cloud Network</a></li>
+            <li><a rel="noopener" href="https://forge.mql5.io/?lang=en" data-fz-event="MQL5+Footer+Forge" target="_blank">MQL5 Algo Forge</a></li>
+              <li><a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Footer">Download <span class="nobr">MetaTrader 5</span></a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help/start_advanced/installation" data-fz-event="MQL5+Footer+MetaTrader+5">Install Platform</a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help/start_advanced/deinstallation" data-fz-event="MQL5+Footer+MetaTrader+5">Uninstall Platform</a></li>
+          </ul>
+        </nav>
+
+      </li>
+    <li id="navFooterWebsite">
+        <nav>
+          <ul>
+            <li><a rel="nofollow" href="/en/about" data-fz-event="MQL5+Footer+About">About</a></li>
+              <li><a href="/en/wall" data-fz-event="MQL5+Footer+Wall">Timeline</a></li>
+            <li><a rel="nofollow" href="/en/about/terms" data-fz-event="MQL5+Footer+About">Terms and Conditions</a></li>
+            <li><a rel="nofollow" href="/en/about/autopayments" data-fz-event="MQL5+Footer+About">Recurring Payment Agreement</a></li>
+            <li><a rel="nofollow" href="/en/about/agencyagreement" data-fz-event="MQL5+Footer+About">Agency Agreement – Offer</a></li>
+            <li><a rel="nofollow" href="/en/about/privacy" data-fz-event="MQL5+Footer+About">Privacy and Data Protection Policy</a></li>
+            <li><a rel="nofollow" href="/en/about/cookies" data-fz-event="MQL5+Footer+About">Cookies Policy</a></li>
+            <li>
+                <a rel="nofollow" href="/en/contact" data-fz-event="MQL5+Footer+Contacts">Contacts and requests</a>
+            </li>
+          </ul>
+        </nav>
+    </li>
+
+      <li>
+        <div class="footer__products">
+          <div class="footer__product">
+            <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com" class="footer__product-name">MetaTrader 5</a>
+            <div class="footer__product-links">
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon windows" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for Windows</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/MetaTrader5.pkg.zip?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon macos" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for MacOS</div></a>
+            <a rel="nofollow noopener" href="https://www.mql5.com/en/articles/625?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon linux" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for Linux</div></a>
+            <a rel="nofollow noopener" href="https://web.metatrader.app/terminal?mode=demo&amp;lang=en" class="icon web"><div  class="footer__product-link-hint footer__product-link-hint-short">Open MetaTrader 5 WebTerminal</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/ios?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=en" class="icon ios" data-fz-event="MetaTrader+5+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/jhZn8Ed1I1d.png)">Scan to install from App Store</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=en" class="icon android" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/kiF2Io6W-9d.png)">Scan to install from Google Play</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon huawei" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ZRt&#x2B;zI1l&#x2B;8O.png)">Scan to install from Huawei AppGallery</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon ark" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/L0Q9oag&#x2B;3eE.png)">Scan to get Android APK file</div></a>
+            </div>
+          </div>
+          <div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com/en/news/2270" class="footer__product-name">MQL5 Channels</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon ios" data-fz-event="MQL5+Channels+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/bZVfOJnYpcO.png)">Scan to install from App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon android" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/32MJFgw7BVs.png)">Scan to install from Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Su&#x2B;fe4n374e.png)">Scan to install from Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mql5channels/mql5channels.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/G6Mg4NfCPzO.png)">Scan to get Android APK file</div></a>
+              </div>
+            </div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.tradays.com/en/download?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MQL5+Footer+Download+Tradays" class="footer__product-name">Economic Calendar</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon ios" data-fz-event="Tradays+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CpD&#x2B;mhIw-1E.png)">Scan to install from App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon android" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Bgyx8UcmYap.png)">Scan to install from Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CrS7bbDAdAO.png)">Scan to install from Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/tradays/tradays.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/VZi8YPIb2op.png)">Scan to get Android APK file</div></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__networks">
+          <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow" title="Facebook"><i class="icons-networks icons-networks_fb"></i></a>
+          <a href="https://t.me/mql5dev" target="_blank" rel="nofollow" title="Telegram"><i class="icons-networks icons-networks_tg"></i></a>
+          <a href="https://x.com/mql5com" target="_blank" rel="nofollow" title="X (Twitter)"><i class="icons-networks icons-networks_tw"></i></a>
+          <a href="https://www.youtube.com/@MetaQuotesOfficial" target="_blank" rel="nofollow" title="YouTube"><i class="icons-networks icons-networks_yt"></i></a>
+          <a href="https://www.linkedin.com/company/mql5" target="_blank" rel="nofollow" title="LinkedIn"><i class="icons-networks icons-networks_linkedin"></i></a>
+          <span>Subscribe to algotrading news</span>
+        </div>
+  
+        <div class="footer__other">
+          <div class="footer__not-a-broker">Not a broker, no real trading accounts</div>
+          <div class="copyright">35 Dodekanisou str, Germasogeia, 4043,&nbsp;Limassol,&nbsp;Cyprus</div>
+          <div class="copyright">Copyright 2000-2026, <span class="nobr">MetaQuotes Ltd</span></div>
+        </div>
+      </li>
+  </ul>
+</div>
+
+
+
+<div class="shadow-layer" id="layer"></div>
+    
+
+  <div class="b-fixed-mt" id="bFixedMt" style="display: none;">
+    
+  </div>
+
+
+<script type='text/javascript'>
+		(function (a, e, f, g, b, c, d) { a[b] || (a.FintezaCoreObject = b, a[b] = a[b] || function () { (a[b].q = a[b].q || []).push(arguments) }, a[b].l = 1 * new Date, c = e.createElement(f), d = e.getElementsByTagName(f)[0], c.async = !0, c.defer = !0, c.src = g, d && d.parentNode && d.parentNode.insertBefore(c, d)) })
+      (window, document, "script", "/ff/core.js", "fz");
+		window.fz("register", "website", {
+      id: "sqjxkxkswybhifrohpyooonwgbvsfzmayq",
+			trackLinks: true
+		});
+        mqGlobal.AddOnReady(function () { Mql5Cookie.init('mql5.com', '5089792501050010273'); });
+mqGlobal.AddOnReady(function(){if(!window.Pocket){window.Pocket=new PocketManager();}});mqGlobal.AddOnReady(function(){if(!window.translateManager){window.translateManager=new Translate(undefined,'Error: failed to translate. Please try again later.');}if(document.querySelectorAll){var translateElements=document.querySelectorAll(".translateMenu");if(translateElements){var i=0,count=translateElements.length;for(i;i<count;i++){(function(i){var contentid=dataset(translateElements[i],"contentid"),sourcelang=dataset(translateElements[i],"sourcelang"),targetlang=dataset(translateElements[i],"targetlang"),moduleid=parseInt(dataset(translateElements[i],"moduleid")),typeid=parseInt(dataset(translateElements[i],"typeid")),entityid=parseInt(dataset(translateElements[i],"entityid"));Core.AddHandler(translateElements[i],"mouseover",function(){return translateManager.SetMenu(this,contentid,sourcelang,targetlang,moduleid,typeid,entityid);});})(i);}}}});window.fz("show","wdausxxqrpvhekbwjrjlhqjghyhesrqqau");window.mqGlobal.AddOnLoad(function(){window.fpush('MQL5+Article+Open');Articles.CheckOnScrollDown();});mqGlobal.AddOnReady(function(){window.PopupRegisterquickRegistration=new QuickRegistration('PopupRegister','Popup+Register','Articles');});function validate_username(input){var reg=/^([a-z0-9]){1}([\-._a-z0-9]){1,30}([\-_a-z0-9]){1}$/i,value=input.value,result=true;if(reg.test(value)){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Login',unit:'section',value:'Articles'});}return result;}function validate_email(input){var reg=/^\w+([-+.'']{1,2}\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/i,value=input.value,result=true,length_value=value.length;if(reg.test(value)&&length_value>=1&&length_value<=40){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Email',unit:'section',value:'Articles'});}return result;};mqGlobal.AddOnReady(function(){var username=$('PopupRegisterusername'),email=$('PopupRegisteremail');if(username)username.value='';if(email)email.value='';});mqGlobal.AddOnReady(function(){window.quickLogin=new QuickLogin('Popup+Login','Articles');});mqGlobal.AddOnLoad(function(){window.showLoginRegisterPopupAtEnd();});mqGlobal.AddOnLoad(function(){window.tooltipUserInfo.init();});mqGlobal.AddOnReady(function(){{window.initHeaderSearch('','https://www.mql5.com/en/search');}});</script><script type="text/javascript">mqGlobal.AddOnReady(function(){window.initSuggestions("headerSearchKeyword","en","https://search.mql5.com/api/query","https://www.mql5.com/en/users_search/suggestion");});window.fz("show","vgckrufggwxdtfscpyalmenexmvhljduja");mqGlobal.AddOnReady(function(){window.floatVerticalPanelNode=FloatVerticalPanel('This website uses cookies. Learn more about our <a href="/en/about/cookies">Cookies Policy</a>.','cookie_accept');});							if (typeof Attach !== "undefined")
+			Attach.setAcceptFilter(".zip, .txt, .log, .mqh, .ex5, .mq5, .mq4, .mqproj, .ex4, .mt5, .set, .tpl, .cl, .py, .sqlite, .csv, .ini, .ipynb, .onnx, .gif, .png, .jpg, .jpeg, .mp4, .webm");
+	</script>
+
+<script type="application/ld&#x2B;json">
+		[
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"url": "https://www.mql5.com",
+				"logo": "https://c.mql5.com/i/community/logo_mql5-2.png",
+				"sameAs": [
+					"https://www.facebook.com/mql5.community",
+					"https://www.x.com/mql5com",
+					"https://www.youtube.com/user/MetaQuotesOfficial"
+				 ]
+			}
+		
+, 
+{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"Forum","description":"Discussions of trading strategies and algorithmic trading. MQL5.community  the largest forex forum","url":"https://www.mql5.com/en/forum","children":[]},{"@type":"SiteNavigationElement","position":2,"name":"Market","description":"MetaTrader Market - a Market of trading robots, indicators, trading books and magazines","url":"https://www.mql5.com/en/market","children":[]},{"@type":"SiteNavigationElement","position":3,"name":"Signals","description":"Social trading, copy trading and account monitoring with MetaTrader - Trading Signals on MQL5.com","url":"https://www.mql5.com/en/signals","children":[]},{"@type":"SiteNavigationElement","position":4,"name":"Freelance","description":"Order trading robots, technical indicators and algorithmic trading applications. Forex jobs. Freelance on MQL5.com. Hire MetaTrader experts and specialists","url":"https://www.mql5.com/en/job","children":[]},{"@type":"SiteNavigationElement","position":5,"name":"Quotes","description":"","url":"https://www.mql5.com/en/quotes/overview","children":[]},{"@type":"SiteNavigationElement","position":6,"name":"MetaTrader","description":"","url":"https://www.metatrader.com","children":[]},{"@type":"SiteNavigationElement","position":7,"name":"WebTerminal","description":"WebTerminal for the MetaTrader trading platform. Online forex trading.","url":"https://web.metatrader.app/terminal?mode=demo","children":[]},{"@type":"SiteNavigationElement","position":8,"name":"Calendar","description":"","url":"https://www.mql5.com/en/economic-calendar","children":[]},{"@type":"SiteNavigationElement","position":9,"name":"VPS","description":"","url":"https://www.mql5.com/en/vps","children":[]},{"@type":"SiteNavigationElement","position":10,"name":"Articles","description":"","url":"https://www.mql5.com/en/articles","children":[]},{"@type":"SiteNavigationElement","position":11,"name":"CodeBase","description":"Download trading robots, technical indicators and scripts with source code - MQL5 Code Base for MetaTrader 5","url":"https://www.mql5.com/en/code","children":[]},{"@type":"SiteNavigationElement","position":12,"name":"Algo Forge","description":"","url":"https://forge.mql5.io","children":[]},{"@type":"SiteNavigationElement","position":13,"name":"Documentation","description":"MetaQuotes Language 5 (MQL5) Reference - Documentation on MQL5.com","url":"https://www.mql5.com/en/docs","children":[]}]}		
+,
+{"@context":"https://schema.org","@type":"TechArticle","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.mql5.com/en/articles/15899"},"headline":"Developing Advanced ICT Trading Systems: Implementing Order Blocks in an Indicator","image":["https://c.mql5.com/2/149/OHCL__1.png","https://c.mql5.com/2/149/1.-Candles_4_eXAMPLE__1.png","https://c.mql5.com/2/149/Bullish_Increasing_Volume_Example_2__1.png","https://c.mql5.com/2/149/Bearish_Increasing_Volume__1.png","https://c.mql5.com/2/149/Volume_Peak_am__1.png","https://c.mql5.com/2/149/Bearish_Volume_Peak__1.png","https://c.mql5.com/2/149/MT_1__3.png","https://c.mql5.com/2/149/MT_2__3.png","https://c.mql5.com/2/149/MT_3__3.png","https://c.mql5.com/2/149/MT_4__3.png","https://c.mql5.com/2/149/Price_2__1.png","https://c.mql5.com/2/149/Bearish_Order_Block__1.png","https://c.mql5.com/2/149/Example_Function_OB_72y__1.png","https://c.mql5.com/2/149/Order-block-exapmle-GIF-__1.gif"],"datePublished":"2025-06-24T14:14:00+00:00Z","dateModified":"2025-08-04T06:30:32+00:00Z","author":{"@type":"Person","name":"Niquel Mendoza","url":"https://www.mql5.com/en/users/nique_372"},"editor":{"@type":"Organization","name":"MetaQuotes","url":"https://www.mql5.com/en/users/metaquotes","address":{"@type":"PostalAddress","addressCountry":"CY"}},"publisher":{"@type":"Organization","name":"MQL5 Community","url":"https://www.mql5.com","logo":{"@type":"ImageObject","url":"https://c.mql5.com/i/community/logo_mql5-2.png"}},"description":"In this article, we will learn how to create an indicator that detects, draws, and alerts on the mitigation of order blocks. We will also take a detailed look at how to identify these blocks on the chart, set accurate alerts, and visualize their position using rectangles to better understand the price action. This indicator will serve as a key tool for traders who follow the Smart Money Concepts and the Inner Circle Trader methodology."}
+,
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":"https://www.mql5.com/en/articles","name":"Articles"},{"@type":"ListItem","position":2,"item":"https://www.mql5.com/en/articles/mt5","name":"MetaTrader 5"},{"@type":"ListItem","position":3,"item":"https://www.mql5.com/en/articles/mt5/examples","name":"Examples"}]}
+
+		]
+	</script>
+</body>
+</html>

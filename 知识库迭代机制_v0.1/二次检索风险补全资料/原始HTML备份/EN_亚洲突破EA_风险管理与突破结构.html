@@ -1,0 +1,1061 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+
+  <meta name="robots" content="max-snippet:250,max-image-preview:large">
+  <meta name="description" content="In this article, we build an Expert Advisor in MQL5 for the Asian Breakout Strategy by calculating the session&#x27;s high and low and applying trend filtering with a moving average. We implement dynamic object styling, user-defined time inputs, and robust risk management. Finally, we demonstrate backtesting and optimization techniques to refine the program.">
+  <meta property="og:url" content="https://www.mql5.com/en/articles/17239">
+  <meta property="og:title" content="Automating Trading Strategies in MQL5 (Part 9): Building an Expert Advisor for the Asian Breakout Strategy">
+  <meta property="og:description" content="In this article, we build an Expert Advisor in MQL5 for the Asian Breakout Strategy by calculating the session&#x27;s high and low and applying trend filtering with a moving average. We implement dynamic object styling, user-defined time inputs, and robust risk management. Finally, we demonstrate backtesting and optimization techniques to refine the program.">
+      <meta property="og:image" content="https://c.mql5.com/2/121/Automating_Trading_Strategies_in_MQL5_Part_9_1200x628.jpg">
+      <meta property="og:image:secure_url" content="https://c.mql5.com/2/121/Automating_Trading_Strategies_in_MQL5_Part_9_1200x628.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2025-02-25T10:08:35.0000000Z">
+  <meta property="article:author" content="https://www.mql5.com/en/users/29210372">
+  <meta property="article:section" content="MetaTrader 5">
+  <meta property="article:tag" content="Trading">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@mql5com">
+  <meta name="twitter:image" content="https://c.mql5.com/2/121/Automating_Trading_Strategies_in_MQL5_Part_9_1200x628.jpg">
+  <meta name="theme-color" content="#4a76b8">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-config" content="none">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta property="qc:admins" content="36367170677651456375">
+  <meta property="wb:webmaster" content="073d7690269bcd81">
+  <link rel="shortcut icon" href="https://c.mql5.com/i/favicon4.ico">
+  <link rel="dns-prefetch" href="https://c.mql5.com">
+  <link href="https://c.mql5.com/styles/core.444bc25de4c9131a69fedfe5ac42a082.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/all.266d64b83529847f568747dd160d42b0.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/articles.bc4209e4de0b5296041832431b46f3dd.css" type="text/css" rel="stylesheet" media="all">
+  <link href="/en/articles/rss" rel="alternate" type="application/rss+xml" title="Articles on the development and application of MetaTrader 5 trading robots and technical indicators">
+  <link rel="canonical" href="https://www.mql5.com/en/articles/17239">
+  <link rel="alternate" hreflang="en" href="https://www.mql5.com/en/articles/17239">
+  <link rel="alternate" hreflang="ru" href="https://www.mql5.com/ru/articles/17239">
+  <link rel="alternate" hreflang="zh" href="https://www.mql5.com/zh/articles/17239">
+  <link rel="alternate" hreflang="es" href="https://www.mql5.com/es/articles/17239">
+  <link rel="alternate" hreflang="de" href="https://www.mql5.com/de/articles/17239">
+  <link rel="alternate" hreflang="ja" href="https://www.mql5.com/ja/articles/17239">
+  <link rel="alternate" hreflang="pt" href="https://www.mql5.com/pt/articles/17239">
+  <title>Automating Trading Strategies in MQL5 (Part 9): Building an Expert Advisor for the Asian Breakout Strategy - MQL5 Articles</title>
+
+
+
+<script type="text/javascript">
+  !function(){window.mqGlobal={};var t=!1,n=!1,e=[],o=[],i=[];function d(t){var n;for(n=0;n<t.length;n+=1)t[n]()}function c(){t||(t=!0,d(e),d(o),o=[],e=[])}function a(){c(),n||(n=!0,d(i),i=[])}if(mqGlobal.AddOnReady=function(n,i){t?n(document):i?e.push(n):o.push(n)},mqGlobal.AddOnLoad=function(t){n?t(document):i.push(t)},mqGlobal.AddOnActiveWindowChange=function(t){this._onvisibility||(this._onvisibility=[]),this._onvisibility[this._onvisibility.length]=t},document.addEventListener)document.addEventListener("DOMContentLoaded",c,!1),window.addEventListener("load",a,!1);else if(document.attachEvent&&(document.attachEvent("onreadystatechange",(function(){switch(document.readyState){case"interactive":c();break;case"complete":a()}})),window.attachEvent("onload",a),document.documentElement.doScroll&&window==window.top)){!function n(){if(!t&&document.body)try{document.documentElement.doScroll("left"),c()}catch(t){setTimeout(n,0)}}()}}();
+  mqGlobal.CookieDomain = ".mql5.com";
+  mqGlobal.Language = 'en';
+  mqGlobal.IsMobile = false;
+  mqGlobal.ClearRteStorage = function (e) { if (window.GStorage || (window.GStorage = globalStorage()), window.GStorage.supported) try { var o = e; window.GStorage.getItem("rte_autosave_uid", function (e, t) { t == o && (window.GStorage.removeItem("rte_autosave_text"), window.GStorage.removeItem("rte_autosave_date"), window.GStorage.removeItem("rte_autosave_uid")) }) } catch (e) { } };
+</script>
+  
+
+    <script src="https://c.mql5.com/js/all.c09fd283bed20d28a52c95cd70a12a27.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/vendor.1be6e9a4a90b28525f93c4c69a5058a1.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/articles.cd4c73c476b2781eecdf04f5583514b5.js" type="text/javascript" defer="defer"></script>
+
+
+</head>
+
+<body id="cover" class="cover">
+
+
+  <nav class="head">
+    <a href="https://www.mql5.com" class="head__logo" title="MQL5 - Language of trade strategies built-in the MetaTrader 5 client terminal"></a>
+      <div class="head__content">
+        <div class="main-menu" id="mainmenu">
+          
+                    <ul class="main-menu__top-level" id="menuTopLevel">
+                    <li><a href="/en/forum" data-fz-event="MQL5+Menu+Forum">Forum</a></li>
+                    <li><a href="/en/market" data-fz-event="MQL5+Menu+Market">Market</a></li>
+                    <li><a href="/en/signals" data-fz-event="MQL5+Menu+Signals">Signals</a></li>
+                    <li><a href="/en/job" data-fz-event="MQL5+Menu+Job">Freelance</a></li>
+                    <li><a href="/en/vps" data-fz-event="MQL5+Menu+VPS">VPS</a></li>
+                    <li><a href="/en/quotes/overview" data-fz-event="MQL5+Menu+Overview">Quotes</a></li>
+                    <li><a href="https://www.metatrader.com" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+MetaTrader">MetaTrader</a></li>
+                  </ul><ul class="main-menu__second-level" id="menuSecondLevel">
+                    <li class="main-menu__selected"><a href="/en/articles" data-fz-event="MQL5+Menu+Articles"><img src="https://c.mql5.com/i/menu/icon-articles4.svg" alt="" width="16" height="16"/>Articles</a></li>
+                    <li><a href="/en/code" data-fz-event="MQL5+Menu+CodeBase"><img src="https://c.mql5.com/i/menu/icon-code4.svg" alt="" width="16" height="16"/>CodeBase</a></li>
+                    <li><a href="https://forge.mql5.io/?lang=en" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+AlgoForge"><img src="https://c.mql5.com/i/menu/icon-algoforge4.svg" alt="" width="16" height="16"/>Algo Forge</a></li>
+                    <li><a href="/en/docs" data-fz-event="MQL5+Menu+Docs"><img src="https://c.mql5.com/i/menu/icon-docs4.svg" alt="" width="16" height="16"/>Documentation</a></li>
+                    <li><a href="/en/book" data-fz-event="MQL5+Menu+Book"><img src="https://c.mql5.com/i/menu/icon-book4.svg" alt="" width="16" height="16"/>AlgoBook</a></li>
+                    <li><a href="/en/neurobook" data-fz-event="MQL5+Menu+Neurobook"><img src="https://c.mql5.com/i/menu/icon-neurobook4.svg" alt="" width="16" height="16"/>NeuroBook</a></li>
+                    <li><a href="/en/economic-calendar" data-fz-event="MQL5+Menu+Economic+Calendar"><img src="https://c.mql5.com/i/menu/icon-economic-calendar4.svg" alt="" width="16" height="16"/>Calendar</a></li>
+                    <li><a href="https://web.metatrader.app/terminal?mode=demo&lang=en" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Menu+Trading"><img src="https://c.mql5.com/i/menu/icon-trading4.svg" alt="" width="16" height="16"/>WebTerminal</a></li>
+                    <li class="main-menu__mobile"><a href="/en/about">About</a></li>
+                    <li class="main-menu__second-tools"><a rel="noopener" href="/en/vps" title="Reliable trader hosting for uninterrupted operation of robots and instant copying of trades" class="button-mt" data-vars-fz="Start+VPS+Trial+Submenu"><img width="18" height="18" src="https://c.mql5.com/i/sidebar/vpstrial2.svg" alt="" loading="lazy">Start VPS Trial</a></li>
+                    </ul>
+        </div>
+          <div class="main-menu__active">
+            <a id="mainMenuSelected" href="#">
+              <span class="main-menu__primary">Articles</span><span class="main-menu__secondary">Sections</span>
+            </a>
+          </div>
+<form action="https://www.mql5.com/en/search" onsubmit="return false;" autocomplete="off" id="headerSearchForm" class="header-search" method="post">
+<button type="button" id="headerSearchButton" title="Search" class="header-search__button"></button><div class="header-search__input"><input name="keyword" type="text" enterkeyhint="search" title="Enter search text" placeholder="Search" id="headerSearchKeyword"/><label for="headerSearchKeyword" class="header-search__placeholder">Type <span>/</span> to search:  @user, $symbol, ...</label><button id="headerSearchSubmit" class="header-search__submit"></button></div><button type="button" id="headerSearchClean" title="Close" class="header-search__clean"></button></form>        <input class="blurHandler" id="mainMenuBlurHandler" type="checkbox">
+      </div>
+      <div class="head__toolbar" id="headerToolbar">
+          <div class="container loginRegister">
+            <nav>
+              <ul id="loginRegisterButtons"><li><a class="login" title="Please sign in. OpenID supported" href="https://www.mql5.com/en/auth_login" rel="nofollow" data-fz-event="MQL5+Menu+Siginin">Log in</a></li><li><a class="registration en" title="Please register" href="https://www.mql5.com/en/auth_register" rel="nofollow" data-fz-event="MQL5+Menu+Register" onclick="window.fpush('MQL5+Button+Click');">Create an account</a></li></ul>
+            </nav>
+          </div>
+        <div class="toggle-button" id="sidebarToggleButton">
+          <i></i>
+        </div>
+
+        <div class="group-menu" id="groupMenu">
+
+
+          <div class="container lang-menu-container">
+            <div id="langMenuContainer" class="lang-menu">
+              <input class="blurHandler" id="langmenuBlurHandler" type="checkbox">
+              <nav>
+                <ul class="lang-menu__list" id="langmenu">
+                  <li class="lang-menu__list-item lang-menu__list-item_selected"><a href="/en/articles" aria-label="English (English)"><i class="icons-languages icons-languages_en"></i><span>English</span></a></li>
+<li class="lang-menu__list-item"><a href="/ru/articles" aria-label="Русский (Russian)"><i class="icons-languages icons-languages_ru"></i><span>Русский</span></a></li>
+<li class="lang-menu__list-item"><a href="/zh/articles" aria-label="中文 (Chinese)"><i class="icons-languages icons-languages_zh"></i><span>中文</span></a></li>
+<li class="lang-menu__list-item"><a href="/es/articles" aria-label="Español (Spanish)"><i class="icons-languages icons-languages_es"></i><span>Español</span></a></li>
+<li class="lang-menu__list-item"><a href="/pt/articles" aria-label="Português (Portuguese)"><i class="icons-languages icons-languages_pt"></i><span>Português</span></a></li>
+<li class="lang-menu__list-item"><a href="/ja/articles" aria-label="日本語 (Japanese)"><i class="icons-languages icons-languages_ja"></i><span>日本語</span></a></li>
+<li class="lang-menu__list-item"><a href="/de/articles" aria-label="Deutsch (German)"><i class="icons-languages icons-languages_de"></i><span>Deutsch</span></a></li>
+<li class="lang-menu__list-item"><a href="/ko/articles" aria-label="한국어 (Korean)"><i class="icons-languages icons-languages_ko"></i><span>한국어</span></a></li>
+<li class="lang-menu__list-item"><a href="/fr/articles" aria-label="Français (French)"><i class="icons-languages icons-languages_fr"></i><span>Français</span></a></li>
+<li class="lang-menu__list-item"><a href="/it/articles" aria-label="Italiano (Italian)"><i class="icons-languages icons-languages_it"></i><span>Italiano</span></a></li>
+<li class="lang-menu__list-item"><a href="/tr/articles" aria-label="Türkçe (Turkish)"><i class="icons-languages icons-languages_tr"></i><span>Türkçe</span></a></li>
+
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+  </nav>
+
+
+
+  <div id="left-sidebar-selector" class="left-sidebar__selector left-sidebar__selector_padding">
+    <div class="left-sidebar__title">
+MetaTrader 5 /     Trading
+    </div>
+    <i class="icons-ux icons-ux_arrow-down-black"></i>
+  </div>
+  <div class="articles-container block-with-sidebar">
+    <aside class="left-sidebar left-sidebar_270" id="left-sidebar">
+      
+  <ul class="tree-menu-ul"><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/examples"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples.svg" alt="" loading="lazy"/>Examples</a><ul class="tree-menu__list tree-menu__list_nested"><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/examples_indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_indicators.svg" alt="" loading="lazy"/>Indicators</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/examples_experts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_experts.svg" alt="" loading="lazy"/>Experts</a></li></ul></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/strategy_tester"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/strategy_tester.svg" alt="" loading="lazy"/>Tester</a></li><li class="tree-menu__item tree-menu__item_selected"><a class="tree-menu__link" href="/en/articles/trading"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading.svg" alt="" loading="lazy"/>Trading</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/trading_systems"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading_systems.svg" alt="" loading="lazy"/>Trading systems</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/integration"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/integration.svg" alt="" loading="lazy"/>Integration</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/indicator.svg" alt="" loading="lazy"/>Indicators</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/expert_advisors"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/expert.svg" alt="" loading="lazy"/>Expert Advisors</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/statistics"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/statistics.svg" alt="" loading="lazy"/>Statistics and analysis</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/machine_learning"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/machine_learning.svg" alt="" loading="lazy"/>Machine learning</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/interviews"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/interviews.svg" alt="" loading="lazy"/>Interviews</a></li></ul>
+  
+
+    <div class="hints-panel">
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_like"></i>
+        <div class="hints-panel__content">
+          Do you like the article?<br>
+          Share it with others —<br>post a <a href="https://www.mql5.com/en/articles/17239" target="_blank">link</a> to it!
+        </div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_tw-square icons-hints_24px"></i><div class="hints-panel__content">
+Find us on <a href="https://x.com/mql5com" target="_blank" rel="nofollow">Twitter</a>!<br> Join our fan page</div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_mt-5"></i>
+        <div class="hints-panel__content">
+          Use new possibilities of <a href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Article" rel="nofollow sponsored noopener noreferrer">MetaTrader 5</a>
+        </div>
+      </div>
+    </div>
+<div id='vgckrufggwxdtfscpyalmenexmvhljduja' class="roeid8y6hsc3ntv1l gg88d3drb"></div>      <div class="similar-author-articles ui">
+        <h4 class="similar-author-articles__title">Similar articles</h4>
+        <ul class="similar-author-articles__list">
+            <li>
+              <a href="/en/articles/18755" data-fz-event="MQL5+Article+Similar+Article">Extremal Optimization (EO)</a>
+            </li>
+            <li>
+              <a href="/en/articles/22691" data-fz-event="MQL5+Article+Similar+Article">Step-by-Step Implementation of a Local Stop Loss System in MQL5</a>
+            </li>
+            <li>
+              <a href="/en/articles/22855" data-fz-event="MQL5+Article+Similar+Article">Position Management: A Reusable Trade Journal with Live Maximum Adverse Excursion, Maximum Favorable Excursion, and R-Multiple Tracking in MQL5</a>
+            </li>
+            <li>
+              <a href="/en/articles/18111" data-fz-event="MQL5+Article+Similar+Article">Implementing a Breakeven Mechanism in MQL5 (Part 2): ATR- and RRR-Based Breakeven</a>
+            </li>
+            <li>
+              <a href="/en/articles/22628" data-fz-event="MQL5+Article+Similar+Article">Automating Classic Market Methods in MQL5 (Part 1): Wyckoff Accumulation and Distribution</a>
+            </li>
+        </ul>
+      </div>
+    <div class="freelance-hint">
+      <img src="https://c.mql5.com/i/articles/icon_freelance.svg" width="24" height="24" loading="lazy" />
+      <div class="freelance-hint__text">
+        Use the ideas from this article<br>to order your own robot<br>on Freelance
+      </div>
+        <a target="_blank" class="button button_blue-gray-border" title="Go to Freelance" href="/en/job/new" data-fz-event="MQL5+Article+New+Job">Go to Freelance</a>
+    </div>
+
+    </aside>
+    <article class="content-with-sidebar articles-content splashed">
+      
+
+
+  <header class="article-header article-header_light" style="background-color: rgb(47,19,4)">
+    <section class="article-tools-panel">
+        <div class="article-tools-panel__item">
+          <span class="popup framed client flags">
+            <a class="dropdown" href="javascript:void(false);">
+              <span class="icons-languages icons-languages_en"></span><i></i>
+            </a>
+            <span class="popup">
+              <span class="tip">
+                <span></span>
+              </span>
+              <span class="items">
+                    <a href="/ru/articles/17239">Русский</a>
+                    <a href="/zh/articles/17239">中文</a>
+                    <a href="/es/articles/17239">Español</a>
+                    <a href="/de/articles/17239">Deutsch</a>
+                    <a href="/ja/articles/17239">日本語</a>
+                    <a href="/pt/articles/17239">Português</a>
+              </span>
+            </span>
+          </span>
+        </div>
+        
+      <div class="article-tools-panel__item">
+        <a href="#pocket" title="Pocket allows you to insert a complete content description to the appropriate comment" onclick="return Pocket.Add(this,'en',2,1,17239);" class="article-tools-panel__rounded">
+          <i class="article-pocket-icon"></i>
+        </a>
+      </div>
+      <div class="article-tools-panel__item">
+        <a href="/en/articles/17239?print=" target="_blank" class="article-tools-panel__rounded" rel="nofollow" title="Printer friendly version">
+          <i class="article-print-icon"></i>
+        </a>
+      </div>
+
+    </section>
+    <section class="article-header__image-box">
+        <img class="article-header__image-preview" loading="lazy" width="32" height="16" alt="preview" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAsICAoIBwsKCQoNDAsNERwSEQ8PESIZGhQcKSQrKigkJyctMkA3LTA9MCcnOEw5PUNFSElIKzZPVU5GVEBHSEX/2wBDAQwNDREPESESEiFFLicuRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUX/wAARCAAQACADASIAAhEBAxEB/8QAFwABAQEBAAAAAAAAAAAAAAAABAUDB//EAB8QAAICAgIDAQAAAAAAAAAAAAECABEDEgQxISNxgf/EABUBAQEAAAAAAAAAAAAAAAAAAAME/8QAFxEBAQEBAAAAAAAAAAAAAAAAAgEAEf/aAAwDAQACEQMRAD8A51jxoALUGbBrQrsiL8k1Gdj3KXHGFU9q7GSrp1gMWHkVQT5B/Idgt9RXJGMk6ChBG7iG9xsyXf/Z">
+      <div class="article-header__gradient" style="background: linear-gradient(90deg, rgba(47,19,4, 1) 0%, rgba(47,19,4, 0.72) 8.31%, rgba(47,19,4, 0) 17.1%), linear-gradient(270deg, rgba(47,19,4, 1) 0%, rgba(47,19,4, 0.72) 8.06%, rgba(47,19,4, 0) 16.59%), linear-gradient(0deg, rgba(47,19,4, 1) 8.26%, rgba(47,19,4, 0.8) 65%, rgba(47,19,4, 0) 100%);"></div>
+        <picture>
+          <source srcset="https://c.mql5.com/2/121/Automating_Trading_Strategies_in_MQL5_Part_9_600x314.jpg, https://c.mql5.com/2/121/Automating_Trading_Strategies_in_MQL5_Part_9_1200x628.jpg 2x" media="(min-width:700px)">
+          <img class="article-header__image" loading="lazy" width="600" height="314" srcset="https://c.mql5.com/2/121/Automating_Trading_Strategies_in_MQL5_Part_9_300x157.jpg, https://c.mql5.com/2/121/Automating_Trading_Strategies_in_MQL5_Part_9_600x314.jpg 2x" src="https://c.mql5.com/2/121/Automating_Trading_Strategies_in_MQL5_Part_9_600x314.jpg" alt="Automating Trading Strategies in MQL5 (Part 9): Building an Expert Advisor for the Asian Breakout Strategy" onerror="this.style.display='none';">
+        </picture>
+    </section>
+    <section class="article-header__content">
+      <h1>Automating Trading Strategies in MQL5 (Part 9): Building an Expert Advisor for the Asian Breakout Strategy</h1>
+      <div class="article-header__info">
+        <a href="/en/articles/mt5">MetaTrader 5</a>
+          &mdash;
+          <a href="/en/articles/mt5/trading">Trading</a>
+        | <time datetime="2025-02-25T10:08Z" title="10:08" datetime-type="datetime">25 February 2025, 10:08</time>
+      </div>
+      <div class="article-header__indicators">
+        <span title="Views">
+          <img src="https://c.mql5.com/i/icons.svg#views-white-usage" width="20" height="20" alt="" />
+          15 177
+        </span>
+        
+          <a title="Comments" href="/en/forum/482040">
+            <img src="https://c.mql5.com/i/icons.svg#comments-white-usage" width="20" height="20" alt="" />
+            0
+          </a>
+      </div>
+      <div class="article-header__author">
+          <div class="article-header__avatar">
+            <img src="https://c.mql5.com/avatar/2022/11/637df59b-9551.jpg" srcset="https://c.mql5.com/avatar/2022/11/637df59b-9551_big.jpg 2x" data-user-login="29210372" title="Allan Munene Mutiiria" alt="Allan Munene Mutiiria" loading="lazy" width="60" height="60">
+          </div>
+<a class="author" href="/en/users/29210372" data-user-login="29210372">Allan Munene Mutiiria</a>      </div>
+    </section>
+  </header>
+
+    <div class="content">
+      <div class="inner formatted-content">
+        <h3 id="para1">Introduction</h3> <p>In the previous article (Part 8), we explored a reversal trading strategy by building an Expert Advisor in <a href="https://www.metaquotes.net/en/metatrader5/algorithmic-trading/mql5" title="https://www.metaquotes.net/en/metatrader5/algorithmic-trading/mql5" target="_blank">MetaQuotes Language 5</a> (MQL5) based on the <a href="/go?link=https://fxtrendo.com/blog/1145/what-is-the-butterfly-pattern" title="https://fxtrendo.com/blog/1145/what-is-the-butterfly-pattern" rel="nofollow" target="_blank">Butterfly harmonic pattern</a> using precise Fibonacci ratios. Now, in Part 9, we shift our focus to the <a href="/go?link=https://www.dolphintrader.com/asian-range-breakout-forex-strategy/" title="https://www.dolphintrader.com/asian-range-breakout-forex-strategy/" rel="nofollow" target="_blank">Asian Breakout Strategy</a>—a method that identifies key session highs and lows to form breakout zones, employs a moving average for trend filtering, and integrates dynamic risk management.</p> <p>In this article, we will cover:</p> <ol> <li><a href="/en/articles/17239#para2" target="_blank">Strategy Blueprint</a></li> <li><a href="/en/articles/17239#para3" target="_blank">Implementation in MQL5</a></li> <li><a href="/en/articles/17239#para4" target="_blank">Backtesting and Optimization</a></li> <li><a href="/en/articles/17239#para5" target="_blank">Conclusion</a></li> </ol> <ol></ol> <p></p> <p>By the end, you’ll have a fully functional Expert Advisor that automates the Asian Breakout Strategy, ready to be tested and refined for trading. Let’s dive in!</p> <p><br/></p> <h3 id="para2">Strategy Blueprint</h3> <p>To create the program, we will design an approach that leverages the key price range formed during the <a href="/go?link=https://www.dolphintrader.com/asian-range-breakout-forex-strategy/" title="https://www.dolphintrader.com/asian-range-breakout-forex-strategy/" rel="nofollow" target="_blank">Asian trading session</a>. The first step will be to define the session box by capturing the highest high and the lowest low within a specific time window—typically between 23:00 and 03:00 <a href="https://en.wikipedia.org/wiki/Greenwich_Mean_Time" title="https://en.wikipedia.org/wiki/Greenwich_Mean_Time" target="_blank">Greenwich Mean Time</a> (GMT). However, these times are fully customizable to suit your needs. This defined range represents the consolidation area from which we expect a breakout.</p> <p>Next, we will set breakout levels at the boundaries of this range. We will place a pending buy-stop order slightly above the top of the box if market conditions confirm a bullish trend—using a <a href="https://www.metatrader5.com/en/terminal/help/indicators/trend_indicators/ma" title="https://www.metatrader5.com/en/terminal/help/indicators/trend_indicators/ma" target="_blank">moving average</a> (such as a 50-period MA) for trend confirmation. Conversely, if the trend is bearish, we will position a sell-stop order just below the bottom of the box. This dual setup will ensure that our Expert Advisor is ready to capture significant moves in either direction as soon as the price breaks out.</p> <p>Risk management is a critical component of our strategy. We will integrate stop-loss orders just outside the box boundaries to protect against false breakouts or reversals, while take-profit levels will be determined based on a predefined risk-to-reward ratio. Additionally, we will implement a time-based exit strategy that automatically closes any open trades if they remain active past a designated exit time, such as 13:00 <a href="https://en.wikipedia.org/wiki/Greenwich_Mean_Time" title="https://en.wikipedia.org/wiki/Greenwich_Mean_Time" target="_blank">GMT</a>. Overall, our strategy combines precise session-based range detection, trend filtering, and robust risk management to build an Expert Advisor capable of capturing significant breakout moves in the market. In a nutshell, here is a visualization of the whole strategy that we want to implement.</p> <p style="text-align:center;"> <img width="749" height="444" src="https://c.mql5.com/2/119/Screenshot_2025-02-16_121954.png" loading="lazy" title="STRATEGY BLUEPRINT" alt="STRATEGY BLUEPRINT" style="vertical-align:middle;"/></p> <p><br/></p> <h3 id="para3">Implementation in MQL5</h3> <p>To create the program in&nbsp;MQL5, open the&nbsp;<a href="https://www.metatrader5.com/en/automated-trading/metaeditor" title="https://www.metatrader5.com/en/automated-trading/metaeditor" target="_blank">MetaEditor</a>, go to the Navigator, locate the Indicators folder, click on the "New" tab, and follow the prompts to create the file. Once it is made, in the coding environment, we will need to declare some&nbsp;<a href="/en/docs/basis/variables/global" target="_blank">global variables</a>&nbsp;that we will use throughout the program.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Copyright 2025, Forex Algo-Trader, Allan. |</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "https://t.me/Forex_Algo_Trader" |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="preprocessor">#property </span><span class="macro">copyright</span> <span class="string">"Forex Algo-Trader, Allan"</span>
+<span class="preprocessor">#property </span><span class="macro">link</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"https://t.me/Forex_Algo_Trader"</span>
+<span class="preprocessor">#property </span><span class="macro">version</span>&nbsp;&nbsp; <span class="string">"1.00"</span>
+<span class="preprocessor">#property </span><span class="macro">description</span> <span class="string">"This EA trades based on ASIAN BREAKOUT Strategy"</span>
+<span class="preprocessor">#property </span><span class="macro">strict</span>
+
+<span class="preprocessor">#include </span>&lt;Trade\Trade.mqh&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Include trade library</span>
+CTrade obj_Trade;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Create global trade object</span>
+
+<span class="comment">//--- Global indicator handle for the moving average</span>
+<span class="keyword">int</span> maHandle = <span class="macro">INVALID_HANDLE</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Global MA handle</span>
+
+<span class="comment">//==== Input parameters</span>
+<span class="comment">//--- Trade and indicator settings</span>
+<span class="keyword">input</span> <span class="keyword">double</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LotSize&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="number">0.1</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Trade lot size</span>
+<span class="keyword">input</span> <span class="keyword">double</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BreakoutOffsetPips&nbsp;&nbsp; = <span class="number">10</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Offset in pips for pending orders</span>
+<span class="keyword">input</span> <span class="macro">ENUM_TIMEFRAMES</span> BoxTimeframe&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = <span class="macro">PERIOD_M15</span>;&nbsp;&nbsp;<span class="comment">//--- Timeframe for box calculation (15 or 30 minutes)</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MA_Period&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="number">50</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Moving average period for trend filter</span>
+<span class="keyword">input</span> <span class="macro">ENUM_MA_METHOD</span> MA_Method&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="macro">MODE_SMA</span>;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- MA method (Simple Moving Average)</span>
+<span class="keyword">input</span> <span class="macro">ENUM_APPLIED_PRICE</span> MA_AppliedPrice&nbsp;&nbsp; = <span class="macro">PRICE_CLOSE</span>; <span class="comment">//--- Applied price for MA (Close price)</span>
+<span class="keyword">input</span> <span class="keyword">double</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RiskToReward&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = <span class="number">1.3</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Reward-to-risk multiplier (1:1.3)</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MagicNumber&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="number">12345</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Magic number (used for order identification)</span>
+
+<span class="comment">//--- Session timing settings (GMT) with minutes</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SessionStartHour&nbsp;&nbsp;&nbsp;&nbsp; = <span class="number">23</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Session start hour</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SessionStartMinute&nbsp;&nbsp; = <span class="number">00</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Session start minute</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SessionEndHour&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = <span class="number">03</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Session end hour</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SessionEndMinute&nbsp;&nbsp;&nbsp;&nbsp; = <span class="number">00</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Session end minute</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TradeExitHour&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="number">13</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Trade exit hour</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TradeExitMinute&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="number">00</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Trade exit minute</span>
+
+<span class="comment">//--- Global variables for storing session box data</span>
+<span class="keyword">datetime</span> lastBoxSessionEnd = <span class="number">0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Stores the session end time of the last computed box</span>
+<span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp; boxCalculated&nbsp;&nbsp;&nbsp;&nbsp; = <span class="macro">false</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Flag: true if session box has been calculated</span>
+<span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp; ordersPlaced&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="macro">false</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Flag: true if orders have been placed for the session</span>
+<span class="keyword">double</span>&nbsp;&nbsp; BoxHigh&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = <span class="number">0.0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Highest price during the session</span>
+<span class="keyword">double</span>&nbsp;&nbsp; BoxLow&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="number">0.0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Lowest price during the session</span>
+<span class="comment">//--- Variables to store the exact times when the session's high and low occurred</span>
+<span class="keyword">datetime</span> BoxHighTime&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = <span class="number">0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Time when the highest price occurred</span>
+<span class="keyword">datetime</span> BoxLowTime&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="number">0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Time when the lowest price occurred</span>
+</pre> <p>Here, we include the trade library using "<a href="/en/docs/basis/preprosessor/include" target="_blank">#include</a> &lt;Trade\Trade.mqh&gt;" to access built-in trading functions and create a global trade object named "obj_Trade". We define a global indicator handle "maHandle", initialize it to <a href="/en/docs/constants/namedconstants/otherconstants" target="_blank">INVALID_HANDLE</a>&nbsp;and set up user inputs for trade and indicator settings—such as "LotSize", "BreakoutOffsetPips", and "BoxTimeframe" (which uses the <a href="/en/docs/constants/chartconstants/enum_timeframes" target="_blank">ENUM_TIMEFRAMES</a>&nbsp;type)—as well as parameters for the moving average ("MA_Period", "MA_Method", "MA_AppliedPrice") and risk management ("RiskToReward", "MagicNumber").</p> <p>Additionally, we allow users to specify session timing in hours and minutes (using inputs like "SessionStartHour", "SessionStartMinute", "SessionEndHour", "SessionEndMinute", "TradeExitHour", and "TradeExitMinute") and declare global variables to store the session box data ("BoxHigh", "BoxLow") and the exact times these extremes occurred ("BoxHighTime", "BoxLowTime"), along with flags ("boxCalculated" and "ordersPlaced") to control the program’s logic. Next, we go to the <a href="/en/docs/event_handlers/oninit" target="_blank">OnInit</a>&nbsp;event handler and initialize the handle.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Expert initialization function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">int</span> <span class="functions">OnInit</span>(){
+&nbsp;&nbsp; <span class="comment">//--- Set the magic number for all trade operations</span>
+&nbsp;&nbsp; obj_Trade.SetExpertMagicNumber(MagicNumber);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set magic number globally for trades</span>
+&nbsp;&nbsp; <span class="comment">//--- Create the Moving Average handle with user-defined parameters</span>
+&nbsp;&nbsp; maHandle = <span class="indicators">iMA</span>(<span class="predefines">_Symbol</span>, <span class="number">0</span>, MA_Period, <span class="number">0</span>, MA_Method, MA_AppliedPrice); <span class="comment">//--- Create MA handle</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(maHandle == <span class="macro">INVALID_HANDLE</span>){&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Check if MA handle creation failed</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Failed to create MA handle."</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Print error message</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>(<span class="macro">INIT_FAILED</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Terminate initialization if error occurs</span>
+&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">return</span>(<span class="macro">INIT_SUCCEEDED</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Return successful initialization</span>
+}</pre> <p>In the OnInit&nbsp;event handler, we set the trade object's magic number by calling the "obj_Trade.SetExpertMagicNumber(MagicNumber)" method, ensuring that all trades are uniquely identified. Next, we create the <a href="https://www.metatrader5.com/en/terminal/help/indicators/trend_indicators/ma" title="https://www.metatrader5.com/en/terminal/help/indicators/trend_indicators/ma" target="_blank">Moving Average</a> handle using the <a href="/en/docs/indicators/ima" target="_blank">iMA</a>&nbsp;function with our user-defined parameters ("MA_Period", "MA_Method", and "MA_AppliedPrice"). We then verify whether the handle was successfully created by checking if "maHandle" equals <a href="/en/docs/constants/namedconstants/otherconstants" target="_blank">INVALID_HANDLE</a>; if it does, we print an error message and return <a href="/en/docs/basis/function/events#enum_init_retcode" target="_blank">INIT_FAILED</a>, otherwise, we return <a href="/en/docs/basis/function/events#enum_init_retcode" target="_blank">INIT_SUCCEEDED</a>&nbsp;to signal successful initialization. Next, we need to release the created handle to save resources when the program is not in use.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Expert deinitialization function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> <span class="functions">OnDeinit</span>(<span class="keyword">const</span> <span class="keyword">int</span> reason){
+&nbsp;&nbsp; <span class="comment">//--- Release the MA handle if valid</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(maHandle != <span class="macro">INVALID_HANDLE</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Check if MA handle exists</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">IndicatorRelease</span>(maHandle);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Release the MA handle</span>
+&nbsp;&nbsp; <span class="comment">//--- Drawn objects remain on the chart for historical reference</span>
+}</pre> <p>In the <a href="/en/docs/event_handlers/ondeinit" target="_blank">OnDeinit</a>&nbsp;function, we check if the Moving Average handle "maHandle" is valid (i.e., not equal to INVALID_HANDLE). If it is valid, we release the handle by calling the <a href="/en/docs/series/indicatorrelease" target="_blank">IndicatorRelease</a>&nbsp;function to free up resources. We can now graduate to the main event handler, <a href="/en/docs/event_handlers/ontick" target="_blank">OnTick</a>, where we will base our whole control logic.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Expert tick function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> <span class="functions">OnTick</span>(){
+&nbsp;&nbsp; <span class="comment">//--- Get the current server time (assumed GMT)</span>
+&nbsp;&nbsp; <span class="keyword">datetime</span> currentTime = <span class="functions">TimeCurrent</span>();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Retrieve current time</span>
+&nbsp;&nbsp; <span class="predefines">MqlDateTime</span> dt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Declare a structure for time components</span>
+&nbsp;&nbsp; <span class="functions">TimeToStruct</span>(currentTime, dt);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Convert current time to structure</span>
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">//--- Check if the current time is at or past the session end (using hour and minute)</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(dt.hour &gt; SessionEndHour || (dt.hour == SessionEndHour &amp;&amp; dt.min &gt;= SessionEndMinute)){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Build the session end time using today's date and user-defined session end time</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="predefines">MqlDateTime</span> sesEnd;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Declare a structure for session end time</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sesEnd.year = dt.year;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Set year</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sesEnd.mon&nbsp;&nbsp;= dt.mon;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set month</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sesEnd.day&nbsp;&nbsp;= dt.day;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set day</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sesEnd.hour = SessionEndHour;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set session end hour</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sesEnd.min&nbsp;&nbsp;= SessionEndMinute;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set session end minute</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sesEnd.sec&nbsp;&nbsp;= <span class="number">0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Set seconds to 0</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> sessionEnd = <span class="functions">StructToTime</span>(sesEnd);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Convert structure to datetime</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Determine the session start time</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> sessionStart;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Declare variable for session start time</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- If session start is later than or equal to session end, assume overnight session</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(SessionStartHour &gt; SessionEndHour || (SessionStartHour == SessionEndHour &amp;&amp; SessionStartMinute &gt;= SessionEndMinute)){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">datetime</span> prevDay = sessionEnd - <span class="number">86400</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Subtract 24 hours to get previous day</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="predefines">MqlDateTime</span> dtPrev;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Declare structure for previous day time</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">TimeToStruct</span>(prevDay, dtPrev);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Convert previous day time to structure</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dtPrev.hour = SessionStartHour;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Set session start hour for previous day</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dtPrev.min&nbsp;&nbsp;= SessionStartMinute;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Set session start minute for previous day</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dtPrev.sec&nbsp;&nbsp;= <span class="number">0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set seconds to 0</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sessionStart = <span class="functions">StructToTime</span>(dtPrev);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Convert structure back to datetime</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Otherwise, use today's date for session start</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="predefines">MqlDateTime</span> temp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Declare temporary structure</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; temp.year = sesEnd.year;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Set year from session end structure</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; temp.mon&nbsp;&nbsp;= sesEnd.mon;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set month from session end structure</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; temp.day&nbsp;&nbsp;= sesEnd.day;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set day from session end structure</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; temp.hour = SessionStartHour;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set session start hour</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; temp.min&nbsp;&nbsp;= SessionStartMinute;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set session start minute</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; temp.sec&nbsp;&nbsp;= <span class="number">0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Set seconds to 0</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sessionStart = <span class="functions">StructToTime</span>(temp);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Convert structure to datetime</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Recalculate the session box only if this session hasn't been processed before</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(sessionEnd != lastBoxSessionEnd){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ComputeBox(sessionStart, sessionEnd);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Compute session box using start and end times</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lastBoxSessionEnd = sessionEnd;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Update last processed session end time</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; boxCalculated&nbsp;&nbsp; = <span class="macro">true</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Set flag indicating the box has been calculated</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ordersPlaced&nbsp;&nbsp;&nbsp;&nbsp;= <span class="macro">false</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Reset flag for order placement for the new session</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp; }
+}</pre> <p>In the Expert tick function OnTick, we first call <a href="/en/docs/dateandtime/timecurrent" target="_blank">TimeCurrent</a>&nbsp;to retrieve the current server time and then convert it into a <a href="/en/docs/constants/structures/mqldatetime" target="_blank">MqlDateTime</a>&nbsp;structure using the <a href="/en/docs/dateandtime/timetostruct" target="_blank">TimeToStruct</a>&nbsp;function so we can access its components. We compare the current hour and minute with the user-defined "SessionEndHour" and "SessionEndMinute"; if the current time is at or past the session end, we build a "sesEnd" structure and convert it to a datetime using <a href="/en/docs/dateandtime/structtotime" target="_blank">StructToTime</a>. </p> <p>Based on whether the session start before or after the session end, we determine the proper "sessionStart" time (using today's date or adjusting for an overnight session), and if this "sessionEnd" is different from "lastBoxSessionEnd", we call the "ComputeBox" function to recalculate the session box while updating "lastBoxSessionEnd" and resetting our "boxCalculated" and "ordersPlaced" flags. We use a custom function to compute the box properties, and here is its code snippet.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Function: ComputeBox&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//| Purpose: Calculate the session's highest high and lowest low, and|</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;record the times these extremes occurred, using the&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specified session start and end times.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> ComputeBox(<span class="keyword">datetime</span> sessionStart, <span class="keyword">datetime</span> sessionEnd){
+&nbsp;&nbsp; <span class="keyword">int</span> totalBars = <span class="functions">Bars</span>(<span class="predefines">_Symbol</span>, BoxTimeframe);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Get total number of bars on the specified timeframe</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(totalBars &lt;= <span class="number">0</span>){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"No bars available on timeframe "</span>, <span class="functions">EnumToString</span>(BoxTimeframe)); <span class="comment">//--- Print error if no bars available</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Exit if no bars are found</span>
+&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="predefines">MqlRates</span> rates[];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Declare an array to hold bar data</span>
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(rates, <span class="macro">false</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set array to non-series order (oldest first)</span>
+&nbsp;&nbsp; <span class="keyword">int</span> copied = <span class="functions">CopyRates</span>(<span class="predefines">_Symbol</span>, BoxTimeframe, <span class="number">0</span>, totalBars, rates); <span class="comment">//--- Copy bar data into array</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(copied &lt;= <span class="number">0</span>){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Failed to copy rates for box calculation."</span>); <span class="comment">//--- Print error if copying fails</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Exit if error occurs</span>
+&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="keyword">double</span> highVal = -<span class="macro">DBL_MAX</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Initialize high value to the lowest possible</span>
+&nbsp;&nbsp; <span class="keyword">double</span> lowVal&nbsp;&nbsp;= <span class="macro">DBL_MAX</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Initialize low value to the highest possible</span>
+&nbsp;&nbsp; <span class="comment">//--- Reset the times for the session extremes</span>
+&nbsp;&nbsp; BoxHighTime = <span class="number">0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Reset stored high time</span>
+&nbsp;&nbsp; BoxLowTime&nbsp;&nbsp;= <span class="number">0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Reset stored low time</span>
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">//--- Loop through each bar within the session period to find the extremes</span>
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; copied; i++){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(rates[i].time &gt;= sessionStart &amp;&amp; rates[i].time &lt;= sessionEnd){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(rates[i].high &gt; highVal){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;highVal = rates[i].high;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Update highest price</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BoxHighTime = rates[i].time;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Record time of highest price</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(rates[i].low &lt; lowVal){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lowVal = rates[i].low;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Update lowest price</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BoxLowTime = rates[i].time;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Record time of lowest price</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">if</span>(highVal == -<span class="macro">DBL_MAX</span> || lowVal == <span class="macro">DBL_MAX</span>){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"No valid bars found within the session time range."</span>); <span class="comment">//--- Print error if no valid bars found</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Exit if invalid data</span>
+&nbsp;&nbsp; }
+&nbsp;&nbsp; BoxHigh = highVal;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Store final highest price</span>
+&nbsp;&nbsp; BoxLow&nbsp;&nbsp;= lowVal;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Store final lowest price</span>
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Session box computed: High = "</span>, BoxHigh, <span class="string">" at "</span>, <span class="functions">TimeToString</span>(BoxHighTime),
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="string">", Low = "</span>, BoxLow, <span class="string">" at "</span>, <span class="functions">TimeToString</span>(BoxLowTime)); <span class="comment">//--- Output computed session box data</span>
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">//--- Draw all session objects (rectangle, horizontal lines, and price labels)</span>
+&nbsp;&nbsp; DrawSessionObjects(sessionStart, sessionEnd);&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Call function to draw objects using computed values</span>
+}</pre> <p>Here, we define a <a href="/en/docs/basis/types/void" target="_blank">void</a> "ComputeBox" function to calculate the session extremes. We begin by obtaining the total number of bars on the specified timeframe using the <a href="/en/docs/series/bars" target="_blank">Bars</a>&nbsp;function and then copy the bar data into a <a href="/en/docs/constants/structures/mqlrates" target="_blank">MqlRates</a>&nbsp;array using the <a href="/en/docs/series/copyrates" target="_blank">CopyRates</a>&nbsp;function. We initialize the variable "highVal" to <a href="/en/docs/constants/namedconstants/typeconstants" target="_blank">-DBL_MAX</a>&nbsp;and "lowVal" to <a href="/en/docs/constants/namedconstants/typeconstants" target="_blank">DBL_MAX</a>&nbsp;to ensure that any valid price will update these extremes. As we <a href="/en/docs/basis/operators/for" target="_blank">loop</a>&nbsp;through each bar that falls within the session period, if a bar's "high" exceeds "highVal", we update "highVal" and record that bar's time in "BoxHighTime"; similarly, if a bar's "low" is below "lowVal", we update "lowVal" and record the time in "BoxLowTime".</p> <p>If after processing the data "highVal" remains "-DBL_MAX" or "lowVal" remains <a href="/en/docs/constants/namedconstants/typeconstants" target="_blank">DBL_MAX</a>, we print an error message indicating that no valid bars were found; otherwise, we assign "BoxHigh" and "BoxLow" with the computed values and use the <a href="/en/docs/convert/timetostring" target="_blank">TimeToString</a>&nbsp;function to print the recorded times in a readable format. Finally, we call the "DrawSessionObjects" function with the session start and end times to visually display the session box and related objects on the chart. The function's implementation is as below.</p> <pre class="code"><span class="comment">//+----------------------------------------------------------------------+</span>
+<span class="comment">//| Function: DrawSessionObjects&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     |</span>
+<span class="comment">//| Purpose: Draw a filled rectangle spanning from the session's high    |</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;point to its low point (using exact times), then draw&nbsp;&nbsp;    &nbsp;|</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;horizontal lines at the high and low (from sessionStart to&nbsp;&nbsp;|</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sessionEnd) with price labels at the right. Dynamic styling&nbsp;|</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for font size and line width is based on the current chart&nbsp;&nbsp;|</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;scale.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  |</span>
+<span class="comment">//+----------------------------------------------------------------------+</span>
+<span class="keyword">void</span> DrawSessionObjects(<span class="keyword">datetime</span> sessionStart, <span class="keyword">datetime</span> sessionEnd){
+&nbsp;&nbsp; <span class="keyword">int</span> chartScale = (<span class="keyword">int</span>)<span class="functions">ChartGetInteger</span>(<span class="number">0</span>, <span class="macro">CHART_SCALE</span>, <span class="number">0</span>); <span class="comment">//--- Retrieve the chart scale (0 to 5)</span>
+&nbsp;&nbsp; <span class="keyword">int</span> dynamicFontSize = <span class="number">7</span> + chartScale * <span class="number">1</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Base 7, increase by 2 per scale level</span>
+&nbsp;&nbsp; <span class="keyword">int</span> dynamicLineWidth = (<span class="keyword">int</span>)<span class="functions">MathRound</span>(<span class="number">1</span> + (chartScale * <span class="number">2.0</span> / <span class="number">5</span>)); <span class="comment">//--- Linear interpolation</span>
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">//--- Create a unique session identifier using the session end time</span>
+&nbsp;&nbsp; <span class="keyword">string</span> sessionID = <span class="string">"Sess_"</span> + <span class="functions">IntegerToString</span>(lastBoxSessionEnd);
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">//--- Draw the filled rectangle (box) using the recorded high/low times and prices</span>
+&nbsp;&nbsp; <span class="keyword">string</span> rectName = <span class="string">"SessionRect_"</span> + sessionID;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Unique name for the rectangle</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(!<span class="functions">ObjectCreate</span>(<span class="number">0</span>, rectName, <span class="macro">OBJ_RECTANGLE</span>, <span class="number">0</span>, BoxHighTime, BoxHigh, BoxLowTime, BoxLow))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Failed to create rectangle: "</span>, rectName); <span class="comment">//--- Print error if creation fails</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, rectName, <span class="macro">OBJPROP_COLOR</span>, <span class="macro">clrThistle</span>); <span class="comment">//--- Set rectangle color to blue</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, rectName, <span class="macro">OBJPROP_FILL</span>, <span class="macro">true</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Enable filling of the rectangle</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, rectName, <span class="macro">OBJPROP_BACK</span>, <span class="macro">true</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Draw rectangle in background</span>
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">//--- Draw the top horizontal line spanning from sessionStart to sessionEnd at the session high</span>
+&nbsp;&nbsp; <span class="keyword">string</span> topLineName = <span class="string">"SessionTopLine_"</span> + sessionID; <span class="comment">//--- Unique name for the top line</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(!<span class="functions">ObjectCreate</span>(<span class="number">0</span>, topLineName, <span class="macro">OBJ_TREND</span>, <span class="number">0</span>, sessionStart, BoxHigh, sessionEnd, BoxHigh))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Failed to create top line: "</span>, topLineName); <span class="comment">//--- Print error if creation fails</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, topLineName, <span class="macro">OBJPROP_COLOR</span>, <span class="macro">clrBlue</span>); <span class="comment">//--- Set line color to blue</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, topLineName, <span class="macro">OBJPROP_WIDTH</span>, dynamicLineWidth); <span class="comment">//--- Set line width dynamically</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, topLineName, <span class="macro">OBJPROP_RAY_RIGHT</span>, <span class="macro">false</span>); <span class="comment">//--- Do not extend line infinitely</span>
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">//--- Draw the bottom horizontal line spanning from sessionStart to sessionEnd at the session low</span>
+&nbsp;&nbsp; <span class="keyword">string</span> bottomLineName = <span class="string">"SessionBottomLine_"</span> + sessionID; <span class="comment">//--- Unique name for the bottom line</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(!<span class="functions">ObjectCreate</span>(<span class="number">0</span>, bottomLineName, <span class="macro">OBJ_TREND</span>, <span class="number">0</span>, sessionStart, BoxLow, sessionEnd, BoxLow))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Failed to create bottom line: "</span>, bottomLineName); <span class="comment">//--- Print error if creation fails</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, bottomLineName, <span class="macro">OBJPROP_COLOR</span>, <span class="macro">clrRed</span>); <span class="comment">//--- Set line color to blue</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, bottomLineName, <span class="macro">OBJPROP_WIDTH</span>, dynamicLineWidth); <span class="comment">//--- Set line width dynamically</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, bottomLineName, <span class="macro">OBJPROP_RAY_RIGHT</span>, <span class="macro">false</span>); <span class="comment">//--- Do not extend line infinitely</span>
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">//--- Create the top price label at the right edge of the top horizontal line</span>
+&nbsp;&nbsp; <span class="keyword">string</span> topLabelName = <span class="string">"SessionTopLabel_"</span> + sessionID; <span class="comment">//--- Unique name for the top label</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(!<span class="functions">ObjectCreate</span>(<span class="number">0</span>, topLabelName, <span class="macro">OBJ_TEXT</span>, <span class="number">0</span>, sessionEnd, BoxHigh))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Failed to create top label: "</span>, topLabelName); <span class="comment">//--- Print error if creation fails</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetString</span>(<span class="number">0</span>, topLabelName, <span class="macro">OBJPROP_TEXT</span>,<span class="string">" "</span>+<span class="functions">DoubleToString</span>(BoxHigh, <span class="predefines">_Digits</span>)); <span class="comment">//--- Set label text to session high price</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, topLabelName, <span class="macro">OBJPROP_COLOR</span>, <span class="macro">clrBlack</span>); <span class="comment">//--- Set label color to blue</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, topLabelName, <span class="macro">OBJPROP_FONTSIZE</span>, dynamicFontSize); <span class="comment">//--- Set dynamic font size for label</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, topLabelName, <span class="macro">OBJPROP_ANCHOR</span>, <span class="macro">ANCHOR_LEFT</span>); <span class="comment">//--- Anchor label to the left so text appears to right</span>
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">//--- Create the bottom price label at the right edge of the bottom horizontal line</span>
+&nbsp;&nbsp; <span class="keyword">string</span> bottomLabelName = <span class="string">"SessionBottomLabel_"</span> + sessionID; <span class="comment">//--- Unique name for the bottom label</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(!<span class="functions">ObjectCreate</span>(<span class="number">0</span>, bottomLabelName, <span class="macro">OBJ_TEXT</span>, <span class="number">0</span>, sessionEnd, BoxLow))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Failed to create bottom label: "</span>, bottomLabelName); <span class="comment">//--- Print error if creation fails</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetString</span>(<span class="number">0</span>, bottomLabelName, <span class="macro">OBJPROP_TEXT</span>,<span class="string">" "</span>+<span class="functions">DoubleToString</span>(BoxLow, <span class="predefines">_Digits</span>)); <span class="comment">//--- Set label text to session low price</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, bottomLabelName, <span class="macro">OBJPROP_COLOR</span>, <span class="macro">clrBlack</span>); <span class="comment">//--- Set label color to blue</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, bottomLabelName, <span class="macro">OBJPROP_FONTSIZE</span>, dynamicFontSize); <span class="comment">//--- Set dynamic font size for label</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, bottomLabelName, <span class="macro">OBJPROP_ANCHOR</span>, <span class="macro">ANCHOR_LEFT</span>); <span class="comment">//--- Anchor label to the left so text appears to right</span>
+}</pre> <p>In the "DrawSessionObjects" function, we start by retrieving the current chart scale using the <a href="/en/docs/chart_operations/chartgetinteger" target="_blank">ChartGetInteger</a>&nbsp;function with <a href="/en/docs/constants/chartconstants/enum_chart_property#enum_chart_property_integer" target="_blank">CHART_SCALE</a>&nbsp;(which returns a value from 0 to 5) and then compute dynamic styling parameters: a dynamic font size calculated as "7 + chartScale * 1" (with a base size of 7 that increases by 1 per scale level) and a dynamic line width using <a href="/en/docs/math/mathround" target="_blank">MathRound</a>&nbsp;to interpolate linearly so that when the chart scale is 5, the width becomes 3. Next, we create a unique session identifier by converting "lastBoxSessionEnd" to a string prefixed with "Sess_", which ensures that each session’s objects have distinct names. We then draw a filled rectangle using <a href="/en/docs/objects/objectcreate" target="_blank">ObjectCreate</a>, passing type <a href="/en/docs/constants/objectconstants/enum_object" target="_blank">OBJ_RECTANGLE</a> with the exact times and prices of the session's high ("BoxHighTime", "BoxHigh") and low ("BoxLowTime", "BoxLow"), setting its color to "clrThistle", enabling its fill with <a href="/en/docs/constants/objectconstants/enum_object_property#enum_object_property_integer" target="_blank">OBJPROP_FILL</a>, and placing it in the background with <a href="/en/docs/constants/objectconstants/enum_object_property#enum_object_property_integer" target="_blank">OBJPROP_BACK</a>.</p> <p>Following this, we draw two horizontal trend lines—one at the session high and one at the session low—spanning from "sessionStart" to "sessionEnd"; we set the top line's color to "<a href="/en/docs/constants/objectconstants/webcolors" target="_blank">clrBlue</a>" and the bottom line's color to "clrRed", and both lines use the dynamic line width and are not extended infinitely ("OBJPROP_RAY_RIGHT" is set to false). Finally, we create text objects for the top and bottom price labels at the right edge (at "sessionEnd"), setting their text to the session high and low (formatted with <a href="/en/docs/convert/doubletostring" target="_blank">DoubleToString</a>&nbsp;using the symbol's precision, <a href="/en/docs/predefined/_Digits" target="_blank">_Digits</a>), with their color set to "clrBlack" and the dynamic font size applied, and we anchor them to the left so that the text appears to the right of the anchor. Upon compilation, we get the following outcome.</p> <p style="text-align:center;"> <img width="749" height="482" src="https://c.mql5.com/2/119/Screenshot_2025-02-16_132442.png" loading="lazy" title="ASIAN BOX IDENTIFIED" alt="ASIAN BOX IDENTIFIED" style="vertical-align:middle;"/></p> <p>From the image, we can see that we can identify the box, and plot it on the chart. So we can now proceed to opening the pending orders near the identified range boundaries. To achieve this, we use the following logic.</p> <pre class="code"><span class="comment">//--- Build the trade exit time using user-defined hour and minute for today</span>
+<span class="predefines">MqlDateTime</span> exitTimeStruct;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Declare a structure for exit time</span>
+<span class="functions">TimeToStruct</span>(currentTime, exitTimeStruct);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Use current time's date components</span>
+exitTimeStruct.hour = TradeExitHour;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set trade exit hour</span>
+exitTimeStruct.min&nbsp;&nbsp;= TradeExitMinute;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set trade exit minute</span>
+exitTimeStruct.sec&nbsp;&nbsp;= <span class="number">0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set seconds to 0</span>
+<span class="keyword">datetime</span> tradeExitTime = <span class="functions">StructToTime</span>(exitTimeStruct); <span class="comment">//--- Convert exit time structure to datetime</span>
+
+<span class="comment">//--- If the session box is calculated, orders are not placed yet, and current time is before trade exit time, place orders</span>
+<span class="keyword">if</span>(boxCalculated &amp;&amp; !ordersPlaced &amp;&amp; currentTime &lt; tradeExitTime){
+&nbsp;&nbsp; <span class="keyword">double</span> maBuffer[];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Declare array to hold MA values</span>
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(maBuffer, <span class="macro">true</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Set the array as series (newest first)</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyBuffer</span>(maHandle, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, maBuffer) &lt;= <span class="number">0</span>){&nbsp;&nbsp;<span class="comment">//--- Copy 1 value from the MA buffer</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Failed to copy MA buffer."</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Print error if buffer copy fails</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Exit the function if error occurs</span>
+&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">double</span> maValue = maBuffer[<span class="number">0</span>];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Retrieve the current MA value</span>
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="keyword">double</span> currentPrice = <span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_BID</span>); <span class="comment">//--- Get current bid price</span>
+&nbsp;&nbsp; <span class="keyword">bool</span> bullish = (currentPrice &gt; maValue);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Determine bullish condition</span>
+&nbsp;&nbsp; <span class="keyword">bool</span> bearish = (currentPrice &lt; maValue);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Determine bearish condition</span>
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="keyword">double</span> offsetPrice = BreakoutOffsetPips * <span class="predefines">_Point</span>; <span class="comment">//--- Convert pips to price units</span>
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">//--- If bullish, place a Buy Stop order</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(bullish){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> entryPrice = BoxHigh + offsetPrice; <span class="comment">//--- Set entry price just above the session high</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> stopLoss&nbsp;&nbsp; = BoxLow - offsetPrice;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Set stop loss below the session low</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> risk&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = entryPrice - stopLoss;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Calculate risk per unit</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> takeProfit = entryPrice + risk * RiskToReward; <span class="comment">//--- Calculate take profit using risk/reward ratio</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(obj_Trade.BuyStop(LotSize, entryPrice, <span class="predefines">_Symbol</span>, stopLoss, takeProfit, <span class="macro">ORDER_TIME_GTC</span>, <span class="number">0</span>, <span class="string">"Asian Breakout EA"</span>)){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Placed Buy Stop order at "</span>, entryPrice); <span class="comment">//--- Print order confirmation</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ordersPlaced = <span class="macro">true</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Set flag indicating an order has been placed</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Buy Stop order failed: "</span>, obj_Trade.ResultRetcodeDescription()); <span class="comment">//--- Print error if order fails</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="comment">//--- If bearish, place a Sell Stop order</span>
+&nbsp;&nbsp; <span class="keyword">else</span> <span class="keyword">if</span>(bearish){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> entryPrice = BoxLow - offsetPrice;&nbsp;&nbsp;<span class="comment">//--- Set entry price just below the session low</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> stopLoss&nbsp;&nbsp; = BoxHigh + offsetPrice;&nbsp;&nbsp; <span class="comment">//--- Set stop loss above the session high</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> risk&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = stopLoss - entryPrice;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Calculate risk per unit</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> takeProfit = entryPrice - risk * RiskToReward; <span class="comment">//--- Calculate take profit using risk/reward ratio</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(obj_Trade.SellStop(LotSize, entryPrice, <span class="predefines">_Symbol</span>, stopLoss, takeProfit, <span class="macro">ORDER_TIME_GTC</span>, <span class="number">0</span>, <span class="string">"Asian Breakout EA"</span>)){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Placed Sell Stop order at "</span>, entryPrice); <span class="comment">//--- Print order confirmation</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ordersPlaced = <span class="macro">true</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set flag indicating an order has been placed</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Sell Stop order failed: "</span>, obj_Trade.ResultRetcodeDescription()); <span class="comment">//--- Print error if order fails</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp; }
+}</pre> <p>Here, we build the trade exit time by declaring a <a href="/en/docs/constants/structures/mqldatetime" target="_blank">MqlDateTime</a>&nbsp;structure named "exitTimeStruct". We then use the <a href="/en/docs/dateandtime/timetostruct" target="_blank">TimeToStruct</a>&nbsp;function to decompose the current time into its parts and assign the user-defined "TradeExitHour" and "TradeExitMinute" (with seconds set to 0) to "exitTimeStruct". Next, we convert this structure back to a datetime value by calling the <a href="/en/docs/dateandtime/structtotime" target="_blank">StructToTime</a>&nbsp;function, resulting in "tradeExitTime". After that, if the session box has been calculated, no orders have been placed, and the current time is before "tradeExitTime", we proceed to place orders.</p> <p>We declare an array "maBuffer" to hold <a href="/en/docs/indicators/ima" target="_blank">moving average</a> values and call the <a href="/en/docs/array/arraysetasseries" target="_blank">ArraySetAsSeries</a>&nbsp;function to ensure that the array is indexed with the newest data first. Then, we use the <a href="/en/docs/series/copybuffer" target="_blank">CopyBuffer</a>&nbsp;function to retrieve the latest value from the moving average indicator (using "maHandle") into "maBuffer". We compare this moving average value with the current bid price (obtained via the <a href="/en/docs/marketinformation/symbolinfodouble" target="_blank">SymbolInfoDouble</a>&nbsp;function) to determine whether the market is bullish or bearish. Based on this condition, we calculate the appropriate entry price, stop loss, and take profit using the "BreakoutOffsetPips" parameter, and then we place either a Buy Stop order using the "obj_Trade.BuyStop" method or a Sell Stop order using the "obj_Trade.SellStop" method.</p> <p>Finally, we print a confirmation message if the order is successfully placed or an error message if it fails, and we set the "ordersPlaced" flag accordingly. On running the program, we get the following result.</p> <p style="text-align:center;"> <img width="749" height="495" src="https://c.mql5.com/2/119/Screenshot_2025-02-16_134752.png" loading="lazy" title="PENDING ORDER CONFIRMED" alt="PENDING ORDER CONFIRMED" style="vertical-align:middle;"/></p> <p>From the function, we can see that once we have a breakout, we place the pending order concerning the direction of the moving average filter, with the stop orders as well. The only thing that remains is exiting the positions or deleting the pending orders once the trading time is not within the trading time.</p> <pre class="code"><span class="comment">//--- If current time is at or past trade exit time, close positions and cancel pending orders</span>
+<span class="keyword">if</span>(currentTime &gt;= tradeExitTime){
+&nbsp;&nbsp; CloseOpenPositions();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Close all open positions for this EA</span>
+&nbsp;&nbsp; CancelPendingOrders();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Cancel all pending orders for this EA</span>
+&nbsp;&nbsp; boxCalculated = <span class="keyword">false</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Reset session box calculated flag</span>
+&nbsp;&nbsp; ordersPlaced&nbsp;&nbsp;= <span class="keyword">false</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Reset order placed flag</span>
+}
+</pre> <p>Here, we check whether the current time has reached or surpassed the trade exit time. If it has, we call the "CloseOpenPositions" function to close all open positions associated with the EA, and then we call the "CancelPendingOrders" function to cancel any pending orders. After these functions execute, we reset the "boxCalculated" and "ordersPlaced" flags to false, preparing the program for a new session. The custom functions we use are as follows.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Function: CloseOpenPositions&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//| Purpose: Close all open positions with the set magic number&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> CloseOpenPositions(){
+&nbsp;&nbsp; <span class="keyword">int</span> totalPositions = <span class="functions">PositionsTotal</span>();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Get total number of open positions</span>
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = totalPositions - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--){&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Loop through positions in reverse order</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">ulong</span> ticket = <span class="functions">PositionGetTicket</span>(i);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Get ticket number for each position</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">PositionSelectByTicket</span>(ticket)){&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Select position by ticket</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">PositionGetInteger</span>(<span class="macro">POSITION_MAGIC</span>) == MagicNumber){ <span class="comment">//--- Check if position belongs to this EA</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(!obj_Trade.PositionClose(ticket))&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Attempt to close position</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Failed to close position "</span>, ticket, <span class="string">": "</span>, obj_Trade.ResultRetcodeDescription()); <span class="comment">//--- Print error if closing fails</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Closed position "</span>, ticket);&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Confirm position closed</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp; }
+}
+&nbsp;&nbsp;
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Function: CancelPendingOrders&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//| Purpose: Cancel all pending orders with the set magic number&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> CancelPendingOrders(){
+&nbsp;&nbsp; <span class="keyword">int</span> totalOrders = <span class="functions">OrdersTotal</span>();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Get total number of pending orders</span>
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = totalOrders - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--){&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Loop through orders in reverse order</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">ulong</span> ticket = <span class="functions">OrderGetTicket</span>(i);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Get ticket number for each order</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">OrderSelect</span>(ticket)){&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Select order by ticket</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">int</span> type = (<span class="keyword">int</span>)<span class="functions">OrderGetInteger</span>(<span class="macro">ORDER_TYPE</span>); <span class="comment">//--- Retrieve order type</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">OrderGetInteger</span>(<span class="macro">ORDER_MAGIC</span>) == MagicNumber &amp;&amp; <span class="comment">//--- Check if order belongs to this EA</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(type == <span class="macro">ORDER_TYPE_BUY_STOP</span> || type == <span class="macro">ORDER_TYPE_SELL_STOP</span>)){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(!obj_Trade.OrderDelete(ticket))&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Attempt to delete pending order</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Failed to cancel pending order "</span>, ticket); <span class="comment">//--- Print error if deletion fails</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Canceled pending order "</span>, ticket); <span class="comment">//--- Confirm pending order canceled</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp; }
+}
+</pre> <p>Here, in the function "CloseOpenPositions", we first retrieve the total number of open positions using the <a href="/en/docs/trading/positionstotal" target="_blank">PositionsTotal</a>&nbsp;function and then loop through each position in reverse order. For each position, we obtain its ticket number using <a href="/en/docs/trading/positiongetticket" target="_blank">PositionGetTicket</a>&nbsp;and select the position with <a href="/en/docs/trading/positionselectbyticket" target="_blank">PositionSelectByTicket</a>. We then check if the position's <a href="/en/docs/constants/tradingconstants/positionproperties#enum_position_property_integer" target="_blank">POSITION_MAGIC</a>&nbsp;value matches our user-defined "MagicNumber" to ensure it belongs to our EA; if it does, we attempt to close the position using the "obj_Trade.PositionClose" function and print a confirmation message or an error message (using "obj_Trade.ResultRetcodeDescription") based on the outcome.</p> <p>In the function "CancelPendingOrders", we first retrieve the total number of pending orders with the <a href="/en/docs/trading/orderstotal" target="_blank">OrdersTotal</a>&nbsp;function and loop through them in reverse order. For each order, we obtain its ticket using <a href="/en/docs/trading/ordergetticket" target="_blank">OrderGetTicket</a>&nbsp;and select it using <a href="/en/docs/trading/orderselect" target="_blank">OrderSelect</a>. We then check if the order's <a href="/en/docs/constants/tradingconstants/orderproperties#enum_order_property_integer" target="_blank">ORDER_MAGIC</a>&nbsp;matches our "MagicNumber" and if its type is either "ORDER_TYPE_BUY_STOP" or <a href="/en/docs/constants/tradingconstants/orderproperties#enum_order_type" target="_blank">ORDER_TYPE_SELL_STOP</a>. If both conditions are met, we attempt to cancel the order using the "obj_Trade.OrderDelete" function, printing either a success message or an error message based on whether the cancellation succeeds. Upon running the program, we get the following results.</p> <p style="text-align:center;"> <img width="750" height="496" src="https://c.mql5.com/2/119/ASIAN_BOX_GIF.gif" loading="lazy" title="STRATEGY GIF" alt="STRATEGY GIF" style="vertical-align:middle;"/></p> <p>From the visualization, we can see that we identify the Asian session, plot it on the chart, place pending orders concerning the moving average direction, and cancel the orders or activated positions if they still exist once we surpass the trading time defined by the user, hence achieving our objective. The thing that remains is backtesting the program, and that is handled in the next section.</p> <p><br/></p> <h3 id="para4">Backtesting and Optimization</h3> <p>After thorough backtesting, for 1 year, 2023, using the default settings, we have the following results.</p> <p>Backtest graph:</p> <p style="text-align:center;"> <img width="749" height="394" src="https://c.mql5.com/2/119/Screenshot_2025-02-16_143919.png" loading="lazy" title="GRAPH 1" alt="GRAPH 1" style="vertical-align:middle;"/></p> <p>From the image, we can see that the graph is quite good, but we can help improve it by applying a trailing stop mechanism, and we achieved this using the following logic.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FUNCTION TO APPLY TRAILING STOP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> applyTrailingSTOP(<span class="keyword">double</span> slPoints, CTrade &amp;trade_object,<span class="keyword">int</span> magicNo=<span class="number">0</span>){
+&nbsp;&nbsp; <span class="keyword">double</span> buySL = <span class="functions">NormalizeDouble</span>(<span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>,<span class="macro">SYMBOL_BID</span>)-slPoints,<span class="predefines">_Digits</span>); <span class="comment">//--- Calculate SL for buy positions</span>
+&nbsp;&nbsp; <span class="keyword">double</span> sellSL = <span class="functions">NormalizeDouble</span>(<span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>,<span class="macro">SYMBOL_ASK</span>)+slPoints,<span class="predefines">_Digits</span>); <span class="comment">//--- Calculate SL for sell positions</span>
+
+&nbsp;&nbsp; <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="functions">PositionsTotal</span>() - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--){ <span class="comment">//--- Iterate through all open positions</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">ulong</span> ticket = <span class="functions">PositionGetTicket</span>(i);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Get position ticket</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (ticket &gt; <span class="number">0</span>){&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- If ticket is valid</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span> (<span class="functions">PositionGetString</span>(<span class="macro">POSITION_SYMBOL</span>) == <span class="predefines">_Symbol</span> &amp;&amp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(magicNo == <span class="number">0</span> || <span class="functions">PositionGetInteger</span>(<span class="macro">POSITION_MAGIC</span>) == magicNo)){ <span class="comment">//--- Check symbol and magic number</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="functions">PositionGetInteger</span>(<span class="macro">POSITION_TYPE</span>) == <span class="macro">POSITION_TYPE_BUY</span> &amp;&amp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; buySL &gt; <span class="functions">PositionGetDouble</span>(<span class="macro">POSITION_PRICE_OPEN</span>) &amp;&amp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (buySL &gt; <span class="functions">PositionGetDouble</span>(<span class="macro">POSITION_SL</span>) ||
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">PositionGetDouble</span>(<span class="macro">POSITION_SL</span>) == <span class="number">0</span>)){ <span class="comment">//--- Modify SL for buy position if conditions are met</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; trade_object.PositionModify(ticket,buySL,<span class="functions">PositionGetDouble</span>(<span class="macro">POSITION_TP</span>));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span> <span class="keyword">if</span> (<span class="functions">PositionGetInteger</span>(<span class="macro">POSITION_TYPE</span>) == <span class="macro">POSITION_TYPE_SELL</span> &amp;&amp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sellSL &lt; <span class="functions">PositionGetDouble</span>(<span class="macro">POSITION_PRICE_OPEN</span>) &amp;&amp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (sellSL &lt; <span class="functions">PositionGetDouble</span>(<span class="macro">POSITION_SL</span>) ||
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">PositionGetDouble</span>(<span class="macro">POSITION_SL</span>) == <span class="number">0</span>)){ <span class="comment">//--- Modify SL for sell position if conditions are met</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; trade_object.PositionModify(ticket,sellSL,<span class="functions">PositionGetDouble</span>(<span class="macro">POSITION_TP</span>));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp; }
+}
+
+<span class="comment">//---- CALL THE FUNCTION IN THE TICK EVENT HANDLER</span>
+
+<span class="keyword">if</span> (<span class="functions">PositionsTotal</span>() &gt; <span class="number">0</span>){&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- If there are open positions</span>
+&nbsp;&nbsp; applyTrailingSTOP(<span class="number">30</span>*<span class="predefines">_Point</span>,obj_Trade,<span class="number">0</span>);&nbsp;&nbsp;<span class="comment">//--- Apply a trailing stop</span>
+}
+</pre> <p>Upon applying the function and testing, the new results are as below.</p> <p>Backtest graph:</p> <p style="text-align:center;"> <img width="749" height="393" src="https://c.mql5.com/2/119/Screenshot_2025-02-16_144428.png" loading="lazy" title="BACKTEST GRAPH" alt="BACKTEST GRAPH" style="vertical-align:middle;"/></p> <p>Backtest report:</p> <p style="text-align:center;"> <img width="749" height="393" src="https://c.mql5.com/2/119/Screenshot_2025-02-16_144534.png" loading="lazy" title="BACKTEST RESULTS" alt="BACKTEST RESULTS" style="vertical-align:middle;"/></p> <p><br/></p> <h3 id="para5">Conclusion</h3> <p>In conclusion, we have successfully developed an MQL5 Expert Advisor that automates the Asian Breakout Strategy with precision. By leveraging session-based range detection, trend filtering via a <a href="https://www.metatrader5.com/en/terminal/help/indicators/trend_indicators/ma" title="https://www.metatrader5.com/en/terminal/help/indicators/trend_indicators/ma" target="_blank">moving average</a>, and dynamic risk management, we built a system that identifies key consolidation zones and executes breakout trades efficiently.</p> <div class="atten"> <p>Disclaimer: This article is for educational purposes only. Trading involves significant financial risk, and market conditions can be unpredictable. Although the strategy outlined provides a structured approach to breakout trading, it does not guarantee profitability. Comprehensive backtesting and proper risk management are essential before deploying this program in a live environment.</p> </div> <p>By implementing these techniques, you can enhance your algorithmic trading capabilities, refine your technical analysis skills, and further advance your trading strategy. Best of luck on your trading journey!</p>
+      </div>
+<div id="cb_17239" class="attachBlock">
+  <strong>Attached files</strong> |
+  <div class="grouped-attachments-help">
+    <a title="Download all attachments in the single ZIP archive" href="/en/articles/download/17239.zip">
+      <i class="attach-icon attach-icon_zip"></i>Download ZIP
+    </a>
+  </div>
+    <div class="attachItem">
+      <a title="Download Asian_Breakout_EA.mq5" href="/en/articles/download/17239/asian_breakout_ea.mq5"><i class="attach-icon attach-icon_mq5"></i>Asian_Breakout_EA.mq5</a>
+      <span class="attachSize">(49.79 KB)</span>
+    </div>
+</div>
+    </div>
+
+  <div class="copyright">
+    <p><strong>Warning:</strong> All rights to these materials are reserved by MetaQuotes Ltd. Copying or reprinting of these materials in whole or in part is prohibited.</p>
+      <p>This article was written by a user of the site and reflects their personal views. MetaQuotes Ltd is not responsible for the accuracy of the information presented, nor for any consequences resulting from the use of the solutions, strategies or recommendations described.</p>
+  </div>
+
+
+
+    <div class="article__author-with-articles">
+      
+
+
+<div class="article-footer__author">
+  <div class="article-footer__author-avatar">
+    <img id="avatar" src="https://c.mql5.com/avatar/2022/11/637df59b-9551_big.jpg" title="Allan Munene Mutiiria" alt="Allan Munene Mutiiria" loading="lazy" width="164" height="164">
+  </div>
+  <div class="article-footer__author-content">
+    <div class="article-footer__author-name">
+      <a href="/en/users/29210372" title="Allan Munene Mutiiria">Allan Munene Mutiiria</a>
+    </div>
+    <div class="article-footer__author-info">
+      <ul>
+          <li>
+            <i title="Lives" class="icons-profile icons-profile_geo"></i>
+            <a target="_blank" rel="nofollow" title="Lives" href="https://www.mql5.com/go?https://maps.google.com/?z=4&q=Kenya">Kenya</a>
+          </li>
+        <li>
+          <i title="Rating" class="icons-profile icons-profile_statistics"></i>
+          <a title="Rating" href="/en/users/29210372/achievements">194457</a>
+        </li>
+      </ul>
+    </div>
+    <div class="article-footer__author-contacts">
+          <li title="Website"><a target="_blank" rel="noreferrer noopener nofollow" href="https://forexalgo-trader.com/" class="icons-profile icons-profile_net"></a>
+      <a target="_blank" rel="noreferrer noopener nofollow" href="https://forexalgo-trader.com/" style="display: inline-block; vertical-align: top; margin-top: -2px;">https://forexalgo-trader.com/</a></li>
+
+    </div>
+    <div class="article-footer__author-bio"></div>
+  </div>
+</div>
+
+      <div class="other-author-articles ui">
+        <h4 class="other-author-articles__title">Other articles by this author</h4>
+        <ul class="other-author-articles__list">
+          <li><a href="/en/articles/22838" data-fz-event="MQL5+Article+From+Author+Article">MQL5 Trading Tools (Part 35): Adding Channel, Pitchfork, Gann, and Fibonacci Tools to the Canvas Drawing Layer</a></li>
+          <li><a href="/en/articles/22786" data-fz-event="MQL5+Article+From+Author+Article">MQL5 Trading Tools (Part 34): Replacing Native Chart Objects with an Interactive Canvas Drawing Layer</a></li>
+          <li><a href="/en/articles/22303" data-fz-event="MQL5+Article+From+Author+Article">MQL5 Trading Tools (Part 33): Building a Rich Content Markup Documentation System for MQL5 Programs</a></li>
+          <li><a href="/en/articles/22608" data-fz-event="MQL5+Article+From+Author+Article">Trading with the MQL5 Economic Calendar (Part 12): SQLite Storage and Deduplication</a></li>
+          <li><a href="/en/articles/22597" data-fz-event="MQL5+Article+From+Author+Article">Trading with the MQL5 Economic Calendar (Part 11): Modular Canvas News Dashboard</a></li>
+          <li><a href="/en/articles/22233" data-fz-event="MQL5+Article+From+Author+Article">MQL5 Trading Tools (Part 32): Crosshair, Magnifier, and Measure Mode</a></li>
+          <li><a href="/en/articles/22495" data-fz-event="MQL5+Article+From+Author+Article">Building AI-Powered Trading Systems in MQL5 (Part 9): Creating an AI Signal Dispatcher</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+  <div class="article__last-comments" id="articleAdditional">
+    
+
+<div class="comments-preview">
+    <div class="title">
+      <span></span><b>
+ <a href="/en/forum/482040">Go to discussion</a>
+      </b>
+    </div>
+    <div>
+        
+    </div>
+</div>
+
+  </div>
+
+
+    <div class="articles-bottom-list" id="articleAdditional">
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Trading with the MQL5 Economic Calendar (Part 6): Automating Trade Entry with News Event Analysis and Countdown Timers" src="https://c.mql5.com/2/121/Trading_with_the_MQL5_Economic_Calendar_Part_6____LOGO.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/17271" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Trading with the MQL5 Economic Calendar (Part 6): Automating Trade Entry with News Event Analysis and Countdown Timers</a>
+                <div class="articles-bottom-list__desc">In this article, we implement automated trade entry using the MQL5 Economic Calendar by applying user-defined filters and time offsets to identify qualifying news events. We compare forecast and previous values to determine whether to open a BUY or SELL trade. Dynamic countdown timers display the remaining time until news release and reset automatically after a trade.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Anarchic Society Optimization (ASO) algorithm" src="https://c.mql5.com/2/89/logo-midjourney_image_15511_397_3830__1.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/15511" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Anarchic Society Optimization (ASO) algorithm</a>
+                <div class="articles-bottom-list__desc">In this article, we will get acquainted with the Anarchic Society Optimization (ASO) algorithm and discuss how an algorithm based on the irrational and adventurous behavior of participants in an anarchic society (an anomalous system of social interaction free from centralized power and various kinds of hierarchies) is able to explore the solution space and avoid the traps of local optimum. The article presents a unified ASO structure applicable to both continuous and discrete problems.</div>
+              </div>
+          </div>
+        </div>
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Price Action Analysis Toolkit Development (Part 15): Introducing Quarters Theory (I) — Quarters Drawer Script" src="https://c.mql5.com/2/121/Price_Action_Analysis_Toolkit_Development_Part_15____LOGO2.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/17250" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Price Action Analysis Toolkit Development (Part 15): Introducing Quarters Theory (I) — Quarters Drawer Script</a>
+                <div class="articles-bottom-list__desc">Points of support and resistance are critical levels that signal potential trend reversals and continuations. Although identifying these levels can be challenging, once you pinpoint them, you’re well-prepared to navigate the market. For further assistance, check out the Quarters Drawer tool featured in this article, it will help you identify both primary and minor support and resistance levels.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="MQL5 Wizard Techniques you should know (Part 55): SAC with Prioritized Experience Replay" src="https://c.mql5.com/2/120/MQL5_Wizard_Techniques_you_should_know_Part_55___LOGO.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/17254" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">MQL5 Wizard Techniques you should know (Part 55): SAC with Prioritized Experience Replay</a>
+                <div class="articles-bottom-list__desc">Replay buffers in Reinforcement Learning are particularly important with off-policy algorithms like DQN or SAC. This then puts the spotlight on the sampling process of this memory-buffer. While default options with SAC, for instance, use random selection from this buffer, Prioritized Experience Replay buffers fine tune this by sampling from the buffer based on a TD-score. We review the importance of Reinforcement Learning, and, as always, examine just this hypothesis (not the cross-validation) in a wizard assembled Expert Advisor.</div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+<div class="clear-fix"></div>
+
+<div id='wdausxxqrpvhekbwjrjlhqjghyhesrqqau' class="r6irig5txiuua4k0m r6irig5txiuua4k0m_articles-view gg88d3drb"></div>
+    
+
+<div class="hidden" id="popupRegisterLogin">
+  <div class="register-login-popup">
+    <div class="register-login-popup__header">
+      <img src="https://c.mql5.com/i/registerlandings/logo-2.png" srcset="https://c.mql5.com/i/registerlandings/logo-2_2x.png 2x" alt="MQL5 - Language of trade strategies built-in the MetaTrader 5 client terminal" loading="lazy" width="74" height="24" />
+    </div>
+    <div class="register-login-popup__content">
+      <div class="register-login-popup__desc">
+        <div class="register-login-popup__title">You are missing trading opportunities:</div>
+        <ul>
+<li>Free trading apps</li>
+<li>Over 8,000 signals for copying</li>
+<li>Economic news for exploring financial markets</li>
+</ul>
+      </div>
+      <div class="register-login-popup__forms ui">
+        <div class="register-login-popup__tabs" id="registerLoginPopupTabs">
+          <span data-id="register" id="registerLoginPopupTab_register" class="register-login-popup__tab register-login-popup__tab_active">Registration</span>
+          <span data-id="login" id="registerLoginPopupTab_login" class="register-login-popup__tab">Log in</span>
+        </div>
+        <div id="registerLoginPopupTabContent_register">
+          <div class="ui auth-form__content">
+    
+  <script type='text/javascript'>/*<![CDATA[*/ if (!window.V) var V = []; /*]]>*/</script>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/en/auth_register_short" id="PopupRegisterquickRegisterForm" onsubmit="PopupRegisterquickRegistration.OnSubmit(this,&#39;en&#39;);if(Validate(this)) Ajax.form(this,{onready:PopupRegisterquickRegistration.OnSuccessPopup,onerror:PopupRegisterquickRegistration.OnError,onbeginrequest:PopupRegisterquickRegistration.DisableInputs,onendrequest:PopupRegisterquickRegistration.EnableInputs});return(false);" enctype = "multipart/form-data"><input type="hidden" name="__signature" value="0cb7e9a8486d8609b2a1de42694cfa9a"/>
+    <div class="auth-form__inputs">
+      <input type="hidden" value="0" name="IsValidate" id="PopupRegisterIsValidate" />
+
+      <!--[if lt IE 10]><div class="note">Login:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input type="text" id="PopupRegisterusername" name="username" class="input" maxlength="32" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.CheckUserName();}" onkeyup="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.ValidateUserName(this, 'Enter a valid login');}" placeholder="Login" title="May contain Latin letters, digits, dots, dashes,underscore characters. Cannot start or end with a dot. The allowed length is 3 to 32 characters." onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisterusername'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisterusername',10,'You may use Latin characters, numbers, underscores and periods.',validate_username]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisterusername">latin characters without spaces</label>
+      </div>
+      <!--[if lt IE 10]><div class="note">Your email:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input class="input" type="email" id="PopupRegisteremail" name="email" placeholder="Your email" title="Please enter the email (it may not exceed 256 characters). For example: john@example.com" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnChange(this);}" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisteremail'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisteremail',10,'Enter a valid email address',validate_email]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisteremail">a password will be sent to this email</label>
+      </div>
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Register" />
+    </div>
+    <span id="PopupRegisterquickRegisterSubmit">
+      <input type="submit" value="Register" id="PopupRegisterquickRegisterButton"  title="Sign up and receive an email with your password" class="button button_yellow"  />
+    </span>
+    <span id="PopupRegisterquickRegisterErrorMessage" class="quick-register-error-message field-validation-error" style="text-align: center; margin-top: 16px; display: none;">
+      An error occurred
+    </span>
+</form>
+    
+</div>
+<div class="auth-social">
+  <ul class="auth-social-list" id="socialList">
+    <li><a onclick="window.fpush({name: 'MQL5+Popup+Register+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/en/auth_oauth2?provider=Google&amp;amp;return=popup&amp;amp;reg=1" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Log in With Google</a></li>
+  </ul>
+</div>
+<div class="auth-block-agree">
+  <p>
+    You agree to <a target="_blank" href="/en/about/privacy">website policy</a> and <a target="_blank" href="/en/about/terms">terms of use</a>
+  </p>
+</div>
+
+
+        </div>
+        <div id="registerLoginPopupTabContent_login" class="hidden">
+            <div class="auth-form__text">
+    If you do not have an account, please <a href="https://www.mql5.com/en/auth_register" rel="nofollow" style="vertical-align: top">register</a>
+  </div>
+<div class="ui auth-form__content auth-form__content_login" id="loginFormWrapper">
+    
+  <div id="needCookies" class="need-cookies hidden">
+    <div class="danger-box">
+      <p>Allow the use of cookies to log in to the MQL5.com website.</p>
+<p>Please enable the necessary setting in your browser, otherwise you will not be able to log in.</p>
+    </div>
+  </div>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/en/auth_login" id="loginForm" onsubmit="if(window.quickLogin){return window.quickLogin.onSubmit(this);}var result = Validate(this); if(result) { preventDoubleSubmit(this); } return result;"><input id="RedirectAfterLoginUrl" name="RedirectAfterLoginUrl" type="hidden" value="" /><input id="RegistrationUrl" name="RegistrationUrl" type="hidden" value="" /><input data-val="true" data-val-required="The ShowOpenId field is required." id="ShowOpenId" name="ShowOpenId" type="hidden" value="True" /><input id="TrackingSection" name="TrackingSection" type="hidden" value="Articles" />    <input name="ViewType" type="hidden" value="5" />
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Login" />
+    <!--[if lt IE 10]><div class="note">Your login:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <input class="input qa-login" id="Login" name="Login" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Login" title="Your login" type="text" value="" />
+      <script type='text/javascript' id='validate_Login'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Login',1,'Enter login specified when signing up']);});mqGlobal.AddOnReady(function() {V.push(['Login',10,'Email cannot be used. Enter your login please',validateLogin]);}); /*]]>*/</script>
+    </div>
+    <!--[if lt IE 10]><div class="note">Password:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <div class="input-with-show">
+        <input autocomplete="off" class="input qa-password" id="Password" name="Password" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Password" title="Enter the password please" type="password" />
+        <span class="input-with-show__icon" title="Show password" onclick="if(window.quickLogin){window.quickLogin.showPass(this, 'Show password', 'Hide password');}"></span>
+      </div>
+      <script type='text/javascript' id='validate_Password'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Password',1,'Please enter the password']);}); /*]]>*/</script>
+    </div>
+    <script type="text/javascript">
+    function validateLogin(input) {
+      console.log('validate login ' + input.value);
+      return !/^\w+([-+.'']{1,2}\w+)* @\w+([-.]\w+)*\.\w+([-.]\w+)*$/i.test(input.value);
+    }
+    </script>
+    <div class="forgot" id="loginForgotBlock"><a id="loginForgotLink" href="https://www.mql5.com/en/auth_forgotten?return=popup">Forgot your login/password?</a></div>
+    <input type="submit" class="button button_yellow qa-submit" id="loginSubmit" value="Log in" title="Enter">
+</form></div>
+
+  <div class="auth-social" id="authSocialBlock">
+    <ul class="auth-social-list" id="socialList">
+      <li><a onclick="window.fpush({name: 'MQL5+Popup+Login+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/en/auth_oauth2?provider=Google&amp;amp;return=popup" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Log in With Google</a></li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script id="popupSection" type="application/json">{"section": "Articles"}</script>
+<script id="popupTranslate" data-type="translate" type="application/json">
+{
+  "popup":
+  {
+  "EmailTitle" : "The password has been sent to {0}",
+  "EmailDescription" : "Log in using the obtained password and the login specified during the registration",
+  "SubmitButtonText" : "Activate account",
+  "RegistrationTip" : "If you have not received the password email, check the spam folder or &lt;a href={0}&gt;repeat the registration&lt;/a&gt;"
+  }
+}
+</script>
+
+    
+
+    
+
+
+    </article>
+  </div>
+
+
+
+<div aria-hidden="true" class="footer  desktop" id="footer">
+  <ul class="links  links_desktop">
+      <li id="navFooterCommunity">
+        <nav>
+          <ul>
+            <li><a href="https://web.metatrader.app/terminal?mode=demo&amp;lang=en" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Footer+Trading">Online trading / WebTerminal</a></li>
+            <li><a href="/en/code" data-fz-event="MQL5+Footer+CodeBase">Free technical indicators and robots</a></li>
+            <li><a href="/en/articles" data-fz-event="MQL5+Footer+Articles">Articles about programming and trading</a></li>
+            <li><a href="/en/job" data-fz-event="MQL5+Footer+Job">Order trading robots on the Freelance</a></li>
+            <li><a href="/en/market" data-fz-event="MQL5+Footer+Market">Market of Expert Advisors and applications&#x9;</a></li>
+            <li><a href="/en/signals" data-fz-event="MQL5+Footer+Signals">Follow forex signals</a></li>
+            <li><a href="/en/vps" data-fz-event="MQL5+Footer+VPS">Low latency forex VPS</a></li>
+            <li><a href="/en/forum" data-fz-event="MQL5+Footer+Forum">Traders forum</a></li>
+            <li><a href="/en/blogs" data-fz-event="MQL5+Footer+Blogs">Trading blogs</a></li>
+            <li><a rel="nofollow" href="/en/charts" data-fz-event="MQL5+Footer+Charts">Charts</a></li>
+            <li><a href="/en/widgets" data-fz-event="MQL5+Footer+Widgets">Free widgets</a></li>
+          </ul>
+        </nav>
+      </li>
+      <li id="navFooterMt5">
+        <nav>
+          <ul>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> Trading Platform</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/releasenotes" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> latest updates</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/news" data-fz-event="MQL5+Footer+MetaTrader+5">News, implementations and technology</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> User Manual</a></li>
+            <li><a href="/en/docs" data-fz-event="MQL5+Footer+Docs">MQL5 language of trading strategies</a></li>
+            <li><a rel="nofollow noopener" href="https://cloud.mql5.com" data-fz-event="MQL5+Footer+Cloud">MQL5 Cloud Network</a></li>
+            <li><a rel="noopener" href="https://forge.mql5.io/?lang=en" data-fz-event="MQL5+Footer+Forge" target="_blank">MQL5 Algo Forge</a></li>
+              <li><a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Footer">Download <span class="nobr">MetaTrader 5</span></a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help/start_advanced/installation" data-fz-event="MQL5+Footer+MetaTrader+5">Install Platform</a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help/start_advanced/deinstallation" data-fz-event="MQL5+Footer+MetaTrader+5">Uninstall Platform</a></li>
+          </ul>
+        </nav>
+
+      </li>
+    <li id="navFooterWebsite">
+        <nav>
+          <ul>
+            <li><a rel="nofollow" href="/en/about" data-fz-event="MQL5+Footer+About">About</a></li>
+              <li><a href="/en/wall" data-fz-event="MQL5+Footer+Wall">Timeline</a></li>
+            <li><a rel="nofollow" href="/en/about/terms" data-fz-event="MQL5+Footer+About">Terms and Conditions</a></li>
+            <li><a rel="nofollow" href="/en/about/autopayments" data-fz-event="MQL5+Footer+About">Recurring Payment Agreement</a></li>
+            <li><a rel="nofollow" href="/en/about/agencyagreement" data-fz-event="MQL5+Footer+About">Agency Agreement – Offer</a></li>
+            <li><a rel="nofollow" href="/en/about/privacy" data-fz-event="MQL5+Footer+About">Privacy and Data Protection Policy</a></li>
+            <li><a rel="nofollow" href="/en/about/cookies" data-fz-event="MQL5+Footer+About">Cookies Policy</a></li>
+            <li>
+                <a rel="nofollow" href="/en/contact" data-fz-event="MQL5+Footer+Contacts">Contacts and requests</a>
+            </li>
+          </ul>
+        </nav>
+    </li>
+
+      <li>
+        <div class="footer__products">
+          <div class="footer__product">
+            <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com" class="footer__product-name">MetaTrader 5</a>
+            <div class="footer__product-links">
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon windows" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for Windows</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/MetaTrader5.pkg.zip?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon macos" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for MacOS</div></a>
+            <a rel="nofollow noopener" href="https://www.mql5.com/en/articles/625?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon linux" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for Linux</div></a>
+            <a rel="nofollow noopener" href="https://web.metatrader.app/terminal?mode=demo&amp;lang=en" class="icon web"><div  class="footer__product-link-hint footer__product-link-hint-short">Open MetaTrader 5 WebTerminal</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/ios?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=en" class="icon ios" data-fz-event="MetaTrader+5+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/jhZn8Ed1I1d.png)">Scan to install from App Store</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=en" class="icon android" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/kiF2Io6W-9d.png)">Scan to install from Google Play</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon huawei" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ZRt&#x2B;zI1l&#x2B;8O.png)">Scan to install from Huawei AppGallery</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon ark" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/L0Q9oag&#x2B;3eE.png)">Scan to get Android APK file</div></a>
+            </div>
+          </div>
+          <div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com/en/news/2270" class="footer__product-name">MQL5 Channels</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon ios" data-fz-event="MQL5+Channels+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/bZVfOJnYpcO.png)">Scan to install from App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon android" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/32MJFgw7BVs.png)">Scan to install from Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Su&#x2B;fe4n374e.png)">Scan to install from Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mql5channels/mql5channels.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/G6Mg4NfCPzO.png)">Scan to get Android APK file</div></a>
+              </div>
+            </div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.tradays.com/en/download?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MQL5+Footer+Download+Tradays" class="footer__product-name">Economic Calendar</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon ios" data-fz-event="Tradays+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CpD&#x2B;mhIw-1E.png)">Scan to install from App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon android" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Bgyx8UcmYap.png)">Scan to install from Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CrS7bbDAdAO.png)">Scan to install from Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/tradays/tradays.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/VZi8YPIb2op.png)">Scan to get Android APK file</div></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__networks">
+          <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow" title="Facebook"><i class="icons-networks icons-networks_fb"></i></a>
+          <a href="https://t.me/mql5dev" target="_blank" rel="nofollow" title="Telegram"><i class="icons-networks icons-networks_tg"></i></a>
+          <a href="https://x.com/mql5com" target="_blank" rel="nofollow" title="X (Twitter)"><i class="icons-networks icons-networks_tw"></i></a>
+          <a href="https://www.youtube.com/@MetaQuotesOfficial" target="_blank" rel="nofollow" title="YouTube"><i class="icons-networks icons-networks_yt"></i></a>
+          <a href="https://www.linkedin.com/company/mql5" target="_blank" rel="nofollow" title="LinkedIn"><i class="icons-networks icons-networks_linkedin"></i></a>
+          <span>Subscribe to algotrading news</span>
+        </div>
+  
+        <div class="footer__other">
+          <div class="footer__not-a-broker">Not a broker, no real trading accounts</div>
+          <div class="copyright">35 Dodekanisou str, Germasogeia, 4043,&nbsp;Limassol,&nbsp;Cyprus</div>
+          <div class="copyright">Copyright 2000-2026, <span class="nobr">MetaQuotes Ltd</span></div>
+        </div>
+      </li>
+  </ul>
+</div>
+
+
+
+<div class="shadow-layer" id="layer"></div>
+    
+
+  <div class="b-fixed-mt" id="bFixedMt" style="display: none;">
+    
+  </div>
+
+
+<script type='text/javascript'>
+		(function (a, e, f, g, b, c, d) { a[b] || (a.FintezaCoreObject = b, a[b] = a[b] || function () { (a[b].q = a[b].q || []).push(arguments) }, a[b].l = 1 * new Date, c = e.createElement(f), d = e.getElementsByTagName(f)[0], c.async = !0, c.defer = !0, c.src = g, d && d.parentNode && d.parentNode.insertBefore(c, d)) })
+      (window, document, "script", "/ff/core.js", "fz");
+		window.fz("register", "website", {
+      id: "sqjxkxkswybhifrohpyooonwgbvsfzmayq",
+			trackLinks: true
+		});
+        mqGlobal.AddOnReady(function () { Mql5Cookie.init('mql5.com', '5091323240279209522'); });
+mqGlobal.AddOnReady(function(){if(!window.Pocket){window.Pocket=new PocketManager();}});mqGlobal.AddOnReady(function(){if(!window.translateManager){window.translateManager=new Translate(undefined,'Error: failed to translate. Please try again later.');}if(document.querySelectorAll){var translateElements=document.querySelectorAll(".translateMenu");if(translateElements){var i=0,count=translateElements.length;for(i;i<count;i++){(function(i){var contentid=dataset(translateElements[i],"contentid"),sourcelang=dataset(translateElements[i],"sourcelang"),targetlang=dataset(translateElements[i],"targetlang"),moduleid=parseInt(dataset(translateElements[i],"moduleid")),typeid=parseInt(dataset(translateElements[i],"typeid")),entityid=parseInt(dataset(translateElements[i],"entityid"));Core.AddHandler(translateElements[i],"mouseover",function(){return translateManager.SetMenu(this,contentid,sourcelang,targetlang,moduleid,typeid,entityid);});})(i);}}}});window.fz("show","wdausxxqrpvhekbwjrjlhqjghyhesrqqau");window.mqGlobal.AddOnLoad(function(){window.fpush('MQL5+Article+Open');Articles.CheckOnScrollDown();});mqGlobal.AddOnReady(function(){window.PopupRegisterquickRegistration=new QuickRegistration('PopupRegister','Popup+Register','Articles');});function validate_username(input){var reg=/^([a-z0-9]){1}([\-._a-z0-9]){1,30}([\-_a-z0-9]){1}$/i,value=input.value,result=true;if(reg.test(value)){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Login',unit:'section',value:'Articles'});}return result;}function validate_email(input){var reg=/^\w+([-+.'']{1,2}\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/i,value=input.value,result=true,length_value=value.length;if(reg.test(value)&&length_value>=1&&length_value<=40){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Email',unit:'section',value:'Articles'});}return result;};mqGlobal.AddOnReady(function(){var username=$('PopupRegisterusername'),email=$('PopupRegisteremail');if(username)username.value='';if(email)email.value='';});mqGlobal.AddOnReady(function(){window.quickLogin=new QuickLogin('Popup+Login','Articles');});mqGlobal.AddOnLoad(function(){window.showLoginRegisterPopupAtEnd();});mqGlobal.AddOnLoad(function(){window.tooltipUserInfo.init();});mqGlobal.AddOnReady(function(){{window.initHeaderSearch('','https://www.mql5.com/en/search');}});</script><script type="text/javascript">mqGlobal.AddOnReady(function(){window.initSuggestions("headerSearchKeyword","en","https://search.mql5.com/api/query","https://www.mql5.com/en/users_search/suggestion");});window.fz("show","vgckrufggwxdtfscpyalmenexmvhljduja");mqGlobal.AddOnReady(function(){window.floatVerticalPanelNode=FloatVerticalPanel('This website uses cookies. Learn more about our <a href="/en/about/cookies">Cookies Policy</a>.','cookie_accept');});							if (typeof Attach !== "undefined")
+			Attach.setAcceptFilter(".zip, .txt, .log, .mqh, .ex5, .mq5, .mq4, .mqproj, .ex4, .mt5, .set, .tpl, .cl, .py, .sqlite, .csv, .ini, .ipynb, .onnx, .gif, .png, .jpg, .jpeg, .mp4, .webm");
+	</script>
+
+<script type="application/ld&#x2B;json">
+		[
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"url": "https://www.mql5.com",
+				"logo": "https://c.mql5.com/i/community/logo_mql5-2.png",
+				"sameAs": [
+					"https://www.facebook.com/mql5.community",
+					"https://www.x.com/mql5com",
+					"https://www.youtube.com/user/MetaQuotesOfficial"
+				 ]
+			}
+		
+, 
+{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"Forum","description":"Discussions of trading strategies and algorithmic trading. MQL5.community  the largest forex forum","url":"https://www.mql5.com/en/forum","children":[]},{"@type":"SiteNavigationElement","position":2,"name":"Market","description":"MetaTrader Market - a Market of trading robots, indicators, trading books and magazines","url":"https://www.mql5.com/en/market","children":[]},{"@type":"SiteNavigationElement","position":3,"name":"Signals","description":"Social trading, copy trading and account monitoring with MetaTrader - Trading Signals on MQL5.com","url":"https://www.mql5.com/en/signals","children":[]},{"@type":"SiteNavigationElement","position":4,"name":"Freelance","description":"Order trading robots, technical indicators and algorithmic trading applications. Forex jobs. Freelance on MQL5.com. Hire MetaTrader experts and specialists","url":"https://www.mql5.com/en/job","children":[]},{"@type":"SiteNavigationElement","position":5,"name":"Quotes","description":"","url":"https://www.mql5.com/en/quotes/overview","children":[]},{"@type":"SiteNavigationElement","position":6,"name":"MetaTrader","description":"","url":"https://www.metatrader.com","children":[]},{"@type":"SiteNavigationElement","position":7,"name":"WebTerminal","description":"WebTerminal for the MetaTrader trading platform. Online forex trading.","url":"https://web.metatrader.app/terminal?mode=demo","children":[]},{"@type":"SiteNavigationElement","position":8,"name":"Calendar","description":"","url":"https://www.mql5.com/en/economic-calendar","children":[]},{"@type":"SiteNavigationElement","position":9,"name":"VPS","description":"","url":"https://www.mql5.com/en/vps","children":[]},{"@type":"SiteNavigationElement","position":10,"name":"Articles","description":"","url":"https://www.mql5.com/en/articles","children":[]},{"@type":"SiteNavigationElement","position":11,"name":"CodeBase","description":"Download trading robots, technical indicators and scripts with source code - MQL5 Code Base for MetaTrader 5","url":"https://www.mql5.com/en/code","children":[]},{"@type":"SiteNavigationElement","position":12,"name":"Algo Forge","description":"","url":"https://forge.mql5.io","children":[]},{"@type":"SiteNavigationElement","position":13,"name":"Documentation","description":"MetaQuotes Language 5 (MQL5) Reference - Documentation on MQL5.com","url":"https://www.mql5.com/en/docs","children":[]}]}		
+,
+{"@context":"https://schema.org","@type":"TechArticle","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.mql5.com/en/articles/17239"},"headline":"Automating Trading Strategies in MQL5 (Part 9): Building an Expert Advisor for the Asian Breakout Strategy","image":["https://c.mql5.com/2/119/Screenshot_2025-02-16_121954.png","https://c.mql5.com/2/119/Screenshot_2025-02-16_132442.png","https://c.mql5.com/2/119/Screenshot_2025-02-16_134752.png","https://c.mql5.com/2/119/ASIAN_BOX_GIF.gif","https://c.mql5.com/2/119/Screenshot_2025-02-16_143919.png","https://c.mql5.com/2/119/Screenshot_2025-02-16_144428.png","https://c.mql5.com/2/119/Screenshot_2025-02-16_144534.png"],"datePublished":"2025-02-25T10:08:35+00:00Z","dateModified":"2025-02-24T13:34:40+00:00Z","author":{"@type":"Person","name":"Allan Munene Mutiiria","url":"https://www.mql5.com/en/users/29210372"},"editor":{"@type":"Organization","name":"MetaQuotes","url":"https://www.mql5.com/en/users/metaquotes","address":{"@type":"PostalAddress","addressCountry":"CY"}},"publisher":{"@type":"Organization","name":"MQL5 Community","url":"https://www.mql5.com","logo":{"@type":"ImageObject","url":"https://c.mql5.com/i/community/logo_mql5-2.png"}},"description":"In this article, we build an Expert Advisor in MQL5 for the Asian Breakout Strategy by calculating the session\u0027s high and low and applying trend filtering with a moving average. We implement dynamic object styling, user-defined time inputs, and robust risk management. Finally, we demonstrate backtesting and optimization techniques to refine the program."}
+,
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":"https://www.mql5.com/en/articles","name":"Articles"},{"@type":"ListItem","position":2,"item":"https://www.mql5.com/en/articles/mt5","name":"MetaTrader 5"},{"@type":"ListItem","position":3,"item":"https://www.mql5.com/en/articles/mt5/trading","name":"Trading"}]}
+
+		]
+	</script>
+</body>
+</html>

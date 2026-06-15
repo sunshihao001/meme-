@@ -1,0 +1,1038 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+
+  <meta name="description" content="Инвестор, торгующий CFD на акциях, сталкивается с проблемой ложных пробоев уровней на м5 и ищет индикаторы или стратегии для минимизации рисков. Он рассказывает о своей стратегии, рисках и потенциальных прибылях, а также выражает желание обсудить методы и поделиться опытом.">
+  <meta property="og:url" content="https://www.mql5.com/ru/forum/364561">
+  <meta property="og:title" content="&quot;Индикатор&quot; ложного пробоя уровня...">
+  <meta property="og:description" content="Инвестор, торгующий CFD на акциях, сталкивается с проблемой ложных пробоев уровней на м5 и ищет индикаторы или стратегии для минимизации рисков. Он рассказывает о своей стратегии, рисках и потенциальных прибылях, а также выражает желание обсудить методы и поделиться опытом.">
+      <meta property="og:image" content="https://www.mql5.com/ru/forum/images/og/fb/364561">
+      <meta property="og:image:secure_url" content="https://www.mql5.com/ru/forum/images/og/fb/364561">
+            <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@mql5com">
+  <meta name="twitter:image" content="https://www.mql5.com/ru/forum/images/og/fb/364561">
+  <meta name="theme-color" content="#4a76b8">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-config" content="none">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta property="qc:admins" content="36367170677651456375">
+  <meta property="wb:webmaster" content="073d7690269bcd81">
+  <link rel="shortcut icon" href="https://c.mql5.com/i/favicon4.ico">
+  <link rel="dns-prefetch" href="https://c.mql5.com">
+  <link href="https://c.mql5.com/styles/core.444bc25de4c9131a69fedfe5ac42a082.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/all.266d64b83529847f568747dd160d42b0.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/forum.0d8462842509348c7e5f0d6151960375.css" type="text/css" rel="stylesheet" media="all">
+  <link href="/ru/forum/rss" rel="alternate" type="application/rss+xml" title="Форум по трейдингу, автоматическим торговым системам и тестированию торговых стратегий для MetaTrader 5">
+  <link href="/ru/forum/general/rss" rel="alternate" type="application/rss+xml" title="Общее обсуждение - Форум по трейдингу, автоматическим торговым системам и тестированию торговых стратегий для MetaTrader 5">
+  <link rel="canonical" href="https://www.mql5.com/ru/forum/364561">
+  <title>&quot;Индикатор&quot; ложного пробоя уровня... - Общее обсуждение - Форум алго-трейдеров MQL5</title>
+
+
+
+<script type="text/javascript">
+  !function(){window.mqGlobal={};var t=!1,n=!1,e=[],o=[],i=[];function d(t){var n;for(n=0;n<t.length;n+=1)t[n]()}function c(){t||(t=!0,d(e),d(o),o=[],e=[])}function a(){c(),n||(n=!0,d(i),i=[])}if(mqGlobal.AddOnReady=function(n,i){t?n(document):i?e.push(n):o.push(n)},mqGlobal.AddOnLoad=function(t){n?t(document):i.push(t)},mqGlobal.AddOnActiveWindowChange=function(t){this._onvisibility||(this._onvisibility=[]),this._onvisibility[this._onvisibility.length]=t},document.addEventListener)document.addEventListener("DOMContentLoaded",c,!1),window.addEventListener("load",a,!1);else if(document.attachEvent&&(document.attachEvent("onreadystatechange",(function(){switch(document.readyState){case"interactive":c();break;case"complete":a()}})),window.attachEvent("onload",a),document.documentElement.doScroll&&window==window.top)){!function n(){if(!t&&document.body)try{document.documentElement.doScroll("left"),c()}catch(t){setTimeout(n,0)}}()}}();
+  mqGlobal.CookieDomain = ".mql5.com";
+  mqGlobal.Language = 'ru';
+  mqGlobal.IsMobile = false;
+  mqGlobal.ClearRteStorage = function (e) { if (window.GStorage || (window.GStorage = globalStorage()), window.GStorage.supported) try { var o = e; window.GStorage.getItem("rte_autosave_uid", function (e, t) { t == o && (window.GStorage.removeItem("rte_autosave_text"), window.GStorage.removeItem("rte_autosave_date"), window.GStorage.removeItem("rte_autosave_uid")) }) } catch (e) { } };
+</script>
+  
+
+    <script src="https://c.mql5.com/js/all.c09fd283bed20d28a52c95cd70a12a27.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/vendor.1be6e9a4a90b28525f93c4c69a5058a1.js" type="text/javascript" defer="defer"></script>
+
+
+</head>
+
+<body id="cover" class="cover">
+
+
+  <nav class="head">
+    <a href="https://www.mql5.com/ru" class="head__logo" title="MQL5 - Язык торговых стратегий для клиентского терминала MetaTrader 5"></a>
+      <div class="head__content">
+        <div class="main-menu" id="mainmenu">
+          
+                    <ul class="main-menu__top-level" id="menuTopLevel">
+                    <li class="main-menu__selected"><a href="/ru/forum" data-fz-event="MQL5+Menu+Forum">Форум</a></li>
+                    <li><a href="/ru/market" data-fz-event="MQL5+Menu+Market">Маркет</a></li>
+                    <li><a href="/ru/signals" data-fz-event="MQL5+Menu+Signals">Сигналы</a></li>
+                    <li><a href="/ru/job" data-fz-event="MQL5+Menu+Job">Фриланс</a></li>
+                    <li><a href="/ru/vps" data-fz-event="MQL5+Menu+VPS">VPS</a></li>
+                    <li><a href="/ru/quotes/overview" data-fz-event="MQL5+Menu+Overview">Котировки</a></li>
+                    <li><a href="https://www.metatrader.com/ru" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+MetaTrader">MetaTrader</a></li>
+                  </ul><ul class="main-menu__second-level" id="menuSecondLevel">
+                    <li><a href="/ru/articles" data-fz-event="MQL5+Menu+Articles"><img src="https://c.mql5.com/i/menu/icon-articles4.svg" alt="" width="16" height="16"/>Статьи</a></li>
+                    <li><a href="/ru/code" data-fz-event="MQL5+Menu+CodeBase"><img src="https://c.mql5.com/i/menu/icon-code4.svg" alt="" width="16" height="16"/>CodeBase</a></li>
+                    <li><a href="https://forge.mql5.io/?lang=ru-RU" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+AlgoForge"><img src="https://c.mql5.com/i/menu/icon-algoforge4.svg" alt="" width="16" height="16"/>Algo Forge</a></li>
+                    <li><a href="/ru/docs" data-fz-event="MQL5+Menu+Docs"><img src="https://c.mql5.com/i/menu/icon-docs4.svg" alt="" width="16" height="16"/>Документация</a></li>
+                    <li><a href="/ru/book" data-fz-event="MQL5+Menu+Book"><img src="https://c.mql5.com/i/menu/icon-book4.svg" alt="" width="16" height="16"/>Учебник по алготрейдингу</a></li>
+                    <li><a href="/ru/neurobook" data-fz-event="MQL5+Menu+Neurobook"><img src="https://c.mql5.com/i/menu/icon-neurobook4.svg" alt="" width="16" height="16"/>Учебник по нейросетям</a></li>
+                    <li><a href="/ru/economic-calendar" data-fz-event="MQL5+Menu+Economic+Calendar"><img src="https://c.mql5.com/i/menu/icon-economic-calendar4.svg" alt="" width="16" height="16"/>Календарь</a></li>
+                    <li><a href="https://web.metatrader.app/terminal?mode=demo&lang=ru" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Menu+Trading"><img src="https://c.mql5.com/i/menu/icon-trading4.svg" alt="" width="16" height="16"/>Вебтерминал</a></li>
+                    <li class="main-menu__mobile"><a href="/ru/about">О проекте</a></li>
+                    <li class="main-menu__second-tools"><a rel="noopener" target="_blank" href="https://t.me/mql5ru" title="Подпишитесь и узнавайте о популярных статьях и кодах" class="button-mt" data-vars-fz="Algo+Trading+Channel+Submenu"><img width="18" height="18" src="https://c.mql5.com/i/sidebar/tg.svg" alt="" loading="lazy">Канал об алготрейдинге</a></li>
+                    </ul>
+        </div>
+          <div class="main-menu__active">
+            <a id="mainMenuSelected" href="#">
+              <span class="main-menu__primary">Форум</span><span class="main-menu__secondary">Разделы</span>
+            </a>
+          </div>
+<form action="https://www.mql5.com/ru/search" onsubmit="return false;" autocomplete="off" id="headerSearchForm" class="header-search" method="post">
+<button type="button" id="headerSearchButton" title="Поиск" class="header-search__button"></button><div class="header-search__input"><input name="keyword" type="text" enterkeyhint="search" title="Введите текст для поиска" placeholder="Поиск" id="headerSearchKeyword"/><label for="headerSearchKeyword" class="header-search__placeholder">Нажмите <span>/</span> для поиска: @user, $symbol, ...</label><button id="headerSearchSubmit" class="header-search__submit"></button></div><button type="button" id="headerSearchClean" title="Закрыть" class="header-search__clean"></button></form>        <input class="blurHandler" id="mainMenuBlurHandler" type="checkbox">
+      </div>
+      <div class="head__toolbar" id="headerToolbar">
+          <div class="container loginRegister">
+            <nav>
+              <ul id="loginRegisterButtons"><li><a class="login" title="Авторизуйтесь. Поддерживается OpenID-авторизация" href="https://www.mql5.com/ru/auth_login" rel="nofollow" data-fz-event="MQL5+Menu+Siginin">Вход</a></li><li><a class="registration ru" title="Зарегистрируйтесь" href="https://www.mql5.com/ru/auth_register" rel="nofollow" data-fz-event="MQL5+Menu+Register" onclick="window.fpush('MQL5+Button+Click');">Создать аккаунт</a></li></ul>
+            </nav>
+          </div>
+        <div class="toggle-button" id="sidebarToggleButton">
+          <i></i>
+        </div>
+
+        <div class="group-menu" id="groupMenu">
+
+
+          <div class="container lang-menu-container">
+            <div id="langMenuContainer" class="lang-menu">
+              <input class="blurHandler" id="langmenuBlurHandler" type="checkbox">
+              <nav>
+                <ul class="lang-menu__list" id="langmenu">
+                  <li class="lang-menu__list-item"><a href="/en/forum" aria-label="English (English)"><i class="icons-languages icons-languages_en"></i><span>English</span></a></li>
+<li class="lang-menu__list-item lang-menu__list-item_selected"><a href="/ru/forum" aria-label="Русский (Russian)"><i class="icons-languages icons-languages_ru"></i><span>Русский</span></a></li>
+<li class="lang-menu__list-item"><a href="/zh/forum" aria-label="中文 (Chinese)"><i class="icons-languages icons-languages_zh"></i><span>中文</span></a></li>
+<li class="lang-menu__list-item"><a href="/es/forum" aria-label="Español (Spanish)"><i class="icons-languages icons-languages_es"></i><span>Español</span></a></li>
+<li class="lang-menu__list-item"><a href="/pt/forum" aria-label="Português (Portuguese)"><i class="icons-languages icons-languages_pt"></i><span>Português</span></a></li>
+<li class="lang-menu__list-item"><a href="/ja/forum" aria-label="日本語 (Japanese)"><i class="icons-languages icons-languages_ja"></i><span>日本語</span></a></li>
+<li class="lang-menu__list-item"><a href="/de/forum" aria-label="Deutsch (German)"><i class="icons-languages icons-languages_de"></i><span>Deutsch</span></a></li>
+<li class="lang-menu__list-item"><a href="/ko/forum" aria-label="한국어 (Korean)"><i class="icons-languages icons-languages_ko"></i><span>한국어</span></a></li>
+<li class="lang-menu__list-item"><a href="/fr/forum" aria-label="Français (French)"><i class="icons-languages icons-languages_fr"></i><span>Français</span></a></li>
+<li class="lang-menu__list-item"><a href="/it/forum" aria-label="Italiano (Italian)"><i class="icons-languages icons-languages_it"></i><span>Italiano</span></a></li>
+<li class="lang-menu__list-item"><a href="/tr/forum" aria-label="Türkçe (Turkish)"><i class="icons-languages icons-languages_tr"></i><span>Türkçe</span></a></li>
+
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+  </nav>
+
+
+  <article class="articles-content splashed">
+    
+
+
+<div class="top-band__topic">
+  <h1 class="path title-min" id="forumTitle">&quot;Индикатор&quot; ложного пробоя уровня...</h1>
+  <div style="clear: both;"></div>
+
+  <div class="forum-topic__block-controls">
+    <nav class="left-part">
+      <div class="shortlinks">
+        <a href="/ru/forum" class="forum-root" title="На главную страницу"></a><a href="/ru/forum/general" class="forum-category" title="Категория: Общее обсуждение"></a>
+      </div>
+
+      <div class="paginatorEx">
+<a class="selected" href="/ru/forum/364561">1</a><a href="/ru/forum/364561/page2">2</a><a href="/ru/forum/364561/page3">3</a>      </div>
+
+    </nav>
+
+      <div class="ui topic__buttons-area">
+          <a class="button button_green button_with-icon" href="javascript:void(false);" onclick="if(window.registerLoginPopup){ window.registerLoginPopup.show(); }">
+            <i class="icons-buttons icons-buttons_new-comment"></i>Новый комментарий
+          </a>
+      </div>
+  </div>
+</div>
+
+<div class="topic" id="forumTopicComments">
+
+      <div class="comment-box comments forum-topic__comments">
+          <aside class="comment-side user">
+<div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2020/11/5FB66370-C4ED.jpeg" srcset="https://c.mql5.com/avatar/2020/11/5FB66370-C4ED_big.jpeg 2x" alt="dmitry.a.m" title="dmitry.a.m" data-user-login="dmitry.a.m" loading="lazy" width="60" height="60"></div></div><span title="Рейтинг">127</span>
+          </aside>
+        <div class="text">
+          <header>
+            <span id="author_info_topic364561"
+                  style="font-weight: bold;">
+              <span>
+                <a class="author banned_user" itemprop="url"  href="/ru/users/dmitry.a.m">dmitry.a.m</a>
+              </span>
+            </span>
+
+            <span
+              class="comment__date"
+              id="date_364561"
+              data-date-create="2021.03.09 19:30"
+              data-date-modify=""
+              title="Создано">
+              <time datetime="2021-03-09T19:30Z" itemprop="datePublished" content="2021-03-09T19:30Z">2021.03.09 19:30</time>
+            </span>
+
+
+
+              &nbsp;
+          </header>
+
+            <div
+              class="content"
+              id="contenttopic364561">
+              <p>Приветствую всех! Хорошего торгового вечера!</p> <p>Коллеги, перешел с валют на CFD на акции. Скальплю по м5 на пробой уровней, линий и т.д. Вполне успешно, если бы ни одно но... Часто случаются ложные пробои уровня и когда торгуешь на м5 - это критично. Кто может подсказать какие-нибудь индикаторы, стратегии, чтобы минимизировать возможность входа в сделку при ложном пробое на м5. Очень нужно... </p> <p>Если моя стратегия сработает, с помогшим думаю поделюсь всеми остальными "секретными фишками" вроде брокера, портфеля и т.д.</p> <p>Заранее всем спасибо!)</p>
+            </div>
+
+              <div>
+                <div class="similarTopics" id="similarTopics">
+                  <ul>
+                      <li>
+                        <span class="ico"></span><a data-fz-event="MQL5+Similar+Topic" target="_blank" rel="noopener" href="https://www.mql5.com/ru/forum/364720">Как заработать? Грааль...</a>
+                      </li>
+                      <li>
+                        <span class="ico"></span><a data-fz-event="MQL5+Similar+Topic" target="_blank" rel="noopener" href="https://www.mql5.com/ru/forum/422669/38657038#comment_38657038">Мультитаймфреймовые индикаторы</a>
+                      </li>
+                      <li>
+                        <span class="ico"></span><a data-fz-event="MQL5+Similar+Topic" target="_blank" rel="noopener" href="https://www.mql5.com/ru/forum/422796/38830417#comment_38830417">Алерт по Ичимоку</a>
+                      </li>
+                  </ul>
+                </div>
+              </div>
+          <div class="options">
+            
+
+          </div>
+        </div>
+
+      </div>
+
+  <div class="forum-topic__comments">
+    
+
+
+  
+<div class="comments" id="comments">
+        <div class="comment-box" id="comment_21219919">
+
+            <aside class="comment-side user">
+              <div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2020/11/5FB66370-C4ED.jpeg" srcset="https://c.mql5.com/avatar/2020/11/5FB66370-C4ED_big.jpeg 2x" alt="dmitry.a.m" title="dmitry.a.m" data-user-login="dmitry.a.m" loading="lazy" width="60" height="60"></div></div><span title="Рейтинг">127</span>
+
+            </aside>
+
+          <div class="text">
+	          <header>
+		          <span id="author_info_21219919"
+		                style="font-weight: bold;">
+			          <span>
+				          <a class="author banned_user" itemprop="url"  href="/ru/users/dmitry.a.m">dmitry.a.m</a>
+			          </span>
+		          </span>
+		          <span class="comment__date" id="date_21219919" data-date-create="2021.03.09 21:19" data-date-modify="" title="Создано">
+                <time datetime="2021-03-09T21:19Z" itemprop="datePublished" content="2021-03-09T21:19Z">2021.03.09 21:19</time>
+		          </span>
+
+
+
+<a class="permalink" title="Постоянная ссылка" href="/ru/forum/364561#comment_21219919" rel="nofollow" onclick="return false;">#1</a>                &nbsp;
+	          </header>
+
+	          <div
+		          class="content"
+		          id="content21219919">
+		          <p>Буду рад любому совету...</p>
+	          </div>
+
+
+
+	          <div class="options">
+		          
+
+	          </div>
+          </div>
+        </div>
+        <div class="comment-box" id="comment_21220849">
+
+            <aside class="comment-side user">
+              <div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/avatar_na2.png" srcset="https://c.mql5.com/avatar/avatar_na2_big.png 2x" alt="Dmitry Bogdanov" title="Dmitry Bogdanov" data-user-login="DmitryBogdanov" loading="lazy" width="60" height="60"></div></div><span title="Рейтинг">30</span>
+
+            </aside>
+
+          <div class="text">
+	          <header>
+		          <span id="author_info_21220849"
+		                style="font-weight: bold;">
+			          <span>
+				          <a class="author" itemprop="url"  href="/ru/users/dmitrybogdanov">Dmitry Bogdanov</a>
+			          </span>
+		          </span>
+		          <span class="comment__date" id="date_21220849" data-date-create="2021.03.09 22:11" data-date-modify="" title="Создано">
+                <time datetime="2021-03-09T22:11Z" itemprop="datePublished" content="2021-03-09T22:11Z">2021.03.09 22:11</time>
+		          </span>
+
+
+
+<a class="permalink" title="Постоянная ссылка" href="/ru/forum/364561#comment_21220849" rel="nofollow" onclick="return false;">#2</a>                &nbsp;
+	          </header>
+
+	          <div
+		          class="content"
+		          id="content21220849">
+		          <div class="fquote"> <strong><span style="color:#42639C;">dmitry.a.m</span>:</strong><br/> <p>Буду рад любому совету...</p> </div> <p>Ну, например с помощью ATR. Если цена прошла ATR периода - вероятность разворота (пропорционально периоду) становится выше продолжения.</p>
+	          </div>
+
+
+
+	          <div class="options">
+		          
+
+	          </div>
+          </div>
+        </div>
+        <div class="comment-box" id="comment_21221402">
+
+            <aside class="comment-side user">
+              <div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2020/11/5FB66370-C4ED.jpeg" srcset="https://c.mql5.com/avatar/2020/11/5FB66370-C4ED_big.jpeg 2x" alt="dmitry.a.m" title="dmitry.a.m" data-user-login="dmitry.a.m" loading="lazy" width="60" height="60"></div></div><span title="Рейтинг">127</span>
+
+            </aside>
+
+          <div class="text">
+	          <header>
+		          <span id="author_info_21221402"
+		                style="font-weight: bold;">
+			          <span>
+				          <a class="author banned_user" itemprop="url"  href="/ru/users/dmitry.a.m">dmitry.a.m</a>
+			          </span>
+		          </span>
+		          <span class="comment__date" id="date_21221402" data-date-create="2021.03.09 22:41" data-date-modify="" title="Создано">
+                <time datetime="2021-03-09T22:41Z" itemprop="datePublished" content="2021-03-09T22:41Z">2021.03.09 22:41</time>
+		          </span>
+
+
+
+<a class="permalink" title="Постоянная ссылка" href="/ru/forum/364561#comment_21221402" rel="nofollow" onclick="return false;">#3</a>                &nbsp;
+	          </header>
+
+	          <div
+		          class="content"
+		          id="content21221402">
+		          <div class="fquote"> <strong><span style="color:#42639C;">DmitryBogdanov</span>:</strong><br/> <p>Ну, например с помощью ATR. Если цена прошла ATR периода - вероятность разворота (пропорционально периоду) становится выше продолжения.</p> </div> <p>Я немного не понял, можно пожалуйста подробнее?</p>
+	          </div>
+
+
+
+	          <div class="options">
+		          
+
+	          </div>
+          </div>
+        </div>
+        <div class="comment-box" id="comment_21221439">
+
+            <aside class="comment-side user">
+              <div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2020/11/5FB66370-C4ED.jpeg" srcset="https://c.mql5.com/avatar/2020/11/5FB66370-C4ED_big.jpeg 2x" alt="dmitry.a.m" title="dmitry.a.m" data-user-login="dmitry.a.m" loading="lazy" width="60" height="60"></div></div><span title="Рейтинг">127</span>
+
+            </aside>
+
+          <div class="text">
+	          <header>
+		          <span id="author_info_21221439"
+		                style="font-weight: bold;">
+			          <span>
+				          <a class="author banned_user" itemprop="url"  href="/ru/users/dmitry.a.m">dmitry.a.m</a>
+			          </span>
+		          </span>
+		          <span class="comment__date" id="date_21221439" data-date-create="2021.03.09 22:47" data-date-modify="" title="Создано">
+                <time datetime="2021-03-09T22:47Z" itemprop="datePublished" content="2021-03-09T22:47Z">2021.03.09 22:47</time>
+		          </span>
+
+
+
+<a class="permalink" title="Постоянная ссылка" href="/ru/forum/364561#comment_21221439" rel="nofollow" onclick="return false;">#4</a>                &nbsp;
+	          </header>
+
+	          <div
+		          class="content"
+		          id="content21221439">
+		          <div class="fquote"> <strong><span style="color:#42639C;">DmitryBogdanov</span>:</strong><br/> <p>Ну, например с помощью ATR. Если цена прошла ATR периода - вероятность разворота (пропорционально периоду) становится выше продолжения.</p> </div> <p>Фактически я столкнулся с достаточно интересной трудностью. Заключается она в следующем:</p> <p>При пробое уровня (именно в моем случае) могут быть следующие вариант развития событий:</p> <p>1. Цена стабильно пойдет дальше в сторону пробоя.</p> <p>2. Цена вернется к пробою и после этого пойдет в направлении пробоя ( в нужную мне сторону)</p> <p>3. Цена вернется к пробою и стабильно пойдет дальше в противоположную от пробоя сторону (не нужную мне сторону)</p> <p>4. Цена вернется к пробою, немного пойдет в противоположную сторону (не нужную мне сторону) а после этого снова пробьет уже пробитый уровень и пойдет стабильно в мою сторону</p>
+	          </div>
+
+
+
+		          <div>
+			          <div class="similarInComment">
+				          <span class="ico"></span>
+					          <span class="similarItem">
+						          <a target="_blank" title="Теорема о наличии памяти у случайных последовательностей" href="https://www.mql5.com/ru/forum/40254/1332310#comment_1332310" data-fz-event="MQL5+Similar+Comment">Теорема о наличии памяти</a>
+							          <span class="gradientShader"></span>
+					          </span>
+					          <span class="similarItem">
+						          <a target="_blank" title="УБЫТОЧНАЯ ТОРГОВАЯ СИСТЕМА" href="https://www.mql5.com/ru/forum/123005/3226587#comment_3226587" data-fz-event="MQL5+Similar+Comment">УБЫТОЧНАЯ ТОРГОВАЯ СИСТЕМА</a>
+					          </span>
+					          <span class="similarItem">
+						          <a target="_blank" title="Импульсный советник, кто знает?" href="https://www.mql5.com/ru/forum/260954/7965460#comment_7965460" data-fz-event="MQL5+Similar+Comment">Импульсный советник, кто знает?</a>
+					          </span>
+			          </div>
+		          </div>
+	          <div class="options">
+		          
+
+	          </div>
+          </div>
+        </div>
+        <div class="comment-box" id="comment_21221455">
+
+            <aside class="comment-side user">
+              <div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2020/11/5FB66370-C4ED.jpeg" srcset="https://c.mql5.com/avatar/2020/11/5FB66370-C4ED_big.jpeg 2x" alt="dmitry.a.m" title="dmitry.a.m" data-user-login="dmitry.a.m" loading="lazy" width="60" height="60"></div></div><span title="Рейтинг">127</span>
+
+            </aside>
+
+          <div class="text">
+	          <header>
+		          <span id="author_info_21221455"
+		                style="font-weight: bold;">
+			          <span>
+				          <a class="author banned_user" itemprop="url"  href="/ru/users/dmitry.a.m">dmitry.a.m</a>
+			          </span>
+		          </span>
+		          <span class="comment__date" id="date_21221455" data-date-create="2021.03.09 22:49" data-date-modify="" title="Создано">
+                <time datetime="2021-03-09T22:49Z" itemprop="datePublished" content="2021-03-09T22:49Z">2021.03.09 22:49</time>
+		          </span>
+
+
+
+<a class="permalink" title="Постоянная ссылка" href="/ru/forum/364561#comment_21221455" rel="nofollow" onclick="return false;">#5</a>                &nbsp;
+	          </header>
+
+	          <div
+		          class="content"
+		          id="content21221455">
+		          <p>Я предполагаю, что нужен либо индикатор/советник (да что угодно) что будет указывать на возможно ложный пробой, либо где-то нужно брать реальные объемы по акциям, которые меняются ежеминутно, но где их брать, на каком сайте, у какого брокера - я не знаю</p>
+	          </div>
+
+
+
+		          <div>
+			          <div class="similarInComment">
+				          <span class="ico"></span>
+					          <span class="similarItem">
+						          <a target="_blank" title="Нужен совет по ценным металлам" href="https://www.mql5.com/ru/forum/50316" data-fz-event="MQL5+Similar+Comment">Нужен совет по ценным</a>
+							          <span class="gradientShader"></span>
+					          </span>
+					          <span class="similarItem">
+						          <a target="_blank" title="Как проще создать HLINE одновременно на разных таймфреймах?" href="https://www.mql5.com/ru/forum/125696/3269824#comment_3269824" data-fz-event="MQL5+Similar+Comment">Как проще создать HLINE</a>
+							          <span class="gradientShader"></span>
+					          </span>
+					          <span class="similarItem">
+						          <a target="_blank" title="[АРХИВ!] Любой вопрос новичка, чтоб не захламлять форум. Профи, не проходите мимо. Без вас никуда - 4." href="https://www.mql5.com/ru/forum/138609/3506282#comment_3506282" data-fz-event="MQL5+Similar+Comment">[АРХИВ!] Любой вопрос новичка,</a>
+							          <span class="gradientShader"></span>
+					          </span>
+			          </div>
+		          </div>
+	          <div class="options">
+		          
+
+	          </div>
+          </div>
+        </div>
+        <div class="comment-box" id="comment_21221498">
+
+            <aside class="comment-side user">
+              <div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2020/11/5FB66370-C4ED.jpeg" srcset="https://c.mql5.com/avatar/2020/11/5FB66370-C4ED_big.jpeg 2x" alt="dmitry.a.m" title="dmitry.a.m" data-user-login="dmitry.a.m" loading="lazy" width="60" height="60"></div></div><span title="Рейтинг">127</span>
+
+            </aside>
+
+          <div class="text">
+	          <header>
+		          <span id="author_info_21221498"
+		                style="font-weight: bold;">
+			          <span>
+				          <a class="author banned_user" itemprop="url"  href="/ru/users/dmitry.a.m">dmitry.a.m</a>
+			          </span>
+		          </span>
+		          <span class="comment__date" id="date_21221498" data-date-create="2021.03.09 22:54" data-date-modify="" title="Создано">
+                <time datetime="2021-03-09T22:54Z" itemprop="datePublished" content="2021-03-09T22:54Z">2021.03.09 22:54</time>
+		          </span>
+
+
+
+<a class="permalink" title="Постоянная ссылка" href="/ru/forum/364561#comment_21221498" rel="nofollow" onclick="return false;">#6</a>                &nbsp;
+	          </header>
+
+	          <div
+		          class="content"
+		          id="content21221498">
+		          <p>Подобранный мною брокер, подобранный мною подход и CFD - показывают отличные перспективы. Риск 1 к 2 - 1 к 3. Уже сейчас достаточно стабильно можно брать до 2-3% В ДЕНЬ!!! к любому депозиту. И этот показатель можно увеличить многократно, если решить поставленную выше задачу.</p> <p>Я готов к сотрудничеству и с удовольствием обсужу варианты, поделюсь своим опытом и знаниями. Сам торгую уже около 5 лет.</p>
+	          </div>
+
+
+
+		          <div>
+			          <div class="similarInComment">
+				          <span class="ico"></span>
+					          <span class="similarItem">
+						          <a target="_blank" title="Любые вопросы новичков по MQL4 и MQL5, помощь и обсуждение по алгоритмам и кодам" href="https://www.mql5.com/ru/forum/160683/48983568#comment_48983568" data-fz-event="MQL5+Similar+Comment">Любые вопросы новичков по</a>
+							          <span class="gradientShader"></span>
+					          </span>
+					          <span class="similarItem">
+						          <a target="_blank" title="И снова о вечном: тренд/флет." href="https://www.mql5.com/ru/forum/98791/2921480#comment_2921480" data-fz-event="MQL5+Similar+Comment">И снова о вечном:</a>
+							          <span class="gradientShader"></span>
+					          </span>
+					          <span class="similarItem">
+						          <a target="_blank" title="Скальпинг в классическом арбитраже" href="https://www.mql5.com/ru/forum/387558/31354112#comment_31354112" data-fz-event="MQL5+Similar+Comment">Скальпинг в классическом арбитраже</a>
+					          </span>
+			          </div>
+		          </div>
+	          <div class="options">
+		          
+
+	          </div>
+          </div>
+        </div>
+        <div class="comment-box" id="comment_21222110">
+
+            <aside class="comment-side user">
+              <div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/avatar_na2.png" srcset="https://c.mql5.com/avatar/avatar_na2_big.png 2x" loading="lazy" width="60" height="60"></div></div>
+
+            </aside>
+
+          <div class="text">
+	          <header>
+		          <span id="author_info_21222110"
+		                style="font-weight: bold;">
+			          <span>
+				          <span class="removed_user">[Удален]</span>
+			          </span>
+		          </span>
+		          <span class="comment__date" id="date_21222110" data-date-create="2021.03.09 23:28" data-date-modify="" title="Создано">
+                <time datetime="2021-03-09T23:28Z" itemprop="datePublished" content="2021-03-09T23:28Z">2021.03.09 23:28</time>
+		          </span>
+
+
+
+<a class="permalink" title="Постоянная ссылка" href="/ru/forum/364561#comment_21222110" rel="nofollow" onclick="return false;">#7</a>                &nbsp;
+	          </header>
+
+	          <div
+		          class="content"
+		          id="content21222110">
+		          <p>Торговля от уровней нетривиальная задача. И нет простого ответа, или какого-то одного знания, чтобы решить это.</p> <p>По моим наблюдениям уровни являются некоторым препятствием для цены. Цена спотыкается о них. Это видно по графику. Но дальнейшее движение почти также не определено, как если бы их не было.</p> <p>Вернее, влияние есть. Если в день цена пробьёт 4-5 уровней подряд, то вероятность её остановки возрастает, и вероятность некоторого отката тоже. Но это влияние не на поверхности.</p> <p>А всякие варианты тройного касания, отскок после возврата и другие&nbsp;мне не удалось подтвердить статистически. Смотрел не на акциях, а на валютах, но думаю, от этого не легче.</p> <p>Кроме уровней более важно всё-таки основное направление движения, тренд. Потому, что уровни не подсказывают путь, это просто барьер.<br/></p> <p><br/></p> <p>Результат также зависит от того, как точно Вы определяете уровни. Может там и нет ничего.<br/></p>
+	          </div>
+
+
+
+		          <div>
+			          <div class="similarInComment">
+				          <span class="ico"></span>
+					          <span class="similarItem">
+						          <a target="_blank" title="Кто торгует по уровням делитесь опытом" href="https://www.mql5.com/ru/forum/212308/20074097#comment_20074097" data-fz-event="MQL5+Similar+Comment">Кто торгует по уровням</a>
+							          <span class="gradientShader"></span>
+					          </span>
+					          <span class="similarItem">
+						          <a target="_blank" title="Объяснение ордеров на покупку-продажу/сделки" href="https://www.mql5.com/ru/forum/417373/38056793#comment_38056793" data-fz-event="MQL5+Similar+Comment">Объяснение ордеров на покупку-продажу/сделки</a>
+							          <span class="gradientShader"></span>
+					          </span>
+					          <span class="similarItem">
+						          <a target="_blank" title="Канальная торговая система" href="https://www.mql5.com/ru/forum/422012/38497233#comment_38497233" data-fz-event="MQL5+Similar+Comment">Канальная торговая система</a>
+					          </span>
+			          </div>
+		          </div>
+	          <div class="options">
+		          
+
+	          </div>
+          </div>
+        </div>
+        <div class="comment-box" id="comment_21222199">
+
+            <aside class="comment-side user">
+              <div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/avatar_na2.png" srcset="https://c.mql5.com/avatar/avatar_na2_big.png 2x" alt="Dmitry Bogdanov" title="Dmitry Bogdanov" data-user-login="DmitryBogdanov" loading="lazy" width="60" height="60"></div></div><span title="Рейтинг">30</span>
+
+            </aside>
+
+          <div class="text">
+	          <header>
+		          <span id="author_info_21222199"
+		                style="font-weight: bold;">
+			          <span>
+				          <a class="author" itemprop="url"  href="/ru/users/dmitrybogdanov">Dmitry Bogdanov</a>
+			          </span>
+		          </span>
+		          <span class="comment__date" id="date_21222199" data-date-create="2021.03.09 23:53" data-date-modify="" title="Создано">
+                <time datetime="2021-03-09T23:53Z" itemprop="datePublished" content="2021-03-09T23:53Z">2021.03.09 23:53</time>
+		          </span>
+
+
+
+<a class="permalink" title="Постоянная ссылка" href="/ru/forum/364561#comment_21222199" rel="nofollow" onclick="return false;">#8</a>                &nbsp;
+	          </header>
+
+	          <div
+		          class="content"
+		          id="content21222199">
+		          <div class="fquote"> <strong><span style="color:#42639C;">dmitry.a.m</span>:</strong><br/> <p>Фактически я столкнулся с достаточно интересной трудностью. Заключается она в следующем:</p> <p>При пробое уровня (именно в моем случае) могут быть следующие вариант развития событий:</p> <p>1. Цена стабильно пойдет дальше в сторону пробоя.</p> <p>2. Цена вернется к пробою и после этого пойдет в направлении пробоя ( в нужную мне сторону)</p> <p>3. Цена вернется к пробою и стабильно пойдет дальше в противоположную от пробоя сторону (не нужную мне сторону)</p> <p>4. Цена вернется к пробою, немного пойдет в противоположную сторону (не нужную мне сторону) а после этого снова пробьет уже пробитый уровень и пойдет стабильно в мою сторону</p> </div> <p>берете график чего-нибудь, включаете например масштаб 4 часа, бросаете на график ATR с периодом 100 (например), получаете значение волатильности.</p> <p>переходите к масштабу 1 минута и от максимума\минимума цены наносите на график зоны размером с 4-х часовой ATR.</p>
+	          </div>
+
+
+
+		          <div>
+			          <div class="similarInComment">
+				          <span class="ico"></span>
+					          <span class="similarItem">
+						          <a target="_blank" title="Расстояние между параллельными линиями" href="https://www.mql5.com/ru/forum/237198/7109324#comment_7109324" data-fz-event="MQL5+Similar+Comment">Расстояние между параллельными линиями</a>
+					          </span>
+					          <span class="similarItem">
+						          <a target="_blank" title="[Архив!] Напишу любого эксперта или индикатор бесплатно." href="https://www.mql5.com/ru/forum/115354/3114771#comment_3114771" data-fz-event="MQL5+Similar+Comment">[Архив!] Напишу любого эксперта</a>
+							          <span class="gradientShader"></span>
+					          </span>
+					          <span class="similarItem">
+						          <a target="_blank" title="Можно ли использовать данные из графиков разных периодов?" href="https://www.mql5.com/ru/forum/50150" data-fz-event="MQL5+Similar+Comment">Можно ли использовать данные</a>
+							          <span class="gradientShader"></span>
+					          </span>
+			          </div>
+		          </div>
+	          <div class="options">
+		          
+
+	          </div>
+          </div>
+        </div>
+        <div class="comment-box" id="comment_21222253">
+
+            <aside class="comment-side user">
+              <div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2020/11/5FB66370-C4ED.jpeg" srcset="https://c.mql5.com/avatar/2020/11/5FB66370-C4ED_big.jpeg 2x" alt="dmitry.a.m" title="dmitry.a.m" data-user-login="dmitry.a.m" loading="lazy" width="60" height="60"></div></div><span title="Рейтинг">127</span>
+
+            </aside>
+
+          <div class="text">
+	          <header>
+		          <span id="author_info_21222253"
+		                style="font-weight: bold;">
+			          <span>
+				          <a class="author banned_user" itemprop="url"  href="/ru/users/dmitry.a.m">dmitry.a.m</a>
+			          </span>
+		          </span>
+		          <span class="comment__date" id="date_21222253" data-date-create="2021.03.10 00:09" data-date-modify="" title="Создано">
+                <time datetime="2021-03-10T00:09Z" itemprop="datePublished" content="2021-03-10T00:09Z">2021.03.10 00:09</time>
+		          </span>
+
+
+
+<a class="permalink" title="Постоянная ссылка" href="/ru/forum/364561#comment_21222253" rel="nofollow" onclick="return false;">#9</a>                &nbsp;
+	          </header>
+
+	          <div
+		          class="content"
+		          id="content21222253">
+		          <div class="fquote"> <strong><span style="color:#42639C;">Aleksei Stepanenko</span>:</strong><br/> <p>Торговля от уровней нетривиальная задача. И нет простого ответа, или какого-то одного знания, чтобы решить это.</p> <p>По моим наблюдениям уровни являются некоторым препятствием для цены. Цена спотыкается о них. Это видно по графику. Но дальнейшее движение почти также не определено, как если бы их не было.</p> <p>Вернее, влияние есть. Если в день цена пробьёт 4-5 уровней подряд, то вероятность её остановки возрастает, и вероятность некоторого отката тоже. Но это влияние не на поверхности.</p> <p>А всякие варианты тройного касания, отскок после возврата и другие&nbsp;мне не удалось подтвердить статистически. Смотрел не на акциях, а на валютах, но думаю, от этого не легче.</p> <p>Кроме уровней более важно всё-таки основное направление движения, тренд. Потому, что уровни не подсказывают путь, это просто барьер.<br/></p> <p><br/></p> <p>Результат также зависит от того, как точно Вы определяете уровни. Может там и нет ничего.<br/></p> </div> <p>Можем с вами скооперироваться и обсудить подробнее. Раньше активно торговал именно валютой и тоже в уровнях не нашел однозначного решения, но перейдя на CFD-скальпинг ситуация оказалась более-менее разрешимой... Как уже писал вышел, у меня получилось несколько вариантов движений и на каждом выбранном мною активе вероятность закономерно переваливает в одну из этих сторон,&nbsp; следовательно используя что-либо кроме самих уровней можно добиться еще большего результата, я считаю&nbsp;</p>
+	          </div>
+
+
+
+		          <div>
+			          <div class="similarInComment">
+				          <span class="ico"></span>
+					          <span class="similarItem">
+						          <a target="_blank" title="Анализ результатов тестов и оптимизации в тестере стратегий MetaTrader 5" href="https://www.mql5.com/ru/forum/225832/6426711#comment_6426711" data-fz-event="MQL5+Similar+Comment">Анализ результатов тестов и</a>
+							          <span class="gradientShader"></span>
+					          </span>
+					          <span class="similarItem">
+						          <a target="_blank" title="Бэктестинг/оптимизация" href="https://www.mql5.com/ru/forum/423431/38916733#comment_38916733" data-fz-event="MQL5+Similar+Comment">Бэктестинг/оптимизация</a>
+					          </span>
+					          <span class="similarItem">
+						          <a target="_blank" title="Система ASCTrend" href="https://www.mql5.com/ru/forum/421992/38483626#comment_38483626" data-fz-event="MQL5+Similar+Comment">Система ASCTrend</a>
+					          </span>
+			          </div>
+		          </div>
+	          <div class="options">
+		          
+
+	          </div>
+          </div>
+        </div>
+        <div class="comment-box" id="comment_21222271">
+
+            <aside class="comment-side user">
+              <div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2020/11/5FB66370-C4ED.jpeg" srcset="https://c.mql5.com/avatar/2020/11/5FB66370-C4ED_big.jpeg 2x" alt="dmitry.a.m" title="dmitry.a.m" data-user-login="dmitry.a.m" loading="lazy" width="60" height="60"></div></div><span title="Рейтинг">127</span>
+
+            </aside>
+
+          <div class="text">
+	          <header>
+		          <span id="author_info_21222271"
+		                style="font-weight: bold;">
+			          <span>
+				          <a class="author banned_user" itemprop="url"  href="/ru/users/dmitry.a.m">dmitry.a.m</a>
+			          </span>
+		          </span>
+		          <span class="comment__date" id="date_21222271" data-date-create="2021.03.10 00:14" data-date-modify="" title="Создано">
+                <time datetime="2021-03-10T00:14Z" itemprop="datePublished" content="2021-03-10T00:14Z">2021.03.10 00:14</time>
+		          </span>
+
+
+
+<a class="permalink" title="Постоянная ссылка" href="/ru/forum/364561#comment_21222271" rel="nofollow" onclick="return false;">#10</a>                &nbsp;
+	          </header>
+
+	          <div
+		          class="content"
+		          id="content21222271">
+		          <div class="fquote"> <strong><span style="color:#42639C;">DmitryBogdanov</span>:</strong><br/> <p>берете график чего-нибудь, включаете например масштаб 4 часа, бросаете на график ATR с периодом 100 (например), получаете значение волатильности.</p> <p>переходите к масштабу 1 минута и от максимума\минимума цены наносите на график зоны размером с 4-х часовой ATR.</p> </div> <p>Попытался, но пока к результату не пришел. Не до конца понял следующее высказывание " <span>от максимума\минимума цены наносите на график зоны размером с 4-х часовой ATR". Приношу свои извинения, я не силен в использовании индикаторов... В основном пользовался&nbsp; простой техникой и фундаментом...</span></p>
+	          </div>
+
+
+
+		          <div>
+			          <div class="similarInComment">
+				          <span class="ico"></span>
+					          <span class="similarItem">
+						          <a target="_blank" title="Проблема с индикатором ZigZag" href="https://www.mql5.com/ru/forum/420355/38218180#comment_38218180" data-fz-event="MQL5+Similar+Comment">Проблема с индикатором ZigZag</a>
+					          </span>
+					          <span class="similarItem">
+						          <a target="_blank" title="FOREX - Тенденции, прогнозы и следствия 2019" href="https://www.mql5.com/ru/forum/297446/11394838#comment_11394838" data-fz-event="MQL5+Similar+Comment">FOREX - Тенденции, прогнозы</a>
+							          <span class="gradientShader"></span>
+					          </span>
+					          <span class="similarItem">
+						          <a target="_blank" title="[АРХИВ!] Любой вопрос новичка, чтоб не захламлять форум. Профи, не проходите мимо. Без вас никуда - 4." href="https://www.mql5.com/ru/forum/138609/3511115#comment_3511115" data-fz-event="MQL5+Similar+Comment">[АРХИВ!] Любой вопрос новичка,</a>
+							          <span class="gradientShader"></span>
+					          </span>
+			          </div>
+		          </div>
+	          <div class="options">
+		          
+
+	          </div>
+          </div>
+        </div>
+</div>
+
+  </div>
+
+  <div class="forum-topic__bottom">
+    <div class="left-part">
+      <div class="shortlinks">
+        <a href="/ru/forum" class="forum-root" title="На главную страницу"></a><a href="/ru/forum/general" class="forum-category" title="Категория: Общее обсуждение"></a>
+      </div>
+        <span class="paginatorEx">
+<a class="selected" href="/ru/forum/364561">1</a><a href="/ru/forum/364561/page2">2</a><a href="/ru/forum/364561/page3">3</a>      
+        </span>
+    </div>
+    <div class="right-part ui">
+          <a class="button button_green button_with-icon" href="javascript:void(false);" onclick="if(window.registerLoginPopup){ window.registerLoginPopup.show(); }">
+            <i class="icons-buttons icons-buttons_new-comment"></i>Новый комментарий
+          </a>
+    </div>
+    <div class="clear-fix"></div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+    
+
+
+<div class="hidden" id="popupRegisterLogin">
+  <div class="register-login-popup">
+    <div class="register-login-popup__header">
+      <img src="https://c.mql5.com/i/registerlandings/logo-2.png" srcset="https://c.mql5.com/i/registerlandings/logo-2_2x.png 2x" alt="MQL5 - Язык торговых стратегий для клиентского терминала MetaTrader 5" loading="lazy" width="74" height="24" />
+    </div>
+    <div class="register-login-popup__content">
+      <div class="register-login-popup__desc">
+        <div class="register-login-popup__title">Вы упускаете торговые возможности:</div>
+        <ul>
+<li>Бесплатные приложения для трейдинга</li>
+<li>8 000+ сигналов для копирования</li>
+<li>Экономические новости для анализа финансовых рынков</li>
+</ul>
+      </div>
+      <div class="register-login-popup__forms ui">
+        <div class="register-login-popup__tabs" id="registerLoginPopupTabs">
+          <span data-id="register" id="registerLoginPopupTab_register" class="register-login-popup__tab register-login-popup__tab_active">Регистрация</span>
+          <span data-id="login" id="registerLoginPopupTab_login" class="register-login-popup__tab">Вход</span>
+        </div>
+        <div id="registerLoginPopupTabContent_register">
+          <div class="ui auth-form__content">
+    
+  <script type='text/javascript'>/*<![CDATA[*/ if (!window.V) var V = []; /*]]>*/</script>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/ru/auth_register_short" id="PopupRegisterquickRegisterForm" onsubmit="PopupRegisterquickRegistration.OnSubmit(this,&#39;ru&#39;);if(Validate(this)) Ajax.form(this,{onready:PopupRegisterquickRegistration.OnSuccessPopup,onerror:PopupRegisterquickRegistration.OnError,onbeginrequest:PopupRegisterquickRegistration.DisableInputs,onendrequest:PopupRegisterquickRegistration.EnableInputs});return(false);" enctype = "multipart/form-data"><input type="hidden" name="__signature" value="f613da00d0c7c60ca77512f339073cb9"/>
+    <div class="auth-form__inputs">
+      <input type="hidden" value="0" name="IsValidate" id="PopupRegisterIsValidate" />
+
+      <!--[if lt IE 10]><div class="note">Придумайте логин:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input type="text" id="PopupRegisterusername" name="username" class="input" maxlength="32" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.CheckUserName();}" onkeyup="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.ValidateUserName(this, 'Укажите корректный логин');}" placeholder="Придумайте логин" title="Может содержать латинские буквы, цифры, точки, тире, символы подчеркивания. Не может начинаться и заканчиваться точкой. Длина: 3-32 символов." onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisterusername'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisterusername',10,'Используйте латинские буквы, допускаются цифры, символы подчеркивания и точки.',validate_username]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisterusername">латиницей и без пробелов</label>
+      </div>
+      <!--[if lt IE 10]><div class="note">Ваш email:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input class="input" type="email" id="PopupRegisteremail" name="email" placeholder="Ваш email" title="Введите email (не более 256 символов). Например: ivan@example.com" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnChange(this);}" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisteremail'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisteremail',10,'Укажите корректный email',validate_email]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisteremail">пароль придет на email</label>
+      </div>
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Register" />
+    </div>
+    <span id="PopupRegisterquickRegisterSubmit">
+      <input type="submit" value="Зарегистрироваться" id="PopupRegisterquickRegisterButton"  title="Зарегистрируйтесь и получите пароль на ваш email" class="button button_yellow"  />
+    </span>
+    <span id="PopupRegisterquickRegisterErrorMessage" class="quick-register-error-message field-validation-error" style="text-align: center; margin-top: 16px; display: none;">
+      Произошла ошибка
+    </span>
+</form>
+    
+</div>
+<div class="auth-social">
+  <ul class="auth-social-list" id="socialList">
+    <li><a onclick="window.fpush({name: 'MQL5+Popup+Register+Google', unit: 'section', value: 'Forum'}); " href="https://www.mql5.com/ru/auth_oauth2?provider=Google&amp;amp;return=popup&amp;amp;reg=1" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Войти через Google</a></li>
+  </ul>
+</div>
+<div class="auth-block-agree">
+  <p>
+    Вы принимаете <a target="_blank" href="/ru/about/privacy">политику сайта</a> и <a target="_blank" href="/ru/about/terms">условия использования</a>
+  </p>
+</div>
+
+
+        </div>
+        <div id="registerLoginPopupTabContent_login" class="hidden">
+            <div class="auth-form__text">
+    Если у вас нет учетной записи, <a href="https://www.mql5.com/ru/auth_register" rel="nofollow" style="vertical-align: top">зарегистрируйтесь</a>
+  </div>
+<div class="ui auth-form__content auth-form__content_login" id="loginFormWrapper">
+    
+  <div id="needCookies" class="need-cookies hidden">
+    <div class="danger-box">
+      <p>Для авторизации и пользования сайтом MQL5.com необходимо разрешить использование файлов Сookie.</p>
+<p>Пожалуйста, включите в вашем браузере данную настройку, иначе вы не сможете авторизоваться.</p>
+    </div>
+  </div>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/ru/auth_login" id="loginForm" onsubmit="if(window.quickLogin){return window.quickLogin.onSubmit(this);}var result = Validate(this); if(result) { preventDoubleSubmit(this); } return result;"><input id="RedirectAfterLoginUrl" name="RedirectAfterLoginUrl" type="hidden" value="" /><input id="RegistrationUrl" name="RegistrationUrl" type="hidden" value="" /><input data-val="true" data-val-required="The ShowOpenId field is required." id="ShowOpenId" name="ShowOpenId" type="hidden" value="True" /><input id="TrackingSection" name="TrackingSection" type="hidden" value="Forum" />    <input name="ViewType" type="hidden" value="5" />
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Login" />
+    <!--[if lt IE 10]><div class="note">Ваш логин:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <input class="input qa-login" id="Login" name="Login" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Логин" title="Ваш логин" type="text" value="" />
+      <script type='text/javascript' id='validate_Login'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Login',1,'Введите логин, указанный при регистрации']);});mqGlobal.AddOnReady(function() {V.push(['Login',10,'Email нельзя использовать, введите свой логин, пожалуйста',validateLogin]);}); /*]]>*/</script>
+    </div>
+    <!--[if lt IE 10]><div class="note">Пароль:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <div class="input-with-show">
+        <input autocomplete="off" class="input qa-password" id="Password" name="Password" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Пароль" title="Введите пароль" type="password" />
+        <span class="input-with-show__icon" title="Показать пароль" onclick="if(window.quickLogin){window.quickLogin.showPass(this, 'Показать пароль', 'Скрыть пароль');}"></span>
+      </div>
+      <script type='text/javascript' id='validate_Password'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Password',1,'Введите пароль']);}); /*]]>*/</script>
+    </div>
+    <script type="text/javascript">
+    function validateLogin(input) {
+      console.log('validate login ' + input.value);
+      return !/^\w+([-+.'']{1,2}\w+)* @\w+([-.]\w+)*\.\w+([-.]\w+)*$/i.test(input.value);
+    }
+    </script>
+    <div class="forgot" id="loginForgotBlock"><a id="loginForgotLink" href="https://www.mql5.com/ru/auth_forgotten?return=popup">Забыли логин/пароль?</a></div>
+    <input type="submit" class="button button_yellow qa-submit" id="loginSubmit" value="Вход" title="Войти">
+</form></div>
+
+  <div class="auth-social" id="authSocialBlock">
+    <ul class="auth-social-list" id="socialList">
+      <li><a onclick="window.fpush({name: 'MQL5+Popup+Login+Google', unit: 'section', value: 'Forum'}); " href="https://www.mql5.com/ru/auth_oauth2?provider=Google&amp;amp;return=popup" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Войти через Google</a></li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script id="popupSection" type="application/json">{"section": "Forum"}</script>
+<script id="popupTranslate" data-type="translate" type="application/json">
+{
+  "popup":
+  {
+  "EmailTitle" : "Пароль отправлен на {0}",
+  "EmailDescription" : "Войдите, используя полученный пароль и логин, указанный при регистрации",
+  "SubmitButtonText" : "Активировать аккаунт",
+  "RegistrationTip" : "Если вы не получили письмо с паролем, проверьте папку спам или &lt;a href={0}&gt;повторите регистрацию&lt;/a&gt;"
+  }
+}
+</script>
+
+    
+
+
+<div id='wdausxxqrpvhekbwjrjlhqjghyhesrqqau' class="r6irig5txiuua4k0m r6irig5txiuua4k0m_forum-topic gg88d3drb"></div>
+
+
+  </article>
+
+
+
+<div aria-hidden="true" class="footer  desktop" id="footer">
+  <ul class="links  links_desktop">
+      <li id="navFooterCommunity">
+        <nav>
+          <ul>
+            <li><a href="https://web.metatrader.app/terminal?mode=demo&amp;lang=ru" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Footer+Trading">Онлайн трейдинг / Вебтерминал</a></li>
+            <li><a href="/ru/code" data-fz-event="MQL5+Footer+CodeBase">Бесплатные индикаторы и советники</a></li>
+            <li><a href="/ru/articles" data-fz-event="MQL5+Footer+Articles">Статьи о программировании и трейдинге</a></li>
+            <li><a href="/ru/job" data-fz-event="MQL5+Footer+Job">Заказать торговый советник и индикатор</a></li>
+            <li><a href="/ru/market" data-fz-event="MQL5+Footer+Market">Купить торговый робот и индикатор</a></li>
+            <li><a href="/ru/signals" data-fz-event="MQL5+Footer+Signals">Торговые сигналы форекс</a></li>
+            <li><a href="/ru/vps" data-fz-event="MQL5+Footer+VPS">Forex VPS для торговли</a></li>
+            <li><a href="/ru/forum" data-fz-event="MQL5+Footer+Forum">Форум трейдеров</a></li>
+            <li><a href="/ru/blogs" data-fz-event="MQL5+Footer+Blogs">Блоги трейдеров</a></li>
+            <li><a rel="nofollow" href="/ru/charts" data-fz-event="MQL5+Footer+Charts">Графики</a></li>
+            <li><a href="/ru/widgets" data-fz-event="MQL5+Footer+Widgets">Бесплатные виджеты</a></li>
+          </ul>
+        </nav>
+      </li>
+      <li id="navFooterMt5">
+        <nav>
+          <ul>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com" data-fz-event="MQL5+Footer+MetaTrader+5">Торговая платформа <span class="nobr">MetaTrader 5</span></a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/releasenotes" data-fz-event="MQL5+Footer+MetaTrader+5">Последние обновления <span class="nobr">MetaTrader 5</span></a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/news" data-fz-event="MQL5+Footer+MetaTrader+5">Новости, внедрения и технологии</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/terminal/help" data-fz-event="MQL5+Footer+MetaTrader+5">Руководство пользователя <span class="nobr">MetaTrader 5</span></a></li>
+            <li><a href="/ru/docs" data-fz-event="MQL5+Footer+Docs">Язык торговых стратегий MQL5</a></li>
+            <li><a rel="nofollow noopener" href="https://cloud.mql5.com" data-fz-event="MQL5+Footer+Cloud">MQL5 Cloud Network</a></li>
+            <li><a rel="noopener" href="https://forge.mql5.io/?lang=ru-RU" data-fz-event="MQL5+Footer+Forge" target="_blank">MQL5 Algo Forge</a></li>
+              <li><a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Footer">Скачать <span class="nobr">MetaTrader 5</span></a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/terminal/help/start_advanced/installation" data-fz-event="MQL5+Footer+MetaTrader+5">Установка платформы</a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/terminal/help/start_advanced/deinstallation" data-fz-event="MQL5+Footer+MetaTrader+5">Удаление программы</a></li>
+          </ul>
+        </nav>
+
+      </li>
+    <li id="navFooterWebsite">
+        <nav>
+          <ul>
+            <li><a rel="nofollow" href="/ru/about" data-fz-event="MQL5+Footer+About">О проекте</a></li>
+              <li><a href="/ru/wall" data-fz-event="MQL5+Footer+Wall">Хроника сайта</a></li>
+            <li><a rel="nofollow" href="/ru/about/terms" data-fz-event="MQL5+Footer+About">Условия использования</a></li>
+            <li><a rel="nofollow" href="/ru/about/autopayments" data-fz-event="MQL5+Footer+About">Соглашение о рекуррентных платежах</a></li>
+            <li><a rel="nofollow" href="/ru/about/agencyagreement" data-fz-event="MQL5+Footer+About">Агентский договор-оферта</a></li>
+            <li><a rel="nofollow" href="/ru/about/privacy" data-fz-event="MQL5+Footer+About">Политика конфиденциальности и защиты данных</a></li>
+            <li><a rel="nofollow" href="/ru/about/cookies" data-fz-event="MQL5+Footer+About">Политика в отношении cookie-файлов</a></li>
+            <li>
+                <a rel="nofollow" href="/ru/contact" data-fz-event="MQL5+Footer+Contacts">Контакты и обращения</a>
+            </li>
+          </ul>
+        </nav>
+    </li>
+
+      <li>
+        <div class="footer__products">
+          <div class="footer__product">
+            <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com" class="footer__product-name">MetaTrader 5</a>
+            <div class="footer__product-links">
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon windows" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Скачать MetaTrader 5 для Windows</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/MetaTrader5.pkg.zip?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon macos" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Скачать MetaTrader 5 для MacOS</div></a>
+            <a rel="nofollow noopener" href="https://www.mql5.com/ru/articles/625?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon linux" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Скачать MetaTrader 5 для Linux</div></a>
+            <a rel="nofollow noopener" href="https://web.metatrader.app/terminal?mode=demo&amp;lang=ru" class="icon web"><div  class="footer__product-link-hint footer__product-link-hint-short">Открыть MetaTrader 5 WebTerminal</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/ios?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=ru" class="icon ios" data-fz-event="MetaTrader+5+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/RXd-JJC1I1d.png)">Отсканируйте для установки из App Store</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=ru" class="icon android" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/TrE06p2W-9d.png)">Отсканируйте для установки из Google Play</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon huawei" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ZRt&#x2B;zI1l&#x2B;8O.png)">Отсканируйте для установки из Huawei AppGallery</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon ark" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/L0Q9oag&#x2B;3eE.png)">Отсканируйте для получения файла APK для Android</div></a>
+            </div>
+          </div>
+          <div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com/en/news/2270" class="footer__product-name">MQL5 Channels</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon ios" data-fz-event="MQL5+Channels+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Nz0etpAYpcO.png)">Отсканируйте для установки из App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon android" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/8re&#x2B;UwV7BVs.png)">Отсканируйте для установки из Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Su&#x2B;fe4n374e.png)">Отсканируйте для установки из Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mql5channels/mql5channels.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/G6Mg4NfCPzO.png)">Отсканируйте для получения файла APK для Android</div></a>
+              </div>
+            </div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.tradays.com/ru/download?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MQL5+Footer+Download+Tradays" class="footer__product-name">Economic Calendar</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon ios" data-fz-event="Tradays+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/e0xuSVTw-1E.png)">Отсканируйте для установки из App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon android" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/YuEbj-vmYap.png)">Отсканируйте для установки из Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CrS7bbDAdAO.png)">Отсканируйте для установки из Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/tradays/tradays.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/VZi8YPIb2op.png)">Отсканируйте для получения файла APK для Android</div></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__networks">
+          <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow" title="Facebook"><i class="icons-networks icons-networks_fb"></i></a>
+          <a href="https://t.me/mql5ru" target="_blank" rel="nofollow" title="Telegram"><i class="icons-networks icons-networks_tg"></i></a>
+          <a href="https://x.com/mql5com" target="_blank" rel="nofollow" title="X (Twitter)"><i class="icons-networks icons-networks_tw"></i></a>
+          <a href="https://www.youtube.com/@MetaQuotesOfficial" target="_blank" rel="nofollow" title="YouTube"><i class="icons-networks icons-networks_yt"></i></a>
+          <a href="https://www.linkedin.com/company/mql5" target="_blank" rel="nofollow" title="LinkedIn"><i class="icons-networks icons-networks_linkedin"></i></a>
+          <span>Подпишитесь на новости алготрейдинга</span>
+        </div>
+  
+        <div class="footer__other">
+          <div class="footer__not-a-broker">Не является брокером, нет реальных торговых счетов</div>
+          <div class="copyright">35 Dodekanisou str, Germasogeia, 4043,&nbsp;Limassol,&nbsp;Cyprus</div>
+          <div class="copyright">Copyright 2000-2026, <span class="nobr">MetaQuotes Ltd</span></div>
+        </div>
+      </li>
+  </ul>
+</div>
+
+
+
+<div class="shadow-layer" id="layer"></div>
+    
+
+  <div class="b-fixed-mt" id="bFixedMt" style="display: none;">
+    
+  </div>
+
+
+<script type='text/javascript'>
+		(function (a, e, f, g, b, c, d) { a[b] || (a.FintezaCoreObject = b, a[b] = a[b] || function () { (a[b].q = a[b].q || []).push(arguments) }, a[b].l = 1 * new Date, c = e.createElement(f), d = e.getElementsByTagName(f)[0], c.async = !0, c.defer = !0, c.src = g, d && d.parentNode && d.parentNode.insertBefore(c, d)) })
+      (window, document, "script", "/ff/core.js", "fz");
+		window.fz("register", "website", {
+      id: "sqjxkxkswybhifrohpyooonwgbvsfzmayq",
+			trackLinks: true
+		});
+        mqGlobal.AddOnReady(function () { Mql5Cookie.init('mql5.com', '5091324107862603316'); });
+function editCommentInline(commentId){if(!window.editComment)return false;return editComment(commentId);}function quoteInline(commentId){if(!window.quote_forum)return false;return quote_forum(commentId);}function complaintInline(itemId,moduleId,typeId,parentModuleId){if(!window.showComplaintForm)return false;return showComplaintForm(itemId,moduleId,typeId,parentModuleId,'2985dac4994acbee1b8da51bb5895bf7');}mqGlobal.AddOnReady(function(){if(!window.translateManager){window.translateManager=new Translate(undefined,'Ошибка: не удалось выполнить перевод. Пожалуйста, повторите попытку позже.');}TimeTagProcessor();if(!window.shareManager){window.shareManager=new Share();}window.Pocket=new PocketManager();if(document.querySelectorAll){var translateElements=document.querySelectorAll(".translateMenu");if(translateElements){var i=0,count=translateElements.length;for(i;i<count;i++){(function(i){var contentid=dataset(translateElements[i],"contentid"),sourcelang=dataset(translateElements[i],"sourcelang"),targetlang=dataset(translateElements[i],"targetlang"),moduleid=parseInt(dataset(translateElements[i],"moduleid")),typeid=parseInt(dataset(translateElements[i],"typeid")),entityid=parseInt(dataset(translateElements[i],"entityid"));Core.AddHandler(translateElements[i],"mouseover",function(){return translateManager.SetMenu(this,contentid,sourcelang,targetlang,moduleid,typeid,entityid);});})(i);}}}});if(!window.paginatorOnLoad){mqGlobal.AddOnLoad(function(){setHotKeysPaginator('','','/ru/forum/364561/page2');});window.paginatorOnLoad=true;};function quoteTopicInline(itemId){if(!window.quote_forum)return false;return quote_forum(itemId);}function complaintTopicInline(itemId,moduleId,typeId,parentModuleId){if(!window.showComplaintForm)return false;return showComplaintForm(itemId,moduleId,typeId,parentModuleId,'9d807a9f153ce2fc8a684ab2090a010b');};window.lightBoxPhrases={};lightBoxPhrases.close='Закрыть';lightBoxPhrases.collapse='Свернуть';lightBoxPhrases.showOriginal='Показать оригинал';lightBoxPhrases.errorLoading='Невозможно загрузить вложение';lightBoxPhrases.next='Следующий';lightBoxPhrases.previous='Предыдущий';lightBoxPhrases.save='Открыть';lightBoxPhrases.linkToImg='Ссылка на изображение';mqGlobal.AddOnLoad(function(){if(!window.likes){window.likes=new Likes();}});mqGlobal.AddOnLoad(function(){window.tooltipUserInfo.init();});mqGlobal.AddOnReady(function(){window.PopupRegisterquickRegistration=new QuickRegistration('PopupRegister','Popup+Register','Forum');});function validate_username(input){var reg=/^([a-z0-9]){1}([\-._a-z0-9]){1,30}([\-_a-z0-9]){1}$/i,value=input.value,result=true;if(reg.test(value)){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Login',unit:'section',value:'Forum'});}return result;}function validate_email(input){var reg=/^\w+([-+.'']{1,2}\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/i,value=input.value,result=true,length_value=value.length;if(reg.test(value)&&length_value>=1&&length_value<=40){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Email',unit:'section',value:'Forum'});}return result;};mqGlobal.AddOnReady(function(){var username=$('PopupRegisterusername'),email=$('PopupRegisteremail');if(username)username.value='';if(email)email.value='';});mqGlobal.AddOnReady(function(){window.quickLogin=new QuickLogin('Popup+Login','Forum');});mqGlobal.AddOnLoad(function(){window.forumPopup();});window.fz("show","wdausxxqrpvhekbwjrjlhqjghyhesrqqau");mqGlobal.AddOnReady(function(){{window.initHeaderSearch('','https://www.mql5.com/ru/search');}});</script><script type="text/javascript">mqGlobal.AddOnReady(function(){window.initSuggestions("headerSearchKeyword","ru","https://search.mql5.com/api/query","https://www.mql5.com/ru/users_search/suggestion");});mqGlobal.AddOnReady(function(){window.floatVerticalPanelNode=FloatVerticalPanel('Сайт использует cookie-файлы. Узнайте больше о нашей <a href="/ru/about/cookies">политике по использованию cookie-файлов</a>.','cookie_accept');});							if (typeof Attach !== "undefined")
+			Attach.setAcceptFilter(".zip, .txt, .log, .mqh, .ex5, .mq5, .mq4, .mqproj, .ex4, .mt5, .set, .tpl, .cl, .py, .sqlite, .csv, .ini, .ipynb, .onnx, .gif, .png, .jpg, .jpeg, .mp4, .webm");
+	</script>
+
+<script type="application/ld&#x2B;json">
+		[
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"url": "https://www.mql5.com",
+				"logo": "https://c.mql5.com/i/community/logo_mql5-2.png",
+				"sameAs": [
+					"https://www.facebook.com/mql5.community",
+					"https://www.x.com/mql5com",
+					"https://www.youtube.com/user/MetaQuotesOfficial"
+				 ]
+			}
+		
+, 
+{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"Форум","description":"Обсуждение торговых стратегий и автоматического трейдинга. MQL5.community  крупнейший форум по форексу","url":"https://www.mql5.com/ru/forum","children":[]},{"@type":"SiteNavigationElement","position":2,"name":"Маркет","description":"MetaTrader Market - магазин торговых роботов, индикаторов, книг и журналов по трейдингу.","url":"https://www.mql5.com/ru/market","children":[]},{"@type":"SiteNavigationElement","position":3,"name":"Сигналы","description":"Социальный трейдинг, копирование сделок и мониторинг счетов в MetaTrader - Торговые сигналы на MQL5.com","url":"https://www.mql5.com/ru/signals","children":[]},{"@type":"SiteNavigationElement","position":4,"name":"Фриланс","description":"Заказать торговых роботов, технические индикаторы и программы для автоматического трейдинга. Работа на форексе. Фриланс-сервис на MQL5.com. Нанять на работу специалистов и экспертов по MetaTrader","url":"https://www.mql5.com/ru/job","children":[]},{"@type":"SiteNavigationElement","position":5,"name":"Котировки","description":"","url":"https://www.mql5.com/ru/quotes/overview","children":[]},{"@type":"SiteNavigationElement","position":6,"name":"MetaTrader","description":"","url":"https://www.metatrader.com","children":[]},{"@type":"SiteNavigationElement","position":7,"name":"Вебтерминал","description":"Вебтерминал для торговой плафтормы MetaTrader. Торгуйте на форекс рынке.","url":"https://web.metatrader.app/terminal?mode=demo","children":[]},{"@type":"SiteNavigationElement","position":8,"name":"Календарь","description":"","url":"https://www.mql5.com/ru/economic-calendar","children":[]},{"@type":"SiteNavigationElement","position":9,"name":"VPS","description":"","url":"https://www.mql5.com/ru/vps","children":[]},{"@type":"SiteNavigationElement","position":10,"name":"Статьи","description":"","url":"https://www.mql5.com/ru/articles","children":[]},{"@type":"SiteNavigationElement","position":11,"name":"CodeBase","description":"Скачать торговые роботы, технические индикаторы, скрипты в исходном коде - Библиотека кодов на MQL5 для MetaTrader 5","url":"https://www.mql5.com/ru/code","children":[]},{"@type":"SiteNavigationElement","position":12,"name":"Algo Forge","description":"","url":"https://forge.mql5.io","children":[]},{"@type":"SiteNavigationElement","position":13,"name":"Документация","description":"Справочник MetaQuotes Language 5 (MQL5) - Документация на MQL5.com","url":"https://www.mql5.com/ru/docs","children":[]}]}		
+,
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":"https://www.mql5.com/ru/forum","name":"MQL5 Algo Trading community  форум для трейдеров валютных и фондовых рынков"},{"@type":"ListItem","position":2,"item":"https://www.mql5.com/ru/forum/general","name":"Общее обсуждение"},{"@type":"ListItem","position":3,"name":"\"Индикатор\" ложного пробоя уровня..."}]}
+,
+{"@context":"https://schema.org","@type":"DiscussionForumPosting","headline":"\"Индикатор\" ложного пробоя уровня...","url":"https://www.mql5.com/ru/forum/364561","datePublished":"2021-03-11T01:54:45.0000000Z","text":"Приветствую всех! Хорошего торгового вечера! Коллеги, перешел с валют на CFD на акции. Скальплю по м5 на пробой уровней, линий и т.д. Вполне успешно, если бы ни одно но... Часто случаются ложные пробои уровня и когда торгуешь на м5 - это критично. Кто может подсказать какие-нибудь индикаторы, стратегии, чтобы минимизировать возможность входа в сделку при ложном пробое на м5. Очень нужно... Если моя стратегия сработает, с помогшим думаю поделюсь всеми остальными \"секретными фишками\" вроде брокера, портфеля и т.д. Заранее всем спасибо!) ","interactionStatistic":{"@type":"InteractionCounter","interactionType":"https://schema.org/LikeAction","userInteractionCount":0},"author":{"@type":"Person","name":"dmitry.a.m","url":"https://www.mql5.com/ru/users/dmitry.a.m","agentInteractionStatistic":{"@type":"InteractionCounter","interactionType":"https://schema.org/WriteAction","userInteractionCount":127}},"comment":[{"@type":"Comment","text":"Буду рад любому совету... ","datePublished":"2021-03-09T21:19:20.0000000Z","url":"https://www.mql5.com/ru/forum/364561#comment_21219919","author":{"@type":"Person","name":"dmitry.a.m","url":"https://www.mql5.com/ru/users/dmitry.a.m","agentInteractionStatistic":{"@type":"InteractionCounter","interactionType":"https://schema.org/WriteAction","userInteractionCount":127}}},{"@type":"Comment","text":" dmitry.a.m : Буду рад любому совету... Ну, например с помощью ATR. Если цена прошла ATR периода - вероятность разворота (пропорционально периоду) становится выше продолжения. ","datePublished":"2021-03-09T22:11:57.0000000Z","url":"https://www.mql5.com/ru/forum/364561#comment_21220849","author":{"@type":"Person","name":"Dmitry Bogdanov","url":"https://www.mql5.com/ru/users/dmitrybogdanov","agentInteractionStatistic":{"@type":"InteractionCounter","interactionType":"https://schema.org/WriteAction","userInteractionCount":30}}},{"@type":"Comment","text":" DmitryBogdanov : Ну, например с помощью ATR. Если цена прошла ATR периода - вероятность разворота (пропорционально периоду) становится выше продолжения. Я немного не понял, можно пожалуйста подробнее? ","datePublished":"2021-03-09T22:41:00.0000000Z","url":"https://www.mql5.com/ru/forum/364561#comment_21221402","author":{"@type":"Person","name":"dmitry.a.m","url":"https://www.mql5.com/ru/users/dmitry.a.m","agentInteractionStatistic":{"@type":"InteractionCounter","interactionType":"https://schema.org/WriteAction","userInteractionCount":127}}},{"@type":"Comment","text":" DmitryBogdanov : Ну, например с помощью ATR. Если цена прошла ATR периода - вероятность разворота (пропорционально периоду) становится выше продолжения. Фактически я столкнулся с достаточно интересной трудностью. Заключается она в следующем: При пробое уровня (именно в моем случае) могут быть следующие вариант развития событий: 1. Цена стабильно пойдет дальше в сторону пробоя. 2. Цена вернется к пробою и после этого пойдет в направлении пробоя ( в нужную мне сторону) 3. Цена вернется к пробою и стабильно пойдет дальше в противоположную от пробоя сторону (не нужную мне сторону) 4. Цена вернется к пробою, немного пойдет в противоположную сторону (не нужную мне сторону) а после этого снова пробьет уже пробитый уровень и пойдет стабильно в мою сторону ","datePublished":"2021-03-09T22:47:15.0000000Z","url":"https://www.mql5.com/ru/forum/364561#comment_21221439","author":{"@type":"Person","name":"dmitry.a.m","url":"https://www.mql5.com/ru/users/dmitry.a.m","agentInteractionStatistic":{"@type":"InteractionCounter","interactionType":"https://schema.org/WriteAction","userInteractionCount":127}}},{"@type":"Comment","text":"Я предполагаю, что нужен либо индикатор/советник (да что угодно) что будет указывать на возможно ложный пробой, либо где-то нужно брать реальные объемы по акциям, которые меняются ежеминутно, но где их брать, на каком сайте, у какого брокера - я не знаю ","datePublished":"2021-03-09T22:49:14.0000000Z","url":"https://www.mql5.com/ru/forum/364561#comment_21221455","author":{"@type":"Person","name":"dmitry.a.m","url":"https://www.mql5.com/ru/users/dmitry.a.m","agentInteractionStatistic":{"@type":"InteractionCounter","interactionType":"https://schema.org/WriteAction","userInteractionCount":127}}},{"@type":"Comment","text":"Подобранный мною брокер, подобранный мною подход и CFD - показывают отличные перспективы. Риск 1 к 2 - 1 к 3. Уже сейчас достаточно стабильно можно брать до 2-3% В ДЕНЬ!!! к любому депозиту. И этот показатель можно увеличить многократно, если решить поставленную выше задачу. Я готов к сотрудничеству и с удовольствием обсужу варианты, поделюсь своим опытом и знаниями. Сам торгую уже около 5 лет. ","datePublished":"2021-03-09T22:54:37.0000000Z","url":"https://www.mql5.com/ru/forum/364561#comment_21221498","author":{"@type":"Person","name":"dmitry.a.m","url":"https://www.mql5.com/ru/users/dmitry.a.m","agentInteractionStatistic":{"@type":"InteractionCounter","interactionType":"https://schema.org/WriteAction","userInteractionCount":127}}},{"@type":"Comment","text":"Торговля от уровней нетривиальная задача. И нет простого ответа, или какого-то одного знания, чтобы решить это. По моим наблюдениям уровни являются некоторым препятствием для цены. Цена спотыкается о них. Это видно по графику. Но дальнейшее движение почти также не определено, как если бы их не было. Вернее, влияние есть. Если в день цена пробьёт 4-5 уровней подряд, то вероятность её остановки возрастает, и вероятность некоторого отката тоже. Но это влияние не на поверхности. А всякие варианты тройного касания, отскок после возврата и другие&nbsp;мне не удалось подтвердить статистически. Смотрел не на акциях, а на валютах, но думаю, от этого не легче. Кроме уровней более важно всё-таки основное направление движения, тренд. Потому, что уровни не подсказывают путь, это просто барьер. Результат также зависит от того, как точно Вы определяете уровни. Может там и нет ничего. ","datePublished":"2021-03-09T23:57:33.0000000Z","url":"https://www.mql5.com/ru/forum/364561#comment_21222110","author":{"@type":"Person","name":"Aleksei Stepanenko","url":"https://www.mql5.com/ru/users/realtools.pro","agentInteractionStatistic":{"@type":"InteractionCounter","interactionType":"https://schema.org/WriteAction","userInteractionCount":4449}}},{"@type":"Comment","text":" dmitry.a.m : Фактически я столкнулся с достаточно интересной трудностью. Заключается она в следующем: При пробое уровня (именно в моем случае) могут быть следующие вариант развития событий: 1. Цена стабильно пойдет дальше в сторону пробоя. 2. Цена вернется к пробою и после этого пойдет в направлении пробоя ( в нужную мне сторону) 3. Цена вернется к пробою и стабильно пойдет дальше в противоположную от пробоя сторону (не нужную мне сторону) 4. Цена вернется к пробою, немного пойдет в противоположную сторону (не нужную мне сторону) а после этого снова пробьет уже пробитый уровень и пойдет стабильно в мою сторону берете график чего-нибудь, включаете например масштаб 4 часа, бросаете на график ATR с периодом 100 (например), получаете значение волатильности. переходите к масштабу 1 минута и от максимума\\минимума цены наносите на график зоны размером с 4-х часовой ATR. ","datePublished":"2021-03-09T23:53:52.0000000Z","url":"https://www.mql5.com/ru/forum/364561#comment_21222199","author":{"@type":"Person","name":"Dmitry Bogdanov","url":"https://www.mql5.com/ru/users/dmitrybogdanov","agentInteractionStatistic":{"@type":"InteractionCounter","interactionType":"https://schema.org/WriteAction","userInteractionCount":30}}},{"@type":"Comment","text":" Aleksei Stepanenko : Торговля от уровней нетривиальная задача. И нет простого ответа, или какого-то одного знания, чтобы решить это. По моим наблюдениям уровни являются некоторым препятствием для цены. Цена спотыкается о них. Это видно по графику. Но дальнейшее движение почти также не определено, как если бы их не было. Вернее, влияние есть. Если в день цена пробьёт 4-5 уровней подряд, то вероятность её остановки возрастает, и вероятность некоторого отката тоже. Но это влияние не на поверхности. А всякие варианты тройного касания, отскок после возврата и другие&nbsp;мне не удалось подтвердить статистически. Смотрел не на акциях, а на валютах, но думаю, от этого не легче. Кроме уровней более важно всё-таки основное направление движения, тренд. Потому, что уровни не подсказывают путь, это просто барьер. Результат также зависит от того, как точно Вы определяете уровни. Может там и нет ничего. Можем с вами скооперироваться и обсудить подробнее. Раньше активно торговал именно валютой и тоже в уровнях не нашел однозначного решения, но перейдя на CFD-скальпинг ситуация оказалась более-менее разрешимой... Как уже писал вышел, у меня получилось несколько вариантов движений и на каждом выбранном мною активе вероятность закономерно переваливает в одну из этих сторон,&nbsp; следовательно используя что-либо кроме самих уровней можно добиться еще большего результата, я считаю&nbsp; ","datePublished":"2021-03-10T00:09:29.0000000Z","url":"https://www.mql5.com/ru/forum/364561#comment_21222253","author":{"@type":"Person","name":"dmitry.a.m","url":"https://www.mql5.com/ru/users/dmitry.a.m","agentInteractionStatistic":{"@type":"InteractionCounter","interactionType":"https://schema.org/WriteAction","userInteractionCount":127}}},{"@type":"Comment","text":" DmitryBogdanov : берете график чего-нибудь, включаете например масштаб 4 часа, бросаете на график ATR с периодом 100 (например), получаете значение волатильности. переходите к масштабу 1 минута и от максимума\\минимума цены наносите на график зоны размером с 4-х часовой ATR. Попытался, но пока к результату не пришел. Не до конца понял следующее высказывание \" от максимума\\минимума цены наносите на график зоны размером с 4-х часовой ATR\". Приношу свои извинения, я не силен в использовании индикаторов... В основном пользовался&nbsp; простой техникой и фундаментом... ","datePublished":"2021-03-10T00:14:00.0000000Z","url":"https://www.mql5.com/ru/forum/364561#comment_21222271","author":{"@type":"Person","name":"dmitry.a.m","url":"https://www.mql5.com/ru/users/dmitry.a.m","agentInteractionStatistic":{"@type":"InteractionCounter","interactionType":"https://schema.org/WriteAction","userInteractionCount":127}}}]}
+		]
+	</script>
+</body>
+</html>

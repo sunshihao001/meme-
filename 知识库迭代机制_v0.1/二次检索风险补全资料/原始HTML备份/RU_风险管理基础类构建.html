@@ -1,0 +1,1061 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+
+  <meta name="robots" content="max-snippet:250,max-image-preview:large">
+  <meta name="description" content="В этой статье мы рассмотрим основы управления рисками в трейдинге и узнаем, как создать свои первые функции для расчета подходящего лота для сделки, а также стоп-лосса. Кроме того, мы подробно рассмотрим, как работают эти функции, объясняя каждый шаг. Наша цель — дать четкое понимание того, как применять эти концепции в автоматической торговле. В конце мы применим все на практике, создав простой скрипт с разработанным нами включаемым файлом.">
+  <meta property="og:url" content="https://www.mql5.com/ru/articles/16820">
+  <meta property="og:title" content="Управление рисками (Часть 1): Основы построения класса по управлению рисками">
+  <meta property="og:description" content="В этой статье мы рассмотрим основы управления рисками в трейдинге и узнаем, как создать свои первые функции для расчета подходящего лота для сделки, а также стоп-лосса. Кроме того, мы подробно рассмотрим, как работают эти функции, объясняя каждый шаг. Наша цель — дать четкое понимание того, как применять эти концепции в автоматической торговле. В конце мы применим все на практике, создав простой скрипт с разработанным нами включаемым файлом.">
+      <meta property="og:image" content="https://c.mql5.com/2/108/Proyecto_nuevo_k1x_1200x628.jpg">
+      <meta property="og:image:secure_url" content="https://c.mql5.com/2/108/Proyecto_nuevo_k1x_1200x628.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2025-08-01T15:12:04.0000000Z">
+  <meta property="article:author" content="https://www.mql5.com/ru/users/nique_372">
+  <meta property="article:section" content="MetaTrader 5">
+  <meta property="article:tag" content="Примеры">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@mql5com">
+  <meta name="twitter:image" content="https://c.mql5.com/2/108/Proyecto_nuevo_k1x_1200x628.jpg">
+  <meta name="theme-color" content="#4a76b8">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-config" content="none">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta property="qc:admins" content="36367170677651456375">
+  <meta property="wb:webmaster" content="073d7690269bcd81">
+  <link rel="shortcut icon" href="https://c.mql5.com/i/favicon4.ico">
+  <link rel="dns-prefetch" href="https://c.mql5.com">
+  <link href="https://c.mql5.com/styles/core.444bc25de4c9131a69fedfe5ac42a082.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/all.266d64b83529847f568747dd160d42b0.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/articles.bc4209e4de0b5296041832431b46f3dd.css" type="text/css" rel="stylesheet" media="all">
+  <link href="/ru/articles/rss" rel="alternate" type="application/rss+xml" title="Статьи по разработке и использованию торговых роботов и технических индикаторов для MetaTrader 5">
+  <link rel="canonical" href="https://www.mql5.com/ru/articles/16820">
+  <link rel="alternate" hreflang="en" href="https://www.mql5.com/en/articles/16820">
+  <link rel="alternate" hreflang="ru" href="https://www.mql5.com/ru/articles/16820">
+  <link rel="alternate" hreflang="zh" href="https://www.mql5.com/zh/articles/16820">
+  <link rel="alternate" hreflang="es" href="https://www.mql5.com/es/articles/16820">
+  <link rel="alternate" hreflang="de" href="https://www.mql5.com/de/articles/16820">
+  <link rel="alternate" hreflang="ja" href="https://www.mql5.com/ja/articles/16820">
+  <link rel="alternate" hreflang="pt" href="https://www.mql5.com/pt/articles/16820">
+  <title>Управление рисками (Часть 1): Основы построения класса по управлению рисками - Статьи по MQL5</title>
+
+
+
+<script type="text/javascript">
+  !function(){window.mqGlobal={};var t=!1,n=!1,e=[],o=[],i=[];function d(t){var n;for(n=0;n<t.length;n+=1)t[n]()}function c(){t||(t=!0,d(e),d(o),o=[],e=[])}function a(){c(),n||(n=!0,d(i),i=[])}if(mqGlobal.AddOnReady=function(n,i){t?n(document):i?e.push(n):o.push(n)},mqGlobal.AddOnLoad=function(t){n?t(document):i.push(t)},mqGlobal.AddOnActiveWindowChange=function(t){this._onvisibility||(this._onvisibility=[]),this._onvisibility[this._onvisibility.length]=t},document.addEventListener)document.addEventListener("DOMContentLoaded",c,!1),window.addEventListener("load",a,!1);else if(document.attachEvent&&(document.attachEvent("onreadystatechange",(function(){switch(document.readyState){case"interactive":c();break;case"complete":a()}})),window.attachEvent("onload",a),document.documentElement.doScroll&&window==window.top)){!function n(){if(!t&&document.body)try{document.documentElement.doScroll("left"),c()}catch(t){setTimeout(n,0)}}()}}();
+  mqGlobal.CookieDomain = ".mql5.com";
+  mqGlobal.Language = 'ru';
+  mqGlobal.IsMobile = false;
+  mqGlobal.ClearRteStorage = function (e) { if (window.GStorage || (window.GStorage = globalStorage()), window.GStorage.supported) try { var o = e; window.GStorage.getItem("rte_autosave_uid", function (e, t) { t == o && (window.GStorage.removeItem("rte_autosave_text"), window.GStorage.removeItem("rte_autosave_date"), window.GStorage.removeItem("rte_autosave_uid")) }) } catch (e) { } };
+</script>
+  
+
+    <script src="https://c.mql5.com/js/all.c09fd283bed20d28a52c95cd70a12a27.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/vendor.1be6e9a4a90b28525f93c4c69a5058a1.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/articles.cd4c73c476b2781eecdf04f5583514b5.js" type="text/javascript" defer="defer"></script>
+
+
+</head>
+
+<body id="cover" class="cover">
+
+
+  <nav class="head">
+    <a href="https://www.mql5.com/ru" class="head__logo" title="MQL5 - Язык торговых стратегий для клиентского терминала MetaTrader 5"></a>
+      <div class="head__content">
+        <div class="main-menu" id="mainmenu">
+          
+                    <ul class="main-menu__top-level" id="menuTopLevel">
+                    <li><a href="/ru/forum" data-fz-event="MQL5+Menu+Forum">Форум</a></li>
+                    <li><a href="/ru/market" data-fz-event="MQL5+Menu+Market">Маркет</a></li>
+                    <li><a href="/ru/signals" data-fz-event="MQL5+Menu+Signals">Сигналы</a></li>
+                    <li><a href="/ru/job" data-fz-event="MQL5+Menu+Job">Фриланс</a></li>
+                    <li><a href="/ru/vps" data-fz-event="MQL5+Menu+VPS">VPS</a></li>
+                    <li><a href="/ru/quotes/overview" data-fz-event="MQL5+Menu+Overview">Котировки</a></li>
+                    <li><a href="https://www.metatrader.com/ru" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+MetaTrader">MetaTrader</a></li>
+                  </ul><ul class="main-menu__second-level" id="menuSecondLevel">
+                    <li class="main-menu__selected"><a href="/ru/articles" data-fz-event="MQL5+Menu+Articles"><img src="https://c.mql5.com/i/menu/icon-articles4.svg" alt="" width="16" height="16"/>Статьи</a></li>
+                    <li><a href="/ru/code" data-fz-event="MQL5+Menu+CodeBase"><img src="https://c.mql5.com/i/menu/icon-code4.svg" alt="" width="16" height="16"/>CodeBase</a></li>
+                    <li><a href="https://forge.mql5.io/?lang=ru-RU" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+AlgoForge"><img src="https://c.mql5.com/i/menu/icon-algoforge4.svg" alt="" width="16" height="16"/>Algo Forge</a></li>
+                    <li><a href="/ru/docs" data-fz-event="MQL5+Menu+Docs"><img src="https://c.mql5.com/i/menu/icon-docs4.svg" alt="" width="16" height="16"/>Документация</a></li>
+                    <li><a href="/ru/book" data-fz-event="MQL5+Menu+Book"><img src="https://c.mql5.com/i/menu/icon-book4.svg" alt="" width="16" height="16"/>Учебник по алготрейдингу</a></li>
+                    <li><a href="/ru/neurobook" data-fz-event="MQL5+Menu+Neurobook"><img src="https://c.mql5.com/i/menu/icon-neurobook4.svg" alt="" width="16" height="16"/>Учебник по нейросетям</a></li>
+                    <li><a href="/ru/economic-calendar" data-fz-event="MQL5+Menu+Economic+Calendar"><img src="https://c.mql5.com/i/menu/icon-economic-calendar4.svg" alt="" width="16" height="16"/>Календарь</a></li>
+                    <li><a href="https://web.metatrader.app/terminal?mode=demo&lang=ru" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Menu+Trading"><img src="https://c.mql5.com/i/menu/icon-trading4.svg" alt="" width="16" height="16"/>Вебтерминал</a></li>
+                    <li class="main-menu__mobile"><a href="/ru/about">О проекте</a></li>
+                    <li class="main-menu__second-tools"><a rel="noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" title="Загрузите последнюю версию торговой платформы бесплатно" class="button-mt" data-vars-fz="MetaTrader+5+Desktop+Download+Submenu"><img width="18" height="18" src="https://c.mql5.com/i/sidebar/download.svg" alt="" loading="lazy">Скачать MetaTrader 5</a></li>
+                    </ul>
+        </div>
+          <div class="main-menu__active">
+            <a id="mainMenuSelected" href="#">
+              <span class="main-menu__primary">Статьи</span><span class="main-menu__secondary">Разделы</span>
+            </a>
+          </div>
+<form action="https://www.mql5.com/ru/search" onsubmit="return false;" autocomplete="off" id="headerSearchForm" class="header-search" method="post">
+<button type="button" id="headerSearchButton" title="Поиск" class="header-search__button"></button><div class="header-search__input"><input name="keyword" type="text" enterkeyhint="search" title="Введите текст для поиска" placeholder="Поиск" id="headerSearchKeyword"/><label for="headerSearchKeyword" class="header-search__placeholder">Нажмите <span>/</span> для поиска: @user, $symbol, ...</label><button id="headerSearchSubmit" class="header-search__submit"></button></div><button type="button" id="headerSearchClean" title="Закрыть" class="header-search__clean"></button></form>        <input class="blurHandler" id="mainMenuBlurHandler" type="checkbox">
+      </div>
+      <div class="head__toolbar" id="headerToolbar">
+          <div class="container loginRegister">
+            <nav>
+              <ul id="loginRegisterButtons"><li><a class="login" title="Авторизуйтесь. Поддерживается OpenID-авторизация" href="https://www.mql5.com/ru/auth_login" rel="nofollow" data-fz-event="MQL5+Menu+Siginin">Вход</a></li><li><a class="registration ru" title="Зарегистрируйтесь" href="https://www.mql5.com/ru/auth_register" rel="nofollow" data-fz-event="MQL5+Menu+Register" onclick="window.fpush('MQL5+Button+Click');">Создать аккаунт</a></li></ul>
+            </nav>
+          </div>
+        <div class="toggle-button" id="sidebarToggleButton">
+          <i></i>
+        </div>
+
+        <div class="group-menu" id="groupMenu">
+
+
+          <div class="container lang-menu-container">
+            <div id="langMenuContainer" class="lang-menu">
+              <input class="blurHandler" id="langmenuBlurHandler" type="checkbox">
+              <nav>
+                <ul class="lang-menu__list" id="langmenu">
+                  <li class="lang-menu__list-item"><a href="/en/articles" aria-label="English (English)"><i class="icons-languages icons-languages_en"></i><span>English</span></a></li>
+<li class="lang-menu__list-item lang-menu__list-item_selected"><a href="/ru/articles" aria-label="Русский (Russian)"><i class="icons-languages icons-languages_ru"></i><span>Русский</span></a></li>
+<li class="lang-menu__list-item"><a href="/zh/articles" aria-label="中文 (Chinese)"><i class="icons-languages icons-languages_zh"></i><span>中文</span></a></li>
+<li class="lang-menu__list-item"><a href="/es/articles" aria-label="Español (Spanish)"><i class="icons-languages icons-languages_es"></i><span>Español</span></a></li>
+<li class="lang-menu__list-item"><a href="/pt/articles" aria-label="Português (Portuguese)"><i class="icons-languages icons-languages_pt"></i><span>Português</span></a></li>
+<li class="lang-menu__list-item"><a href="/ja/articles" aria-label="日本語 (Japanese)"><i class="icons-languages icons-languages_ja"></i><span>日本語</span></a></li>
+<li class="lang-menu__list-item"><a href="/de/articles" aria-label="Deutsch (German)"><i class="icons-languages icons-languages_de"></i><span>Deutsch</span></a></li>
+<li class="lang-menu__list-item"><a href="/ko/articles" aria-label="한국어 (Korean)"><i class="icons-languages icons-languages_ko"></i><span>한국어</span></a></li>
+<li class="lang-menu__list-item"><a href="/fr/articles" aria-label="Français (French)"><i class="icons-languages icons-languages_fr"></i><span>Français</span></a></li>
+<li class="lang-menu__list-item"><a href="/it/articles" aria-label="Italiano (Italian)"><i class="icons-languages icons-languages_it"></i><span>Italiano</span></a></li>
+<li class="lang-menu__list-item"><a href="/tr/articles" aria-label="Türkçe (Turkish)"><i class="icons-languages icons-languages_tr"></i><span>Türkçe</span></a></li>
+
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+  </nav>
+
+
+
+  <div id="left-sidebar-selector" class="left-sidebar__selector left-sidebar__selector_padding">
+    <div class="left-sidebar__title">
+MetaTrader 5 /     Примеры
+    </div>
+    <i class="icons-ux icons-ux_arrow-down-black"></i>
+  </div>
+  <div class="articles-container block-with-sidebar">
+    <aside class="left-sidebar left-sidebar_270" id="left-sidebar">
+      
+  <ul class="tree-menu-ul"><li class="tree-menu__item tree-menu__item_selected"><a class="tree-menu__link" href="/ru/articles/examples"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples.svg" alt="" loading="lazy"/>Примеры</a><ul class="tree-menu__list tree-menu__list_nested"><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/examples_indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_indicators.svg" alt="" loading="lazy"/>Индикаторы</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/examples_experts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_experts.svg" alt="" loading="lazy"/>Эксперты</a></li></ul></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/strategy_tester"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/strategy_tester.svg" alt="" loading="lazy"/>Тестер</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/trading"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading.svg" alt="" loading="lazy"/>Трейдинг</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/trading_systems"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading_systems.svg" alt="" loading="lazy"/>Торговые системы</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/integration"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/integration.svg" alt="" loading="lazy"/>Интеграция</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/indicator.svg" alt="" loading="lazy"/>Индикаторы</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/expert_advisors"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/expert.svg" alt="" loading="lazy"/>Эксперты</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/statistics"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/statistics.svg" alt="" loading="lazy"/>Статистика и анализ</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/machine_learning"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/machine_learning.svg" alt="" loading="lazy"/>Машинное обучение</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/interviews"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/interviews.svg" alt="" loading="lazy"/>Интервью</a></li></ul>
+  
+
+    <div class="hints-panel">
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_like"></i>
+        <div class="hints-panel__content">
+          Понравилась статья?<br>
+          Поставьте <a href="https://www.mql5.com/ru/articles/16820" target="_blank">ссылку</a> на нее —<br>пусть другие почитают
+        </div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_tw-square icons-hints_24px"></i><div class="hints-panel__content">
+Ищи нас в <a href="https://x.com/mql5com" target="_blank" rel="nofollow">Twitter</a>!<br> Ставь лайки и следи за новостями</div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_mt-5"></i>
+        <div class="hints-panel__content">
+          Используй новые возможности <a href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Article" rel="nofollow sponsored noopener noreferrer">MetaTrader 5</a>
+        </div>
+      </div>
+    </div>
+<div id='vgckrufggwxdtfscpyalmenexmvhljduja' class="roeid8y6hsc3ntv1l gg88d3drb"></div>      <div class="similar-author-articles ui">
+        <h4 class="similar-author-articles__title">Похожие статьи</h4>
+        <ul class="similar-author-articles__list">
+            <li>
+              <a href="/ru/articles/16050" data-fz-event="MQL5+Article+Similar+Article">От начального до среднего уровня: События в объектах (II)</a>
+            </li>
+            <li>
+              <a href="/ru/articles/16035" data-fz-event="MQL5+Article+Similar+Article">От начального до среднего уровня: События в объектах (I)</a>
+            </li>
+            <li>
+              <a href="/ru/articles/19422" data-fz-event="MQL5+Article+Similar+Article">Разрабатываем пользовательский индикатор рыночных настроений</a>
+            </li>
+            <li>
+              <a href="/ru/articles/21443" data-fz-event="MQL5+Article+Similar+Article">Разработка инструментария для анализа Price Action (Часть 62): Создание адаптивной системы обнаружения параллельных каналов и пробоев на языке MQL5</a>
+            </li>
+            <li>
+              <a href="/ru/articles/16340" data-fz-event="MQL5+Article+Similar+Article">Повышение эффективности торговли с использованием Smart Money Concepts (SMC): OB, BOS и FVG</a>
+            </li>
+        </ul>
+      </div>
+    <div class="freelance-hint">
+      <img src="https://c.mql5.com/i/articles/icon_freelance.svg" width="24" height="24" loading="lazy" />
+      <div class="freelance-hint__text">
+        Используйте идеи из этой статьи,<br>чтобы заказать собственного робота<br>на бирже фрилансеров
+      </div>
+        <a target="_blank" class="button button_blue-gray-border" title="Перейти на биржу" href="/ru/job/new" data-fz-event="MQL5+Article+New+Job">Перейти на биржу</a>
+    </div>
+
+    </aside>
+    <article class="content-with-sidebar articles-content splashed">
+      
+
+
+  <header class="article-header" style="background-color: rgb(158,168,168)">
+    <section class="article-tools-panel">
+        <div class="article-tools-panel__item">
+          <span class="popup framed client flags">
+            <a class="dropdown" href="javascript:void(false);">
+              <span class="icons-languages icons-languages_ru"></span><i></i>
+            </a>
+            <span class="popup">
+              <span class="tip">
+                <span></span>
+              </span>
+              <span class="items">
+                    <a href="/en/articles/16820">English</a>
+                    <a href="/zh/articles/16820">中文</a>
+                    <a href="/es/articles/16820">Español</a>
+                    <a href="/de/articles/16820">Deutsch</a>
+                    <a href="/ja/articles/16820">日本語</a>
+                    <a href="/pt/articles/16820">Português</a>
+              </span>
+            </span>
+          </span>
+        </div>
+        
+      <div class="article-tools-panel__item">
+        <a href="#pocket" title="Через Карман вы можете вставить полное описание этого содержимого в редактор сообщений" onclick="return Pocket.Add(this,'ru',2,1,16820);" class="article-tools-panel__rounded">
+          <i class="article-pocket-icon"></i>
+        </a>
+      </div>
+      <div class="article-tools-panel__item">
+        <a href="/ru/articles/16820?print=" target="_blank" class="article-tools-panel__rounded" rel="nofollow" title="Версия для печати">
+          <i class="article-print-icon"></i>
+        </a>
+      </div>
+
+    </section>
+    <section class="article-header__image-box">
+        <img class="article-header__image-preview" loading="lazy" width="32" height="16" alt="preview" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAsICAoIBwsKCQoNDAsNERwSEQ8PESIZGhQcKSQrKigkJyctMkA3LTA9MCcnOEw5PUNFSElIKzZPVU5GVEBHSEX/2wBDAQwNDREPESESEiFFLicuRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUX/wAARCAAQACADASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAABAUA/8QAHRAAAQQDAQEAAAAAAAAAAAAAAQACAxESITEEUf/EABYBAQEBAAAAAAAAAAAAAAAAAAIBA//EABYRAQEBAAAAAAAAAAAAAAAAAAABEf/aAAwDAQACEQMRAD8AuzSYmx36sz1AirQ5ZbvaMMi7RSxnq5DLZ6kiTXVJgdQAtKa8V1GxZX//2Q==">
+      <div class="article-header__gradient" style="background: linear-gradient(90deg, rgba(158,168,168, 1) 0%, rgba(158,168,168, 0.72) 8.31%, rgba(158,168,168, 0) 17.1%), linear-gradient(270deg, rgba(158,168,168, 1) 0%, rgba(158,168,168, 0.72) 8.06%, rgba(158,168,168, 0) 16.59%), linear-gradient(0deg, rgba(158,168,168, 1) 8.26%, rgba(158,168,168, 0.8) 65%, rgba(158,168,168, 0) 100%);"></div>
+        <picture>
+          <source srcset="https://c.mql5.com/2/108/Proyecto_nuevo_f1p_600x314.jpg, https://c.mql5.com/2/108/Proyecto_nuevo_k1x_1200x628.jpg 2x" media="(min-width:700px)">
+          <img class="article-header__image" loading="lazy" width="600" height="314" srcset="https://c.mql5.com/2/108/Proyecto_nuevo_51t_300x157.jpg, https://c.mql5.com/2/108/Proyecto_nuevo_f1p_600x314.jpg 2x" src="https://c.mql5.com/2/108/Proyecto_nuevo_f1p_600x314.jpg" alt="Управление рисками (Часть 1): Основы построения класса по управлению рисками" onerror="this.style.display='none';">
+        </picture>
+    </section>
+    <section class="article-header__content">
+      <h1>Управление рисками (Часть 1): Основы построения класса по управлению рисками</h1>
+      <div class="article-header__info">
+        <a href="/ru/articles/mt5">MetaTrader 5</a>
+          &mdash;
+          <a href="/ru/articles/mt5/examples">Примеры</a>
+        | <time datetime="2025-08-01T15:12Z" title="15:12" datetime-type="datetime">1 августа 2025, 15:12</time>
+      </div>
+      <div class="article-header__indicators">
+        <span title="Просмотры">
+          <img src="https://c.mql5.com/i/icons.svg#views-usage" width="20" height="20" alt="" />
+          897
+        </span>
+        
+          <a title="Комментарии" href="/ru/forum/492367">
+            <img src="https://c.mql5.com/i/icons.svg#comments-usage" width="20" height="20" alt="" />
+            0
+          </a>
+      </div>
+      <div class="article-header__author">
+          <div class="article-header__avatar">
+            <img src="https://c.mql5.com/avatar/2024/8/66bbab57-2d8c.png" srcset="https://c.mql5.com/avatar/2024/8/66bbab57-2d8c_big.png 2x" data-user-login="Nique_372" title="Niquel Mendoza" alt="Niquel Mendoza" loading="lazy" width="60" height="60">
+          </div>
+<a class="author" href="/ru/users/nique_372" data-user-login="Nique_372">Niquel Mendoza</a>      </div>
+    </section>
+  </header>
+
+    <div class="content">
+      <div class="inner formatted-content">
+        <ul> <li><a href="/ru/articles/16820#1">Введение</a></li> <li><a href="/ru/articles/16820#2">Что такое управление рисками</a></li> <li><a href="/ru/articles/16820#3">Важность автоматической торговли</a></li> <li><a href="/ru/articles/16820#4">Вводные концепции управления рисками</a></li> <li><a href="/ru/articles/16820#5">Cоздание включаемого файла и описание плана</a>&nbsp;&nbsp;</li> <li><a href="/ru/articles/16820#6">Создание функций для расчета размера лота</a></li> <li><a href="/ru/articles/16820#7">Создание функций для получения прибыли</a></li> <li><a href="/ru/articles/16820#8">Проверка на практике с помощью создания простого скрипта с включаемым файлом</a></li> <li><a href="/ru/articles/16820#9">Заключение</a></li> </ul> <h3 id="1"><br/><br/>Введение&nbsp;</h3> <p>В этой статье мы рассмотрим, что такое управление рисками в трейдинге и его важность в автоматической торговле. Мы начнем с базовых понятий, заложив основу для понимания того, как правильное управление рисками может определять разницу между успехом и неудачей на финансовых рынках.&nbsp;</p> <p>Далее мы шаг за шагом создадим класс на MQL5, который реализует полное управление рисками, позволяя контролировать ключевые аспекты, такие как размер лота, максимальные убытки и ожидаемую прибыль.</p> <p><br/></p> <h3 id="2">Что такое управление рисками&nbsp;</h3> <p>Управление рисками является основополагающим принципом любой торговой стратегии. Его основная цель — отслеживать и контролировать открытые позиции, гарантируя, что убытки не превышают установленные трейдером лимиты, такие как дневные, еженедельные или общие.</p> <p>Кроме того, управление рисками позволяет определить подходящий размер лота для каждой сделки на основе правил и предпочтений пользователя. Это не только защищает капитал, но и оптимизирует эффективность стратегии, гарантируя, что сделки соответствуют заданному профилю риска.</p> <p>В целом, грамотное управление рисками не только снижает вероятность катастрофических убытков, но и обеспечивает дисциплинированный подход к принятию разумных финансовых решений.</p> <p><br/></p> <h3 id="3">Важность для автоматической торговли&nbsp;&nbsp;</h3> <p>Управление рисками играет решающую роль в автоматической торговле, поскольку оно действует как система контроля, которая предотвращает дорогостоящие ошибки, такие как чрезмерная торговля или подверженность ненужным рискам. В контексте торговых ботов, где решения принимаются полностью автоматически, надлежащее управление рисками обеспечивает дисциплинированную и эффективную реализацию стратегий.</p> <p>Это особенно ценно в таких ситуациях, как отбор на финансирование, где соблюдение строгих ограничений дневных, недельных или общих убытков может стать решающим фактором для успеха или провала. Управление рисками позволяет точно устанавливать эти барьеры, защищая капитал пользователя и оптимизируя его деятельность в конкурентной среде.</p> <p>Кроме того, это помогает боту действовать более стратегически, ставя четкие ограничения, чтобы избежать чрезмерной торговли или принятия несоразмерных рисков. Благодаря автоматическому расчету размеров лотов и ограничению убытков на сделку, управление рисками не только защищает капитал, но и обеспечивает трейдеру спокойствие, основанное на уверенности, что его бот работает в контролируемых и безопасных пределах.</p> <p><br/></p> <h3 id="4">Вводные концепции управления рисками&nbsp;</h3> <p></p> <p>Прежде чем приступить к программированию, важно понять основные переменные и концепции, которые мы будем использовать в управлении рисками. Эти концепции являются фундаментальными для разработки эффективной системы, которая защищает капитал пользователя и обеспечивает контролируемую торговлю. Ниже мы рассмотрим каждую из них:</p> <h4>1. Максимальный дневной убыток</h4> <p>Это максимальный предел убытка, который бот может накопить за один день (24 часа). Если этот предел достигнут, бот, вероятней всего, закроет все открытые позиции и приостановит любую торговую активность до следующего дня. Такой подход помогает предотвратить серьезное влияние серии неудачных сделок на капитал.</p> <h4>2. Максимальный недельный убыток</h4> <p>Аналогично дневному убытку, но применяется к интервалу в одну неделю. Если бот превысит установленный предел, он прекратит торговлю до начала следующей недели. Этот параметр идеально подходит для предотвращения значительных убытков на более длительных временных интервалах.</p> <h4>3. Максимальный общий убыток</h4> <p>Это абсолютный предел убытков, по достижении которого активируется специальная стратегия восстановления. Она может включать в себя уменьшение размеров лотов и более осторожную торговлю с целью постепенного восстановления утраченного капитала. Эта концепция позволяет контролировать общий риск по счету.</p> <h4>4. Максимальный убыток на сделку</h4> <p>Определяет максимальный убыток, который может быть допущен в одной сделке. Это значение критически важно, поскольку позволяет автоматически рассчитывать идеальный размер лота для каждой сделки в соответствии с уровнем риска, который пользователь готов принять.</p> <h4>5. Дневная, недельная и общая прибыль</h4> <p>Это переменные, фиксирующие накопленную прибыль за разные периоды времени. Эти метрики полезны для оценки эффективности работы бота и корректировки стратегий на основе полученных результатов.</p> <p><br/></p> <h3 id="5">Создание включаемого файла и описание плана&nbsp;</h3> <p style="text-align:center;"></p> <p>В этом разделе мы начнем программировать включаемый файл.</p> <p><b>1.</b> В верхней части нашей платформы Metatrader находим пункт «IDE» и кликаем по нему:</p> <p style="text-align:center;"> <img width="420" height="29" src="https://c.mql5.com/2/110/IDE-1.png" loading="lazy" title=" IDE-1" alt=" IDE-1" style="vertical-align:middle;"/></p> <p><b>2.</b> В левом верхнем углу MetaEditor выбираем вкладку «Файл», затем «Новый», и должно появиться примерно следующее:</p> <p style="text-align:center;"> <img width="534" height="408" src="https://c.mql5.com/2/110/IDE-2.png" loading="lazy" title="IDE-2" alt="IDE-2" style="vertical-align:middle;"/></p> <p><b>&nbsp;</b><b>3.</b> Выбираем «Include» и нажимаем «Далее»:</p> <p style="text-align:center;"> <img width="535" height="409" src="https://c.mql5.com/2/110/IDE-3.png" loading="lazy" title=" IDE-3" alt=" IDE-3" style="vertical-align:middle;"/></p> <p><b>4.</b> Настраиваем включаемый файл, указав ему имя и автора:</p> <p style="text-align:center;"> <img width="532" height="408" src="https://c.mql5.com/2/110/IDE-4.png" loading="lazy" title="IDE-4" alt="IDE-4" style="vertical-align:middle;"/></p> <p>На этом создание файла завершено, но это только начало. Теперь я подробно опишу план работы системы управления рисками.</p> <p>Ниже представлена схема того, как будет работать управление рисками:</p> <p style="text-align:center;"> <img width="600" height="500" src="https://c.mql5.com/2/110/Map-1.png" loading="lazy" title="Map-1" alt="Map-1" style="vertical-align:middle;"/></p> <table cellspacing="0" cellpadding="3" width="100%" class="standart"> <thead> <tr> <th>Раздел <br/></th> <th>Описание &nbsp;</th> <th>Частота выполнения <br/></th> </tr> </thead> <tbody> <tr> <td style="text-align:left;">1. Переменные настройки расчета </td> <td>На этом начальном этапе (который выполняется только один раз) устанавливаются все переменные, необходимые для расчета убытков и прибыли. <br/><br/>Основные задачи включают:<br/> <ul> <li>определение магического числа для идентификации конкретных сделок советника;</li> <li>установку начального баланса, что особенно актуально при торговле на счетах с финансированием или в проп-компаниях;</li> <li>указание применимых процентных значений риска, и решение, будет ли убыток рассчитываться в <b>деньгах</b> или как <b>процент от баланса/капитала</b>.</li> </ul> Если выбран расчет по проценту, пользователь должен указать базовое значение, к которому будет применяться этот процент (например, общий баланс, эквити, общий профит или свободная маржа).</td> <td>Выполняется только <b>один раз</b> или при настройке советника. </td> </tr> <tr> <td>2. <br/>Расчет прибыли и убытков <br/></td> <td>На этом этапе рассчитывается текущее состояние прибыли и убытков на счете. Включая:<br/> <ul> <li>вычисление общей суммы накопленных убытков;</li> <li>регистрацию прибыли по дням, неделям или по сделкам;</li> <li>сравнение накопленных убытков с лимитами, установленными в предыдущем разделе.</li> </ul> Этот процесс выполняется периодически, в соответствии с потребностями пользователя.</td> <td>Выполняется <b>ежедневно</b>, <b>при открытии сделки</b>, или <b>еженедельно</b> — в зависимости от настроек. <br/></td> </tr> <tr> <td>3. <br/>Проверка в реальном времени </td> <td>В режиме реального времени советник выполняет постоянную проверку (на каждом тике), чтобы убедиться, что текущие убытки не превышают заданных лимитов.<br/><br/>Если какое-либо из значений убытков превышено, советник немедленно закроет все открытые позиции, чтобы предотвратить дальнейшие потери. </td> <td><b>На каждом тике </b> (процесс в реальном времени). </td> </tr> </tbody> </table> <p>С учетом всего вышеизложенного, переходим к созданию первых функций.</p> <p><br/></p> <h3>Создание функций для расчета размера лота&nbsp;<br/></h3> <p></p> <p>Прежде чем приступить к разработке класса, необходимо сначала создать функции, которые позволят нам рассчитать лот.</p> <h4>Расчет идеального лота</h4> <p>Чтобы определить идеальный лот, нам сначала нужно рассчитать общий размер лота, то есть тот максимум, который наш счет может купить или продать. Этот расчет основан на знании маржи, необходимой для торговли одним лотом в валюте счета. Получив это значение, мы делим его на свободную маржу счета, округляем результат и таким образом получаем максимальный лот, разрешенный для нашего счета.</p> <h4>Предварительные требования</h4> <p>Прежде чем приступить к расчетам, необходимо определить маржу, требуемую для одного лота любого символа. В этом примере в качестве символа будет использоваться золото, однако данный процесс применим к любому другому финансовому символу.</p> <p>Основная цель — получить надежную основу для эффективного расчета лотов, адаптированного к балансу и марже, доступной на нашем торговом счете.</p> <p style="text-align:center;"> <img width="489" height="66" src="https://c.mql5.com/2/110/MARGIN-1.PNG" loading="lazy" title=" МАРЖА-1" alt=" МАРЖА-1" style="vertical-align:middle;"/></p> <p>Как видим, приблизительная начальная маржа для покупки одного лота золота составляет 1 326 USD. Следовательно, чтобы рассчитать <b>максимально допустимый лот</b>, достаточно просто разделить свободную маржу, доступную на счете, на требуемую начальную маржу. Это соотношение можно представить следующим образом:</p> <p style="text-align:center;"> <img width="375" height="65" src="https://c.mql5.com/2/111/margin-2.png" loading="lazy" title="МАРЖА-2" alt="МАРЖА-2" style="vertical-align:middle;"/></p> <p>Свободная маржа:</p> <ul> <li>Это доступный капитал на вашем счёте, который можно использовать для открытия новых сделок. В MetaTrader он рассчитывается следующим образом:</li> </ul> <p style="text-align:center;"> <img width="300" height="46" src="https://c.mql5.com/2/111/margin-3.png" loading="lazy" title="МАРЖА-3" alt="МАРЖА-3" style="vertical-align:middle;"/></p> <p><b>Расчет цены для любого типа ордера</b><br/> Теперь, когда мы знаем, как рассчитать <b>максимальный размер лота</b>, следующим шагом будет программная реализация этой функциональности. Однако перед тем, как приступить к этому, нам необходимо определить цену, по которой будет исполнен ордер. Для этого мы создадим функцию под названием PriceByOrderType, которая будет рассчитывать и возвращать соответствующую цену в зависимости от типа ордера.</p> <pre class="code"><span class="keyword">double</span> PriceByOrderType(<span class="keyword">const</span> <span class="keyword">string</span> symbol, <span class="keyword">const</span> <span class="macro">ENUM_ORDER_TYPE</span> order_type, <span class="keyword">double</span> DEVIATION = <span class="number">100</span>, <span class="keyword">double</span> STOP_LIMIT = <span class="number">50</span>)</pre> <p>Параметры:</p> <ol> <li>symbol —&nbsp;торговый символ (например, «EURUSD»), по которому будет исполнен ордер,</li> <li>order_type —&nbsp;тип ордера, основанный на перечислении ENUM_ORDER_TYPE,</li> <li>DEVIATION —&nbsp;допустимое отклонение в пунктах,</li> <li>STOP_LIMIT —&nbsp;расстояние в пунктах для ордеров типа STOP_LIMIT.</li> </ol> <p>Шаг 1. Создание необходимых переменных</p> <p>Сначала объявим переменные, которые будут хранить количество знаков символа, стоимость одного пункта и текущие цены (bid и ask) в структуре MqlTick.</p> <pre class="code"><span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp; digits=<span class="number">0</span>; 
+<span class="keyword">double</span>&nbsp;&nbsp;point=<span class="number">0</span>; 
+<span class="predefines">MqlTick</span> tick={}; 
+</pre> <p>Шаг 2. Присвоение значений переменным</p> <p>Мы используем функции для получения информации о символе, такой как количество знаков, значение пункта и текущие цены.</p>Получение значения SYMBOL_POINT: <pre class="code"><span class="functions">ResetLastError</span>(); 
+<span class="keyword">if</span>(!<span class="functions">SymbolInfoDouble</span>(symbol, <span class="macro">SYMBOL_POINT</span>, point)) 
+&nbsp;&nbsp;{ 
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"SymbolInfoDouble() failed. Error "</span>, <span class="functions">GetLastError</span>()); 
+&nbsp;&nbsp; <span class="keyword">return</span> <span class="number">0</span>; 
+&nbsp;&nbsp;} 
+</pre> <p></p> <p>Получение значения SYMBOL_DIGITS:</p> <pre class="code"><span class="keyword">long</span> value=<span class="number">0</span>; 
+<span class="keyword">if</span>(!<span class="functions">SymbolInfoInteger</span>(symbol, <span class="macro">SYMBOL_DIGITS</span>, value)) 
+&nbsp;&nbsp;{ 
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"SymbolInfoInteger() failed. Error "</span>, <span class="functions">GetLastError</span>()); 
+&nbsp;&nbsp; <span class="keyword">return</span> <span class="number">0</span>; 
+&nbsp;&nbsp;} 
+digits=(<span class="keyword">int</span>)value; 
+</pre> <p></p> <p>Получение текущих цен символа:</p> <pre class="code"><span class="keyword">if</span>(!<span class="functions">SymbolInfoTick</span>(symbol, tick)) 
+&nbsp;&nbsp;{ 
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"SymbolInfoTick() failed. Error "</span>, <span class="functions">GetLastError</span>()); 
+&nbsp;&nbsp; <span class="keyword">return</span> <span class="number">0</span>; 
+&nbsp;&nbsp;} 
+</pre> <p>Шаг 3.&nbsp;<b></b>Расчет цены на основе типа ордера</p> <p>В зависимости от типа ордера, мы возвращаем соответствующую цену, используя конструкцию switch:</p> <pre class="code"><span class="keyword">switch</span>(order_type) 
+&nbsp;&nbsp;{ 
+&nbsp;&nbsp; <span class="keyword">case</span> <span class="macro">ORDER_TYPE_BUY</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;<span class="keyword">return</span>(tick.ask); 
+&nbsp;&nbsp; <span class="keyword">case</span> <span class="macro">ORDER_TYPE_SELL</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp;&nbsp;<span class="keyword">return</span>(tick.bid); 
+&nbsp;&nbsp; <span class="keyword">case</span> <span class="macro">ORDER_TYPE_BUY_LIMIT</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;<span class="keyword">return</span>(<span class="functions">NormalizeDouble</span>(tick.ask - DEVIATION * point, digits)); 
+&nbsp;&nbsp; <span class="keyword">case</span> <span class="macro">ORDER_TYPE_SELL_LIMIT</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp;&nbsp;<span class="keyword">return</span>(<span class="functions">NormalizeDouble</span>(tick.bid + DEVIATION * point, digits)); 
+&nbsp;&nbsp; <span class="keyword">case</span> <span class="macro">ORDER_TYPE_BUY_STOP</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp;&nbsp;<span class="keyword">return</span>(<span class="functions">NormalizeDouble</span>(tick.ask + DEVIATION * point, digits)); 
+&nbsp;&nbsp; <span class="keyword">case</span> <span class="macro">ORDER_TYPE_SELL_STOP</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;<span class="keyword">return</span>(<span class="functions">NormalizeDouble</span>(tick.bid - DEVIATION * point, digits)); 
+&nbsp;&nbsp; <span class="keyword">case</span> <span class="macro">ORDER_TYPE_BUY_STOP_LIMIT</span>&nbsp;&nbsp; :&nbsp;&nbsp;<span class="keyword">return</span>(<span class="functions">NormalizeDouble</span>(tick.ask + DEVIATION * point - STOP_LIMIT * point, digits)); 
+&nbsp;&nbsp; <span class="keyword">case</span> <span class="macro">ORDER_TYPE_SELL_STOP_LIMIT</span>&nbsp;&nbsp;:&nbsp;&nbsp;<span class="keyword">return</span>(<span class="functions">NormalizeDouble</span>(tick.bid - DEVIATION * point + STOP_LIMIT * point, digits)); 
+&nbsp;&nbsp; <span class="keyword">default</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;<span class="keyword">return</span>(<span class="number">0</span>); 
+&nbsp;&nbsp;} 
+</pre> <p>Вот финальная реализация функции: </p> <pre class="code"><span class="keyword">double</span> PriceByOrderType(<span class="keyword">const</span> <span class="keyword">string</span> symbol, <span class="keyword">const</span> <span class="macro">ENUM_ORDER_TYPE</span> order_type, <span class="keyword">double</span> DEVIATION = <span class="number">100</span>, <span class="keyword">double</span> STOP_LIMIT = <span class="number">50</span>) 
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp; digits=<span class="number">0</span>; 
+&nbsp;&nbsp; <span class="keyword">double</span>&nbsp;&nbsp;point=<span class="number">0</span>; 
+&nbsp;&nbsp; <span class="predefines">MqlTick</span> tick={}; 
+
+<span class="comment">//--- we get the Point value of the symbol</span>
+&nbsp;&nbsp; <span class="functions">ResetLastError</span>(); 
+&nbsp;&nbsp; <span class="keyword">if</span>(!<span class="functions">SymbolInfoDouble</span>(symbol, <span class="macro">SYMBOL_POINT</span>, point)) 
+&nbsp;&nbsp;&nbsp;&nbsp; { 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"SymbolInfoDouble() failed. Error "</span>, <span class="functions">GetLastError</span>()); 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="number">0</span>; 
+&nbsp;&nbsp;&nbsp;&nbsp; } 
+
+<span class="comment">//--- we get the Digits value of the symbol</span>
+&nbsp;&nbsp; <span class="keyword">long</span> value=<span class="number">0</span>; 
+&nbsp;&nbsp; <span class="keyword">if</span>(!<span class="functions">SymbolInfoInteger</span>(symbol, <span class="macro">SYMBOL_DIGITS</span>, value)) 
+&nbsp;&nbsp;&nbsp;&nbsp; { 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"SymbolInfoInteger() failed. Error "</span>, <span class="functions">GetLastError</span>()); 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="number">0</span>; 
+&nbsp;&nbsp;&nbsp;&nbsp; } 
+&nbsp;&nbsp; digits=(<span class="keyword">int</span>)value; 
+
+<span class="comment">//--- we get the latest prices of the symbol</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(!<span class="functions">SymbolInfoTick</span>(symbol, tick)) 
+&nbsp;&nbsp;&nbsp;&nbsp; { 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"SymbolInfoTick() failed. Error "</span>, <span class="functions">GetLastError</span>()); 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="number">0</span>; 
+&nbsp;&nbsp;&nbsp;&nbsp; } 
+
+<span class="comment">//--- Depending on the type of order, we return the price</span>
+&nbsp;&nbsp; <span class="keyword">switch</span>(order_type) 
+&nbsp;&nbsp;&nbsp;&nbsp; { 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">case</span> <span class="macro">ORDER_TYPE_BUY</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;<span class="keyword">return</span>(tick.ask); 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">case</span> <span class="macro">ORDER_TYPE_SELL</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp;&nbsp;<span class="keyword">return</span>(tick.bid); 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">case</span> <span class="macro">ORDER_TYPE_BUY_LIMIT</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;<span class="keyword">return</span>(<span class="functions">NormalizeDouble</span>(tick.ask - DEVIATION * point, digits)); 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">case</span> <span class="macro">ORDER_TYPE_SELL_LIMIT</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp;&nbsp;<span class="keyword">return</span>(<span class="functions">NormalizeDouble</span>(tick.bid + DEVIATION * point, digits)); 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">case</span> <span class="macro">ORDER_TYPE_BUY_STOP</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp;&nbsp;<span class="keyword">return</span>(<span class="functions">NormalizeDouble</span>(tick.ask + DEVIATION * point, digits)); 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">case</span> <span class="macro">ORDER_TYPE_SELL_STOP</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;<span class="keyword">return</span>(<span class="functions">NormalizeDouble</span>(tick.bid - DEVIATION * point, digits)); 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">case</span> <span class="macro">ORDER_TYPE_BUY_STOP_LIMIT</span>&nbsp;&nbsp; :&nbsp;&nbsp;<span class="keyword">return</span>(<span class="functions">NormalizeDouble</span>(tick.ask + DEVIATION * point - STOP_LIMIT * point, digits)); 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">case</span> <span class="macro">ORDER_TYPE_SELL_STOP_LIMIT</span>&nbsp;&nbsp;:&nbsp;&nbsp;<span class="keyword">return</span>(<span class="functions">NormalizeDouble</span>(tick.bid - DEVIATION * point + STOP_LIMIT * point, digits)); 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">default</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;<span class="keyword">return</span>(<span class="number">0</span>); 
+&nbsp;&nbsp;&nbsp;&nbsp; } 
+&nbsp;&nbsp;} 
+</pre> <p>Кроме того, понадобится функция для получения типа рыночного ордера по типу ордера, это делается просто:</p> <pre class="code"><span class="macro">ENUM_ORDER_TYPE</span> MarketOrderByOrderType(<span class="macro">ENUM_ORDER_TYPE</span> type) 
+&nbsp;&nbsp;{ 
+&nbsp;&nbsp; <span class="keyword">switch</span>(type) 
+&nbsp;&nbsp;&nbsp;&nbsp; { 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">case</span> <span class="macro">ORDER_TYPE_BUY</span>&nbsp;&nbsp;: <span class="keyword">case</span> <span class="macro">ORDER_TYPE_BUY_LIMIT</span>&nbsp;&nbsp;: <span class="keyword">case</span> <span class="macro">ORDER_TYPE_BUY_STOP</span>&nbsp;&nbsp;: <span class="keyword">case</span> <span class="macro">ORDER_TYPE_BUY_STOP_LIMIT</span>&nbsp;&nbsp;: 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>(<span class="macro">ORDER_TYPE_BUY</span>); 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">case</span> <span class="macro">ORDER_TYPE_SELL</span> : <span class="keyword">case</span> <span class="macro">ORDER_TYPE_SELL_LIMIT</span> : <span class="keyword">case</span> <span class="macro">ORDER_TYPE_SELL_STOP</span> : <span class="keyword">case</span> <span class="macro">ORDER_TYPE_SELL_STOP_LIMIT</span> : 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>(<span class="macro">ORDER_TYPE_SELL</span>); 
+&nbsp;&nbsp;&nbsp;&nbsp; } 
+&nbsp;&nbsp; <span class="keyword">return</span>(<span class="macro">WRONG_VALUE</span>); 
+&nbsp;&nbsp;}</pre> <p><b>Расчет максимального лота</b><br/> Функция GetMaxLot вычисляет максимальный размер лота, который можно открыть, исходя из доступной свободной маржи и указанного типа ордера. Это ключевой инструмент для управления рисками, который гарантирует соответствие сделок требованиям по марже, установленным брокером.</p> <p>1. Создание параметров функции</p> <p>Функция принимает следующие параметры:</p> <pre class="code"><span class="keyword">double</span> GetMaxLote(<span class="macro">ENUM_ORDER_TYPE</span> type, <span class="keyword">double</span> DEVIATION = <span class="number">100</span>, <span class="keyword">double</span> STOP_LIMIT = <span class="number">50</span>)
+</pre> <ul> <li>Type —&nbsp;определяет тип ордера, например ORDER_TYPE_BUY или ORDER_TYPE_SELL. Этот параметр является ключевым для корректного расчета цены и маржи.</li> <li>DEVIATION —&nbsp;указывает допустимое отклонение в пунктах для отложенных ордеров. Значение по умолчанию — 100.</li> <li>STOP_LIMIT —&nbsp;представляет расстояние в пунктах для ордеров типа STOP_LIMIT. Значение по умолчанию — 50.</li> </ul> <p></p> <p>2. Инициализация необходимых переменных</p> <p>Объявляются четыре переменные типа double и одно перечисление ORDER_TYPE, которые будут использоваться в рассчетах:</p> <pre class="code">&nbsp;&nbsp; <span class="comment">//--- Set variables</span>
+&nbsp;&nbsp; <span class="keyword">double</span> VOLUME = <span class="number">1.0</span>; <span class="comment">//Initial volume size</span>
+&nbsp;&nbsp; <span class="macro">ENUM_ORDER_TYPE</span> new_type = MarketOrderByOrderType(type); 
+&nbsp;&nbsp; <span class="keyword">double</span> price = PriceByOrderType(<span class="predefines">_Symbol</span>, type, DEVIATION, STOP_LIMIT); <span class="comment">// Price for the given order type</span>
+&nbsp;&nbsp; <span class="keyword">double</span> volume_step = <span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_VOLUME_STEP</span>); <span class="comment">// Volume step for the symbol</span>
+&nbsp;&nbsp; <span class="keyword">double</span> margin = <span class="macro">EMPTY_VALUE</span>; <span class="comment">// Required margin, initialized as empty</span></pre> <p></p> <p>3.&nbsp;<b></b>Расчет маржи, необходимой для одного лота</p> <p>Для определения маржи, требуемой для открытия одного лота при текущих рыночных условиях, используется функция OrderCalcMargin. В случае неудачи, выводится сообщение об ошибке и возвращается 0:</p> <pre class="code"><span class="functions">ResetLastError</span>(); 
+<span class="keyword">if</span> (!<span class="functions">OrderCalcMargin</span>(new_type, <span class="predefines">_Symbol</span>, VOLUME, price, margin)) 
+&nbsp;&nbsp;{ 
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"OrderCalcMargin() failed. Error "</span>, <span class="functions">GetLastError</span>()); 
+&nbsp;&nbsp; <span class="keyword">return</span> <span class="number">0</span>; <span class="comment">// Exit the function if margin calculation fails</span>
+&nbsp;&nbsp;} 
+</pre> <p>4. Расчет максимального размера лота</p> <p>Для расчета максимального размера лота используется приведенная выше формула. Это включает в себя деление свободной маржи на требуемую маржу, нормализацию результата по допустимому шагу объема и округление в меньшую сторону во избежание ошибок:</p> <pre class="code"><span class="keyword">double</span> result = <span class="functions">MathFloor</span>((<span class="functions">AccountInfoDouble</span>(<span class="macro">ACCOUNT_MARGIN_FREE</span>) / margin) / volume_step) * volume_step; 
+</pre> <p>5.&nbsp;<b></b>Возврат результата</p> <p>В завершение, возвращается рассчитанный максимальный размер лота:</p> <pre class="code"><span class="keyword">return</span> result; <span class="comment">// Return the maximum lot size</span>
+</pre> <p></p> <p>Полная функция:</p> <pre class="code"><span class="keyword">double</span> GetMaxLote(<span class="macro">ENUM_ORDER_TYPE</span> type, <span class="keyword">double</span> DEVIATION = <span class="number">100</span>, <span class="keyword">double</span> STOP_LIMIT = <span class="number">50</span>) 
+&nbsp;&nbsp;{ 
+&nbsp;&nbsp; <span class="comment">//--- Set variables</span>
+&nbsp;&nbsp; <span class="keyword">double</span> VOLUME = <span class="number">1.0</span>; <span class="comment">// Initial volume size</span>
+&nbsp;&nbsp; <span class="macro">ENUM_ORDER_TYPE</span> new_type = MarketOrderByOrderType(type); 
+&nbsp;&nbsp; <span class="keyword">double</span> price = PriceByOrderType(<span class="predefines">_Symbol</span>, type, DEVIATION, STOP_LIMIT); <span class="comment">// Price for the given order type</span>
+&nbsp;&nbsp; <span class="keyword">double</span> volume_step = <span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_VOLUME_STEP</span>);    <span class="comment">// Volume step for the symbol</span>
+&nbsp;&nbsp; <span class="keyword">double</span> margin = <span class="macro">EMPTY_VALUE</span>; <span class="comment">// Required margin, initialized as empty</span>
+&nbsp;&nbsp;
+&nbsp;&nbsp; <span class="comment">//--- Get margin for one lot</span>
+&nbsp;&nbsp; <span class="functions">ResetLastError</span>(); 
+&nbsp;&nbsp; <span class="keyword">if</span> (!<span class="functions">OrderCalcMargin</span>(new_type, <span class="predefines">_Symbol</span>, VOLUME, price, margin)) 
+&nbsp;&nbsp;&nbsp;&nbsp; { 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"OrderCalcMargin() failed. Error "</span>, <span class="functions">GetLastError</span>()); 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="number">0</span>; <span class="comment">// Exit the function if margin calculation fails</span>
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="comment">//--- Calculate the maximum lot size</span>
+&nbsp;&nbsp; <span class="keyword">double</span> result = <span class="functions">MathFloor</span>((<span class="functions">AccountInfoDouble</span>(<span class="macro">ACCOUNT_MARGIN_FREE</span>) / margin) / volume_step) * volume_step; 
+&nbsp;&nbsp; <span class="keyword">return</span> result; <span class="comment">// Return the maximum lot size</span>
+&nbsp;&nbsp;}</pre> <p><br/></p> <h3>Создание функций для получения прибыли&nbsp;<br/></h3> <p></p> <p>После завершения разработки функций для расчета максимального размера лота, следующим шагом является разработка функций, которые рассчитывают прибыль с определенной даты по текущий момент времени. Это критически важно, поскольку при оценке на каждом тике нам необходимо определить, была ли превышена переменная максимального убытка. Для этого мы полагаемся на переменные, хранящие информацию о прибыли. Например, чтобы проверить, был ли превышен максимальный дневной убыток, необходимо знать накопленную прибыль за день, а также текущее эквити.</p> <p>Расчет текущей прибыли будет выполняться с использованием доступных функций для работы с историей ордеров и транзакций. Это позволит нам получить точные и актуальные данные о прибыли и убытках за определенный период.</p> <p><b>Подробное описание функции</b></p> <p>1. Инициализация переменных и сброс ошибок:</p> <pre class="code"><span class="keyword">double</span> total_net_profit = <span class="number">0.0</span>; <span class="comment">// Initialize the total net profit</span>
+<span class="functions">ResetLastError</span>(); <span class="comment">// Reset any previous errors</span><b>
+</b></pre> <ul> <li>total_net_profit —&nbsp;инициализируется значением 0,0, что означает, что чистая прибыль еще не была рассчитана.</li> <li>ResetLastError —&nbsp;обеспечивает сброс любых предыдущих ошибок, которые могли возникнуть в коде, перед началом выполнения.</li> </ul> <p><b></b></p> <p>2.&nbsp;Проверка даты начала (start_date):</p> <pre class="code"><span class="keyword">if</span>((start_date &gt; <span class="number">0</span> || start_date != <span class="string">D'1971.01.01 00:00'</span>))
+</pre> <p></p>Эта строка проверяет, является ли допустимой дата, указанная в качестве start_date (то есть не является ли она недействительной по умолчанию, например, 1971.01.01, или нулевой датой). Если дата допустима, код продолжает выполнение выборкой истории сделок.<br/> <p>3. Выборка истории сделок:</p> <pre class="code"><span class="keyword">if</span>(!<span class="functions">HistorySelect</span>(start_date, <span class="functions">TimeCurrent</span>())) 
+{
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Error when selecting orders: "</span>, <span class="predefines">_LastError</span>); 
+&nbsp;&nbsp; <span class="keyword">return</span> <span class="number">0.0</span>; <span class="comment">// Exit if unable to select the history</span>
+}</pre> <ul> <li>HistorySelect —&nbsp;выбирает историю сделок с указанной даты (start_date) до текущего момента времени (TimeCurrent).</li> <li>Если выборка истории не удалась, выводится сообщение об ошибке, и функция завершается, возвращая 0.</li> </ul><b></b> <p></p> <p>4. Получение общего количества сделок: </p> <pre class="code"><span class="keyword">int</span> total_deals = <span class="functions">HistoryDealsTotal</span>(); <span class="comment">// Get the total number of deals in history</span>
+</pre> <p></p> <ul> <li>HistoryDealsTotal —&nbsp;возвращает общее количество сделок в истории, что позволяет определить, сколько сделок нужно обработать.</li> </ul> <p>5. Итерация по всем сделкам: </p> <pre class="code"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; total_deals; i++)
+{
+&nbsp;&nbsp; <span class="keyword">ulong</span> deal_ticket = <span class="functions">HistoryDealGetTicket</span>(i); <span class="comment">// Retrieve the deal ticket</span></pre> <ul> <li>На этом этапе запускается цикл for, который будет проходить по всем сделкам в истории.</li> <li>HistoryDealGetTicket —&nbsp;получает уникальный тикет сделки на позиции i, который необходим для получения подробной информации о сделке.</li> </ul> <p></p> <p>6. Фильтрация сделок типа "balance": </p> <pre class="code"><span class="keyword">if</span>(<span class="functions">HistoryDealGetInteger</span>(deal_ticket, <span class="macro">DEAL_TYPE</span>) == <span class="macro">DEAL_TYPE_BALANCE</span>) <span class="keyword">continue</span>;</pre> <p>Если тип сделки — balance (корректировка баланса, а не реальная торговая сделка), то такая сделка пропускается, и цикл продолжается со следующей.</p> <p>7. Получение подробностей сделки: </p> <pre class="code"><span class="macro">ENUM_DEAL_ENTRY</span> deal_entry = (<span class="macro">ENUM_DEAL_ENTRY</span>)<span class="functions">HistoryDealGetInteger</span>(deal_ticket, <span class="macro">DEAL_ENTRY</span>); <span class="comment">// Get deal entry type</span>
+<span class="keyword">long</span> deal_close_time_long = <span class="functions">HistoryDealGetInteger</span>(deal_ticket, <span class="macro">DEAL_TIME</span>);                    <span class="comment">// Get deal close time (as long)</span>
+<span class="keyword">datetime</span> deal_close_time = (<span class="keyword">datetime</span>)deal_close_time_long; <span class="comment">                                   // Explicit conversion to datetime</span>
+<span class="keyword">ulong</span> position_id = <span class="functions">HistoryDealGetInteger</span>(deal_ticket, <span class="macro">DEAL_POSITION_ID</span>); <span class="comment">                    // Get the position ID</span></pre> <ul> <li>deal_entry —&nbsp;определяет, была ли сделка входом или выходом (используется для понимания, была ли сделка открытием или закрытием).</li> <li>deal_close_time —&nbsp;время закрытия сделки. Для удобства обработки преобразуется в тип datetime.</li> <li>position_id —&nbsp;идентификатор позиции, связанной с данной сделкой, что помогает проверить magic number.</li> </ul> <p></p> <p>8. Фильтрация сделок по дате и типу: </p> <pre class="code"><span class="keyword">if</span>(deal_close_time &gt;= start_date &amp;&amp; (deal_entry == <span class="macro">DEAL_ENTRY_OUT</span> || deal_entry == <span class="macro">DEAL_ENTRY_IN</span>))
+</pre> <p></p>Условие гарантирует, что будут учитываться только те сделки, время закрытия которых больше или равно дате начала start_date, и которые являются допустимыми входными или выходными сделками.<br/> <p>9. Фильтрация сделок по Magic Number и типу включения: </p> <pre class="code"><span class="keyword">if</span>((<span class="functions">HistoryDealGetInteger</span>(deal_ticket, <span class="macro">DEAL_MAGIC</span>) == specific_magic || specific_magic == GetMagic(position_id)) 
+&nbsp;&nbsp; || include_all_magic == <span class="macro">true</span>)
+</pre> <p></p> <ul> <li>HistoryDealGetInteger —&nbsp;получает magic number сделки.</li> <li>Если magic number операции совпадает с указанным (specific_magic), или если разрешено включение всех сделок (когда include_all_magic равно true), рассчитывается чистая прибыль по сделке.</li> </ul><br/> <p>10. Расчет чистой прибыли по сделке:</p> <pre class="code"><span class="keyword">double</span> deal_profit = <span class="functions">HistoryDealGetDouble</span>(deal_ticket, <span class="macro">DEAL_PROFIT</span>);         <span class="comment">// Retrieve profit from the deal</span>
+<span class="keyword">double</span> deal_commission = <span class="functions">HistoryDealGetDouble</span>(deal_ticket, <span class="macro">DEAL_COMMISSION</span>); <span class="comment">// Retrieve commission</span>
+<span class="keyword">double</span> deal_swap = <span class="functions">HistoryDealGetDouble</span>(deal_ticket, <span class="macro">DEAL_SWAP</span>); <span class="comment">            // Retrieve swap fees</span>
+                  
+<span class="keyword">double</span> deal_net_profit = deal_profit + deal_commission + deal_swap;          <span class="comment">// Calculate net profit for the deal</span>
+total_net_profit += deal_net_profit; <span class="comment">                                        // Add to the total net profit</span>
+</pre> <ul> <li>deal_profit —&nbsp;получает прибыль по сделке.</li> <li>deal_commission —&nbsp;получает комиссию по сделке.</li> <li>deal_swap —&nbsp;получает своп по сделке (процентная ставка или комиссия за перенос позиции на следующий торговый день).</li> </ul> <p></p> <p>Чистая прибыль по сделке рассчитывается как сумма этих трех значений и прибавляется к total_net_profit.</p> <p>11. Возврат общей чистой прибыли: </p> <pre class="code"><span class="keyword">return</span> <span class="functions">NormalizeDouble</span>(total_net_profit, <span class="number">2</span>); <span class="comment">// Return the total net profit rounded to 2 decimals</span>
+</pre> <p></p>В завершение возвращается общая чистая прибыль, округленная до 2 знаков после запятой с помощью NormalizeDouble, чтобы гарантировать значению правильный формат для дальнейшего использования.<br/> <p></p> <p>Полная функция:</p> <pre class="code"><span class="keyword">double</span> GetNetProfitSince(<span class="keyword">bool</span> include_all_magic, <span class="keyword">ulong</span> specific_magic, <span class="keyword">datetime</span> start_date)
+{
+&nbsp;&nbsp; <span class="keyword">double</span> total_net_profit = <span class="number">0.0</span>; <span class="comment">// Initialize the total net profit</span>
+&nbsp;&nbsp; <span class="functions">ResetLastError</span>();              <span class="comment">// Reset any previous errors</span>
+
+&nbsp;&nbsp; <span class="comment">// Check if the start date is valid</span>
+&nbsp;&nbsp; <span class="keyword">if</span>((start_date &gt; <span class="number">0</span> || start_date != <span class="string">D'1971.01.01 00:00'</span>))
+&nbsp;&nbsp; {&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Select the order history from the given start date to the current time</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(!<span class="functions">HistorySelect</span>(start_date, <span class="functions">TimeCurrent</span>())) 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Error when selecting orders: "</span>, <span class="predefines">_LastError</span>); 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">return</span> <span class="number">0.0</span>; <span class="comment">// Exit if unable to select the history</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> total_deals = <span class="functions">HistoryDealsTotal</span>(); <span class="comment">// Get the total number of deals in history</span>
+&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Iterate through all deals</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; total_deals; i++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">ulong</span> deal_ticket = <span class="functions">HistoryDealGetTicket</span>(i); <span class="comment">// Retrieve the deal ticket</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Skip balance-type deals</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">HistoryDealGetInteger</span>(deal_ticket, <span class="macro">DEAL_TYPE</span>) == <span class="macro">DEAL_TYPE_BALANCE</span>) <span class="keyword">continue</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="macro">ENUM_DEAL_ENTRY</span> deal_entry = (<span class="macro">ENUM_DEAL_ENTRY</span>)<span class="functions">HistoryDealGetInteger</span>(deal_ticket, <span class="macro">DEAL_ENTRY</span>); <span class="comment">// Get deal entry type</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">long</span> deal_close_time_long = <span class="functions">HistoryDealGetInteger</span>(deal_ticket, <span class="macro">DEAL_TIME</span>);                    <span class="comment">// Get deal close time (as long)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">datetime</span> deal_close_time = (<span class="keyword">datetime</span>)deal_close_time_long;                                    <span class="comment">// Explicit conversion to datetime</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">ulong</span> position_id = <span class="functions">HistoryDealGetInteger</span>(deal_ticket, <span class="macro">DEAL_POSITION_ID</span>);                     <span class="comment">// Get the position ID</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Check if the deal is within the specified date range and is a valid entry/exit deal</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(deal_close_time &gt;= start_date &amp;&amp; (deal_entry == <span class="macro">DEAL_ENTRY_OUT</span> || deal_entry == <span class="macro">DEAL_ENTRY_IN</span>))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Check if the deal matches the specified magic number or if all deals are to be included</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>((<span class="functions">HistoryDealGetInteger</span>(deal_ticket, <span class="macro">DEAL_MAGIC</span>) == specific_magic || specific_magic == GetMagic(position_id)) 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; || include_all_magic == <span class="macro">true</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">double</span> deal_profit = <span class="functions">HistoryDealGetDouble</span>(deal_ticket, <span class="macro">DEAL_PROFIT</span>);         <span class="comment">// Retrieve profit from the deal</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">double</span> deal_commission = <span class="functions">HistoryDealGetDouble</span>(deal_ticket, <span class="macro">DEAL_COMMISSION</span>); <span class="comment">// Retrieve commission</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">double</span> deal_swap = <span class="functions">HistoryDealGetDouble</span>(deal_ticket, <span class="macro">DEAL_SWAP</span>);             <span class="comment">// Retrieve swap fees</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">double</span> deal_net_profit = deal_profit + deal_commission + deal_swap; <span class="comment">// Calculate net profit for the deal</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; total_net_profit += deal_net_profit; <span class="comment">// Add to the total net profit</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="keyword">return</span> <span class="functions">NormalizeDouble</span>(total_net_profit, <span class="number">2</span>); <span class="comment">// Return the total net profit rounded to 2 decimals</span>
+}</pre> <p>Дополнительная функция для получения magic number ордера:</p> <pre class="code"><span class="keyword">ulong</span> GetMagic(<span class="keyword">const</span> <span class="keyword">ulong</span> ticket)
+{
+<span class="functions">HistoryOrderSelect</span>(ticket);
+<span class="keyword">return</span> <span class="functions">HistoryOrderGetInteger</span>(ticket,<span class="macro">ORDER_MAGIC</span>); 
+} </pre> <p><br/></p> <h3 id="8">Проверка на практике с помощью создания простого скрипта с включаемым файлом&nbsp;</h3> <p>Теперь давайте создадим функцию, которая преобразует абсолютное расстояние в единицы пунктов для текущего символа. Такое преобразование имеет ключевое значение в трейдинге, поскольку пункты являются стандартной единицей измерения при расчете уровней цен, стопов и целей.</p> <p><b>Математическая формула</b><br/> Формула для расчета расстояния в пунктах проста:</p> <p style="text-align:center;"> <img width="300" height="65" src="https://c.mql5.com/2/111/extra-1.png" loading="lazy" title="ЭКСТРА-1" alt="ЭКСТРА-1" style="vertical-align:middle;"/></p> <p>Где:</p> <ul> <li>dist — это абсолютное расстояние, которое мы хотим преобразовать,</li> <li>pointSize — размер одного пункта финансового инструмента (например, 0,0001 для EUR/USD)</li> </ul> <p><b>Представление формулы в коде</b><br/> Для реализации этой формулы в MQL5 необходимо выполнить следующие шаги:</p> <ol> <li> <p>Получить размер пункта (pointSize).</p> <p>Мы используем функцию SymbolInfoDouble для получения значения пункта текущего символа. Параметр _Symbol представляет символ, на котором выполняется скрипт, а SYMBOL_POINT возвращает его размер в пунктах.</p></li> <pre class="code"><span class="keyword">double</span> pointSize = <span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_POINT</span>);
+</pre> <li>Разделить расстояние на размер пункта и преобразовать в целое число. <p></p> <p>Чтобы вычислить количество пунктов, мы делим расстояние (dist) на размер пункта (pointSize). Затем мы преобразуем результат в целое значение, используя int, поскольку пункты всегда являются целыми числами. </p></li> <pre class="code"><span class="keyword">return</span> (<span class="keyword">int</span>)(dist / pointSize);
+</pre> </ol> <p><b>Полная функция</b><br/> Ниже мы представляем функцию в ее окончательном виде:</p> <pre class="code"><span class="keyword">int</span> DistanceToPoint(<span class="keyword">double</span> dist)
+{
+&nbsp;&nbsp;<span class="keyword">double</span> pointSize = <span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_POINT</span>); <span class="comment">// Get the point size for the current symbol</span>
+&nbsp;&nbsp;<span class="keyword">return</span> (<span class="keyword">int</span>)(dist / pointSize); <span class="comment">// Calculate and return the distance in points </span>
+}</pre> <p>Чтобы применить на практике все изложенное в этой статье, мы создадим два скрипта.</p> <p>Теперь мы создадим две важные функции: одну — для расчета идеального лота на основе допустимого убытка на сделку, и другую — для расчета идеального стоп-лосса в пунктах символа на основе заданного лота и риска на сделку.&nbsp;&nbsp;</p> <p><b>Функция для расчета идеального лота на основе риска на сделку</b><br/> Функция GetIdealLot рассчитывает идеальный размер лота (nlot) с учетом максимально допустимого убытка на сделку и расстояния до стоп-лосса (StopLoss). Это гарантирует, что каждая сделка соблюдает заданный пользователем лимит риска.</p> <pre class="code"><span class="keyword">void</span> GetIdealLot(
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span>&amp; nlot,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Calculated ideal lot</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> glot,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Gross Lot (max lot accorsing to the balance)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> max_risk_per_operation,&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Maximum allowed risk per trade (in account currency)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span>&amp; new_risk_per_operation,&nbsp;&nbsp; <span class="comment">// Calculated risk for the adjusted lot (in account currency)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">long</span> StopLoss&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Stop Loss distance (in points)</span>
+)
+</pre> <p>Описание параметров:</p> <ol> <li>nlot —&nbsp;это будет идеальный лот, скорректированный функцией.</li> <li>glot —&nbsp;это максимально возможный лот, который можно открыть, используя все доступные средства на счете.</li> <li>max_risk_per_operation —&nbsp;представляет собой максимально допустимый риск на сделку, выраженный в валюте счета.</li> <li>new_risk_per_operation —&nbsp;указывает фактический риск по скорректированной сделке с учетом рассчитанного лота (nlot), что показывает, сколько будет потеряно, если цена достигнет стоп-лосса.</li> <li>StopLoss —&nbsp;расстояние до стоп-лосса в пунктах.</li> </ol> <p>1. Начальная проверка</p> <p>Функция проверяет, что значение «StopLoss» больше 0, так как недопустимый стоп-лосс сделает невозможным корректный расчет риска.</p> <pre class="code"><span class="keyword">if</span>(StopLoss &lt;= <span class="number">0</span>)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;Print(<span class="string">"[ERROR SL] Stop Loss distance is less than or equal to zero, now correct the stoploss distance: "</span>, StopLoss);
+&nbsp;&nbsp;&nbsp;&nbsp;nlot = <span class="number">0.0</span>; 
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;&nbsp;&nbsp; 
+}
+</pre> <p>2. Инициализация переменных</p> <p>Инициализируются значения, необходимые для последующих вычислений:</p> <ul> <li>spread —&nbsp;текущий спред символа.</li> <li>tick_value —&nbsp;значение одного тика, показывающее, сколько стоит минимальное изменение цены в валюте счета.</li> <li>step —&nbsp;минимально допустимое приращение размера лота.</li> </ul> <pre class="code">new_risk_per_operation = <span class="number">0</span>;&nbsp;&nbsp;<span class="comment">// Initialize the new risk</span>
+<span class="keyword">long</span> spread = (<span class="keyword">long</span>)<span class="functions">SymbolInfoInteger</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_SPREAD</span>);
+<span class="keyword">double</span> tick_value = <span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_TRADE_TICK_VALUE</span>);
+<span class="keyword">double</span> step = <span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_VOLUME_STEP</span>);
+</pre> <p>3. Расчет текущего риска (rpo)</p> <p>Вычисляется текущий риск на сделку (rpo) по следующей формуле:</p> <p style="text-align:center;"> <img width="375" height="38" src="https://c.mql5.com/2/111/risk-1.png" loading="lazy" title="РИСК-1" alt="РИСК-1" style="vertical-align:middle;"/></p> <p>В коде:</p> <pre class="code"><span class="keyword">double</span> rpo = (glot * (spread + <span class="number">1</span> + (StopLoss * tick_value)));
+</pre> <p>4. Проверка максимального риска</p> <p>Функция оценивает, превышает ли текущий риск (rpo) максимально допустимый риск на сделку (max_risk_per_operation):</p> <p>Случай 1. Риск превышает максимально допустимый</p> <ul> <li>Размер лота корректируется пропорционально максимально допустимому риску.</li> <li>Скорректированный лот округляется до ближайшего допустимого приращения (step).</li> <li>Вычисляется новый риск, соответствующий этому скорректированному лоту.</li> </ul> <pre class="code"><span class="keyword">if</span>(rpo &gt; max_risk_per_operation)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> new_lot = (max_risk_per_operation / rpo) * glot;
+&nbsp;&nbsp;&nbsp;&nbsp;new_lot = <span class="functions">MathFloor</span>(new_lot / step) * step;
+&nbsp;&nbsp;&nbsp;&nbsp;new_risk_per_operation = new_lot * (spread + <span class="number">1</span> + (StopLoss * tick_value));
+&nbsp;&nbsp;&nbsp;&nbsp;nlot = new_lot; 
+}
+</pre> <p>Случай 2. Риск в пределах допустимого лимита</p> <ul> <li>Если текущий риск не превышает установленный предел, сохраняются исходные значения:</li> </ul> <pre class="code"><span class="keyword">else</span>
+{
+&nbsp;&nbsp;&nbsp;&nbsp;new_risk_per_operation = rpo; <span class="comment">// Current risk</span>
+&nbsp;&nbsp;&nbsp;&nbsp;nlot = glot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Gross lot</span>
+}
+</pre> <p>Наконец, мы создадим последнюю функцию для расчета стоп-лосса на основе максимально допустимого убытка на сделку и заданного пользователем объема лота:</p> <pre class="code"><span class="keyword">long</span> GetSL(<span class="keyword">const</span> <span class="macro">ENUM_ORDER_TYPE</span> type , <span class="keyword">double</span> risk_per_operation , <span class="keyword">double</span> lot) 
+{
+ <span class="keyword">long</span> spread = (<span class="keyword">long</span>)<span class="functions">SymbolInfoInteger</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_SPREAD</span>);
+ <span class="keyword">double</span> tick_value = <span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_TRADE_TICK_VALUE</span>);
+ <span class="keyword">double</span> result = ((risk_per_operation/lot)-spread-<span class="number">1</span>)/tick_value;
+ 
+<span class="keyword">return</span> <span class="keyword">long</span>(<span class="functions">MathRound</span>(result));
+}&nbsp;&nbsp;</pre> <p></p> <p>Описание параметров:</p> <ol> <li>type —&nbsp;тип ордера (покупка или продажа), хотя в данной функции напрямую не используется.</li> <li>risk_per_operation —&nbsp;максимально допустимый убыток на сделку, выраженный в валюте счета.</li> <li>lot —&nbsp;размер лота, определяемый пользователем.</li> </ol> <p><b>Пошаговая логика работы</b></p> <p><b></b></p> <p>1. Базовая формула:</p> <p>Исходная формула расчета риска на сделку (rpo) выглядит так:</p> <p style="text-align:center;"> <img width="375" height="38" src="https://c.mql5.com/2/111/risk-1__2.png" loading="lazy" title="РИСК-1" alt="РИСК-1" style="vertical-align:middle;"/></p> <p>В этой функции мы выразим стоп-лосс, чтобы рассчитать его значение на основе rpo, размера лота и других факторов. </p> <p>2. Выражение стоп-лосса:</p> <ul> <li>Обе части уравнения делятся на значение лота (lote):</li> </ul> <p style="text-align:center;"> <img width="337" height="49" src="https://c.mql5.com/2/111/risk-2.png" loading="lazy" title="РИСК-2" alt="РИСК-2" style="vertical-align:middle;"/></p> <ul> <li>Вычитаем спред и 1 из обеих частей уравнения: <br/></li> </ul> <p style="text-align:center;"> <img width="337" height="50" src="https://c.mql5.com/2/111/risk-3.png" loading="lazy" title="РИСК-3" alt="РИСК-3" style="vertical-align:middle;"/></p> <ul> <li>Делим на tick_value, чтобы изолировать StopLoss: </li> </ul> <p style="text-align:center;"> <img width="262" height="66" src="https://c.mql5.com/2/111/risk-4.png" loading="lazy" title="РИСК-4" alt="РИСК-4" style="vertical-align:middle;"/></p> <p><b>Реализация в коде</b><br/> Приведенная выше формула напрямую используется в вычислениях в теле функции:</p> <pre class="code"><span class="keyword">double</span> result = ((risk_per_operation / lot) - spread - <span class="number">1</span>) / tick_value;</pre> <ul> <li>risk_per_operation/lot —&nbsp;рассчитывает риск на единицу лота,</li> <li>- спред - 1 —&nbsp;вычитает спред и дополнительный допуск,</li> <li>/tick_value —&nbsp;преобразует результат в пункты, деля на значение одного тика.</li> </ul><br/> <p>Результат округляется и преобразуется в тип long для соответствия требуемому формату: </p> <pre class="code"><span class="keyword">return</span> <span class="keyword">long</span>(<span class="functions">MathRound</span>(result));
+</pre> <p>Наконец, мы создадим два скрипта для расчета идеального лота и идеального стоп-лосса (sl) в соответствии с заданным риском на сделку. Оба скрипта используют простую, но эффективную логику для автоматизации этих вычислений на основе баланса счета и параметров, заданных пользователем.</p> <p><b>Первый скрипт: расчет идеального лота</b><br/> Этот скрипт рассчитает идеальный размер лота на основе процента риска на сделку, заданного стоп-лосса (sl) в пунктах и типа ордера.</p> <ol> <li> <p>Свойства скрипта:</p> <ul> <li>#property strict —&nbsp;гарантирует, что код соответствует строгим правилам компиляции.</li> <li>#property script_show_inputs —&nbsp;позволяет пользователю вводить параметры через графический интерфейс.</li> </ul></li> <li>Входные параметры (Inputs):</li> </ol> <p></p> <pre class="code"><span class="keyword">input</span> <span class="keyword">double</span> percentage_risk_per_operation = <span class="number">1.0</span>; <span class="comment">//Risk per operation in %</span>
+<span class="keyword">input</span> <span class="keyword">long</span>&nbsp;&nbsp; sl = <span class="number">600</span>; <span class="comment">//Stops Loss in points</span>
+<span class="keyword">input</span> <span class="macro">ENUM_ORDER_TYPE</span> Order_Type = <span class="macro">ORDER_TYPE_BUY</span>; <span class="comment">//Order Type</span></pre> <p>Расчет риска на сделку:</p> <p><b></b> Формула вычисляет сумму в долларах, которой можно рискнуть в одной сделке, на основе заданного процентного значения:</p> <pre class="code"><span class="keyword">double</span> risk_per_operation = ((percentage_risk_per_operation/<span class="number">100.0</span>) * <span class="functions">AccountInfoDouble</span>(<span class="macro">ACCOUNT_BALANCE</span>));
+</pre> <p></p> <p>Вызов функции расчета идеального лота:</p> <pre class="code">GetIdealLot(new_lot, GetMaxLote(Order_Type), risk_per_operation, new_risk_per_operation, sl);
+</pre> <p></p> <p>Сообщения для пользователя: подробная информация о рассчитанных значениях, таких как идеальный лот и скорректированный риск, выводится в консоль и на график.</p> <pre class="code">//+------------------------------------------------------------------+
+//|                             Get Lot By Risk Per Trade and SL.mq5 |
+//|                                                        Your name |
+//|                                             https://www.mql5.com |
+//+------------------------------------------------------------------+ 
+<span class="preprocessor">#property </span><span class="macro">copyright</span> <span class="string">"Your name"</span>
+<span class="preprocessor">#property </span><span class="macro">link</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"https://www.mql5.com"</span>
+<span class="preprocessor">#property </span><span class="macro">version</span>&nbsp;&nbsp; <span class="string">"1.00"</span>
+<span class="preprocessor">#property </span><span class="macro">strict</span>
+<span class="preprocessor">#property </span><span class="macro">script_show_inputs</span>
+
+<span class="keyword">input</span> <span class="keyword">double</span> percentage_risk_per_operation = <span class="number">1.0</span>; <span class="comment">// Risk per operation in %</span>
+<span class="keyword">input</span> <span class="keyword">long</span>&nbsp;&nbsp; sl = <span class="number">600</span>; <span class="comment">// Stop Loss in points</span>
+<span class="keyword">input</span> <span class="macro">ENUM_ORDER_TYPE</span> Order_Type = <span class="macro">ORDER_TYPE_BUY</span>; <span class="comment">// Order Type</span>
+
+<span class="preprocessor">#include </span>&lt;Risk Management.mqh&gt;
+
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Main script function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> <span class="functions">OnStart</span>()
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="comment">// Calculate the maximum allowable risk per operation in account currency</span>
+&nbsp;&nbsp; <span class="keyword">double</span> risk_per_operation = ((percentage_risk_per_operation / <span class="number">100.0</span>) * <span class="functions">AccountInfoDouble</span>(<span class="macro">ACCOUNT_BALANCE</span>));
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">// Print input and calculated risk details</span>
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Risk Per operation: "</span>, risk_per_operation);
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"SL in points: "</span>, sl);
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Order type: "</span>, <span class="functions">EnumToString</span>(Order_Type));
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="keyword">double</span> new_lot;
+&nbsp;&nbsp; <span class="keyword">double</span> new_risk_per_operation;
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">// Calculate the ideal lot size</span>
+&nbsp;&nbsp; GetIdealLot(new_lot, GetMaxLote(Order_Type), risk_per_operation, new_risk_per_operation, sl);
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">// Check if the lot size is valid</span>
+&nbsp;&nbsp; <span class="keyword">if</span> (new_lot &lt;= <span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"The stop loss is too large or the risk per operation is low. Increase the risk or decrease the stop loss."</span>);
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Display calculated values</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Ideal Lot: "</span>, new_lot);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Maximum loss with SL: "</span>, sl, <span class="string">" | Lot: "</span>, new_lot, <span class="string">" is: "</span>, new_risk_per_operation);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Comment</span>(<span class="string">"Ideal Lot: "</span>, new_lot);
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="functions">Sleep</span>(<span class="number">1000</span>);
+&nbsp;&nbsp; <span class="functions">Comment</span>(<span class="string">" "</span>);
+&nbsp;&nbsp;}
+<span class="comment">//+------------------------------------------------------------------+</span>
+</pre> <p><b>Второй скрипт: расчет идеального SL</b><br/> Этот скрипт вычисляет стоп-лосс в пунктах на основе заданного пользователем лота и максимального риска на сделку.</p> <pre class="code"><span class="keyword">input</span> <span class="keyword">double</span> percentage_risk_per_operation = <span class="number">1.0</span>; <span class="comment">//Risk per operation in %</span>
+<span class="keyword">input</span> <span class="keyword">double</span> Lot = <span class="number">0.01</span>; <span class="comment">//lot</span>
+<span class="keyword">input</span> <span class="macro">ENUM_ORDER_TYPE</span> Order_Type = <span class="macro">ORDER_TYPE_BUY</span>; <span class="comment">//Order Type</span></pre> <p>Расчет идеального sl: функция get sl используется для определения стоп-лосса в пунктах: </p> <pre class="code"><span class="keyword">long</span> new_sl = GetSL(Order_Type, risk_per_operation, Lot);
+</pre> <p>Проверка результата: если вычисленное значение sl недопустимо (new_sl меньше или равно 0), пользователь получает соответствующее уведомление. </p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get Sl by risk per operation and lot.mq5 |</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your name |</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; https://www.mql5.com |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="preprocessor">#property </span><span class="macro">copyright</span> <span class="string">"Your name"</span>
+<span class="preprocessor">#property </span><span class="macro">link</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"https://www.mql5.com"</span>
+<span class="preprocessor">#property </span><span class="macro">version</span>&nbsp;&nbsp; <span class="string">"1.00"</span>
+<span class="preprocessor">#property </span><span class="macro">strict</span>
+<span class="preprocessor">#property </span><span class="macro">script_show_inputs</span>
+
+<span class="keyword">input</span> <span class="keyword">double</span> percentage_risk_per_operation = <span class="number">1.0</span>; <span class="comment">// Risk per operation in %</span>
+<span class="keyword">input</span> <span class="keyword">double</span> Lot = <span class="number">0.01</span>; <span class="comment">// Lot size</span>
+<span class="keyword">input</span> <span class="macro">ENUM_ORDER_TYPE</span> Order_Type = <span class="macro">ORDER_TYPE_BUY</span>; <span class="comment">// Order Type</span>
+
+<span class="preprocessor">#include </span>&lt;Risk Management.mqh&gt;
+
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Main script function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> <span class="functions">OnStart</span>()
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="comment">// Calculate the maximum allowable risk per operation in account currency</span>
+&nbsp;&nbsp; <span class="keyword">double</span> risk_per_operation = ((percentage_risk_per_operation / <span class="number">100.0</span>) * <span class="functions">AccountInfoDouble</span>(<span class="macro">ACCOUNT_BALANCE</span>));
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">// Print input and calculated risk details</span>
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Risk Per operation: "</span>, risk_per_operation);
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Lot size: "</span>, Lot);
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Order type: "</span>, <span class="functions">EnumToString</span>(Order_Type));
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">// Calculate the ideal stop loss</span>
+&nbsp;&nbsp; <span class="keyword">long</span> new_sl = GetSL(Order_Type, risk_per_operation, Lot);
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">// Check if the SL is valid</span>
+&nbsp;&nbsp; <span class="keyword">if</span> (new_sl &lt;= <span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"The lot size is too high or the risk per operation is too low. Increase the risk or decrease the lot size."</span>);
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Display calculated values</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"For lot: "</span>, Lot, <span class="string">", and risk: "</span>, risk_per_operation, <span class="string">", the ideal SL is: "</span>, new_sl);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Comment</span>(<span class="string">"Ideal SL: "</span>, new_sl);
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="functions">Sleep</span>(<span class="number">1000</span>);
+&nbsp;&nbsp; <span class="functions">Comment</span>(<span class="string">" "</span>);
+&nbsp;&nbsp;}
+<span class="comment">//+------------------------------------------------------------------+</span></pre> <p></p>Теперь, чтобы применить скрипт на практике, мы используем его для получения идеального размера лота на основе заданного риска на сделку. Тестирование проведем на символе XAUUSD, который соответствует золоту. <p></p> <p style="text-align:center;"> <img width="750" height="460" src="https://c.mql5.com/2/110/SCRIPT-RISK-1.PNG" loading="lazy" title=" СКРИПТ-РИСК-1" alt=" СКРИПТ-РИСК-1" style="vertical-align:middle;"/></p> <p>При таких параметрах, как стоп-лосс в 200 пунктов и риск на сделку в размере 1,0% от баланса счета, а также с указанием типа ордера как ORDER_TYPE_BUY, результат будет следующим:</p> <p style="text-align:center;"> <img width="750" height="150" src="https://c.mql5.com/2/110/SCRIPT-RISK-2__1.PNG" loading="lazy" title=" СКРИПТ-РИСК-2" alt=" СКРИПТ-РИСК-2" style="vertical-align:middle;"/></p> <p>Результат, показанный на вкладке «Эксперты», соответствует размеру лота 0,01 при стоп-лоссе в 200 пунктов и риске на сделку в 3,81, что составляет 1% от баланса счета.</p> <h3 id="9"><br/><br/>Заключение&nbsp;</h3>Мы завершили первую часть этой серии, в которой сосредоточились на разработке основных функций, которые будут использоваться в классе <b> управления рисками</b>. Эти функции являются ключевыми для получения прибыли и выполнения дополнительных вычислений. В следующей части мы рассмотрим, как интегрировать все изученное в графический интерфейс, используя библиотеки элементов управления MQL5. <p></p>
+      </div>
+          <p style="text-align: right;">
+            <small>
+              Перевод с испанского произведен MetaQuotes Ltd. <br>Оригинальная статья: <a href="/es/articles/16820" target="_blank">https://www.mql5.com/es/articles/16820</a>
+            </small>
+          </p>
+<div id="cb_16820" class="attachBlock">
+  <strong>Прикрепленные файлы</strong> |
+  <div class="grouped-attachments-help">
+    <a title="Загрузить все вложения в одном ZIP-архиве" href="/ru/articles/download/16820.zip">
+      <i class="attach-icon attach-icon_zip"></i>Загрузить ZIP
+    </a>
+  </div>
+    <div class="attachItem">
+      <a title="Скачать Risk_Management.mqh" href="/ru/articles/download/16820/risk_management.mqh"><i class="attach-icon attach-icon_mqh"></i>Risk_Management.mqh</a>
+      <span class="attachSize">(8.27 KB)</span>
+    </div>
+    <div class="attachItem">
+      <a title="Скачать Get_Sl_by_risk_per_operation_and_lot.mq5" href="/ru/articles/download/16820/get_sl_by_risk_per_operation_and_lot.mq5"><i class="attach-icon attach-icon_mq5"></i>Get_Sl_by_risk_per_operation_and_lot.mq5</a>
+      <span class="attachSize">(3.84 KB)</span>
+    </div>
+    <div class="attachItem">
+      <a title="Скачать Get_Lot_By_Risk_Per_Trade_and_SL.mq5" href="/ru/articles/download/16820/get_lot_by_risk_per_trade_and_sl.mq5"><i class="attach-icon attach-icon_mq5"></i>Get_Lot_By_Risk_Per_Trade_and_SL.mq5</a>
+      <span class="attachSize">(2.07 KB)</span>
+    </div>
+</div>
+    </div>
+
+  <div class="copyright">
+    <p><strong>Предупреждение:</strong> все права на данные материалы принадлежат MetaQuotes Ltd. Полная или частичная перепечатка запрещена.</p>
+      <p>Данная статья написана пользователем сайта и отражает его личную точку зрения. Компания MetaQuotes Ltd не несет ответственности за достоверность представленной информации, а также за возможные последствия использования описанных решений, стратегий или рекомендаций.</p>
+  </div>
+
+
+
+    <div class="article__author-with-articles">
+      
+
+
+<div class="article-footer__author">
+  <div class="article-footer__author-avatar">
+    <img id="avatar" src="https://c.mql5.com/avatar/2024/8/66bbab57-2d8c_big.png" title="Niquel Mendoza" alt="Niquel Mendoza" loading="lazy" width="164" height="164">
+  </div>
+  <div class="article-footer__author-content">
+    <div class="article-footer__author-name">
+      <a href="/ru/users/nique_372" title="Niquel Mendoza">Niquel Mendoza</a>
+    </div>
+    <div class="article-footer__author-info">
+      <ul>
+          <li>
+            <i title="Живёт" class="icons-profile icons-profile_geo"></i>
+            <a target="_blank" rel="nofollow" title="Живёт" href="https://www.mql5.com/go?https://maps.google.com/?z=4&q=%d0%9f%d0%b5%d1%80%d1%83">Перу</a>
+          </li>
+        <li>
+          <i title="Рейтинг" class="icons-profile icons-profile_statistics"></i>
+          <a title="Рейтинг" href="/ru/users/nique_372/achievements">6075</a>
+        </li>
+      </ul>
+    </div>
+    <div class="article-footer__author-contacts">
+      
+    </div>
+    <div class="article-footer__author-bio"></div>
+  </div>
+</div>
+
+      <div class="other-author-articles ui">
+        <h4 class="other-author-articles__title">Другие статьи автора</h4>
+        <ul class="other-author-articles__list">
+          <li><a href="/ru/articles/19682" data-fz-event="MQL5+Article+From+Author+Article">Реализация частичного закрытия позиций в MQL5</a></li>
+          <li><a href="/ru/articles/18111" data-fz-event="MQL5+Article+From+Author+Article">Реализация механизма безубыточности в MQL5 (Часть 2): Безубыток на основе ATR и RRR</a></li>
+          <li><a href="/ru/articles/17957" data-fz-event="MQL5+Article+From+Author+Article">Реализация механизма безубыточности в MQL5 (Часть 1): Базовый класс и режим безубытка по фиксированным пунктам</a></li>
+          <li><a href="/ru/articles/17640" data-fz-event="MQL5+Article+From+Author+Article">Управление рисками (Часть 5): Интегрируем систему управления рисками в советник</a></li>
+          <li><a href="/ru/articles/17508" data-fz-event="MQL5+Article+From+Author+Article">Управление рисками (Часть 4): Завершение ключевых методов класса</a></li>
+          <li><a href="/ru/articles/17249" data-fz-event="MQL5+Article+From+Author+Article">Управление рисками (Часть 3): Создание основного класса для управления рисками</a></li>
+          <li><a href="/ru/articles/16985" data-fz-event="MQL5+Article+From+Author+Article">Управление рисками (Часть 2): Реализация расчета лотов в графическом интерфейсе</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+  <div class="article__last-comments" id="articleAdditional">
+    
+
+<div class="comments-preview">
+    <div class="title">
+      <span></span><b>
+ <a href="/ru/forum/492367">Перейти к обсуждению на форуме трейдеров</a>
+      </b>
+    </div>
+    <div>
+        
+    </div>
+</div>
+
+  </div>
+
+
+    <div class="articles-bottom-list" id="articleAdditional">
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Теория графов: Алгоритм Дейкстры в трейдинге" src="https://c.mql5.com/2/155/18760-graph-theory-dijkstra-s-algorithm-logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/ru/articles/18760" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Теория графов: Алгоритм Дейкстры в трейдинге</a>
+                <div class="articles-bottom-list__desc">Алгоритм Дейкстры — классическое решение по поиску кратчайшего пути в теории графов, которое позволяет оптимизировать торговые стратегии путем моделирования рыночных сетей. Трейдеры могут использовать его для поиска наиболее эффективных маршрутов в данных свечного графика.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Разработка системы репликации (Часть 78): Новый Chart Trade (V)" src="https://c.mql5.com/2/105/Desenvolvendo_um_sistema_de_Replay_Parte_77___LOGO.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/ru/articles/12492" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Разработка системы репликации (Часть 78): Новый Chart Trade (V)</a>
+                <div class="articles-bottom-list__desc">В данной статье мы рассмотрим, как нужно реализовывать часть кода получателя. Здесь мы реализуем версию советника, чтобы протестировать и узнать, как работает взаимодействие по протоколу. Представленные здесь материалы предназначены только для обучения. Ни в коем случае не рассматривайте его как окончательное приложение, целью которого не является изучение представленных концепций.</div>
+              </div>
+          </div>
+        </div>
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Разработка инструментария для анализа движения цен (Часть 5): Советник Volatility Navigator" src="https://c.mql5.com/2/105/Price_Action_Analysis_Toolkit_Development_Part_5___LOGO.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/ru/articles/16560" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Разработка инструментария для анализа движения цен (Часть 5): Советник Volatility Navigator</a>
+                <div class="articles-bottom-list__desc">Определить направление рынка может быть просто, но вот понять, когда входить на рынок, - гораздо более сложная задача. В этой статье серии &quot;Разработка инструментария для анализа движения цен&quot; я представлю еще один инструмент, который определяет точки входа и уровни стоп-лосса/тейк-профита. Для достижения этой цели использовался язык программирования MQL5.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Нейросети в трейдинге: Распутывание структурных компонентов (Окончание)" src="https://c.mql5.com/2/161/19022-neyroseti-v-treydinge-rasputivanie-logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/ru/articles/19022" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Нейросети в трейдинге: Распутывание структурных компонентов (Окончание)</a>
+                <div class="articles-bottom-list__desc">В статье подробно раскрывается SCNN-архитектура и один из вариантов её реализация средствами MQL5. Мы покажем, как декомпозиция временных рядов сочетается с нейросетевыми методами и вниманием.</div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+<div class="clear-fix"></div>
+
+<div id='wdausxxqrpvhekbwjrjlhqjghyhesrqqau' class="r6irig5txiuua4k0m r6irig5txiuua4k0m_articles-view gg88d3drb"></div>
+    
+
+<div class="hidden" id="popupRegisterLogin">
+  <div class="register-login-popup">
+    <div class="register-login-popup__header">
+      <img src="https://c.mql5.com/i/registerlandings/logo-2.png" srcset="https://c.mql5.com/i/registerlandings/logo-2_2x.png 2x" alt="MQL5 - Язык торговых стратегий для клиентского терминала MetaTrader 5" loading="lazy" width="74" height="24" />
+    </div>
+    <div class="register-login-popup__content">
+      <div class="register-login-popup__desc">
+        <div class="register-login-popup__title">Вы упускаете торговые возможности:</div>
+        <ul>
+<li>Бесплатные приложения для трейдинга</li>
+<li>8 000+ сигналов для копирования</li>
+<li>Экономические новости для анализа финансовых рынков</li>
+</ul>
+      </div>
+      <div class="register-login-popup__forms ui">
+        <div class="register-login-popup__tabs" id="registerLoginPopupTabs">
+          <span data-id="register" id="registerLoginPopupTab_register" class="register-login-popup__tab register-login-popup__tab_active">Регистрация</span>
+          <span data-id="login" id="registerLoginPopupTab_login" class="register-login-popup__tab">Вход</span>
+        </div>
+        <div id="registerLoginPopupTabContent_register">
+          <div class="ui auth-form__content">
+    
+  <script type='text/javascript'>/*<![CDATA[*/ if (!window.V) var V = []; /*]]>*/</script>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/ru/auth_register_short" id="PopupRegisterquickRegisterForm" onsubmit="PopupRegisterquickRegistration.OnSubmit(this,&#39;ru&#39;);if(Validate(this)) Ajax.form(this,{onready:PopupRegisterquickRegistration.OnSuccessPopup,onerror:PopupRegisterquickRegistration.OnError,onbeginrequest:PopupRegisterquickRegistration.DisableInputs,onendrequest:PopupRegisterquickRegistration.EnableInputs});return(false);" enctype = "multipart/form-data"><input type="hidden" name="__signature" value="00d8ee39066efe65b5dff8ac44d4f64f"/>
+    <div class="auth-form__inputs">
+      <input type="hidden" value="0" name="IsValidate" id="PopupRegisterIsValidate" />
+
+      <!--[if lt IE 10]><div class="note">Придумайте логин:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input type="text" id="PopupRegisterusername" name="username" class="input" maxlength="32" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.CheckUserName();}" onkeyup="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.ValidateUserName(this, 'Укажите корректный логин');}" placeholder="Придумайте логин" title="Может содержать латинские буквы, цифры, точки, тире, символы подчеркивания. Не может начинаться и заканчиваться точкой. Длина: 3-32 символов." onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisterusername'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisterusername',10,'Используйте латинские буквы, допускаются цифры, символы подчеркивания и точки.',validate_username]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisterusername">латиницей и без пробелов</label>
+      </div>
+      <!--[if lt IE 10]><div class="note">Ваш email:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input class="input" type="email" id="PopupRegisteremail" name="email" placeholder="Ваш email" title="Введите email (не более 256 символов). Например: ivan@example.com" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnChange(this);}" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisteremail'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisteremail',10,'Укажите корректный email',validate_email]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisteremail">пароль придет на email</label>
+      </div>
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Register" />
+    </div>
+    <span id="PopupRegisterquickRegisterSubmit">
+      <input type="submit" value="Зарегистрироваться" id="PopupRegisterquickRegisterButton"  title="Зарегистрируйтесь и получите пароль на ваш email" class="button button_yellow"  />
+    </span>
+    <span id="PopupRegisterquickRegisterErrorMessage" class="quick-register-error-message field-validation-error" style="text-align: center; margin-top: 16px; display: none;">
+      Произошла ошибка
+    </span>
+</form>
+    
+</div>
+<div class="auth-social">
+  <ul class="auth-social-list" id="socialList">
+    <li><a onclick="window.fpush({name: 'MQL5+Popup+Register+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/ru/auth_oauth2?provider=Google&amp;amp;return=popup&amp;amp;reg=1" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Войти через Google</a></li>
+  </ul>
+</div>
+<div class="auth-block-agree">
+  <p>
+    Вы принимаете <a target="_blank" href="/ru/about/privacy">политику сайта</a> и <a target="_blank" href="/ru/about/terms">условия использования</a>
+  </p>
+</div>
+
+
+        </div>
+        <div id="registerLoginPopupTabContent_login" class="hidden">
+            <div class="auth-form__text">
+    Если у вас нет учетной записи, <a href="https://www.mql5.com/ru/auth_register" rel="nofollow" style="vertical-align: top">зарегистрируйтесь</a>
+  </div>
+<div class="ui auth-form__content auth-form__content_login" id="loginFormWrapper">
+    
+  <div id="needCookies" class="need-cookies hidden">
+    <div class="danger-box">
+      <p>Для авторизации и пользования сайтом MQL5.com необходимо разрешить использование файлов Сookie.</p>
+<p>Пожалуйста, включите в вашем браузере данную настройку, иначе вы не сможете авторизоваться.</p>
+    </div>
+  </div>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/ru/auth_login" id="loginForm" onsubmit="if(window.quickLogin){return window.quickLogin.onSubmit(this);}var result = Validate(this); if(result) { preventDoubleSubmit(this); } return result;"><input id="RedirectAfterLoginUrl" name="RedirectAfterLoginUrl" type="hidden" value="" /><input id="RegistrationUrl" name="RegistrationUrl" type="hidden" value="" /><input data-val="true" data-val-required="The ShowOpenId field is required." id="ShowOpenId" name="ShowOpenId" type="hidden" value="True" /><input id="TrackingSection" name="TrackingSection" type="hidden" value="Articles" />    <input name="ViewType" type="hidden" value="5" />
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Login" />
+    <!--[if lt IE 10]><div class="note">Ваш логин:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <input class="input qa-login" id="Login" name="Login" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Логин" title="Ваш логин" type="text" value="" />
+      <script type='text/javascript' id='validate_Login'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Login',1,'Введите логин, указанный при регистрации']);});mqGlobal.AddOnReady(function() {V.push(['Login',10,'Email нельзя использовать, введите свой логин, пожалуйста',validateLogin]);}); /*]]>*/</script>
+    </div>
+    <!--[if lt IE 10]><div class="note">Пароль:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <div class="input-with-show">
+        <input autocomplete="off" class="input qa-password" id="Password" name="Password" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Пароль" title="Введите пароль" type="password" />
+        <span class="input-with-show__icon" title="Показать пароль" onclick="if(window.quickLogin){window.quickLogin.showPass(this, 'Показать пароль', 'Скрыть пароль');}"></span>
+      </div>
+      <script type='text/javascript' id='validate_Password'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Password',1,'Введите пароль']);}); /*]]>*/</script>
+    </div>
+    <script type="text/javascript">
+    function validateLogin(input) {
+      console.log('validate login ' + input.value);
+      return !/^\w+([-+.'']{1,2}\w+)* @\w+([-.]\w+)*\.\w+([-.]\w+)*$/i.test(input.value);
+    }
+    </script>
+    <div class="forgot" id="loginForgotBlock"><a id="loginForgotLink" href="https://www.mql5.com/ru/auth_forgotten?return=popup">Забыли логин/пароль?</a></div>
+    <input type="submit" class="button button_yellow qa-submit" id="loginSubmit" value="Вход" title="Войти">
+</form></div>
+
+  <div class="auth-social" id="authSocialBlock">
+    <ul class="auth-social-list" id="socialList">
+      <li><a onclick="window.fpush({name: 'MQL5+Popup+Login+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/ru/auth_oauth2?provider=Google&amp;amp;return=popup" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Войти через Google</a></li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script id="popupSection" type="application/json">{"section": "Articles"}</script>
+<script id="popupTranslate" data-type="translate" type="application/json">
+{
+  "popup":
+  {
+  "EmailTitle" : "Пароль отправлен на {0}",
+  "EmailDescription" : "Войдите, используя полученный пароль и логин, указанный при регистрации",
+  "SubmitButtonText" : "Активировать аккаунт",
+  "RegistrationTip" : "Если вы не получили письмо с паролем, проверьте папку спам или &lt;a href={0}&gt;повторите регистрацию&lt;/a&gt;"
+  }
+}
+</script>
+
+    
+
+    
+
+
+    </article>
+  </div>
+
+
+
+<div aria-hidden="true" class="footer  desktop" id="footer">
+  <ul class="links  links_desktop">
+      <li id="navFooterCommunity">
+        <nav>
+          <ul>
+            <li><a href="https://web.metatrader.app/terminal?mode=demo&amp;lang=ru" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Footer+Trading">Онлайн трейдинг / Вебтерминал</a></li>
+            <li><a href="/ru/code" data-fz-event="MQL5+Footer+CodeBase">Бесплатные индикаторы и советники</a></li>
+            <li><a href="/ru/articles" data-fz-event="MQL5+Footer+Articles">Статьи о программировании и трейдинге</a></li>
+            <li><a href="/ru/job" data-fz-event="MQL5+Footer+Job">Заказать торговый советник и индикатор</a></li>
+            <li><a href="/ru/market" data-fz-event="MQL5+Footer+Market">Купить торговый робот и индикатор</a></li>
+            <li><a href="/ru/signals" data-fz-event="MQL5+Footer+Signals">Торговые сигналы форекс</a></li>
+            <li><a href="/ru/vps" data-fz-event="MQL5+Footer+VPS">Forex VPS для торговли</a></li>
+            <li><a href="/ru/forum" data-fz-event="MQL5+Footer+Forum">Форум трейдеров</a></li>
+            <li><a href="/ru/blogs" data-fz-event="MQL5+Footer+Blogs">Блоги трейдеров</a></li>
+            <li><a rel="nofollow" href="/ru/charts" data-fz-event="MQL5+Footer+Charts">Графики</a></li>
+            <li><a href="/ru/widgets" data-fz-event="MQL5+Footer+Widgets">Бесплатные виджеты</a></li>
+          </ul>
+        </nav>
+      </li>
+      <li id="navFooterMt5">
+        <nav>
+          <ul>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com" data-fz-event="MQL5+Footer+MetaTrader+5">Торговая платформа <span class="nobr">MetaTrader 5</span></a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/releasenotes" data-fz-event="MQL5+Footer+MetaTrader+5">Последние обновления <span class="nobr">MetaTrader 5</span></a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/news" data-fz-event="MQL5+Footer+MetaTrader+5">Новости, внедрения и технологии</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/terminal/help" data-fz-event="MQL5+Footer+MetaTrader+5">Руководство пользователя <span class="nobr">MetaTrader 5</span></a></li>
+            <li><a href="/ru/docs" data-fz-event="MQL5+Footer+Docs">Язык торговых стратегий MQL5</a></li>
+            <li><a rel="nofollow noopener" href="https://cloud.mql5.com" data-fz-event="MQL5+Footer+Cloud">MQL5 Cloud Network</a></li>
+            <li><a rel="noopener" href="https://forge.mql5.io/?lang=ru-RU" data-fz-event="MQL5+Footer+Forge" target="_blank">MQL5 Algo Forge</a></li>
+              <li><a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Footer">Скачать <span class="nobr">MetaTrader 5</span></a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/terminal/help/start_advanced/installation" data-fz-event="MQL5+Footer+MetaTrader+5">Установка платформы</a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/terminal/help/start_advanced/deinstallation" data-fz-event="MQL5+Footer+MetaTrader+5">Удаление программы</a></li>
+          </ul>
+        </nav>
+
+      </li>
+    <li id="navFooterWebsite">
+        <nav>
+          <ul>
+            <li><a rel="nofollow" href="/ru/about" data-fz-event="MQL5+Footer+About">О проекте</a></li>
+              <li><a href="/ru/wall" data-fz-event="MQL5+Footer+Wall">Хроника сайта</a></li>
+            <li><a rel="nofollow" href="/ru/about/terms" data-fz-event="MQL5+Footer+About">Условия использования</a></li>
+            <li><a rel="nofollow" href="/ru/about/autopayments" data-fz-event="MQL5+Footer+About">Соглашение о рекуррентных платежах</a></li>
+            <li><a rel="nofollow" href="/ru/about/agencyagreement" data-fz-event="MQL5+Footer+About">Агентский договор-оферта</a></li>
+            <li><a rel="nofollow" href="/ru/about/privacy" data-fz-event="MQL5+Footer+About">Политика конфиденциальности и защиты данных</a></li>
+            <li><a rel="nofollow" href="/ru/about/cookies" data-fz-event="MQL5+Footer+About">Политика в отношении cookie-файлов</a></li>
+            <li>
+                <a rel="nofollow" href="/ru/contact" data-fz-event="MQL5+Footer+Contacts">Контакты и обращения</a>
+            </li>
+          </ul>
+        </nav>
+    </li>
+
+      <li>
+        <div class="footer__products">
+          <div class="footer__product">
+            <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com" class="footer__product-name">MetaTrader 5</a>
+            <div class="footer__product-links">
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon windows" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Скачать MetaTrader 5 для Windows</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/MetaTrader5.pkg.zip?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon macos" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Скачать MetaTrader 5 для MacOS</div></a>
+            <a rel="nofollow noopener" href="https://www.mql5.com/ru/articles/625?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon linux" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Скачать MetaTrader 5 для Linux</div></a>
+            <a rel="nofollow noopener" href="https://web.metatrader.app/terminal?mode=demo&amp;lang=ru" class="icon web"><div  class="footer__product-link-hint footer__product-link-hint-short">Открыть MetaTrader 5 WebTerminal</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/ios?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=ru" class="icon ios" data-fz-event="MetaTrader+5+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/RXd-JJC1I1d.png)">Отсканируйте для установки из App Store</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=ru" class="icon android" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/TrE06p2W-9d.png)">Отсканируйте для установки из Google Play</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon huawei" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ZRt&#x2B;zI1l&#x2B;8O.png)">Отсканируйте для установки из Huawei AppGallery</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon ark" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/L0Q9oag&#x2B;3eE.png)">Отсканируйте для получения файла APK для Android</div></a>
+            </div>
+          </div>
+          <div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com/en/news/2270" class="footer__product-name">MQL5 Channels</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon ios" data-fz-event="MQL5+Channels+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Nz0etpAYpcO.png)">Отсканируйте для установки из App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon android" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/8re&#x2B;UwV7BVs.png)">Отсканируйте для установки из Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Su&#x2B;fe4n374e.png)">Отсканируйте для установки из Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mql5channels/mql5channels.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/G6Mg4NfCPzO.png)">Отсканируйте для получения файла APK для Android</div></a>
+              </div>
+            </div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.tradays.com/ru/download?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MQL5+Footer+Download+Tradays" class="footer__product-name">Economic Calendar</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon ios" data-fz-event="Tradays+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/e0xuSVTw-1E.png)">Отсканируйте для установки из App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon android" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/YuEbj-vmYap.png)">Отсканируйте для установки из Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CrS7bbDAdAO.png)">Отсканируйте для установки из Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/tradays/tradays.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/VZi8YPIb2op.png)">Отсканируйте для получения файла APK для Android</div></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__networks">
+          <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow" title="Facebook"><i class="icons-networks icons-networks_fb"></i></a>
+          <a href="https://t.me/mql5ru" target="_blank" rel="nofollow" title="Telegram"><i class="icons-networks icons-networks_tg"></i></a>
+          <a href="https://x.com/mql5com" target="_blank" rel="nofollow" title="X (Twitter)"><i class="icons-networks icons-networks_tw"></i></a>
+          <a href="https://www.youtube.com/@MetaQuotesOfficial" target="_blank" rel="nofollow" title="YouTube"><i class="icons-networks icons-networks_yt"></i></a>
+          <a href="https://www.linkedin.com/company/mql5" target="_blank" rel="nofollow" title="LinkedIn"><i class="icons-networks icons-networks_linkedin"></i></a>
+          <span>Подпишитесь на новости алготрейдинга</span>
+        </div>
+  
+        <div class="footer__other">
+          <div class="footer__not-a-broker">Не является брокером, нет реальных торговых счетов</div>
+          <div class="copyright">35 Dodekanisou str, Germasogeia, 4043,&nbsp;Limassol,&nbsp;Cyprus</div>
+          <div class="copyright">Copyright 2000-2026, <span class="nobr">MetaQuotes Ltd</span></div>
+        </div>
+      </li>
+  </ul>
+</div>
+
+
+
+<div class="shadow-layer" id="layer"></div>
+    
+
+  <div class="b-fixed-mt" id="bFixedMt" style="display: none;">
+    
+  </div>
+
+
+<script type='text/javascript'>
+		(function (a, e, f, g, b, c, d) { a[b] || (a.FintezaCoreObject = b, a[b] = a[b] || function () { (a[b].q = a[b].q || []).push(arguments) }, a[b].l = 1 * new Date, c = e.createElement(f), d = e.getElementsByTagName(f)[0], c.async = !0, c.defer = !0, c.src = g, d && d.parentNode && d.parentNode.insertBefore(c, d)) })
+      (window, document, "script", "/ff/core.js", "fz");
+		window.fz("register", "website", {
+      id: "sqjxkxkswybhifrohpyooonwgbvsfzmayq",
+			trackLinks: true
+		});
+        mqGlobal.AddOnReady(function () { Mql5Cookie.init('mql5.com', '5091324541654300213'); });
+mqGlobal.AddOnReady(function(){if(!window.Pocket){window.Pocket=new PocketManager();}});mqGlobal.AddOnReady(function(){if(!window.translateManager){window.translateManager=new Translate(undefined,'Ошибка: не удалось выполнить перевод. Пожалуйста, повторите попытку позже.');}if(document.querySelectorAll){var translateElements=document.querySelectorAll(".translateMenu");if(translateElements){var i=0,count=translateElements.length;for(i;i<count;i++){(function(i){var contentid=dataset(translateElements[i],"contentid"),sourcelang=dataset(translateElements[i],"sourcelang"),targetlang=dataset(translateElements[i],"targetlang"),moduleid=parseInt(dataset(translateElements[i],"moduleid")),typeid=parseInt(dataset(translateElements[i],"typeid")),entityid=parseInt(dataset(translateElements[i],"entityid"));Core.AddHandler(translateElements[i],"mouseover",function(){return translateManager.SetMenu(this,contentid,sourcelang,targetlang,moduleid,typeid,entityid);});})(i);}}}});window.fz("show","wdausxxqrpvhekbwjrjlhqjghyhesrqqau");window.mqGlobal.AddOnLoad(function(){window.fpush('MQL5+Article+Open');Articles.CheckOnScrollDown();});mqGlobal.AddOnReady(function(){window.PopupRegisterquickRegistration=new QuickRegistration('PopupRegister','Popup+Register','Articles');});function validate_username(input){var reg=/^([a-z0-9]){1}([\-._a-z0-9]){1,30}([\-_a-z0-9]){1}$/i,value=input.value,result=true;if(reg.test(value)){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Login',unit:'section',value:'Articles'});}return result;}function validate_email(input){var reg=/^\w+([-+.'']{1,2}\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/i,value=input.value,result=true,length_value=value.length;if(reg.test(value)&&length_value>=1&&length_value<=40){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Email',unit:'section',value:'Articles'});}return result;};mqGlobal.AddOnReady(function(){var username=$('PopupRegisterusername'),email=$('PopupRegisteremail');if(username)username.value='';if(email)email.value='';});mqGlobal.AddOnReady(function(){window.quickLogin=new QuickLogin('Popup+Login','Articles');});mqGlobal.AddOnLoad(function(){window.showLoginRegisterPopupAtEnd();});mqGlobal.AddOnLoad(function(){window.tooltipUserInfo.init();});mqGlobal.AddOnReady(function(){{window.initHeaderSearch('','https://www.mql5.com/ru/search');}});</script><script type="text/javascript">mqGlobal.AddOnReady(function(){window.initSuggestions("headerSearchKeyword","ru","https://search.mql5.com/api/query","https://www.mql5.com/ru/users_search/suggestion");});window.fz("show","vgckrufggwxdtfscpyalmenexmvhljduja");mqGlobal.AddOnReady(function(){window.floatVerticalPanelNode=FloatVerticalPanel('Сайт использует cookie-файлы. Узнайте больше о нашей <a href="/ru/about/cookies">политике по использованию cookie-файлов</a>.','cookie_accept');});							if (typeof Attach !== "undefined")
+			Attach.setAcceptFilter(".zip, .txt, .log, .mqh, .ex5, .mq5, .mq4, .mqproj, .ex4, .mt5, .set, .tpl, .cl, .py, .sqlite, .csv, .ini, .ipynb, .onnx, .gif, .png, .jpg, .jpeg, .mp4, .webm");
+	</script>
+
+<script type="application/ld&#x2B;json">
+		[
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"url": "https://www.mql5.com",
+				"logo": "https://c.mql5.com/i/community/logo_mql5-2.png",
+				"sameAs": [
+					"https://www.facebook.com/mql5.community",
+					"https://www.x.com/mql5com",
+					"https://www.youtube.com/user/MetaQuotesOfficial"
+				 ]
+			}
+		
+, 
+{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"Форум","description":"Обсуждение торговых стратегий и автоматического трейдинга. MQL5.community  крупнейший форум по форексу","url":"https://www.mql5.com/ru/forum","children":[]},{"@type":"SiteNavigationElement","position":2,"name":"Маркет","description":"MetaTrader Market - магазин торговых роботов, индикаторов, книг и журналов по трейдингу.","url":"https://www.mql5.com/ru/market","children":[]},{"@type":"SiteNavigationElement","position":3,"name":"Сигналы","description":"Социальный трейдинг, копирование сделок и мониторинг счетов в MetaTrader - Торговые сигналы на MQL5.com","url":"https://www.mql5.com/ru/signals","children":[]},{"@type":"SiteNavigationElement","position":4,"name":"Фриланс","description":"Заказать торговых роботов, технические индикаторы и программы для автоматического трейдинга. Работа на форексе. Фриланс-сервис на MQL5.com. Нанять на работу специалистов и экспертов по MetaTrader","url":"https://www.mql5.com/ru/job","children":[]},{"@type":"SiteNavigationElement","position":5,"name":"Котировки","description":"","url":"https://www.mql5.com/ru/quotes/overview","children":[]},{"@type":"SiteNavigationElement","position":6,"name":"MetaTrader","description":"","url":"https://www.metatrader.com","children":[]},{"@type":"SiteNavigationElement","position":7,"name":"Вебтерминал","description":"Вебтерминал для торговой плафтормы MetaTrader. Торгуйте на форекс рынке.","url":"https://web.metatrader.app/terminal?mode=demo","children":[]},{"@type":"SiteNavigationElement","position":8,"name":"Календарь","description":"","url":"https://www.mql5.com/ru/economic-calendar","children":[]},{"@type":"SiteNavigationElement","position":9,"name":"VPS","description":"","url":"https://www.mql5.com/ru/vps","children":[]},{"@type":"SiteNavigationElement","position":10,"name":"Статьи","description":"","url":"https://www.mql5.com/ru/articles","children":[]},{"@type":"SiteNavigationElement","position":11,"name":"CodeBase","description":"Скачать торговые роботы, технические индикаторы, скрипты в исходном коде - Библиотека кодов на MQL5 для MetaTrader 5","url":"https://www.mql5.com/ru/code","children":[]},{"@type":"SiteNavigationElement","position":12,"name":"Algo Forge","description":"","url":"https://forge.mql5.io","children":[]},{"@type":"SiteNavigationElement","position":13,"name":"Документация","description":"Справочник MetaQuotes Language 5 (MQL5) - Документация на MQL5.com","url":"https://www.mql5.com/ru/docs","children":[]}]}		
+,
+{"@context":"https://schema.org","@type":"TechArticle","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.mql5.com/ru/articles/16820"},"headline":"Управление рисками (Часть 1): Основы построения класса по управлению рисками","image":["https://c.mql5.com/2/110/IDE-1.png","https://c.mql5.com/2/110/IDE-2.png","https://c.mql5.com/2/110/IDE-3.png","https://c.mql5.com/2/110/IDE-4.png","https://c.mql5.com/2/110/Map-1.png","https://c.mql5.com/2/110/MARGIN-1.PNG","https://c.mql5.com/2/111/margin-2.png","https://c.mql5.com/2/111/margin-3.png","https://c.mql5.com/2/111/extra-1.png","https://c.mql5.com/2/111/risk-1.png","https://c.mql5.com/2/111/risk-1__2.png","https://c.mql5.com/2/111/risk-2.png","https://c.mql5.com/2/111/risk-3.png","https://c.mql5.com/2/111/risk-4.png","https://c.mql5.com/2/110/SCRIPT-RISK-1.PNG","https://c.mql5.com/2/110/SCRIPT-RISK-2__1.PNG"],"datePublished":"2025-08-01T15:12:04+00:00Z","dateModified":"2025-10-14T14:19:21+00:00Z","author":{"@type":"Person","name":"Niquel Mendoza","url":"https://www.mql5.com/ru/users/nique_372"},"editor":{"@type":"Organization","name":"MetaQuotes","url":"https://www.mql5.com/ru/users/metaquotes","address":{"@type":"PostalAddress","addressCountry":"CY"}},"publisher":{"@type":"Organization","name":"MQL5 Community","url":"https://www.mql5.com","logo":{"@type":"ImageObject","url":"https://c.mql5.com/i/community/logo_mql5-2.png"}},"description":"В этой статье мы рассмотрим основы управления рисками в трейдинге и узнаем, как создать свои первые функции для расчета подходящего лота для сделки, а также стоп-лосса. Кроме того, мы подробно рассмотрим, как работают эти функции, объясняя каждый шаг. Наша цель  дать четкое понимание того, как применять эти концепции в автоматической торговле. В конце мы применим все на практике, создав простой скрипт с разработанным нами включаемым файлом."}
+,
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":"https://www.mql5.com/ru/articles","name":"Статьи"},{"@type":"ListItem","position":2,"item":"https://www.mql5.com/ru/articles/mt5","name":"MetaTrader 5"},{"@type":"ListItem","position":3,"item":"https://www.mql5.com/ru/articles/mt5/examples","name":"Примеры"}]}
+
+		]
+	</script>
+</body>
+</html>

@@ -1,0 +1,1358 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+
+  <meta name="robots" content="max-snippet:250,max-image-preview:large">
+  <meta name="description" content="Build a Liquidity Spectrum Volume Profile in MQL5 that allocates volume to equal price bins over a chosen lookback using candle close prices. The guide covers data retrieval with copy functions, binning and normalization, and drawing rectangles and POC lines with chart objects and time offsets to reveal high-activity liquidity zones on the chart.">
+  <meta property="og:url" content="https://www.mql5.com/en/articles/22342">
+  <meta property="og:title" content="Building a Liquidity Spectrum Volume Profile Indicator in MQL5">
+  <meta property="og:description" content="Build a Liquidity Spectrum Volume Profile in MQL5 that allocates volume to equal price bins over a chosen lookback using candle close prices. The guide covers data retrieval with copy functions, binning and normalization, and drawing rectangles and POC lines with chart objects and time offsets to reveal high-activity liquidity zones on the chart.">
+      <meta property="og:image" content="https://c.mql5.com/2/209/22342-building-a-liquidity-spectrum-volume-profile-indicator-in-mql5_1200x628.jpg">
+      <meta property="og:image:secure_url" content="https://c.mql5.com/2/209/22342-building-a-liquidity-spectrum-volume-profile-indicator-in-mql5_1200x628.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-05-01T16:12:11.0000000Z">
+  <meta property="article:author" content="https://www.mql5.com/en/users/13467913">
+  <meta property="article:section" content="MetaTrader 5">
+  <meta property="article:tag" content="Indicators">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@mql5com">
+  <meta name="twitter:image" content="https://c.mql5.com/2/209/22342-building-a-liquidity-spectrum-volume-profile-indicator-in-mql5_1200x628.jpg">
+  <meta name="theme-color" content="#4a76b8">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-config" content="none">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta property="qc:admins" content="36367170677651456375">
+  <meta property="wb:webmaster" content="073d7690269bcd81">
+  <link rel="shortcut icon" href="https://c.mql5.com/i/favicon4.ico">
+  <link rel="dns-prefetch" href="https://c.mql5.com">
+  <link href="https://c.mql5.com/styles/core.444bc25de4c9131a69fedfe5ac42a082.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/all.266d64b83529847f568747dd160d42b0.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/articles.bc4209e4de0b5296041832431b46f3dd.css" type="text/css" rel="stylesheet" media="all">
+  <link href="/en/articles/rss" rel="alternate" type="application/rss+xml" title="Articles on the development and application of MetaTrader 5 trading robots and technical indicators">
+  <link rel="canonical" href="https://www.mql5.com/en/articles/22342">
+  <link rel="alternate" hreflang="en" href="https://www.mql5.com/en/articles/22342">
+  <title>Building a Liquidity Spectrum Volume Profile Indicator in MQL5 - MQL5 Articles</title>
+
+
+
+<script type="text/javascript">
+  !function(){window.mqGlobal={};var t=!1,n=!1,e=[],o=[],i=[];function d(t){var n;for(n=0;n<t.length;n+=1)t[n]()}function c(){t||(t=!0,d(e),d(o),o=[],e=[])}function a(){c(),n||(n=!0,d(i),i=[])}if(mqGlobal.AddOnReady=function(n,i){t?n(document):i?e.push(n):o.push(n)},mqGlobal.AddOnLoad=function(t){n?t(document):i.push(t)},mqGlobal.AddOnActiveWindowChange=function(t){this._onvisibility||(this._onvisibility=[]),this._onvisibility[this._onvisibility.length]=t},document.addEventListener)document.addEventListener("DOMContentLoaded",c,!1),window.addEventListener("load",a,!1);else if(document.attachEvent&&(document.attachEvent("onreadystatechange",(function(){switch(document.readyState){case"interactive":c();break;case"complete":a()}})),window.attachEvent("onload",a),document.documentElement.doScroll&&window==window.top)){!function n(){if(!t&&document.body)try{document.documentElement.doScroll("left"),c()}catch(t){setTimeout(n,0)}}()}}();
+  mqGlobal.CookieDomain = ".mql5.com";
+  mqGlobal.Language = 'en';
+  mqGlobal.IsMobile = false;
+  mqGlobal.ClearRteStorage = function (e) { if (window.GStorage || (window.GStorage = globalStorage()), window.GStorage.supported) try { var o = e; window.GStorage.getItem("rte_autosave_uid", function (e, t) { t == o && (window.GStorage.removeItem("rte_autosave_text"), window.GStorage.removeItem("rte_autosave_date"), window.GStorage.removeItem("rte_autosave_uid")) }) } catch (e) { } };
+</script>
+  
+
+    <script src="https://c.mql5.com/js/all.c09fd283bed20d28a52c95cd70a12a27.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/vendor.1be6e9a4a90b28525f93c4c69a5058a1.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/articles.cd4c73c476b2781eecdf04f5583514b5.js" type="text/javascript" defer="defer"></script>
+
+
+</head>
+
+<body id="cover" class="cover">
+
+
+  <nav class="head">
+    <a href="https://www.mql5.com" class="head__logo" title="MQL5 - Language of trade strategies built-in the MetaTrader 5 client terminal"></a>
+      <div class="head__content">
+        <div class="main-menu" id="mainmenu">
+          
+                    <ul class="main-menu__top-level" id="menuTopLevel">
+                    <li><a href="/en/forum" data-fz-event="MQL5+Menu+Forum">Forum</a></li>
+                    <li><a href="/en/market" data-fz-event="MQL5+Menu+Market">Market</a></li>
+                    <li><a href="/en/signals" data-fz-event="MQL5+Menu+Signals">Signals</a></li>
+                    <li><a href="/en/job" data-fz-event="MQL5+Menu+Job">Freelance</a></li>
+                    <li><a href="/en/vps" data-fz-event="MQL5+Menu+VPS">VPS</a></li>
+                    <li><a href="/en/quotes/overview" data-fz-event="MQL5+Menu+Overview">Quotes</a></li>
+                    <li><a href="https://www.metatrader.com" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+MetaTrader">MetaTrader</a></li>
+                  </ul><ul class="main-menu__second-level" id="menuSecondLevel">
+                    <li class="main-menu__selected"><a href="/en/articles" data-fz-event="MQL5+Menu+Articles"><img src="https://c.mql5.com/i/menu/icon-articles4.svg" alt="" width="16" height="16"/>Articles</a></li>
+                    <li><a href="/en/code" data-fz-event="MQL5+Menu+CodeBase"><img src="https://c.mql5.com/i/menu/icon-code4.svg" alt="" width="16" height="16"/>CodeBase</a></li>
+                    <li><a href="https://forge.mql5.io/?lang=en" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+AlgoForge"><img src="https://c.mql5.com/i/menu/icon-algoforge4.svg" alt="" width="16" height="16"/>Algo Forge</a></li>
+                    <li><a href="/en/docs" data-fz-event="MQL5+Menu+Docs"><img src="https://c.mql5.com/i/menu/icon-docs4.svg" alt="" width="16" height="16"/>Documentation</a></li>
+                    <li><a href="/en/book" data-fz-event="MQL5+Menu+Book"><img src="https://c.mql5.com/i/menu/icon-book4.svg" alt="" width="16" height="16"/>AlgoBook</a></li>
+                    <li><a href="/en/neurobook" data-fz-event="MQL5+Menu+Neurobook"><img src="https://c.mql5.com/i/menu/icon-neurobook4.svg" alt="" width="16" height="16"/>NeuroBook</a></li>
+                    <li><a href="/en/economic-calendar" data-fz-event="MQL5+Menu+Economic+Calendar"><img src="https://c.mql5.com/i/menu/icon-economic-calendar4.svg" alt="" width="16" height="16"/>Calendar</a></li>
+                    <li><a href="https://web.metatrader.app/terminal?mode=demo&lang=en" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Menu+Trading"><img src="https://c.mql5.com/i/menu/icon-trading4.svg" alt="" width="16" height="16"/>WebTerminal</a></li>
+                    <li class="main-menu__mobile"><a href="/en/about">About</a></li>
+                    <li class="main-menu__second-tools"><a rel="noopener" href="/en/vps" title="Reliable trader hosting for uninterrupted operation of robots and instant copying of trades" class="button-mt" data-vars-fz="Start+VPS+Trial+Submenu"><img width="18" height="18" src="https://c.mql5.com/i/sidebar/vpstrial2.svg" alt="" loading="lazy">Start VPS Trial</a></li>
+                    </ul>
+        </div>
+          <div class="main-menu__active">
+            <a id="mainMenuSelected" href="#">
+              <span class="main-menu__primary">Articles</span><span class="main-menu__secondary">Sections</span>
+            </a>
+          </div>
+<form action="https://www.mql5.com/en/search" onsubmit="return false;" autocomplete="off" id="headerSearchForm" class="header-search" method="post">
+<button type="button" id="headerSearchButton" title="Search" class="header-search__button"></button><div class="header-search__input"><input name="keyword" type="text" enterkeyhint="search" title="Enter search text" placeholder="Search" id="headerSearchKeyword"/><label for="headerSearchKeyword" class="header-search__placeholder">Type <span>/</span> to search:  @user, $symbol, ...</label><button id="headerSearchSubmit" class="header-search__submit"></button></div><button type="button" id="headerSearchClean" title="Close" class="header-search__clean"></button></form>        <input class="blurHandler" id="mainMenuBlurHandler" type="checkbox">
+      </div>
+      <div class="head__toolbar" id="headerToolbar">
+          <div class="container loginRegister">
+            <nav>
+              <ul id="loginRegisterButtons"><li><a class="login" title="Please sign in. OpenID supported" href="https://www.mql5.com/en/auth_login" rel="nofollow" data-fz-event="MQL5+Menu+Siginin">Log in</a></li><li><a class="registration en" title="Please register" href="https://www.mql5.com/en/auth_register" rel="nofollow" data-fz-event="MQL5+Menu+Register" onclick="window.fpush('MQL5+Button+Click');">Create an account</a></li></ul>
+            </nav>
+          </div>
+        <div class="toggle-button" id="sidebarToggleButton">
+          <i></i>
+        </div>
+
+        <div class="group-menu" id="groupMenu">
+
+
+          <div class="container lang-menu-container">
+            <div id="langMenuContainer" class="lang-menu">
+              <input class="blurHandler" id="langmenuBlurHandler" type="checkbox">
+              <nav>
+                <ul class="lang-menu__list" id="langmenu">
+                  <li class="lang-menu__list-item lang-menu__list-item_selected"><a href="/en/articles" aria-label="English (English)"><i class="icons-languages icons-languages_en"></i><span>English</span></a></li>
+<li class="lang-menu__list-item"><a href="/ru/articles" aria-label="Русский (Russian)"><i class="icons-languages icons-languages_ru"></i><span>Русский</span></a></li>
+<li class="lang-menu__list-item"><a href="/zh/articles" aria-label="中文 (Chinese)"><i class="icons-languages icons-languages_zh"></i><span>中文</span></a></li>
+<li class="lang-menu__list-item"><a href="/es/articles" aria-label="Español (Spanish)"><i class="icons-languages icons-languages_es"></i><span>Español</span></a></li>
+<li class="lang-menu__list-item"><a href="/pt/articles" aria-label="Português (Portuguese)"><i class="icons-languages icons-languages_pt"></i><span>Português</span></a></li>
+<li class="lang-menu__list-item"><a href="/ja/articles" aria-label="日本語 (Japanese)"><i class="icons-languages icons-languages_ja"></i><span>日本語</span></a></li>
+<li class="lang-menu__list-item"><a href="/de/articles" aria-label="Deutsch (German)"><i class="icons-languages icons-languages_de"></i><span>Deutsch</span></a></li>
+<li class="lang-menu__list-item"><a href="/ko/articles" aria-label="한국어 (Korean)"><i class="icons-languages icons-languages_ko"></i><span>한국어</span></a></li>
+<li class="lang-menu__list-item"><a href="/fr/articles" aria-label="Français (French)"><i class="icons-languages icons-languages_fr"></i><span>Français</span></a></li>
+<li class="lang-menu__list-item"><a href="/it/articles" aria-label="Italiano (Italian)"><i class="icons-languages icons-languages_it"></i><span>Italiano</span></a></li>
+<li class="lang-menu__list-item"><a href="/tr/articles" aria-label="Türkçe (Turkish)"><i class="icons-languages icons-languages_tr"></i><span>Türkçe</span></a></li>
+
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+  </nav>
+
+
+
+  <div id="left-sidebar-selector" class="left-sidebar__selector left-sidebar__selector_padding">
+    <div class="left-sidebar__title">
+MetaTrader 5 /     Indicators
+    </div>
+    <i class="icons-ux icons-ux_arrow-down-black"></i>
+  </div>
+  <div class="articles-container block-with-sidebar">
+    <aside class="left-sidebar left-sidebar_270" id="left-sidebar">
+      
+  <ul class="tree-menu-ul"><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/examples"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples.svg" alt="" loading="lazy"/>Examples</a><ul class="tree-menu__list tree-menu__list_nested"><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/examples_indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_indicators.svg" alt="" loading="lazy"/>Indicators</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/examples_experts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_experts.svg" alt="" loading="lazy"/>Experts</a></li></ul></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/strategy_tester"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/strategy_tester.svg" alt="" loading="lazy"/>Tester</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/trading"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading.svg" alt="" loading="lazy"/>Trading</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/trading_systems"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading_systems.svg" alt="" loading="lazy"/>Trading systems</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/integration"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/integration.svg" alt="" loading="lazy"/>Integration</a></li><li class="tree-menu__item tree-menu__item_selected"><a class="tree-menu__link" href="/en/articles/indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/indicator.svg" alt="" loading="lazy"/>Indicators</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/expert_advisors"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/expert.svg" alt="" loading="lazy"/>Expert Advisors</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/statistics"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/statistics.svg" alt="" loading="lazy"/>Statistics and analysis</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/machine_learning"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/machine_learning.svg" alt="" loading="lazy"/>Machine learning</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/interviews"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/interviews.svg" alt="" loading="lazy"/>Interviews</a></li></ul>
+  
+
+    <div class="hints-panel">
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_like"></i>
+        <div class="hints-panel__content">
+          Do you like the article?<br>
+          Share it with others —<br>post a <a href="https://www.mql5.com/en/articles/22342" target="_blank">link</a> to it!
+        </div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_tw-square icons-hints_24px"></i><div class="hints-panel__content">
+Find us on <a href="https://x.com/mql5com" target="_blank" rel="nofollow">Twitter</a>!<br> Join our fan page</div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_mt-5"></i>
+        <div class="hints-panel__content">
+          Use new possibilities of <a href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Article" rel="nofollow sponsored noopener noreferrer">MetaTrader 5</a>
+        </div>
+      </div>
+    </div>
+<div id='vgckrufggwxdtfscpyalmenexmvhljduja' class="roeid8y6hsc3ntv1l gg88d3drb"></div>      <div class="similar-author-articles ui">
+        <h4 class="similar-author-articles__title">Similar articles</h4>
+        <ul class="similar-author-articles__list">
+            <li>
+              <a href="/en/articles/22937" data-fz-event="MQL5+Article+Similar+Article">MQL5 Wizard Techniques you should know (Part 95): Using Disjoint Set Union and Deep Belief Network in a Custom Signal Class</a>
+            </li>
+            <li>
+              <a href="/en/articles/18681" data-fz-event="MQL5+Article+Similar+Article">MQL5 Custom Symbols: Creating a 3D Bars Symbol</a>
+            </li>
+            <li>
+              <a href="/en/articles/22652" data-fz-event="MQL5+Article+Similar+Article">Recurrence Network Analysis (RNA) in MQL5: From Recurrence Matrices to Complex Networks</a>
+            </li>
+            <li>
+              <a href="/en/articles/22519" data-fz-event="MQL5+Article+Similar+Article">Beyond GARCH (Part V): Fitting the Multifractal Spectrum in MQL5</a>
+            </li>
+            <li>
+              <a href="/en/articles/22796" data-fz-event="MQL5+Article+Similar+Article">Price Action Analysis Toolkit Development (Part 71): Weekend Gap Structure Mapping in MQL5</a>
+            </li>
+        </ul>
+      </div>
+    <div class="freelance-hint">
+      <img src="https://c.mql5.com/i/articles/icon_freelance.svg" width="24" height="24" loading="lazy" />
+      <div class="freelance-hint__text">
+        Use the ideas from this article<br>to order your own robot<br>on Freelance
+      </div>
+        <a target="_blank" class="button button_blue-gray-border" title="Go to Freelance" href="/en/job/new" data-fz-event="MQL5+Article+New+Job">Go to Freelance</a>
+    </div>
+
+    </aside>
+    <article class="content-with-sidebar articles-content splashed">
+      
+
+
+  <header class="article-header article-header_light" style="background-color: rgb(29,30,35)">
+    <section class="article-tools-panel">
+        
+      <div class="article-tools-panel__item">
+        <a href="#pocket" title="Pocket allows you to insert a complete content description to the appropriate comment" onclick="return Pocket.Add(this,'en',2,1,22342);" class="article-tools-panel__rounded">
+          <i class="article-pocket-icon"></i>
+        </a>
+      </div>
+      <div class="article-tools-panel__item">
+        <a href="/en/articles/22342?print=" target="_blank" class="article-tools-panel__rounded" rel="nofollow" title="Printer friendly version">
+          <i class="article-print-icon"></i>
+        </a>
+      </div>
+
+    </section>
+    <section class="article-header__image-box">
+        <img class="article-header__image-preview" loading="lazy" width="32" height="16" alt="preview" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAsICAoIBwsKCQoNDAsNERwSEQ8PESIZGhQcKSQrKigkJyctMkA3LTA9MCcnOEw5PUNFSElIKzZPVU5GVEBHSEX/2wBDAQwNDREPESESEiFFLicuRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUX/wAARCAAQACADASIAAhEBAxEB/8QAGAABAAMBAAAAAAAAAAAAAAAAAgEDBQb/xAAiEAACAgAEBwAAAAAAAAAAAAAAAQIRAwQToRIhMTJBQ1H/xAAWAQEBAQAAAAAAAAAAAAAAAAABAAL/xAAXEQEBAQEAAAAAAAAAAAAAAAABAAIS/9oADAMBAAIRAxEAPwDhM648bcWjOliu&#x2B;pc2p9/MGnh3dbiNJBTT8jat3e41pr1xIqHw06jm/9k=">
+      <div class="article-header__gradient" style="background: linear-gradient(90deg, rgba(29,30,35, 1) 0%, rgba(29,30,35, 0.72) 8.31%, rgba(29,30,35, 0) 17.1%), linear-gradient(270deg, rgba(29,30,35, 1) 0%, rgba(29,30,35, 0.72) 8.06%, rgba(29,30,35, 0) 16.59%), linear-gradient(0deg, rgba(29,30,35, 1) 8.26%, rgba(29,30,35, 0.8) 65%, rgba(29,30,35, 0) 100%);"></div>
+        <picture>
+          <source srcset="https://c.mql5.com/2/209/22342-building-a-liquidity-spectrum-volume-profile-indicator-in-mql5_600x314.jpg, https://c.mql5.com/2/209/22342-building-a-liquidity-spectrum-volume-profile-indicator-in-mql5_1200x628.jpg 2x" media="(min-width:700px)">
+          <img class="article-header__image" loading="lazy" width="600" height="314" srcset="https://c.mql5.com/2/209/22342-building-a-liquidity-spectrum-volume-profile-indicator-in-mql5_300x157.jpg, https://c.mql5.com/2/209/22342-building-a-liquidity-spectrum-volume-profile-indicator-in-mql5_600x314.jpg 2x" src="https://c.mql5.com/2/209/22342-building-a-liquidity-spectrum-volume-profile-indicator-in-mql5_600x314.jpg" alt="Building a Liquidity Spectrum Volume Profile Indicator in MQL5" onerror="this.style.display='none';">
+        </picture>
+    </section>
+    <section class="article-header__content">
+      <h1>Building a Liquidity Spectrum Volume Profile Indicator in MQL5</h1>
+      <div class="article-header__info">
+        <a href="/en/articles/mt5">MetaTrader 5</a>
+          &mdash;
+          <a href="/en/articles/mt5/indicators">Indicators</a>
+        | <time datetime="2026-05-01T16:12Z" title="16:12" datetime-type="datetime">1 May 2026, 16:12</time>
+      </div>
+      <div class="article-header__indicators">
+        <span title="Views">
+          <img src="https://c.mql5.com/i/icons.svg#views-white-usage" width="20" height="20" alt="" />
+          3 851
+        </span>
+        
+          <a title="Comments" href="/en/forum/509228">
+            <img src="https://c.mql5.com/i/icons.svg#comments-white-usage" width="20" height="20" alt="" />
+            2
+          </a>
+      </div>
+      <div class="article-header__author">
+          <div class="article-header__avatar">
+            <img src="https://c.mql5.com/avatar/2023/11/6554a830-8858.png" srcset="https://c.mql5.com/avatar/2023/11/6554a830-8858_big.png 2x" data-user-login="13467913" title="ALGOYIN LTD" alt="ALGOYIN LTD" loading="lazy" width="60" height="60">
+          </div>
+<a class="author" href="/en/users/13467913" data-user-login="13467913">Israel Pelumi Abioye</a>      </div>
+    </section>
+  </header>
+
+    <div class="content">
+      <div class="inner formatted-content">
+        <p><b>Table of Contents</b></p> <ol> <li><a href="/en/articles/22342#tag1">Introduction</a></li> <li><a href="/en/articles/22342#tag2">Project Overview and Implementation Plan</a></li> <li><a href="/en/articles/22342#tag3">Creating the Liquidity Spectrum Volume Profile Indicator in MQL5</a></li> <li><a href="/en/articles/22342#tag4">Conclusion</a></li> </ol><br/> <h3 id="tag1"><b>Introduction</b></h3> <p style="text-align:justify;">Standard per-bar volumes under candles do not show how volume is distributed across price, so it is difficult&nbsp;to tell which exact price levels actually “hold” liquidity within a chosen lookback. This article reframes that problem with explicit assumptions and engineering constraints: the profile will assign volume to price bins using candle close prices, prefer tick volume with a fallback to real volume, and operate on a stable, explicitly copied dataset (Copy* functions). In practice, three implementation hurdles must be solved to produce a reliable tool in MQL5:</p> <p style="text-align:justify;"></p> <ul> <li><span>obtaining a consistent lookback dataset via CopyHigh/CopyLow/CopyClose/CopyTickVolume (with fallbacks)<span>;</span></span></li> <li><span>mapping volume into equal price bins inside the high/low range based on closes and normalizing those bins<span>;</span></span></li> <li><span>managing chart objects and time placement by creating, updating, deleting with a prefix, and converting bar offsets into datetime positions.</span></li> </ul> <p></p> <p style="text-align:justify;">The goal is a working, reproducible Liquidity Spectrum Volume Profile indicator for MT5 that removes ambiguity about where real market activity is concentrated. </p> <p style="text-align:justify;"><br/></p> <h3 id="tag2"><b>Project Overview and Implementation Plan </b><br/></h3> <p style="text-align:justify;">Understanding what we are doing and how we will implement it is crucial before moving forward. This chapter will describe the general layout of the liquidity spectrum visualizer and the methodical process we will use to create the indicator. </p> <p style="text-align:justify;"><u>What We Are Building</u></p> <p style="text-align:justify;">In this project, we are building a Liquidity Spectrum Volume Profile Indicator in MQL5. The main purpose of this indicator is to visualize how trading volume is distributed across different price levels within a specified lookback period. Instead of only showing price movement or a single volume value, the indicator breaks the market into multiple price ranges (bins). It then calculates how much volume occurred within each bin and represents that information visually on the chart.&nbsp;Each bin reflects a specific price zone, and its volume determines how wide and prominent it appears. Strong volume areas become wider and more visible, while weaker areas remain smaller. In addition, the indicator identifies high-volume zones known as the Point of Control (POC), which represent the most active price levels where the highest trading activity occurred.</p> <p>These POC levels are drawn as horizontal lines to highlight key liquidity areas where the market is most likely to react.</p> <p style="text-align:center;"> <img width="672" height="640" src="https://c.mql5.com/2/208/F1__1.png" loading="lazy" title="Figure 1. Liquidity Spectrum Volume Profile" alt="Figure 1. Liquidity Spectrum Volume Profile" style="vertical-align:middle;"/></p> <p style="text-align:justify;">In other words, we are building a tool that transforms raw market data into a volume profile-based liquidity spectrum, allowing traders to clearly see where market participation is strongest and where important liquidity zones exist within a defined lookback range. </p> <p style="text-align:justify;"><u>Implementation Plan</u></p>In this section, we outline the implementation steps: retrieve lookback data, split the price range into bins, aggregate volume per bin, normalize the values, and draw chart objects (volume boxes and POC lines). <p style="text-align:justify;"></p> <p style="text-align:justify;"><i>Retrieving Candle Data Using Copy Functions </i></p> <p style="text-align:justify;">This is the first step in implementing the liquidity spectrum volume profile. Before we can calculate volume distribution or build any visual representation, we need access to historical market data within our specified lookback period. Instead of relying on the default data provided in the OnCalculate event handler, we use copy functions to retrieve the required price and volume data ourselves. This ensures we always work with a complete and consistent dataset, regardless of how or when the indicator is triggered. </p> <p style="text-align:justify;">To keep the code neat and avoid repetition, all of this data retrieval will be handled by a single, dedicated function.&nbsp;We call this function from OnInit and OnCalculate to avoid duplicating logic.<b>&nbsp;</b>This methodical approach of using copy functions offers us complete control over the data flow, guarantees correct initialization, and ensures that each recalculation is based on the same trustworthy market dataset.</p> <p style="text-align:justify;"><i>Determining the Price Range within the Lookback Period </i></p> <p style="text-align:justify;">After retrieving the data, we determine the lookback price range. This stage establishes the parameters that will be used for all subsequent computations. We identify the highest high and the lowest low by scanning the candles that fall within the designated lookback. To put it another way, among all the bars in that range, we are searching for <i>the </i>highest and lowest prices reached.</p> <p style="text-align:justify;">For instance, if the lookback is set to 18, we will examine the chart's last 18 candles. We identify the highest high price and lowest low price among these candles. The price range for our analysis is 1.1950 to 1.2050 if the highest price is 1.2050 and the lowest is 1.1950.</p> <p style="text-align:center;"> <img width="599" height="495" src="https://c.mql5.com/2/208/f2.png" loading="lazy" title="Figure 2. Lookback Range" alt="Figure 2. Lookback Range" style="vertical-align:middle;"/></p> <p style="text-align:justify;">This means that every calculation we perform afterward will be based strictly on the price movement that occurred within these 18 bars. Put differently, this step defines the full extent of the market movement within the lookback period, using the highest and lowest prices reached by those bars. </p> <p style="text-align:justify;"><i>Dividing the Price Range into Bins and Calculating Volume Distribution </i></p> <p style="text-align:justify;">The next step after determining the price range is to break it up into smaller pieces and assess the distribution of volume within each. A bin is a narrow price range (interval). To assess where activity is focused, we divide the price range into several smaller ranges rather than considering it as a single block.&nbsp;Let’s assume we divide the price range from 1.1950 to 1.2050 into nine bins. Each bin will represent an equal portion of the total range, giving us nine smaller price intervals instead of one large range.</p> <p style="text-align:center;"> <img width="604" height="495" src="https://c.mql5.com/2/208/f3.png" loading="lazy" title="Figure 3. Bins" alt="Figure 3. Bins" style="vertical-align:middle;"/></p> <p style="text-align:justify;">Next, we go through each candle within the lookback period and check which bin its close price falls into.</p> <p style="text-align:center;"> <img width="599" height="501" src="https://c.mql5.com/2/208/f4.png" loading="lazy" title="Figure 4. Volume Distribution" alt="Figure 4. Volume Distribution" style="vertical-align:middle;"/></p> <p style="text-align:justify;">We add a candle's volume to a bin if its close price falls inside that bin. It is crucial to note that the volume is what accumulates, and the close price is merely used to define which bin the candle belongs to. To avoid missing edge cases, we allow a one-step overlap between adjacent bins.&nbsp;By repeating this process for all candles, each bin ends up containing the total volume of all candles whose close prices fall within its range. This gives us a clear picture of how trading activity is distributed across different price levels.</p> <p style="text-align:justify;"><i>Drawing the Volume Profile and POC Lines </i></p> <p style="text-align:justify;">The next stage is to turn this data into a visual representation on the chart after determining the volume distribution across all bins. To compare all bins on the same scale, we start by normalizing the volume values. To ensure that stronger areas seem larger while weaker ones remain smaller, each bin is&nbsp;scaled relative to the bin with the highest volume.</p> <p style="text-align:justify;"></p> <p style="text-align:justify;">At the same time, we introduce a fixed width limit to control how wide the largest bin can appear. This keeps the visualization balanced and also creates space between the volume profile and the candles, preventing the drawings from overlapping with the price bars. Next, we determine the position of each box using a bar-offset approach. The profile is placed at a defined distance from the current price, and each box extends to the right based on its normalized size, creating a clear and structured view of volume distribution across price levels. </p> <p>With this in place, we begin drawing the volume profile. For each bin, we will:</p> <ul> <li>calculate its upper and lower price boundaries</li> <li>determine its width based on normalized volume</li> <li>draw a rectangle representing that price range</li> </ul> <p></p> <p style="text-align:center;"> <img width="672" height="400" src="https://c.mql5.com/2/208/f5.png" loading="lazy" title="Figure 5. Volume Profile" alt="Figure 5. Volume Profile" style="vertical-align:middle;"/></p> <p>It is important to note that having many candle close prices within a particular price range does not necessarily mean that the level has high trading activity. What truly matters is the volume of those candles, not just how many of them fall into that range. A bin may contain only a few candles, but if those candles have high volume, that level will be more significant than a bin with many low-volume candles. This is why we accumulate volume based on where the close price falls, ensuring that the final result reflects actual market participation rather than just price frequency.</p> <p>After that, we identify high-volume bins, also known as Point of Control (POC) levels. These are bins whose volume exceeds a defined threshold. For each of these bins, we:</p> <ul> <li>calculate the midpoint of the price range</li> <li>draw a horizontal line to highlight that level<br/></li> </ul> <p></p> <p style="text-align:center;"> <img width="673" height="353" src="https://c.mql5.com/2/208/f6.png" loading="lazy" title="Figure 6. Points of Control" alt="Figure 6. Points of Control" style="vertical-align:middle;"/></p> <p></p> <p><br/></p> <h3 id="tag3"><b>Creating the Liquidity Spectrum Volume Profile Indicator in MQL5 </b><br/></h3> <p style="text-align:justify;">Now that we clearly understand&nbsp;the concept and the steps involved, we will begin implementing the liquidity spectrum volume profile programmatically in MQL5. In this section, we will translate each part of the logic into code, starting from data retrieval, through processing and calculation, and finally to visual representation on the chart. </p> <p style="text-align:justify;"><u>Retrieving Candle Data Using Copy Functions</u></p> <p style="text-align:justify;">As discussed during the implementation plan, the first step is to retrieve historical candle data for the specified lookback period to provide a consistent dataset for all further calculations, and now we will implement this step programmatically in MQL5. </p>Example: <pre class="code"><span class="preprocessor">#property </span><span class="macro">indicator_chart_window</span>
+<span class="preprocessor">#property </span><span class="macro">indicator_plots</span> <span class="number">0</span>
+<span class="comment">//--- INPUT PARAMETERS</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp; InpLookback&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="number">100</span>;&nbsp;&nbsp; <span class="comment">// Number of bars used for calculation</span>
+<span class="keyword">input</span> <span class="keyword">bool</span>&nbsp;&nbsp;InpVolumeProfile = <span class="macro">true</span>;&nbsp;&nbsp;<span class="comment">// Display volume profile boxes</span>
+<span class="keyword">input</span> <span class="keyword">bool</span>&nbsp;&nbsp;InpLiqLevels&nbsp;&nbsp;&nbsp;&nbsp; = <span class="macro">true</span>;&nbsp;&nbsp;<span class="comment">// Display POC (liquidity) lines</span>
+
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Core calculation function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//| Builds and draws the volume profile&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> RecalcVolumeProfile()
+&nbsp;&nbsp;{
+<span class="comment">//--- Exit early if both features are disabled</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(!InpVolumeProfile &amp;&amp; !InpLiqLevels)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+
+&nbsp;&nbsp; <span class="keyword">int</span> totalBars = <span class="functions">Bars</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>);
+&nbsp;&nbsp; <span class="keyword">int</span> lookback&nbsp;&nbsp;= <span class="functions">MathMin</span>(InpLookback, totalBars - <span class="number">1</span>);
+&nbsp;&nbsp; <span class="keyword">if</span>(lookback &lt; <span class="number">2</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+
+<span class="comment">//--- Prepare arrays for market data</span>
+&nbsp;&nbsp; <span class="keyword">double</span>&nbsp;&nbsp; hi[], lo[], cl[];
+&nbsp;&nbsp; <span class="keyword">long</span>&nbsp;&nbsp;&nbsp;&nbsp; vol[];
+&nbsp;&nbsp; <span class="keyword">datetime</span> tm[];
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(hi,<span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(lo,<span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(cl,<span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(vol,<span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(tm,<span class="macro">true</span>);
+
+<span class="comment">//--- Copy required data from terminal</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyHigh</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,hi)&nbsp;&nbsp;&lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyLow</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,lo)&nbsp;&nbsp;&lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyClose</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,cl)&nbsp;&nbsp;&lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyTime</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,tm)&nbsp;&nbsp;&lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+<span class="comment">//--- Prefer tick volume, fallback to real volume</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyTickVolume</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,vol) &lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">CopyRealVolume</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,vol) &lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">return</span>;
+&nbsp;&nbsp;}</pre> <p style="text-align:justify;">Explanation: </p> <p style="text-align:justify;">This part illustrates&nbsp;the indicator's behavior and gets it ready for the primary computation. All visual components, such as volume boxes and POC lines, will display on the price chart itself since the indicator is configured at the top to draw directly on the main chart window. Additionally, it states that as all drawings would be made by hand using chart objects, no built-in indication plots will be used.&nbsp;Next, we define the input parameters. The lookback value controls how many candles the indicator will analyze. The two boolean inputs allow the user to decide whether to display the volume profile boxes and whether to display the Point of Control (POC) liquidity lines. These inputs give flexibility to turn parts of the visualization on or off without changing the code.</p> <p style="text-align:justify;">The main function then begins the calculation process. Before doing anything, it first checks whether both visualization options are disabled. If they are, there is nothing to draw, so the function ends instantly. The code then calculates the number of bars that are accessible on the chart and makes sure that the lookback does not go beyond the available history. This keeps errors from attempting to access nonexistent data. The function quits if the lookback is too small because there isn't enough information to do useful computations.&nbsp;The code initializes price/time/volume arrays as series and copies the required lookback data. It uses tick volume first and falls back to real volume. If data is insufficient, the function exits.</p> <p style="text-align:justify;"><u>Determining the Price Range within the Lookback Period</u></p> <p style="text-align:justify;">The next step is to determine the price range within the lookback period. </p> <p>Example: </p> <pre class="code"><span class="preprocessor">#define </span>OBJ_PREFIX&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"VP_"</span>&nbsp;&nbsp;<span class="comment">// Prefix for all chart objects</span></pre> <pre class="code"><span class="comment">//--- INPUT PARAMETERS</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp; InpLookback&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="number">100</span>;&nbsp;&nbsp; <span class="comment">// Number of bars used for calculation</span>
+<span class="keyword">input</span> <span class="keyword">bool</span>&nbsp;&nbsp;InpVolumeProfile = <span class="macro">true</span>;&nbsp;&nbsp;<span class="comment">// Display volume profile boxes</span>
+<span class="keyword">input</span> <span class="keyword">bool</span>&nbsp;&nbsp;InpLiqLevels&nbsp;&nbsp;&nbsp;&nbsp; = <span class="macro">true</span>;&nbsp;&nbsp;<span class="comment">// Display POC (liquidity) lines</span>
+
+<span class="comment">//--- CONSTANTS</span>
+<span class="preprocessor">#define </span>N_BINS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="number">100</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Number of price levels (bins)</span>
+
+<span style="background-color:rgb(255, 246, 200);"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Delete all indicator objects&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> DeleteAllObjects()
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="functions">ObjectsTotal</span>(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>) - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span> n = <span class="functions">ObjectName</span>(<span class="number">0</span>, i, <span class="number">0</span>, -<span class="number">1</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">StringFind</span>(n, OBJ_PREFIX) == <span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">ObjectDelete</span>(<span class="number">0</span>, n);
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;}</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Core calculation function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//| Builds and draws the volume profile&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> RecalcVolumeProfile()
+&nbsp;&nbsp;{
+
+<span class="comment">//--- Exit early if both features are disabled</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(!InpVolumeProfile &amp;&amp; !InpLiqLevels)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp; <span class="keyword">int</span> totalBars = <span class="functions">Bars</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>);
+&nbsp;&nbsp; <span class="keyword">int</span> lookback&nbsp;&nbsp;= <span class="functions">MathMin</span>(InpLookback, totalBars - <span class="number">1</span>);
+&nbsp;&nbsp; <span class="keyword">if</span>(lookback &lt; <span class="number">2</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+
+<span class="comment">//--- Prepare arrays for market data</span>
+&nbsp;&nbsp; <span class="keyword">double</span>&nbsp;&nbsp; hi[], lo[], cl[];
+&nbsp;&nbsp; <span class="keyword">long</span>&nbsp;&nbsp;&nbsp;&nbsp; vol[];
+&nbsp;&nbsp; <span class="keyword">datetime</span> tm[];
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(hi,<span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(lo,<span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(cl,<span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(vol,<span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(tm,<span class="macro">true</span>);
+
+<span class="comment">//--- Copy required data from terminal</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyHigh</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,hi)&nbsp;&nbsp;&lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyLow</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,lo)&nbsp;&nbsp;&lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyClose</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,cl)&nbsp;&nbsp;&lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyTime</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,tm)&nbsp;&nbsp;&lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+<span class="comment">//--- Prefer tick volume, fallback to real volume</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyTickVolume</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,vol) &lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">CopyRealVolume</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,vol) &lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">return</span>;
+
+<span style="background-color:rgb(255, 246, 200);"><span class="comment">//--- Determine price range</span>
+&nbsp;&nbsp; <span class="keyword">double</span> priceMax = hi[<span class="functions">ArrayMaximum</span>(hi, <span class="number">0</span>, lookback)];
+&nbsp;&nbsp; <span class="keyword">double</span> priceMin = lo[<span class="functions">ArrayMinimum</span>(lo, <span class="number">0</span>, lookback)];
+&nbsp;&nbsp; <span class="keyword">if</span>(priceMax &lt;= priceMin)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+
+&nbsp;&nbsp; <span class="keyword">int</span> idxHigh = <span class="functions">ArrayMaximum</span>(hi, <span class="number">0</span>, lookback);
+&nbsp;&nbsp; <span class="keyword">int</span> idxLow&nbsp;&nbsp;= <span class="functions">ArrayMinimum</span>(lo, <span class="number">0</span>, lookback);
+
+&nbsp;&nbsp; <span class="keyword">string</span> lookback_line = OBJ_PREFIX + <span class="string">"_LL"</span>;
+&nbsp;&nbsp; <span class="keyword">string</span> high_range = OBJ_PREFIX + <span class="string">"_HR"</span>;
+&nbsp;&nbsp; <span class="keyword">string</span> low_range = OBJ_PREFIX + <span class="string">"_LR"</span>;
+&nbsp;&nbsp; <span class="functions">ObjectCreate</span>(<span class="number">0</span>,lookback_line,<span class="macro">OBJ_VLINE</span>,<span class="number">0</span>,tm[lookback - <span class="number">1</span>],<span class="number">0</span>);
+&nbsp;&nbsp; <span class="functions">ObjectCreate</span>(<span class="number">0</span>,high_range,<span class="macro">OBJ_TREND</span>,<span class="number">0</span>,tm[lookback - <span class="number">1</span>],priceMax,tm[<span class="number">0</span>],priceMax);
+&nbsp;&nbsp; <span class="functions">ObjectCreate</span>(<span class="number">0</span>,low_range,<span class="macro">OBJ_TREND</span>,<span class="number">0</span>,tm[lookback - <span class="number">1</span>],priceMin,tm[<span class="number">0</span>],priceMin);</span>
+&nbsp;&nbsp;}
+
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Custom indicator initialization function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">int</span> <span class="functions">OnInit</span>()
+&nbsp;&nbsp;{
+<span style="background-color:rgb(255, 246, 200);"><span class="comment">//--- indicator buffers mapping</span>
+&nbsp;&nbsp; RecalcVolumeProfile();</span>
+<span class="comment">//---</span>
+&nbsp;&nbsp; <span class="keyword">return</span>(<span class="macro">INIT_SUCCEEDED</span>);
+&nbsp;&nbsp;}
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Deinitialization&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> <span class="functions">OnDeinit</span>(<span class="keyword">const</span> <span class="keyword">int</span> reason)
+&nbsp;&nbsp;{
+<span style="background-color:rgb(255, 246, 200);">&nbsp;&nbsp; DeleteAllObjects();</span>
+&nbsp;&nbsp;}
+<span class="comment">//+------------------------------------------------------------------+</span></pre> <p><br/></p> <p></p> <p style="text-align:justify;">Output: </p> <p style="text-align:center;"> <img width="674" height="605" src="https://c.mql5.com/2/208/f7.png" loading="lazy" title="Figure 7. Price Range" alt="Figure 7. Price Range" style="vertical-align:middle;"/></p> <p style="text-align:justify;">Explanation: </p> <p style="text-align:justify;">In this step, we determine the price range within the lookback period as discussed in the implementation plan. To determine the highest high and lowest low, we must go through the gathered candle data. The upper and lower bounds of the market movement are represented by the highest and lowest values, respectively. To prevent erroneous computations, a safety check is also incorporated to guarantee that the maximum price is higher than the minimum price. For visual reference, we also record the precise candle indices at which these extreme values occurred. </p> <p style="text-align:justify;">To make this process easier to understand, temporary chart objects were created for you to visualize the implementation process. A vertical line is drawn at the start of the lookback period to mark the beginning of the analysis range. In addition, two horizontal lines are drawn at the highest and lowest price levels. These objects are not part of the final indicator; they are only used to help visually confirm the price range being used during development.&nbsp;The indicator calls the primary calculation function that creates the volume profile right away during initialization. This ensures that the indicator is displayed on the chart immediately upon loading, without the need to wait for fresh price updates.</p> <p style="text-align:justify;">When the indicator is removed from the chart, all created objects are deleted using the&nbsp;<span>DeleteAllObjects() function</span>. This removes all chart objects with the "VP_" prefix.</p> <p style="text-align:justify;"></p> <p style="text-align:justify;"><u>Dividing the Price Range into Bins and Calculating Volume Distribution</u></p> <p style="text-align:justify;">In this step, we divide the price range within the lookback period into equal bins and calculate the total volume of candles whose close prices fall within each bin. </p> <p>Example:</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Core calculation function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//| Builds and draws the volume profile&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> RecalcVolumeProfile()
+&nbsp;&nbsp;{
+<span class="comment">//--- Exit early if both features are disabled</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(!InpVolumeProfile &amp;&amp; !InpLiqLevels)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+
+&nbsp;&nbsp; <span class="keyword">int</span> totalBars = <span class="functions">Bars</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>);
+&nbsp;&nbsp; <span class="keyword">int</span> lookback&nbsp;&nbsp;= <span class="functions">MathMin</span>(InpLookback, totalBars - <span class="number">1</span>);
+&nbsp;&nbsp; <span class="keyword">if</span>(lookback &lt; <span class="number">2</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+
+<span class="comment">//--- Prepare arrays for market data</span>
+&nbsp;&nbsp; <span class="keyword">double</span>&nbsp;&nbsp; hi[], lo[], cl[];
+&nbsp;&nbsp; <span class="keyword">long</span>&nbsp;&nbsp;&nbsp;&nbsp; vol[];
+&nbsp;&nbsp; <span class="keyword">datetime</span> tm[];
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(hi,<span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(lo,<span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(cl,<span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(vol,<span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(tm,<span class="macro">true</span>);
+
+<span class="comment">//--- Copy required data from terminal</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyHigh</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,hi)&nbsp;&nbsp;&lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyLow</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,lo)&nbsp;&nbsp;&lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyClose</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,cl)&nbsp;&nbsp;&lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyTime</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,tm)&nbsp;&nbsp;&lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+<span class="comment">//--- Prefer tick volume, fallback to real volume</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyTickVolume</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,vol) &lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">CopyRealVolume</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,vol) &lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">return</span>;
+
+<span class="comment">//--- Determine price range</span>
+&nbsp;&nbsp; <span class="keyword">double</span> priceMax = hi[<span class="functions">ArrayMaximum</span>(hi, <span class="number">0</span>, lookback)];
+&nbsp;&nbsp; <span class="keyword">double</span> priceMin = lo[<span class="functions">ArrayMinimum</span>(lo, <span class="number">0</span>, lookback)];
+&nbsp;&nbsp; <span class="keyword">if</span>(priceMax &lt;= priceMin)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+
+&nbsp;&nbsp; <span class="keyword">int</span> idxHigh = <span class="functions">ArrayMaximum</span>(hi, <span class="number">0</span>, lookback);
+&nbsp;&nbsp; <span class="keyword">int</span> idxLow&nbsp;&nbsp;= <span class="functions">ArrayMinimum</span>(lo, <span class="number">0</span>, lookback);
+
+&nbsp;&nbsp; <span class="keyword">string</span> lookback_line = OBJ_PREFIX + <span class="string">"_LL"</span>;
+&nbsp;&nbsp; <span class="keyword">string</span> high_range = OBJ_PREFIX + <span class="string">"_HR"</span>;
+&nbsp;&nbsp; <span class="keyword">string</span> low_range = OBJ_PREFIX + <span class="string">"_LR"</span>;
+&nbsp;&nbsp; <span class="functions">ObjectCreate</span>(<span class="number">0</span>,lookback_line,<span class="macro">OBJ_VLINE</span>,<span class="number">0</span>,tm[lookback - <span class="number">1</span>],<span class="number">0</span>);
+&nbsp;&nbsp; <span class="functions">ObjectCreate</span>(<span class="number">0</span>,high_range,<span class="macro">OBJ_TREND</span>,<span class="number">0</span>,tm[lookback - <span class="number">1</span>],priceMax,tm[<span class="number">0</span>],priceMax);
+&nbsp;&nbsp; <span class="functions">ObjectCreate</span>(<span class="number">0</span>,low_range,<span class="macro">OBJ_TREND</span>,<span class="number">0</span>,tm[lookback - <span class="number">1</span>],priceMin,tm[<span class="number">0</span>],priceMin);
+
+<span style="background-color:rgb(255, 246, 200);"><span class="comment">//--- Divide price range into bins</span>
+&nbsp;&nbsp; <span class="keyword">double</span> step = (priceMax - priceMin) / N_BINS;
+
+<span class="comment">//--- build bins</span>
+&nbsp;&nbsp; <span class="keyword">double</span> bins[];
+&nbsp;&nbsp; <span class="functions">ArrayResize</span>(bins, N_BINS);
+&nbsp;&nbsp; <span class="functions">ArrayInitialize</span>(bins, <span class="number">0.0</span>);
+
+<span class="comment">//--- Assign volume to bins</span>
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N_BINS; i++)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> lower = priceMin + step * i;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> upper = lower + step;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span> bin_box = OBJ_PREFIX + <span class="string">"BIN_"</span> + <span class="functions">IntegerToString</span>(i);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectCreate</span>(<span class="number">0</span>,bin_box,<span class="macro">OBJ_RECTANGLE</span>,<span class="number">0</span>,tm[<span class="number">0</span>],lower,tm[lookback - <span class="number">1</span>],upper);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="number">0</span>,bin_box,<span class="macro">OBJPROP_COLOR</span>,<span class="macro">clrBlue</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; lookback; j++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">double</span> c = cl[j];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(c &gt;= lower - step &amp;&amp; c &lt;= upper + step)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bins[i] += (<span class="keyword">double</span>)vol[j];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span> bin_volume = OBJ_PREFIX + <span class="string">"VOL_"</span> + <span class="functions">IntegerToString</span>(i);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectCreate</span>(<span class="number">0</span>,bin_volume,<span class="macro">OBJ_TEXT</span>,<span class="number">0</span>,tm[<span class="number">0</span>],lower);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetString</span>(<span class="number">0</span>,bin_volume,<span class="macro">OBJPROP_TEXT</span>,<span class="functions">DoubleToString</span>(bins[i]));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp; }</span>
+&nbsp;&nbsp;}
+
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Custom indicator initialization function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">int</span> <span class="functions">OnInit</span>()
+&nbsp;&nbsp;{
+<span class="comment">//--- indicator buffers mapping</span>
+&nbsp;&nbsp; RecalcVolumeProfile();
+<span class="comment">//---</span>
+&nbsp;&nbsp; <span class="keyword">return</span>(<span class="macro">INIT_SUCCEEDED</span>);
+&nbsp;&nbsp;}</pre> <p style="text-align:justify;">Output: </p> <p style="text-align:center;"> <img width="676" height="607" src="https://c.mql5.com/2/208/f8.png" loading="lazy" title="Figure 8. Bins Volume Distribution" alt="Figure 8. Bins Volume Distribution" style="vertical-align:middle;"/></p> <p style="text-align:justify;">Explanation: </p> <p style="text-align:justify;">The price range is then separated into equal pieces called bins based on the highest and lowest values. A matching array is created and initialized to zero to hold volume numbers for each bin. We loop through each bin and calculate its price range using the minimum price, bin index, and step size to make sure each bin covers an equal portion of the whole price range.&nbsp;To make this process easier to see, we create a temporary rectangle for each bin on the chart. Each rectangle spans the whole lookback time horizontally, from the oldest candle to the most recent candle, and the bin's price range between its lower and higher boundaries vertically. This facilitates our observation of the segmentation of the price range.</p> <p style="text-align:justify;">Next, by looking over every candle in the lookback period, we explore deeper into each bin and determine the volume distribution. We start by going through each candle one by one. We take the close price of each candle and store it in a variable named c. Furthermore, we&nbsp;determine which bin the candle belongs to based on this close price. </p>The key condition here is the check: <pre class="code">c &gt;= lower - step &amp;&amp; c &lt;= upper + step</pre> <p style="text-align:justify;">This condition establishes whether the close price of the candle is within the price range of the current bin. A bin should typically only be examined between its precise lower and upper bounds. Here, however, we add and subtract one step size to somewhat increase the range. This ensures that candles close to the margins are not overlooked because of little price fluctuations or rounding errors by creating an overlap between adjacent bins. To put it simply, it increases the flexibility of the bin borders such that no pertinent volume is excluded. </p> <p style="text-align:justify;">If the candle passes this condition, its volume is added to the current bin’s total. This means we are accumulating the total trading activity for all candles whose close prices fall within that bin’s effective range. To help visualize this process, a temporary text object is created on the chart. This object displays the current total volume of that bin in real time, updating as more candles are included. These visual elements are only for demonstration and are not part of the final indicator. </p> <p style="text-align:justify;"><u>Drawing the Volume Profile and POC Lines</u></p> <p style="text-align:justify;">In this stage, we use POC lines to emphasize important liquidity levels and build the volume profile to graphically depict the computed volume distribution on the chart. To compare all bins on the same scale, we must first normalize the volume in each bin.&nbsp;Because calculations depend on the current symbol and timeframe, changing either requires recalculation so the drawn objects reflect the updated data.</p> <p>Example:</p> <pre class="code"><span class="comment">//--- CONSTANTS</span>
+<span class="preprocessor">#define </span>N_BINS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="number">100</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Number of price levels (bins)</span>
+<span style="background-color:rgb(255, 246, 200);"><span class="preprocessor">#define </span>MAX_BAR_WIDTH&nbsp;&nbsp; <span class="number">50</span>&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Maximum horizontal width of profile</span></span></pre> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Core calculation function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//| Builds and draws the volume profile&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> RecalcVolumeProfile()
+&nbsp;&nbsp;{
+<span class="comment">//--- Exit early if both features are disabled</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(!InpVolumeProfile &amp;&amp; !InpLiqLevels)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+
+&nbsp;&nbsp; <span class="keyword">int</span> totalBars = <span class="functions">Bars</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>);
+&nbsp;&nbsp; <span class="keyword">int</span> lookback&nbsp;&nbsp;= <span class="functions">MathMin</span>(InpLookback, totalBars - <span class="number">1</span>);
+
+&nbsp;&nbsp; <span class="keyword">if</span>(lookback &lt; <span class="number">2</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+
+<span class="comment">//--- Prepare arrays for market data</span>
+&nbsp;&nbsp; <span class="keyword">double</span>&nbsp;&nbsp; hi[], lo[], cl[];
+&nbsp;&nbsp; <span class="keyword">long</span>&nbsp;&nbsp;&nbsp;&nbsp; vol[];
+&nbsp;&nbsp; <span class="keyword">datetime</span> tm[];
+
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(hi,<span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(lo,<span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(cl,<span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(vol,<span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(tm,<span class="macro">true</span>);
+
+<span class="comment">//--- Copy required data from terminal</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyHigh</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,hi)&nbsp;&nbsp;&lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyLow</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,lo)&nbsp;&nbsp;&lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyClose</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,cl)&nbsp;&nbsp;&lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyTime</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,tm)&nbsp;&nbsp;&lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+<span class="comment">//--- Prefer tick volume, fallback to real volume</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyTickVolume</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,vol) &lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">CopyRealVolume</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,vol) &lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">return</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+<span class="comment">//--- Determine price range</span>
+&nbsp;&nbsp; <span class="keyword">double</span> priceMax = hi[<span class="functions">ArrayMaximum</span>(hi, <span class="number">0</span>, lookback)];
+&nbsp;&nbsp; <span class="keyword">double</span> priceMin = lo[<span class="functions">ArrayMinimum</span>(lo, <span class="number">0</span>, lookback)];
+&nbsp;&nbsp; <span class="keyword">if</span>(priceMax &lt;= priceMin)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+
+&nbsp;&nbsp; <span class="keyword">int</span> idxHigh = <span class="functions">ArrayMaximum</span>(hi, <span class="number">0</span>, lookback);
+&nbsp;&nbsp; <span class="keyword">int</span> idxLow&nbsp;&nbsp;= <span class="functions">ArrayMinimum</span>(lo, <span class="number">0</span>, lookback);
+
+<span class="comment">//--- Divide price range into bins</span>
+&nbsp;&nbsp; <span class="keyword">double</span> step = (priceMax - priceMin) / N_BINS;
+
+<span class="comment">//--- build bins</span>
+&nbsp;&nbsp; <span class="keyword">double</span> bins[];
+&nbsp;&nbsp; <span class="functions">ArrayResize</span>(bins, N_BINS);
+&nbsp;&nbsp; <span class="functions">ArrayInitialize</span>(bins, <span class="number">0.0</span>);
+
+<span class="comment">//--- Assign volume to bins </span>
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N_BINS; i++)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> lower = priceMin + step * i;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> upper = lower + step;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; lookback; j++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">double</span> c = cl[j];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(c &gt;= lower - step &amp;&amp; c &lt;= upper + step)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bins[i] += (<span class="keyword">double</span>)vol[j];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+<span style="background-color:rgb(255, 246, 200);"><span class="comment">//--- Find maximum volume bin</span>
+&nbsp;&nbsp; <span class="keyword">double</span> maxBin = <span class="number">0</span>;
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N_BINS; i++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(bins[i] &gt; maxBin)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; maxBin = bins[i];
+&nbsp;&nbsp; <span class="keyword">if</span>(maxBin == <span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+
+<span class="comment">//--- Loop through bins and draw</span>
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N_BINS; i++)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> lower = priceMin + step * i;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> upper = lower + step;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> mid&nbsp;&nbsp; = (lower + upper) * <span class="number">0.5</span>;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Normalize bin width</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> val = (<span class="keyword">int</span>)(bins[i] / maxBin * (<span class="keyword">double</span>)MAX_BAR_WIDTH);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(val &lt; <span class="number">1</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">continue</span>;</span>
+&nbsp;&nbsp;&nbsp;&nbsp; }</pre> <p style="text-align:justify;">Explanation: </p> <p>To scale all other bins in relation to it, we must first identify the bin with the largest volume. First, we create a variable named maxBin and set it to zero. The largest volume value we discover across all bins will be stored here.&nbsp;We then go through each bin in turn. We compare the volume of each bin with the existing maxBin. Furthermore, we&nbsp;update maxBin with the value if the volume of the bin is greater. MaxBin has the highest volume value among all bins after this loop. Next, we verify if maxBin remains zero. If it is, we terminate the function to prevent needless computations because there is no volume data available.</p> <p style="text-align:justify;">We loop through all the bins again to prepare them for visualization on the chart. For each bin, we first calculate its price boundaries. The lower value is obtained by taking the minimum price and moving upward based on the bin index and step size. The upper value is simply one step above the lower boundary, defining the full price range of that bin. We also calculate the midpoint (mid) of the bin by averaging the lower and upper values. This midpoint will later be useful when placing POC (liquidity) lines at the center of strong volume areas. </p> <p style="text-align:justify;">After defining the price range, we move to normalizing the volume of each bin. This is done using the formula:</p> <pre class="code">bins[i] / maxBin * MAX_BAR_WIDTH</pre> <p style="text-align:justify;">Here, we compare the volume of each bin to the highest volume previously discovered. This guarantees that every bin is scaled relative to the strongest one. Next, a predetermined maximum width value is multiplied by the outcome. MAX&nbsp;BAR&nbsp;WIDTH serves two purposes:&nbsp;to prevent the largest volume bin from exceeding this limit, it first establishes the maximum visible width that a bin may have on the chart. Second, all other bins are rendered proportionately smaller or larger based on their volume, using it as a scaling guide. </p> <p style="text-align:justify;">This width limit is used not only for normalization but also for the volume profile's placement on the chart. To ensure that the entire drawing starts and ends at a distance from the candles under analysis, it is included as an offset to the lookback area. By preventing the volume profile from overlapping or interfering with the price bars, the chart is kept clear and readable while maintaining the accurate data range. </p> <p style="text-align:justify;">Example:</p> <pre class="code"><span style="background-color:rgb(255, 246, 200);"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Convert "bars ago" into actual chart time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//| This allows drawing objects into the past or future&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">datetime</span> BarsAgoToTime(<span class="keyword">const</span> <span class="keyword">datetime</span> &amp;times[], <span class="keyword">int</span> copiedBars,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">int</span> barsAgo, <span class="keyword">long</span> barDur)
+&nbsp;&nbsp;{
+<span class="comment">//--- Case 1: within available history</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(barsAgo &gt;= <span class="number">0</span> &amp;&amp; barsAgo &lt; copiedBars)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> times[barsAgo];
+<span class="comment">//--- Case 2: future projection (negative index)</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(barsAgo &lt; <span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> (<span class="keyword">datetime</span>)((<span class="keyword">long</span>)times[<span class="number">0</span>] - (<span class="keyword">long</span>)barsAgo * barDur); <span class="comment">// barsAgo is negative</span>
+<span class="comment">//--- Case 3: beyond copied range</span>
+&nbsp;&nbsp; <span class="keyword">return</span> (<span class="keyword">datetime</span>)((<span class="keyword">long</span>)times[copiedBars-<span class="number">1</span>] - (<span class="keyword">long</span>)(barsAgo - copiedBars + <span class="number">1</span>) * barDur);
+&nbsp;&nbsp;}
+
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Create or update a rectangle (volume profile bar)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//| Returns true if a new object was created&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">bool</span> DrawBox(<span class="keyword">const</span> <span class="keyword">string</span> name,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">datetime</span> x1, <span class="keyword">double</span> yTop,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">datetime</span> x2, <span class="keyword">double</span> yBot,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">color</span> fillCol)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">bool</span> created = <span class="macro">false</span>;
+
+<span class="comment">//--- Create object only if it does not exist</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">ObjectFind</span>(<span class="number">0</span>, name) &lt; <span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectCreate</span>(<span class="number">0</span>, name, <span class="macro">OBJ_RECTANGLE</span>, <span class="number">0</span>, x1, yTop, x2, yBot);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;created = <span class="macro">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+<span class="comment">//--- Update object properties</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, name, <span class="macro">OBJPROP_COLOR</span>, fillCol);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, name, <span class="macro">OBJPROP_BGCOLOR</span>, fillCol);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, name, <span class="macro">OBJPROP_FILL</span>, <span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, name, <span class="macro">OBJPROP_BACK</span>, <span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, name, <span class="macro">OBJPROP_SELECTABLE</span>, <span class="macro">false</span>);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, name, <span class="macro">OBJPROP_HIDDEN</span>, <span class="macro">true</span>);
+
+<span class="comment">//--- Update position</span>
+&nbsp;&nbsp; <span class="functions">ObjectMove</span>(<span class="number">0</span>, name, <span class="number">0</span>, x1, yTop);
+&nbsp;&nbsp; <span class="functions">ObjectMove</span>(<span class="number">0</span>, name, <span class="number">1</span>, x2, yBot);
+&nbsp;&nbsp; <span class="keyword">return</span> created;
+&nbsp;&nbsp;}
+
+</span><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Delete all indicator objects&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> DeleteAllObjects()
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="functions">ObjectsTotal</span>(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>) - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span> n = <span class="functions">ObjectName</span>(<span class="number">0</span>, i, <span class="number">0</span>, -<span class="number">1</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">StringFind</span>(n, OBJ_PREFIX) == <span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">ObjectDelete</span>(<span class="number">0</span>, n);
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;}
+
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Core calculation function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//| Builds and draws the volume profile&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> RecalcVolumeProfile(<span class="keyword">bool</span> &amp;need_redraw)
+&nbsp;&nbsp;{
+
+&nbsp;&nbsp; <span style="background-color:rgb(255, 246, 200);">DeleteAllObjects();
+</span><span class="comment">//--- Exit early if both features are disabled</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(!InpVolumeProfile &amp;&amp; !InpLiqLevels)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp; <span class="keyword">int</span> totalBars = <span class="functions">Bars</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>);
+&nbsp;&nbsp; <span class="keyword">int</span> lookback&nbsp;&nbsp;= <span class="functions">MathMin</span>(InpLookback, totalBars - <span class="number">1</span>);
+
+&nbsp;&nbsp; <span class="keyword">if</span>(lookback &lt; <span class="number">2</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+
+<span class="comment">//--- Prepare arrays for market data</span>
+&nbsp;&nbsp; <span class="keyword">double</span>&nbsp;&nbsp; hi[], lo[], cl[];
+&nbsp;&nbsp; <span class="keyword">long</span>&nbsp;&nbsp;&nbsp;&nbsp; vol[];
+&nbsp;&nbsp; <span class="keyword">datetime</span> tm[];
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(hi,<span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(lo,<span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(cl,<span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(vol,<span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(tm,<span class="macro">true</span>);
+
+<span class="comment">//--- Copy required data from terminal</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyHigh</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,hi)&nbsp;&nbsp;&lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyLow</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,lo)&nbsp;&nbsp;&lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyClose</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,cl)&nbsp;&nbsp;&lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyTime</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,tm)&nbsp;&nbsp;&lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+<span class="comment">//--- Prefer tick volume, fallback to real volume</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyTickVolume</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,vol) &lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">CopyRealVolume</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">0</span>,lookback,vol) &lt; lookback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">return</span>;
+
+<span class="comment">//--- Determine price range</span>
+&nbsp;&nbsp; <span class="keyword">double</span> priceMax = hi[<span class="functions">ArrayMaximum</span>(hi, <span class="number">0</span>, lookback)];
+&nbsp;&nbsp; <span class="keyword">double</span> priceMin = lo[<span class="functions">ArrayMinimum</span>(lo, <span class="number">0</span>, lookback)];
+&nbsp;&nbsp; <span class="keyword">if</span>(priceMax &lt;= priceMin)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp; <span class="keyword">int</span> idxHigh = <span class="functions">ArrayMaximum</span>(hi, <span class="number">0</span>, lookback);
+&nbsp;&nbsp; <span class="keyword">int</span> idxLow&nbsp;&nbsp;= <span class="functions">ArrayMinimum</span>(lo, <span class="number">0</span>, lookback);
+
+<span class="comment">//--- Divide price range into bins</span>
+&nbsp;&nbsp; <span class="keyword">double</span> step = (priceMax - priceMin) / N_BINS;
+
+<span class="comment">//--- build bins</span>
+&nbsp;&nbsp; <span class="keyword">double</span> bins[];
+&nbsp;&nbsp; <span class="functions">ArrayResize</span>(bins, N_BINS);
+&nbsp;&nbsp; <span class="functions">ArrayInitialize</span>(bins, <span class="number">0.0</span>);
+
+<span class="comment">//--- Assign volume to bins </span>
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N_BINS; i++)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> lower = priceMin + step * i;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> upper = lower + step;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; lookback; j++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">double</span> c = cl[j];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(c &gt;= lower - step &amp;&amp; c &lt;= upper + step)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bins[i] += (<span class="keyword">double</span>)vol[j];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+<span class="comment">//--- Find maximum volume bin</span>
+&nbsp;&nbsp; <span class="keyword">double</span> maxBin = <span class="number">0</span>;
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N_BINS; i++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(bins[i] &gt; maxBin)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; maxBin = bins[i];
+&nbsp;&nbsp; <span class="keyword">if</span>(maxBin == <span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+
+<span class="comment">//--- Define drawing boundaries</span>
+&nbsp;&nbsp; <span class="keyword">int</span> profileLeftBarsAgo = lookback + MAX_BAR_WIDTH;
+&nbsp;&nbsp; <span class="keyword">long</span> barDur = (<span class="keyword">long</span>)<span class="functions">PeriodSeconds</span>(<span class="predefines">_Period</span>);
+&nbsp;&nbsp; <span class="keyword">datetime</span> profileLeftTime = BarsAgoToTime(tm, lookback, profileLeftBarsAgo, barDur);
+
+<span class="comment">//--- Loop through bins and draw</span>
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N_BINS; i++)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> lower = priceMin + step * i;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> upper = lower + step;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> mid&nbsp;&nbsp; = (lower + upper) * <span class="number">0.5</span>;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Normalize bin width</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> val = (<span class="keyword">int</span>)(bins[i] / maxBin * (<span class="keyword">double</span>)MAX_BAR_WIDTH);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(val &lt; <span class="number">1</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">continue</span>;
+
+<span style="background-color:rgb(255, 246, 200);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> profileRightBarsAgo = profileLeftBarsAgo - val;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> profileRightTime&nbsp;&nbsp;= BarsAgoToTime(tm, lookback, profileRightBarsAgo, barDur);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">color</span>&nbsp;&nbsp;&nbsp;&nbsp;box_line_clr&nbsp;&nbsp; = (val &gt;= <span class="number">40</span>) ? <span class="macro">clrBlue</span> : (val &gt; <span class="number">30</span>) ? <span class="macro">clrGreen</span> : (val &gt; <span class="number">20</span>) ? <span class="macro">clrGray</span> : (val &gt; <span class="number">10</span>) ? <span class="macro">clrOlive</span> : <span class="macro">clrAquamarine</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Draw volume box</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(InpVolumeProfile)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">string</span> boxName = OBJ_PREFIX + <span class="string">"BOX_"</span> + <span class="functions">IntegerToString</span>(i);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(DrawBox(boxName, profileRightTime, upper, profileLeftTime, lower, box_line_clr))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;need_redraw = <span class="macro">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span>
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;}
+
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Custom indicator initialization function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">int</span> <span class="functions">OnInit</span>()
+&nbsp;&nbsp;{
+<span style="background-color:rgb(255, 246, 200);">&nbsp;&nbsp; <span class="keyword">bool</span> redraw = <span class="macro">false</span>;
+<span class="comment">//--- Initial calculation so indicator appears immediately</span>
+&nbsp;&nbsp; RecalcVolumeProfile(redraw);
+&nbsp;&nbsp; <span class="keyword">if</span>(redraw)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ChartRedraw</span>(<span class="number">0</span>);</span>
+<span class="comment">//---</span>
+&nbsp;&nbsp; <span class="keyword">return</span>(<span class="macro">INIT_SUCCEEDED</span>);
+&nbsp;&nbsp;}
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Deinitialization&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> <span class="functions">OnDeinit</span>(<span class="keyword">const</span> <span class="keyword">int</span> reason)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; DeleteAllObjects();
+&nbsp;&nbsp;}
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Custom indicator iteration function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">int</span> <span class="functions">OnCalculate</span>(<span class="keyword">const</span> int32_t rates_total,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> int32_t prev_calculated,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">datetime</span> &amp;time[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">double</span> &amp;open[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">double</span> &amp;high[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">double</span> &amp;low[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">double</span> &amp;close[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">long</span> &amp;tick_volume[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">long</span> &amp;volume[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> int32_t &amp;spread[])
+&nbsp;&nbsp;{
+<span class="comment">//---</span>
+<span style="background-color:rgb(255, 246, 200);">&nbsp;&nbsp; <span class="keyword">bool</span> need_redraw = <span class="macro">false</span>;
+
+<span class="comment">//--- Recalculate only when new data arrives</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(prev_calculated == <span class="number">0</span> || rates_total != prev_calculated)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RecalcVolumeProfile(need_redraw);
+
+<span class="comment">//--- Redraw only if something changed</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(need_redraw)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ChartRedraw</span>(<span class="number">0</span>);</span>
+
+<span class="comment">//--- return value of prev_calculated for next call</span>
+&nbsp;&nbsp; <span class="keyword">return</span>(rates_total);
+&nbsp;&nbsp;}
+<span class="comment">//+------------------------------------------------------------------+</span></pre> <p>Output:</p> <p style="text-align:center;"> <img width="674" height="606" src="https://c.mql5.com/2/208/f9.png" loading="lazy" title="Figure 9. Volume Profile" alt="Figure 9. Volume Profile" style="vertical-align:middle;"/></p> <p style="text-align:justify;">Explanation: </p> <p style="text-align:justify;">A number of bars can be represented by a value, which the BarsAgoToTime function translates into actual chart time. For instance, the function will take that bar offset and transform it into the precise time location on the chart where those five bars ahead or backward would occur if we specify five bars after the lookback. It works by using the available candle times when possible, but when we go beyond the available data, it uses the duration of each bar to estimate the correct time. This enables us to draw outside the current visible candle range while still precisely positioning things. </p> <p style="text-align:justify;">To create and update volume profile rectangles, DrawBox first determines whether an object already exists, creates one if it doesn't, and then continuously modifies the object's visibility and styling settings to make sure it stays correctly displayed on the chart. Finally, it returns whether a new object was created and updates the rectangle using the latest time and price coordinates.&nbsp;</p> <p style="text-align:justify;">The profileRightBarsAgo variable determines how far the right side of the box should be placed relative to the left side. It subtracts the normalized width (val) from the starting position (profileLeftBarsAgo), effectively controlling how wide each volume box will appear. The larger the volume, the bigger the value of val, and therefore the wider the box becomes.&nbsp;Then, profileRightTime uses the BarsAgoToTime function to translate this bar offset into an actual chart time. This makes it possible to accurately place the rectangle on the time axis even if it goes beyond the candle data that is shown. The box's strength (volume size) is then used to define its color. Stronger hues, such as blue or green, are given to higher-volume bins, whereas lighter hues are given to lower-volume bins.&nbsp;</p> <p style="text-align:justify;">If volume profile drawing is enabled, the code creates a unique name for each box and calls the drawing function. The rectangle is then drawn using the calculated time and price boundaries, and a flag is set to indicate that the chart needs to be updated. To determine whether a redraw is required, OnCalculate first sets a flag. The volume profile is then recalculated after determining if this is the first run or if additional price data has been received. Lastly, if any modifications were made, the chart is forced to refresh so that the revised drawings show up right away. </p> <p style="text-align:justify;">Next, we move on to drawing the POC lines, which highlight the key liquidity levels within the volume profile. </p>Example: <pre class="code"><span class="comment">//--- CONSTANTS</span>
+<span class="preprocessor">#define </span>N_BINS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="number">100</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Number of price levels (bins)</span>
+<span class="preprocessor">#define </span>MAX_BAR_WIDTH&nbsp;&nbsp; <span class="number">50</span>&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Maximum horizontal width of profile</span>
+<span class="preprocessor">#define </span>OBJ_PREFIX&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"VP_"</span>&nbsp;&nbsp;<span class="comment">// Prefix for all chart objects</span>
+<span style="background-color:rgb(255, 246, 200);"><span class="preprocessor">#define </span>POC_THRESHOLD&nbsp;&nbsp; <span class="number">25</span>&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Threshold for drawing POC lines</span></span></pre> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Create or update a horizontal POC (liquidity) line&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//| Returns true if a new object was created&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">bool</span> DrawTrend(<span class="keyword">const</span> <span class="keyword">string</span> name,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">datetime</span> x1, <span class="keyword">double</span> y,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">datetime</span> x2,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">color</span> col, <span class="keyword">int</span> w)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">bool</span> created = <span class="macro">false</span>;
+<span class="comment">//--- Create only if missing</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">ObjectFind</span>(<span class="number">0</span>, name) &lt; <span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectCreate</span>(<span class="number">0</span>, name, <span class="macro">OBJ_TREND</span>, <span class="number">0</span>, x1, y, x2, y);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;created = <span class="macro">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+<span class="comment">//--- Update properties</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, name, <span class="macro">OBJPROP_COLOR</span>, col);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, name, <span class="macro">OBJPROP_WIDTH</span>, w);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, name, <span class="macro">OBJPROP_RAY_RIGHT</span>, <span class="macro">false</span>);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, name, <span class="macro">OBJPROP_BACK</span>, <span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, name, <span class="macro">OBJPROP_SELECTABLE</span>, <span class="macro">false</span>);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, name, <span class="macro">OBJPROP_HIDDEN</span>, <span class="macro">true</span>);
+
+<span class="comment">//--- Update position</span>
+&nbsp;&nbsp; <span class="functions">ObjectMove</span>(<span class="number">0</span>, name, <span class="number">0</span>, x1, y);
+&nbsp;&nbsp; <span class="functions">ObjectMove</span>(<span class="number">0</span>, name, <span class="number">1</span>, x2, y);
+
+&nbsp;&nbsp; <span class="keyword">return</span> created;
+&nbsp;&nbsp;}
+</pre> <pre class="code"><span class="comment">//--- Define drawing boundaries</span>
+<span class="keyword">int</span> profileLeftBarsAgo = lookback + MAX_BAR_WIDTH;
+<span class="keyword">long</span> barDur = (<span class="keyword">long</span>)<span class="functions">PeriodSeconds</span>(<span class="predefines">_Period</span>);
+<span class="keyword">datetime</span> profileLeftTime = BarsAgoToTime(tm, lookback, profileLeftBarsAgo, barDur);
+
+<span class="comment">// POC right end = bar_index + 5 (5 bars into the future)</span>
+<span class="keyword">datetime</span> pocRightTime = BarsAgoToTime(tm, lookback, -<span class="number">5</span>, barDur);
+
+<span class="comment">//--- Loop through bins and draw</span>
+<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N_BINS; i++)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">double</span> lower = priceMin + step * i;
+&nbsp;&nbsp; <span class="keyword">double</span> upper = lower + step;
+&nbsp;&nbsp; <span class="keyword">double</span> mid&nbsp;&nbsp; = (lower + upper) * <span class="number">0.5</span>;
+
+<span class="comment">//--- Normalize bin width</span>
+&nbsp;&nbsp; <span class="keyword">int</span> val = (<span class="keyword">int</span>)(bins[i] / maxBin * (<span class="keyword">double</span>)MAX_BAR_WIDTH);
+&nbsp;&nbsp; <span class="keyword">if</span>(val &lt; <span class="number">1</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">continue</span>;
+
+&nbsp;&nbsp; <span class="keyword">int</span> profileRightBarsAgo = profileLeftBarsAgo - val;
+&nbsp;&nbsp; <span class="keyword">datetime</span> profileRightTime&nbsp;&nbsp;= BarsAgoToTime(tm, lookback, profileRightBarsAgo, barDur);
+&nbsp;&nbsp; <span class="keyword">color</span>&nbsp;&nbsp;&nbsp;&nbsp;box_line_clr&nbsp;&nbsp; = (val &gt;= <span class="number">40</span>) ? <span class="macro">clrBlue</span> : (val &gt; <span class="number">30</span>) ? <span class="macro">clrGreen</span> : (val &gt; <span class="number">20</span>) ? <span class="macro">clrGray</span> : (val &gt; <span class="number">10</span>) ? <span class="macro">clrOlive</span> : <span class="macro">clrAquamarine</span>;
+
+<span class="comment">//--- Draw volume box</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(InpVolumeProfile)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span> boxName = OBJ_PREFIX + <span class="string">"BOX_"</span> + <span class="functions">IntegerToString</span>(i);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(DrawBox(boxName, profileRightTime, upper, profileLeftTime, lower, box_line_clr))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; need_redraw = <span class="macro">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+<span style="background-color:rgb(255, 246, 200);"><span class="comment">//--- Draw POC line for strong bins</span>
+<span class="comment">// POC lines for high-volume bins</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(val &gt; POC_THRESHOLD &amp;&amp; InpLiqLevels)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span> lineName = OBJ_PREFIX + <span class="string">"POC_"</span> + <span class="functions">IntegerToString</span>(i);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;lineW&nbsp;&nbsp; = (val &gt; <span class="number">45</span>) ? <span class="number">3</span> : (val &gt; <span class="number">35</span>) ? <span class="number">2</span> : <span class="number">1</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(DrawTrend(lineName, pocRightTime, mid, profileLeftTime, box_line_clr, lineW))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; need_redraw = <span class="macro">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp; }</span>
+&nbsp;&nbsp;}
+
+<span style="background-color:rgb(255, 246, 200);"><span class="comment">//--Border right = bar_index + 5 (same as POC)</span>
+<span class="keyword">datetime</span> borderRightTime = pocRightTime;
+<span class="keyword">datetime</span> borderLeftTime = BarsAgoToTime(tm, lookback,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;profileLeftBarsAgo + MAX_BAR_WIDTH, barDur);
+<span class="comment">//--- outer border box</span>
+<span class="keyword">if</span>(DrawBox(OBJ_PREFIX+<span class="string">"BORDER"</span>, borderRightTime, priceMax, borderLeftTime, priceMin, <span class="macro">clrSnow</span>))
+&nbsp;&nbsp; need_redraw = <span class="macro">true</span>;</span></pre> <p></p> <p>Output:</p> <p style="text-align:center;"> <img width="674" height="608" src="https://c.mql5.com/2/208/f10.png" loading="lazy" title="Figure 10. POC" alt="Figure 10. POC" style="vertical-align:middle;"/></p> <p style="text-align:justify;">Explanation: </p> <p style="text-align:justify;">The POC_THRESHOLD is a fixed value used to decide which volume bins are strong enough to be considered significant liquidity levels. Only bins whose normalized volume exceeds this threshold will have POC lines drawn, helping to highlight areas of high trading activity while filtering out weaker zones.&nbsp;The DrawTrend function is used to draw the POC as a horizontal line, creating it if it doesn't already exist and updating its width, color, and position to match the most recent liquidity level while keeping it in the background. By projecting five bars into the future, the line datetime pocRightTime = BarsAgoToTime(tm, lookback, -5, barDur); establishes the right endpoint of the POC lines. The function uses bar duration to convert the negative value, which indicates that we are moving past the current candles, into a valid future tense.</p> <p style="text-align:justify;">POC lines are then only drawn when liquidity levels are enabled and for bins that surpass the POC_THRESHOLD. High-volume areas are more noticeable because each line has a distinct name, and its width is determined by volume strength. Key liquidity zones are highlighted by drawing a line from the future time point to the midpoint of the bin.&nbsp;Finally, the border box aligns using the same future offset as the POC lines. A rectangle is created around the highest and lowest prices to frame the whole volume distribution, and the left side is extended beyond the lookback to completely cover the profile region.</p> <p style="text-align:justify;">&nbsp; </p> <h3 id="tag4"><b>Conclusion</b></h3> <p style="text-align:justify;"><span>Following the described design and engineering fixes, you get a complete, practical Liquidity Spectrum Volume Profile for MetaTrader 5 that is testable and configurable. The indicator:</span></p> <p style="text-align:justify;"></p> <ul> <li><span>divides the lookback high/low range into configurable bins and assigns volume by candle close (tick volume preferred, real volume fallback);</span></li> <li><span>normalizes bin volumes and scales rectangles to a configurable maximum width to highlight relative strength;</span></li> <li><span>draws the profile as filled rectangles and highlights significant bins with Point-of-Control (POC) horizontal lines using a configurable threshold and width;</span></li> <li><span>uses barsAgo→datetime conversion to place drawings correctly in time (including a small projection into the future for visibility);</span></li> <li><span>manages chart objects safely using a unique prefix (so it does not delete other users' objects) and updates only when new data arrives;</span></li> <li><span>exposes parameters (lookback, number of bins, max width, POC threshold, toggles for profile/POC) so you can adapt behavior without rewriting logic.</span></li> </ul> <div> <span> <p style="text-align:justify;"><span>Acceptance criteria for the implementation are straightforward: the profile and POC lines appear adjacent to the lookback zone, objects carry the indicator prefix, the indicator recalculates on new bars only, and removing the indicator cleans up only its own objects. The article provides a reproducible code structure (data retrieval → bins and accumulation → normalization → drawing utilities) and highlights practical improvements (prefix cleanup, explicit assumptions, and time-offset handling) that make the indicator reliable in real trading charts.</span></p> <p style="text-align:justify;"><span>The project is supported on <a href="/go?link=https://forge.mql5.io/13467913/Article-22342-Liquidity-Spectrum-Volume-Profile-Indicator" title="https://forge.mql5.io/13467913/Article-22342-Liquidity-Spectrum-Volume-Profile-Indicator" rel="nofollow" target="_blank">Algo Forge</a>.</span></p></span> </div> <p></p> <p></p>
+      </div>
+<div id="cb_22342" class="attachBlock">
+  <strong>Attached files</strong> |
+  <div class="grouped-attachments-help">
+    <a title="Download all attachments in the single ZIP archive" href="/en/articles/download/22342.zip">
+      <i class="attach-icon attach-icon_zip"></i>Download ZIP
+    </a>
+  </div>
+    <div class="attachItem">
+      <a title="Download Liquidity_Spectrum_Volume_Profile_Indicator.mq5" href="/en/articles/download/22342/Liquidity_Spectrum_Volume_Profile_Indicator.mq5"><i class="attach-icon attach-icon_mq5"></i>Liquidity_Spectrum_Volume_Profile_Indicator.mq5</a>
+      <span class="attachSize">(10.68 KB)</span>
+    </div>
+</div>
+    </div>
+
+  <div class="copyright">
+    <p><strong>Warning:</strong> All rights to these materials are reserved by MetaQuotes Ltd. Copying or reprinting of these materials in whole or in part is prohibited.</p>
+      <p>This article was written by a user of the site and reflects their personal views. MetaQuotes Ltd is not responsible for the accuracy of the information presented, nor for any consequences resulting from the use of the solutions, strategies or recommendations described.</p>
+  </div>
+
+
+
+    <div class="article__author-with-articles">
+      
+
+
+<div class="article-footer__author">
+  <div class="article-footer__author-avatar">
+    <img id="avatar" src="https://c.mql5.com/avatar/2023/11/6554a830-8858_big.png" title="ALGOYIN LTD" alt="Israel Pelumi Abioye" loading="lazy" width="164" height="164">
+  </div>
+  <div class="article-footer__author-content">
+    <div class="article-footer__author-name">
+      <a href="/en/users/13467913" title="ALGOYIN LTD">ALGOYIN LTD</a>
+    </div>
+    <div class="article-footer__author-info">
+      <ul>
+          <li>
+            <i title="Works" class="icons-profile icons-profile_suitcase"></i>
+CEO
+at            <a target="_blank" href="https://Algoyin.com" rel="noreferrer noopener nofollow">ALGOYIN LTD</a>
+          </li>
+          <li>
+            <i title="Lives" class="icons-profile icons-profile_geo"></i>
+            <a target="_blank" rel="nofollow" title="Lives" href="https://www.mql5.com/go?https://maps.google.com/?z=4&q=Nigeria">Nigeria</a>
+          </li>
+        <li>
+          <i title="Rating" class="icons-profile icons-profile_statistics"></i>
+          <a title="Rating" href="/en/users/13467913/achievements">15015</a>
+        </li>
+      </ul>
+    </div>
+    <div class="article-footer__author-contacts">
+          <li title="LinkedIn"><a class="icons-networks icons-networks_linkedin-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://www.linkedin.com/in/abioye-israel-00036b244/"></a></li>
+    <li title="X"><a class="icons-networks icons-networks_tw-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://x.com/crownsoyinn"></a></li>
+    <li title="Website"><a target="_blank" rel="noreferrer noopener nofollow" href="https://Algoyin.com" class="icons-profile icons-profile_net"></a>
+      <a target="_blank" rel="noreferrer noopener nofollow" href="https://Algoyin.com" style="display: inline-block; vertical-align: top; margin-top: -2px;">Algoyin.com</a></li>
+
+    </div>
+    <div class="article-footer__author-bio">About Me
+<br><a href="/go?link=https://forge.mql5.io/13467913?lang=en" title="https://forge.mql5.io/13467913?lang=en" rel="nofollow" target="_blank">https://forge.mql5.io/13467913?lang=en</a>
+<br>I TEACH MQL5!! LIVE CLASSES
+<br>Hello! My area of expertise is developing Expert Advisors and automated trading systems. I am a committed and experienced MQL5 developer. To help traders reach their full potential in the forex market, I specialize in creating intricate trading algorithms and implementing complex trading strategies.
+<br>Coding trading ideas into reality is something I'm passionate about, and I work hard to improve my abilities and provide solutions that are of the highest caliber. Together, let's make your trading vision a reality!
+<br>Services Offered:
+<br>1. Custom Expert Advisor (EA) Development
+<br>2. Trading Strategy Implementation
+<br>3. Script Writing and Automation
+<br>4. Freelance Project Consultation
+<br>5. MQL5 Tutoring
+<br>Deriv Volatility Bot:
+</div>
+  </div>
+</div>
+
+      <div class="other-author-articles ui">
+        <h4 class="other-author-articles__title">Other articles by this author</h4>
+        <ul class="other-author-articles__list">
+          <li><a href="/en/articles/22742" data-fz-event="MQL5+Article+From+Author+Article">Building an EquiVolume Indicator in MQL5</a></li>
+          <li><a href="/en/articles/22572" data-fz-event="MQL5+Article+From+Author+Article">Building a Megaphone Pattern Indicator in MQL5</a></li>
+          <li><a href="/en/articles/22460" data-fz-event="MQL5+Article+From+Author+Article">Creating a Custom Tick Chart in MQL5</a></li>
+          <li><a href="/en/articles/21775" data-fz-event="MQL5+Article+From+Author+Article">File-Based Versioning of EA Parameters in MQL5</a></li>
+          <li><a href="/en/articles/22227" data-fz-event="MQL5+Article+From+Author+Article">Creating a Traditional Renko Overlay Indicator in MQL5</a></li>
+          <li><a href="/en/articles/21871" data-fz-event="MQL5+Article+From+Author+Article">Building a Volume Bubble Indicator in MQL5 Using Standard Deviation</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+  <div class="article__last-comments" id="articleAdditional">
+    
+
+<div class="comments-preview">
+    <div class="title">
+      <span></span><b>
+         Last comments |
+ <a href="/en/forum/509228">Go to discussion</a>
+      </b>
+        (2)
+    </div>
+    <div>
+        
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/avatar_na2.png" srcset="https://c.mql5.com/avatar/avatar_na2_big.png 2x" alt="Leon Sendrick" title="Leon Sendrick" data-user-login="LeonSendrick" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/leonsendrick" data-user-login="LeonSendrick">Leon Sendrick</a></b>
+              |
+              <span class="comment__date">12 May 2026 at 14:32</span>
+              <a id="comment_59733440"></a>
+              
+            </div>
+            <div class="content" id="content59733440">
+              🥰🥰🥰
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2023/11/6554a830-8858.png" srcset="https://c.mql5.com/avatar/2023/11/6554a830-8858_big.png 2x" alt="ALGOYIN LTD" title="ALGOYIN LTD" data-user-login="13467913" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/13467913" data-user-login="13467913">Israel Pelumi Abioye</a></b>
+              |
+              <span class="comment__date">12 May 2026 at 17:08</span>
+              <a id="comment_59734382"></a>
+              
+            </div>
+            <div class="content" id="content59734382">
+              <div class="fquote"><strong><span style="color:#42639C;">Leon Sendrick <a href="/en/forum/509228#comment_59733440">#</a></span>:</strong><br/> 🥰🥰🥰 </div>Thank you.
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+  </div>
+
+
+    <div class="articles-bottom-list" id="articleAdditional">
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Recurrence Quantification Analysis (RQA) in MQL5: Building a Complete Analysis Library" src="https://c.mql5.com/2/209/22288-recurrence-quantification-analysis-logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/22288" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Recurrence Quantification Analysis (RQA) in MQL5: Building a Complete Analysis Library</a>
+                <div class="articles-bottom-list__desc">This article builds a complete Recurrence Quantification Analysis (RQA) toolkit for MetaTrader 5 in pure MQL5. We cover phase-space reconstruction, time-delay embedding, distance and recurrence matrix construction, RQA metric extraction, automatic epsilon selection, and rolling-window computation through a modular library design. The article concludes by applying the library in a practical indicator that plots RR, DET, LAM, ENTR, and TREND directly on the chart, providing a solid foundation for nonlinear time-series analysis in MQL5.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Mining Central Bank Balance Sheet Data to Get a Picture of Global Liquidity" src="https://c.mql5.com/2/147/18355-mayning-dannih-balansov-centrobankov-logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/18355" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Mining Central Bank Balance Sheet Data to Get a Picture of Global Liquidity</a>
+                <div class="articles-bottom-list__desc">Mining central bank balance sheet data provides a picture of global liquidity in the Forex market and key currencies. We combine data from the Fed, ECB, BOJ and PBoC into a composite index and use machine learning to uncover hidden patterns. This approach turns raw data into real trading signals by combining fundamental and technical analysis.</div>
+              </div>
+          </div>
+        </div>
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="CFTC Data Mining in Python and Building an AI Model" src="https://c.mql5.com/2/147/18303-mayning-dannih-cftc-na-python-logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/18303" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">CFTC Data Mining in Python and Building an AI Model</a>
+                <div class="articles-bottom-list__desc">Let&#x27;s try mining CFTC data, downloading COT and TFF reports via Python, connecting all this with MetaTrader 5 quotes and an AI model, and get forecasts. What are COT reports in the Forex market? How to use COT and TFF reports for forecasting?</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="MQL5 Wizard Techniques you should know (Part 87): Volatility-Scaled Money Management with Monotonic Queue in MQL5" src="https://c.mql5.com/2/209/22338-mql5-wizard-techniques-you-logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/22338" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">MQL5 Wizard Techniques you should know (Part 87): Volatility-Scaled Money Management with Monotonic Queue in MQL5</a>
+                <div class="articles-bottom-list__desc">This article presents a custom MQL5 money management class that adapts position sizing to real-time volatility using a monotonic queue for O(N) sliding-window extremes. The class applies inverse volatility scaling and optionally validates risk with an RBF network. We show implementation details in the Optimize method and compare results with the inbuilt Size-Optimized class to assess latency and risk control benefits.</div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+<div class="clear-fix"></div>
+
+<div id='wdausxxqrpvhekbwjrjlhqjghyhesrqqau' class="r6irig5txiuua4k0m r6irig5txiuua4k0m_articles-view gg88d3drb"></div>
+    
+
+<div class="hidden" id="popupRegisterLogin">
+  <div class="register-login-popup">
+    <div class="register-login-popup__header">
+      <img src="https://c.mql5.com/i/registerlandings/logo-2.png" srcset="https://c.mql5.com/i/registerlandings/logo-2_2x.png 2x" alt="MQL5 - Language of trade strategies built-in the MetaTrader 5 client terminal" loading="lazy" width="74" height="24" />
+    </div>
+    <div class="register-login-popup__content">
+      <div class="register-login-popup__desc">
+        <div class="register-login-popup__title">You are missing trading opportunities:</div>
+        <ul>
+<li>Free trading apps</li>
+<li>Over 8,000 signals for copying</li>
+<li>Economic news for exploring financial markets</li>
+</ul>
+      </div>
+      <div class="register-login-popup__forms ui">
+        <div class="register-login-popup__tabs" id="registerLoginPopupTabs">
+          <span data-id="register" id="registerLoginPopupTab_register" class="register-login-popup__tab register-login-popup__tab_active">Registration</span>
+          <span data-id="login" id="registerLoginPopupTab_login" class="register-login-popup__tab">Log in</span>
+        </div>
+        <div id="registerLoginPopupTabContent_register">
+          <div class="ui auth-form__content">
+    
+  <script type='text/javascript'>/*<![CDATA[*/ if (!window.V) var V = []; /*]]>*/</script>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/en/auth_register_short" id="PopupRegisterquickRegisterForm" onsubmit="PopupRegisterquickRegistration.OnSubmit(this,&#39;en&#39;);if(Validate(this)) Ajax.form(this,{onready:PopupRegisterquickRegistration.OnSuccessPopup,onerror:PopupRegisterquickRegistration.OnError,onbeginrequest:PopupRegisterquickRegistration.DisableInputs,onendrequest:PopupRegisterquickRegistration.EnableInputs});return(false);" enctype = "multipart/form-data"><input type="hidden" name="__signature" value="3181a51a935110fec0ece9f1b20f8963"/>
+    <div class="auth-form__inputs">
+      <input type="hidden" value="0" name="IsValidate" id="PopupRegisterIsValidate" />
+
+      <!--[if lt IE 10]><div class="note">Login:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input type="text" id="PopupRegisterusername" name="username" class="input" maxlength="32" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.CheckUserName();}" onkeyup="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.ValidateUserName(this, 'Enter a valid login');}" placeholder="Login" title="May contain Latin letters, digits, dots, dashes,underscore characters. Cannot start or end with a dot. The allowed length is 3 to 32 characters." onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisterusername'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisterusername',10,'You may use Latin characters, numbers, underscores and periods.',validate_username]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisterusername">latin characters without spaces</label>
+      </div>
+      <!--[if lt IE 10]><div class="note">Your email:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input class="input" type="email" id="PopupRegisteremail" name="email" placeholder="Your email" title="Please enter the email (it may not exceed 256 characters). For example: john@example.com" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnChange(this);}" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisteremail'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisteremail',10,'Enter a valid email address',validate_email]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisteremail">a password will be sent to this email</label>
+      </div>
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Register" />
+    </div>
+    <span id="PopupRegisterquickRegisterSubmit">
+      <input type="submit" value="Register" id="PopupRegisterquickRegisterButton"  title="Sign up and receive an email with your password" class="button button_yellow"  />
+    </span>
+    <span id="PopupRegisterquickRegisterErrorMessage" class="quick-register-error-message field-validation-error" style="text-align: center; margin-top: 16px; display: none;">
+      An error occurred
+    </span>
+</form>
+    
+</div>
+<div class="auth-social">
+  <ul class="auth-social-list" id="socialList">
+    <li><a onclick="window.fpush({name: 'MQL5+Popup+Register+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/en/auth_oauth2?provider=Google&amp;amp;return=popup&amp;amp;reg=1" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Log in With Google</a></li>
+  </ul>
+</div>
+<div class="auth-block-agree">
+  <p>
+    You agree to <a target="_blank" href="/en/about/privacy">website policy</a> and <a target="_blank" href="/en/about/terms">terms of use</a>
+  </p>
+</div>
+
+
+        </div>
+        <div id="registerLoginPopupTabContent_login" class="hidden">
+            <div class="auth-form__text">
+    If you do not have an account, please <a href="https://www.mql5.com/en/auth_register" rel="nofollow" style="vertical-align: top">register</a>
+  </div>
+<div class="ui auth-form__content auth-form__content_login" id="loginFormWrapper">
+    
+  <div id="needCookies" class="need-cookies hidden">
+    <div class="danger-box">
+      <p>Allow the use of cookies to log in to the MQL5.com website.</p>
+<p>Please enable the necessary setting in your browser, otherwise you will not be able to log in.</p>
+    </div>
+  </div>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/en/auth_login" id="loginForm" onsubmit="if(window.quickLogin){return window.quickLogin.onSubmit(this);}var result = Validate(this); if(result) { preventDoubleSubmit(this); } return result;"><input id="RedirectAfterLoginUrl" name="RedirectAfterLoginUrl" type="hidden" value="" /><input id="RegistrationUrl" name="RegistrationUrl" type="hidden" value="" /><input data-val="true" data-val-required="The ShowOpenId field is required." id="ShowOpenId" name="ShowOpenId" type="hidden" value="True" /><input id="TrackingSection" name="TrackingSection" type="hidden" value="Articles" />    <input name="ViewType" type="hidden" value="5" />
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Login" />
+    <!--[if lt IE 10]><div class="note">Your login:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <input class="input qa-login" id="Login" name="Login" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Login" title="Your login" type="text" value="" />
+      <script type='text/javascript' id='validate_Login'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Login',1,'Enter login specified when signing up']);});mqGlobal.AddOnReady(function() {V.push(['Login',10,'Email cannot be used. Enter your login please',validateLogin]);}); /*]]>*/</script>
+    </div>
+    <!--[if lt IE 10]><div class="note">Password:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <div class="input-with-show">
+        <input autocomplete="off" class="input qa-password" id="Password" name="Password" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Password" title="Enter the password please" type="password" />
+        <span class="input-with-show__icon" title="Show password" onclick="if(window.quickLogin){window.quickLogin.showPass(this, 'Show password', 'Hide password');}"></span>
+      </div>
+      <script type='text/javascript' id='validate_Password'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Password',1,'Please enter the password']);}); /*]]>*/</script>
+    </div>
+    <script type="text/javascript">
+    function validateLogin(input) {
+      console.log('validate login ' + input.value);
+      return !/^\w+([-+.'']{1,2}\w+)* @\w+([-.]\w+)*\.\w+([-.]\w+)*$/i.test(input.value);
+    }
+    </script>
+    <div class="forgot" id="loginForgotBlock"><a id="loginForgotLink" href="https://www.mql5.com/en/auth_forgotten?return=popup">Forgot your login/password?</a></div>
+    <input type="submit" class="button button_yellow qa-submit" id="loginSubmit" value="Log in" title="Enter">
+</form></div>
+
+  <div class="auth-social" id="authSocialBlock">
+    <ul class="auth-social-list" id="socialList">
+      <li><a onclick="window.fpush({name: 'MQL5+Popup+Login+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/en/auth_oauth2?provider=Google&amp;amp;return=popup" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Log in With Google</a></li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script id="popupSection" type="application/json">{"section": "Articles"}</script>
+<script id="popupTranslate" data-type="translate" type="application/json">
+{
+  "popup":
+  {
+  "EmailTitle" : "The password has been sent to {0}",
+  "EmailDescription" : "Log in using the obtained password and the login specified during the registration",
+  "SubmitButtonText" : "Activate account",
+  "RegistrationTip" : "If you have not received the password email, check the spam folder or &lt;a href={0}&gt;repeat the registration&lt;/a&gt;"
+  }
+}
+</script>
+
+    
+
+    
+
+
+    </article>
+  </div>
+
+
+
+<div aria-hidden="true" class="footer  desktop" id="footer">
+  <ul class="links  links_desktop">
+      <li id="navFooterCommunity">
+        <nav>
+          <ul>
+            <li><a href="https://web.metatrader.app/terminal?mode=demo&amp;lang=en" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Footer+Trading">Online trading / WebTerminal</a></li>
+            <li><a href="/en/code" data-fz-event="MQL5+Footer+CodeBase">Free technical indicators and robots</a></li>
+            <li><a href="/en/articles" data-fz-event="MQL5+Footer+Articles">Articles about programming and trading</a></li>
+            <li><a href="/en/job" data-fz-event="MQL5+Footer+Job">Order trading robots on the Freelance</a></li>
+            <li><a href="/en/market" data-fz-event="MQL5+Footer+Market">Market of Expert Advisors and applications&#x9;</a></li>
+            <li><a href="/en/signals" data-fz-event="MQL5+Footer+Signals">Follow forex signals</a></li>
+            <li><a href="/en/vps" data-fz-event="MQL5+Footer+VPS">Low latency forex VPS</a></li>
+            <li><a href="/en/forum" data-fz-event="MQL5+Footer+Forum">Traders forum</a></li>
+            <li><a href="/en/blogs" data-fz-event="MQL5+Footer+Blogs">Trading blogs</a></li>
+            <li><a rel="nofollow" href="/en/charts" data-fz-event="MQL5+Footer+Charts">Charts</a></li>
+            <li><a href="/en/widgets" data-fz-event="MQL5+Footer+Widgets">Free widgets</a></li>
+          </ul>
+        </nav>
+      </li>
+      <li id="navFooterMt5">
+        <nav>
+          <ul>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> Trading Platform</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/releasenotes" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> latest updates</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/news" data-fz-event="MQL5+Footer+MetaTrader+5">News, implementations and technology</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> User Manual</a></li>
+            <li><a href="/en/docs" data-fz-event="MQL5+Footer+Docs">MQL5 language of trading strategies</a></li>
+            <li><a rel="nofollow noopener" href="https://cloud.mql5.com" data-fz-event="MQL5+Footer+Cloud">MQL5 Cloud Network</a></li>
+            <li><a rel="noopener" href="https://forge.mql5.io/?lang=en" data-fz-event="MQL5+Footer+Forge" target="_blank">MQL5 Algo Forge</a></li>
+              <li><a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Footer">Download <span class="nobr">MetaTrader 5</span></a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help/start_advanced/installation" data-fz-event="MQL5+Footer+MetaTrader+5">Install Platform</a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help/start_advanced/deinstallation" data-fz-event="MQL5+Footer+MetaTrader+5">Uninstall Platform</a></li>
+          </ul>
+        </nav>
+
+      </li>
+    <li id="navFooterWebsite">
+        <nav>
+          <ul>
+            <li><a rel="nofollow" href="/en/about" data-fz-event="MQL5+Footer+About">About</a></li>
+              <li><a href="/en/wall" data-fz-event="MQL5+Footer+Wall">Timeline</a></li>
+            <li><a rel="nofollow" href="/en/about/terms" data-fz-event="MQL5+Footer+About">Terms and Conditions</a></li>
+            <li><a rel="nofollow" href="/en/about/autopayments" data-fz-event="MQL5+Footer+About">Recurring Payment Agreement</a></li>
+            <li><a rel="nofollow" href="/en/about/agencyagreement" data-fz-event="MQL5+Footer+About">Agency Agreement – Offer</a></li>
+            <li><a rel="nofollow" href="/en/about/privacy" data-fz-event="MQL5+Footer+About">Privacy and Data Protection Policy</a></li>
+            <li><a rel="nofollow" href="/en/about/cookies" data-fz-event="MQL5+Footer+About">Cookies Policy</a></li>
+            <li>
+                <a rel="nofollow" href="/en/contact" data-fz-event="MQL5+Footer+Contacts">Contacts and requests</a>
+            </li>
+          </ul>
+        </nav>
+    </li>
+
+      <li>
+        <div class="footer__products">
+          <div class="footer__product">
+            <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com" class="footer__product-name">MetaTrader 5</a>
+            <div class="footer__product-links">
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon windows" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for Windows</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/MetaTrader5.pkg.zip?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon macos" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for MacOS</div></a>
+            <a rel="nofollow noopener" href="https://www.mql5.com/en/articles/625?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon linux" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for Linux</div></a>
+            <a rel="nofollow noopener" href="https://web.metatrader.app/terminal?mode=demo&amp;lang=en" class="icon web"><div  class="footer__product-link-hint footer__product-link-hint-short">Open MetaTrader 5 WebTerminal</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/ios?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=en" class="icon ios" data-fz-event="MetaTrader+5+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/jhZn8Ed1I1d.png)">Scan to install from App Store</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=en" class="icon android" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/kiF2Io6W-9d.png)">Scan to install from Google Play</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon huawei" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ZRt&#x2B;zI1l&#x2B;8O.png)">Scan to install from Huawei AppGallery</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon ark" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/L0Q9oag&#x2B;3eE.png)">Scan to get Android APK file</div></a>
+            </div>
+          </div>
+          <div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com/en/news/2270" class="footer__product-name">MQL5 Channels</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon ios" data-fz-event="MQL5+Channels+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/bZVfOJnYpcO.png)">Scan to install from App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon android" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/32MJFgw7BVs.png)">Scan to install from Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Su&#x2B;fe4n374e.png)">Scan to install from Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mql5channels/mql5channels.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/G6Mg4NfCPzO.png)">Scan to get Android APK file</div></a>
+              </div>
+            </div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.tradays.com/en/download?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MQL5+Footer+Download+Tradays" class="footer__product-name">Economic Calendar</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon ios" data-fz-event="Tradays+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CpD&#x2B;mhIw-1E.png)">Scan to install from App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon android" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Bgyx8UcmYap.png)">Scan to install from Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CrS7bbDAdAO.png)">Scan to install from Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/tradays/tradays.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/VZi8YPIb2op.png)">Scan to get Android APK file</div></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__networks">
+          <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow" title="Facebook"><i class="icons-networks icons-networks_fb"></i></a>
+          <a href="https://t.me/mql5dev" target="_blank" rel="nofollow" title="Telegram"><i class="icons-networks icons-networks_tg"></i></a>
+          <a href="https://x.com/mql5com" target="_blank" rel="nofollow" title="X (Twitter)"><i class="icons-networks icons-networks_tw"></i></a>
+          <a href="https://www.youtube.com/@MetaQuotesOfficial" target="_blank" rel="nofollow" title="YouTube"><i class="icons-networks icons-networks_yt"></i></a>
+          <a href="https://www.linkedin.com/company/mql5" target="_blank" rel="nofollow" title="LinkedIn"><i class="icons-networks icons-networks_linkedin"></i></a>
+          <span>Subscribe to algotrading news</span>
+        </div>
+  
+        <div class="footer__other">
+          <div class="footer__not-a-broker">Not a broker, no real trading accounts</div>
+          <div class="copyright">35 Dodekanisou str, Germasogeia, 4043,&nbsp;Limassol,&nbsp;Cyprus</div>
+          <div class="copyright">Copyright 2000-2026, <span class="nobr">MetaQuotes Ltd</span></div>
+        </div>
+      </li>
+  </ul>
+</div>
+
+
+
+<div class="shadow-layer" id="layer"></div>
+    
+
+  <div class="b-fixed-mt" id="bFixedMt" style="display: none;">
+    
+  </div>
+
+
+<script type='text/javascript'>
+		(function (a, e, f, g, b, c, d) { a[b] || (a.FintezaCoreObject = b, a[b] = a[b] || function () { (a[b].q = a[b].q || []).push(arguments) }, a[b].l = 1 * new Date, c = e.createElement(f), d = e.getElementsByTagName(f)[0], c.async = !0, c.defer = !0, c.src = g, d && d.parentNode && d.parentNode.insertBefore(c, d)) })
+      (window, document, "script", "/ff/core.js", "fz");
+		window.fz("register", "website", {
+      id: "sqjxkxkswybhifrohpyooonwgbvsfzmayq",
+			trackLinks: true
+		});
+        mqGlobal.AddOnReady(function () { Mql5Cookie.init('mql5.com', '5095785625400416249'); });
+mqGlobal.AddOnReady(function(){if(!window.Pocket){window.Pocket=new PocketManager();}});mqGlobal.AddOnReady(function(){if(!window.translateManager){window.translateManager=new Translate(undefined,'Error: failed to translate. Please try again later.');}if(document.querySelectorAll){var translateElements=document.querySelectorAll(".translateMenu");if(translateElements){var i=0,count=translateElements.length;for(i;i<count;i++){(function(i){var contentid=dataset(translateElements[i],"contentid"),sourcelang=dataset(translateElements[i],"sourcelang"),targetlang=dataset(translateElements[i],"targetlang"),moduleid=parseInt(dataset(translateElements[i],"moduleid")),typeid=parseInt(dataset(translateElements[i],"typeid")),entityid=parseInt(dataset(translateElements[i],"entityid"));Core.AddHandler(translateElements[i],"mouseover",function(){return translateManager.SetMenu(this,contentid,sourcelang,targetlang,moduleid,typeid,entityid);});})(i);}}}});window.fz("show","wdausxxqrpvhekbwjrjlhqjghyhesrqqau");window.mqGlobal.AddOnLoad(function(){window.fpush('MQL5+Article+Open');Articles.CheckOnScrollDown();});mqGlobal.AddOnReady(function(){window.PopupRegisterquickRegistration=new QuickRegistration('PopupRegister','Popup+Register','Articles');});function validate_username(input){var reg=/^([a-z0-9]){1}([\-._a-z0-9]){1,30}([\-_a-z0-9]){1}$/i,value=input.value,result=true;if(reg.test(value)){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Login',unit:'section',value:'Articles'});}return result;}function validate_email(input){var reg=/^\w+([-+.'']{1,2}\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/i,value=input.value,result=true,length_value=value.length;if(reg.test(value)&&length_value>=1&&length_value<=40){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Email',unit:'section',value:'Articles'});}return result;};mqGlobal.AddOnReady(function(){var username=$('PopupRegisterusername'),email=$('PopupRegisteremail');if(username)username.value='';if(email)email.value='';});mqGlobal.AddOnReady(function(){window.quickLogin=new QuickLogin('Popup+Login','Articles');});mqGlobal.AddOnLoad(function(){window.showLoginRegisterPopupAtEnd();});mqGlobal.AddOnLoad(function(){window.tooltipUserInfo.init();});mqGlobal.AddOnReady(function(){{window.initHeaderSearch('','https://www.mql5.com/en/search');}});</script><script type="text/javascript">mqGlobal.AddOnReady(function(){window.initSuggestions("headerSearchKeyword","en","https://search.mql5.com/api/query","https://www.mql5.com/en/users_search/suggestion");});window.fz("show","vgckrufggwxdtfscpyalmenexmvhljduja");mqGlobal.AddOnReady(function(){window.floatVerticalPanelNode=FloatVerticalPanel('This website uses cookies. Learn more about our <a href="/en/about/cookies">Cookies Policy</a>.','cookie_accept');});							if (typeof Attach !== "undefined")
+			Attach.setAcceptFilter(".zip, .txt, .log, .mqh, .ex5, .mq5, .mq4, .mqproj, .ex4, .mt5, .set, .tpl, .cl, .py, .sqlite, .csv, .ini, .ipynb, .onnx, .gif, .png, .jpg, .jpeg, .mp4, .webm");
+	</script>
+
+<script type="application/ld&#x2B;json">
+		[
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"url": "https://www.mql5.com",
+				"logo": "https://c.mql5.com/i/community/logo_mql5-2.png",
+				"sameAs": [
+					"https://www.facebook.com/mql5.community",
+					"https://www.x.com/mql5com",
+					"https://www.youtube.com/user/MetaQuotesOfficial"
+				 ]
+			}
+		
+, 
+{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"Forum","description":"Discussions of trading strategies and algorithmic trading. MQL5.community  the largest forex forum","url":"https://www.mql5.com/en/forum","children":[]},{"@type":"SiteNavigationElement","position":2,"name":"Market","description":"MetaTrader Market - a Market of trading robots, indicators, trading books and magazines","url":"https://www.mql5.com/en/market","children":[]},{"@type":"SiteNavigationElement","position":3,"name":"Signals","description":"Social trading, copy trading and account monitoring with MetaTrader - Trading Signals on MQL5.com","url":"https://www.mql5.com/en/signals","children":[]},{"@type":"SiteNavigationElement","position":4,"name":"Freelance","description":"Order trading robots, technical indicators and algorithmic trading applications. Forex jobs. Freelance on MQL5.com. Hire MetaTrader experts and specialists","url":"https://www.mql5.com/en/job","children":[]},{"@type":"SiteNavigationElement","position":5,"name":"Quotes","description":"","url":"https://www.mql5.com/en/quotes/overview","children":[]},{"@type":"SiteNavigationElement","position":6,"name":"MetaTrader","description":"","url":"https://www.metatrader.com","children":[]},{"@type":"SiteNavigationElement","position":7,"name":"WebTerminal","description":"WebTerminal for the MetaTrader trading platform. Online forex trading.","url":"https://web.metatrader.app/terminal?mode=demo","children":[]},{"@type":"SiteNavigationElement","position":8,"name":"Calendar","description":"","url":"https://www.mql5.com/en/economic-calendar","children":[]},{"@type":"SiteNavigationElement","position":9,"name":"VPS","description":"","url":"https://www.mql5.com/en/vps","children":[]},{"@type":"SiteNavigationElement","position":10,"name":"Articles","description":"","url":"https://www.mql5.com/en/articles","children":[]},{"@type":"SiteNavigationElement","position":11,"name":"CodeBase","description":"Download trading robots, technical indicators and scripts with source code - MQL5 Code Base for MetaTrader 5","url":"https://www.mql5.com/en/code","children":[]},{"@type":"SiteNavigationElement","position":12,"name":"Algo Forge","description":"","url":"https://forge.mql5.io","children":[]},{"@type":"SiteNavigationElement","position":13,"name":"Documentation","description":"MetaQuotes Language 5 (MQL5) Reference - Documentation on MQL5.com","url":"https://www.mql5.com/en/docs","children":[]}]}		
+,
+{"@context":"https://schema.org","@type":"TechArticle","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.mql5.com/en/articles/22342"},"headline":"Building a Liquidity Spectrum Volume Profile Indicator in MQL5","image":["https://c.mql5.com/2/208/F1__1.png","https://c.mql5.com/2/208/f2.png","https://c.mql5.com/2/208/f3.png","https://c.mql5.com/2/208/f4.png","https://c.mql5.com/2/208/f5.png","https://c.mql5.com/2/208/f6.png","https://c.mql5.com/2/208/f7.png","https://c.mql5.com/2/208/f8.png","https://c.mql5.com/2/208/f9.png","https://c.mql5.com/2/208/f10.png"],"datePublished":"2026-05-01T16:12:11+00:00Z","dateModified":"2026-06-03T14:16:51+00:00Z","author":{"@type":"Person","name":"ALGOYIN LTD","url":"https://www.mql5.com/en/users/13467913"},"editor":{"@type":"Organization","name":"MetaQuotes","url":"https://www.mql5.com/en/users/metaquotes","address":{"@type":"PostalAddress","addressCountry":"CY"}},"publisher":{"@type":"Organization","name":"MQL5 Community","url":"https://www.mql5.com","logo":{"@type":"ImageObject","url":"https://c.mql5.com/i/community/logo_mql5-2.png"}},"description":"Build a Liquidity Spectrum Volume Profile in MQL5 that allocates volume to equal price bins over a chosen lookback using candle close prices. The guide covers data retrieval with copy functions, binning and normalization, and drawing rectangles and POC lines with chart objects and time offsets to reveal high-activity liquidity zones on the chart."}
+,
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":"https://www.mql5.com/en/articles","name":"Articles"},{"@type":"ListItem","position":2,"item":"https://www.mql5.com/en/articles/mt5","name":"MetaTrader 5"},{"@type":"ListItem","position":3,"item":"https://www.mql5.com/en/articles/mt5/indicators","name":"Indicators"}]}
+
+		]
+	</script>
+</body>
+</html>

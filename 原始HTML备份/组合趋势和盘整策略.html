@@ -1,0 +1,1158 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+
+  <meta name="robots" content="max-snippet:250,max-image-preview:large">
+  <meta name="description" content="有多种多样的交易策略，它们中的一些要寻找趋势，而其它的一些会定义价格波动的范围而在其中进行交易。有没有可能把这两种方法组合到一起来增加获利呢?">
+  <meta property="og:url" content="https://www.mql5.com/zh/articles/5022">
+  <meta property="og:title" content="组合趋势和盘整策略">
+  <meta property="og:description" content="有多种多样的交易策略，它们中的一些要寻找趋势，而其它的一些会定义价格波动的范围而在其中进行交易。有没有可能把这两种方法组合到一起来增加获利呢?">
+      <meta property="og:image" content="https://www.mql5.com/zh/articles/images/og/fb/5022">
+      <meta property="og:image:secure_url" content="https://www.mql5.com/zh/articles/images/og/fb/5022">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2018-10-04T09:34:26.0000000Z">
+  <meta property="article:author" content="https://www.mql5.com/zh/users/dng">
+  <meta property="article:section" content="MetaTrader 5">
+  <meta property="article:tag" content="交易系统">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@mql5com">
+  <meta name="twitter:image" content="https://www.mql5.com/zh/articles/images/og/fb/5022">
+  <meta name="theme-color" content="#4a76b8">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-config" content="none">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta property="qc:admins" content="36367170677651456375">
+  <meta property="wb:webmaster" content="073d7690269bcd81">
+  <link rel="shortcut icon" href="https://c.mql5.com/i/favicon4.ico">
+  <link rel="dns-prefetch" href="https://c.mql5.com">
+  <link href="https://c.mql5.com/styles/core.444bc25de4c9131a69fedfe5ac42a082.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/all.266d64b83529847f568747dd160d42b0.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/articles.bc4209e4de0b5296041832431b46f3dd.css" type="text/css" rel="stylesheet" media="all">
+  <link href="/zh/articles/rss" rel="alternate" type="application/rss+xml" title="有关MetaTrader 5自动交易和技术指标的开发和应用程序的文章">
+  <link rel="canonical" href="https://www.mql5.com/zh/articles/5022">
+  <link rel="alternate" hreflang="en" href="https://www.mql5.com/en/articles/5022">
+  <link rel="alternate" hreflang="ru" href="https://www.mql5.com/ru/articles/5022">
+  <link rel="alternate" hreflang="zh" href="https://www.mql5.com/zh/articles/5022">
+  <link rel="alternate" hreflang="es" href="https://www.mql5.com/es/articles/5022">
+  <link rel="alternate" hreflang="de" href="https://www.mql5.com/de/articles/5022">
+  <link rel="alternate" hreflang="ja" href="https://www.mql5.com/ja/articles/5022">
+  <link rel="alternate" hreflang="pt" href="https://www.mql5.com/pt/articles/5022">
+  <title>组合趋势和盘整策略 - MQL5文章</title>
+
+
+
+<script type="text/javascript">
+  !function(){window.mqGlobal={};var t=!1,n=!1,e=[],o=[],i=[];function d(t){var n;for(n=0;n<t.length;n+=1)t[n]()}function c(){t||(t=!0,d(e),d(o),o=[],e=[])}function a(){c(),n||(n=!0,d(i),i=[])}if(mqGlobal.AddOnReady=function(n,i){t?n(document):i?e.push(n):o.push(n)},mqGlobal.AddOnLoad=function(t){n?t(document):i.push(t)},mqGlobal.AddOnActiveWindowChange=function(t){this._onvisibility||(this._onvisibility=[]),this._onvisibility[this._onvisibility.length]=t},document.addEventListener)document.addEventListener("DOMContentLoaded",c,!1),window.addEventListener("load",a,!1);else if(document.attachEvent&&(document.attachEvent("onreadystatechange",(function(){switch(document.readyState){case"interactive":c();break;case"complete":a()}})),window.attachEvent("onload",a),document.documentElement.doScroll&&window==window.top)){!function n(){if(!t&&document.body)try{document.documentElement.doScroll("left"),c()}catch(t){setTimeout(n,0)}}()}}();
+  mqGlobal.CookieDomain = ".mql5.com";
+  mqGlobal.Language = 'zh';
+  mqGlobal.IsMobile = false;
+  mqGlobal.ClearRteStorage = function (e) { if (window.GStorage || (window.GStorage = globalStorage()), window.GStorage.supported) try { var o = e; window.GStorage.getItem("rte_autosave_uid", function (e, t) { t == o && (window.GStorage.removeItem("rte_autosave_text"), window.GStorage.removeItem("rte_autosave_date"), window.GStorage.removeItem("rte_autosave_uid")) }) } catch (e) { } };
+</script>
+  
+
+    <script src="https://c.mql5.com/js/all.c09fd283bed20d28a52c95cd70a12a27.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/vendor.1be6e9a4a90b28525f93c4c69a5058a1.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/articles.cd4c73c476b2781eecdf04f5583514b5.js" type="text/javascript" defer="defer"></script>
+
+
+</head>
+
+<body id="cover" class="cover">
+
+
+  <nav class="head">
+    <a href="https://www.mql5.com/zh" class="head__logo" title="MQL5 - MetaTrader 5客户端内置的交易策略语言"></a>
+      <div class="head__content">
+        <div class="main-menu" id="mainmenu">
+          
+                    <ul class="main-menu__top-level" id="menuTopLevel">
+                    <li><a href="/zh/forum" data-fz-event="MQL5+Menu+Forum">论坛</a></li>
+                    <li><a href="/zh/market" data-fz-event="MQL5+Menu+Market">市场</a></li>
+                    <li><a href="/zh/signals" data-fz-event="MQL5+Menu+Signals">信号</a></li>
+                    <li><a href="/zh/job" data-fz-event="MQL5+Menu+Job">自由职业者</a></li>
+                    <li><a href="/zh/vps" data-fz-event="MQL5+Menu+VPS">VPS</a></li>
+                    <li><a href="/zh/quotes/overview" data-fz-event="MQL5+Menu+Overview">报价</a></li>
+                    <li><a href="https://www.metatrader.com/zh" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+MetaTrader">MetaTrader</a></li>
+                  </ul><ul class="main-menu__second-level" id="menuSecondLevel">
+                    <li class="main-menu__selected"><a href="/zh/articles" data-fz-event="MQL5+Menu+Articles"><img src="https://c.mql5.com/i/menu/icon-articles4.svg" alt="" width="16" height="16"/>文章</a></li>
+                    <li><a href="/zh/code" data-fz-event="MQL5+Menu+CodeBase"><img src="https://c.mql5.com/i/menu/icon-code4.svg" alt="" width="16" height="16"/>代码库</a></li>
+                    <li><a href="https://forge.mql5.io/?lang=zh-CN" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+AlgoForge"><img src="https://c.mql5.com/i/menu/icon-algoforge4.svg" alt="" width="16" height="16"/>Algo Forge</a></li>
+                    <li><a href="/zh/docs" data-fz-event="MQL5+Menu+Docs"><img src="https://c.mql5.com/i/menu/icon-docs4.svg" alt="" width="16" height="16"/>文档</a></li>
+                    <li><a href="/zh/book" data-fz-event="MQL5+Menu+Book"><img src="https://c.mql5.com/i/menu/icon-book4.svg" alt="" width="16" height="16"/>算法交易教程</a></li>
+                    <li><a href="/zh/neurobook" data-fz-event="MQL5+Menu+Neurobook"><img src="https://c.mql5.com/i/menu/icon-neurobook4.svg" alt="" width="16" height="16"/>神经网络教程</a></li>
+                    <li><a href="/zh/economic-calendar" data-fz-event="MQL5+Menu+Economic+Calendar"><img src="https://c.mql5.com/i/menu/icon-economic-calendar4.svg" alt="" width="16" height="16"/>经济日历</a></li>
+                    <li><a href="https://web.metatrader.app/terminal?mode=demo&lang=zh" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Menu+Trading"><img src="https://c.mql5.com/i/menu/icon-trading4.svg" alt="" width="16" height="16"/>网页端</a></li>
+                    <li class="main-menu__mobile"><a href="/zh/about">关于</a></li>
+                    <li class="main-menu__second-tools"><a rel="noopener" href="/zh/vps" title="可靠的交易者主机，用于不间断操作EA交易和即时复制交易" class="button-mt" data-vars-fz="Start+VPS+Trial+Submenu"><img width="18" height="18" src="https://c.mql5.com/i/sidebar/vpstrial2.svg" alt="" loading="lazy">开始VPS试用</a></li>
+                    </ul>
+        </div>
+          <div class="main-menu__active">
+            <a id="mainMenuSelected" href="#">
+              <span class="main-menu__primary">文章</span><span class="main-menu__secondary">部分</span>
+            </a>
+          </div>
+<form action="https://www.mql5.com/zh/search" onsubmit="return false;" autocomplete="off" id="headerSearchForm" class="header-search" method="post">
+<button type="button" id="headerSearchButton" title="查找" class="header-search__button"></button><div class="header-search__input"><input name="keyword" type="text" enterkeyhint="search" title="输入查找文本" placeholder="查找" id="headerSearchKeyword"/><label for="headerSearchKeyword" class="header-search__placeholder">键入<span>/</span>进行搜索:  @user, $symbol, ...</label><button id="headerSearchSubmit" class="header-search__submit"></button></div><button type="button" id="headerSearchClean" title="关闭" class="header-search__clean"></button></form>        <input class="blurHandler" id="mainMenuBlurHandler" type="checkbox">
+      </div>
+      <div class="head__toolbar" id="headerToolbar">
+          <div class="container loginRegister">
+            <nav>
+              <ul id="loginRegisterButtons"><li><a class="login" title="请登录，支持OpenID" href="https://www.mql5.com/zh/auth_login" rel="nofollow" data-fz-event="MQL5+Menu+Siginin">登录</a></li><li><a class="registration zh" title="请注册" href="https://www.mql5.com/zh/auth_register" rel="nofollow" data-fz-event="MQL5+Menu+Register" onclick="window.fpush('MQL5+Button+Click');">创建账户</a></li></ul>
+            </nav>
+          </div>
+        <div class="toggle-button" id="sidebarToggleButton">
+          <i></i>
+        </div>
+
+        <div class="group-menu" id="groupMenu">
+
+
+          <div class="container lang-menu-container">
+            <div id="langMenuContainer" class="lang-menu">
+              <input class="blurHandler" id="langmenuBlurHandler" type="checkbox">
+              <nav>
+                <ul class="lang-menu__list" id="langmenu">
+                  <li class="lang-menu__list-item"><a href="/en/articles" aria-label="English (English)"><i class="icons-languages icons-languages_en"></i><span>English</span></a></li>
+<li class="lang-menu__list-item"><a href="/ru/articles" aria-label="Русский (Russian)"><i class="icons-languages icons-languages_ru"></i><span>Русский</span></a></li>
+<li class="lang-menu__list-item lang-menu__list-item_selected"><a href="/zh/articles" aria-label="中文 (Chinese)"><i class="icons-languages icons-languages_zh"></i><span>中文</span></a></li>
+<li class="lang-menu__list-item"><a href="/es/articles" aria-label="Español (Spanish)"><i class="icons-languages icons-languages_es"></i><span>Español</span></a></li>
+<li class="lang-menu__list-item"><a href="/pt/articles" aria-label="Português (Portuguese)"><i class="icons-languages icons-languages_pt"></i><span>Português</span></a></li>
+<li class="lang-menu__list-item"><a href="/ja/articles" aria-label="日本語 (Japanese)"><i class="icons-languages icons-languages_ja"></i><span>日本語</span></a></li>
+<li class="lang-menu__list-item"><a href="/de/articles" aria-label="Deutsch (German)"><i class="icons-languages icons-languages_de"></i><span>Deutsch</span></a></li>
+<li class="lang-menu__list-item"><a href="/ko/articles" aria-label="한국어 (Korean)"><i class="icons-languages icons-languages_ko"></i><span>한국어</span></a></li>
+<li class="lang-menu__list-item"><a href="/fr/articles" aria-label="Français (French)"><i class="icons-languages icons-languages_fr"></i><span>Français</span></a></li>
+<li class="lang-menu__list-item"><a href="/it/articles" aria-label="Italiano (Italian)"><i class="icons-languages icons-languages_it"></i><span>Italiano</span></a></li>
+<li class="lang-menu__list-item"><a href="/tr/articles" aria-label="Türkçe (Turkish)"><i class="icons-languages icons-languages_tr"></i><span>Türkçe</span></a></li>
+
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+  </nav>
+
+
+
+  <div id="left-sidebar-selector" class="left-sidebar__selector left-sidebar__selector_padding">
+    <div class="left-sidebar__title">
+MetaTrader 5 /     交易系统
+    </div>
+    <i class="icons-ux icons-ux_arrow-down-black"></i>
+  </div>
+  <div class="articles-container block-with-sidebar">
+    <aside class="left-sidebar left-sidebar_270" id="left-sidebar">
+      
+  <ul class="tree-menu-ul"><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/examples"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples.svg" alt="" loading="lazy"/>示例</a><ul class="tree-menu__list tree-menu__list_nested"><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/examples_indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_indicators.svg" alt="" loading="lazy"/>指标</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/examples_experts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_experts.svg" alt="" loading="lazy"/>专家</a></li></ul></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/strategy_tester"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/strategy_tester.svg" alt="" loading="lazy"/>测试者</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/trading"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading.svg" alt="" loading="lazy"/>交易</a></li><li class="tree-menu__item tree-menu__item_selected"><a class="tree-menu__link" href="/zh/articles/trading_systems"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading_systems.svg" alt="" loading="lazy"/>交易系统</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/integration"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/integration.svg" alt="" loading="lazy"/>积分</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/indicator.svg" alt="" loading="lazy"/>指标</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/expert_advisors"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/expert.svg" alt="" loading="lazy"/>EA交易</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/statistics"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/statistics.svg" alt="" loading="lazy"/>统计分析</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/machine_learning"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/machine_learning.svg" alt="" loading="lazy"/>机器学习</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/interviews"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/interviews.svg" alt="" loading="lazy"/>采访</a></li></ul>
+  
+
+    <div class="hints-panel">
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_like"></i>
+        <div class="hints-panel__content">
+          您喜欢这篇文章？<br>
+          分享或-<br>发布<a href="https://www.mql5.com/zh/articles/5022" target="_blank">链接</a>！
+        </div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_tw-square icons-hints_24px"></i><div class="hints-panel__content">
+请在<a href="https://x.com/mql5com" target="_blank" rel="nofollow">Twitter</a>上找到我们！<br> 加入我们粉丝页</div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_mt-5"></i>
+        <div class="hints-panel__content">
+          使用<a href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Article" rel="nofollow sponsored noopener noreferrer">MetaTrader 5</a>新的可能性
+        </div>
+      </div>
+    </div>
+<div id='vgckrufggwxdtfscpyalmenexmvhljduja' class="roeid8y6hsc3ntv1l gg88d3drb"></div>      <div class="similar-author-articles ui">
+        <h4 class="similar-author-articles__title">相似文章</h4>
+        <ul class="similar-author-articles__list">
+            <li>
+              <a href="/zh/articles/17811" data-fz-event="MQL5+Article+Similar+Article">趋势判定标准：结论</a>
+            </li>
+            <li>
+              <a href="/zh/articles/18324" data-fz-event="MQL5+Article+Similar+Article">金融时间序列中的保形预测探索</a>
+            </li>
+            <li>
+              <a href="/zh/articles/17649" data-fz-event="MQL5+Article+Similar+Article">神经网络在交易中的应用：基于频域的异常检测 (CATCH)</a>
+            </li>
+            <li>
+              <a href="/zh/articles/18355" data-fz-event="MQL5+Article+Similar+Article">挖掘央行资产负债表数据，描绘全球流动性全貌</a>
+            </li>
+            <li>
+              <a href="/zh/articles/17577" data-fz-event="MQL5+Article+Similar+Article">神经网络在交易中的应用：市场异常的自适应检测（终篇）</a>
+            </li>
+        </ul>
+      </div>
+    <div class="freelance-hint">
+      <img src="https://c.mql5.com/i/articles/icon_freelance.svg" width="24" height="24" loading="lazy" />
+      <div class="freelance-hint__text">
+        使用本文的理念在自由职业者服务<br>订购您自己的EA交易<br>
+      </div>
+        <a target="_blank" class="button button_blue-gray-border" title="进入自由职业者服务" href="/zh/job/new" data-fz-event="MQL5+Article+New+Job">进入自由职业者服务</a>
+    </div>
+
+    </aside>
+    <article class="content-with-sidebar articles-content splashed">
+      
+
+
+  <header class="article-header" style="background-color: rgb(225,217,137)">
+    <section class="article-tools-panel">
+        <div class="article-tools-panel__item">
+          <span class="popup framed client flags">
+            <a class="dropdown" href="javascript:void(false);">
+              <span class="icons-languages icons-languages_zh"></span><i></i>
+            </a>
+            <span class="popup">
+              <span class="tip">
+                <span></span>
+              </span>
+              <span class="items">
+                    <a href="/en/articles/5022">English</a>
+                    <a href="/ru/articles/5022">Русский</a>
+                    <a href="/es/articles/5022">Español</a>
+                    <a href="/de/articles/5022">Deutsch</a>
+                    <a href="/ja/articles/5022">日本語</a>
+                    <a href="/pt/articles/5022">Português</a>
+              </span>
+            </span>
+          </span>
+        </div>
+        
+      <div class="article-tools-panel__item">
+        <a href="#pocket" title="允许您插入一个完整的说明以及适当的注释内容。" onclick="return Pocket.Add(this,'zh',2,1,5022);" class="article-tools-panel__rounded">
+          <i class="article-pocket-icon"></i>
+        </a>
+      </div>
+      <div class="article-tools-panel__item">
+        <a href="/zh/articles/5022?print=" target="_blank" class="article-tools-panel__rounded" rel="nofollow" title="打印优化版本">
+          <i class="article-print-icon"></i>
+        </a>
+      </div>
+
+    </section>
+    <section class="article-header__image-box">
+      <div class="article-header__gradient" style="background: linear-gradient(90deg, rgba(225,217,137, 1) 0%, rgba(225,217,137, 0.72) 8.31%, rgba(225,217,137, 0) 17.1%), linear-gradient(270deg, rgba(225,217,137, 1) 0%, rgba(225,217,137, 0.72) 8.06%, rgba(225,217,137, 0) 16.59%), linear-gradient(0deg, rgba(225,217,137, 1) 8.26%, rgba(225,217,137, 0.8) 65%, rgba(225,217,137, 0) 100%);"></div>
+        <img loading="lazy" width="600" height="314" srcset="https://c.mql5.com/i/articles/overlay.png, https://c.mql5.com/i/articles/overlay_2x.png 2x" src="https://c.mql5.com/i/articles/overlay.png" alt="组合趋势和盘整策略">
+    </section>
+    <section class="article-header__content">
+      <h1>组合趋势和盘整策略</h1>
+      <div class="article-header__info">
+        <a href="/zh/articles/mt5">MetaTrader 5</a>
+          &mdash;
+          <a href="/zh/articles/mt5/trading_systems">交易系统</a>
+        | <time datetime="2018-10-04T09:34Z" title="09:34" datetime-type="datetime">4 十月 2018, 09:34</time>
+      </div>
+      <div class="article-header__indicators">
+        <span title="查看">
+          <img src="https://c.mql5.com/i/icons.svg#views-usage" width="20" height="20" alt="" />
+          12 906
+        </span>
+        
+          <a title="评论" href="/zh/forum/282097">
+            <img src="https://c.mql5.com/i/icons.svg#comments-usage" width="20" height="20" alt="" />
+            26
+          </a>
+      </div>
+      <div class="article-header__author">
+          <div class="article-header__avatar">
+            <img src="https://c.mql5.com/avatar/2014/8/53E8CB77-1C48.png" srcset="https://c.mql5.com/avatar/2014/8/53E8CB77-1C48_big.png 2x" data-user-login="DNG" title="Dmitriy Gizlyk" alt="Dmitriy Gizlyk" loading="lazy" width="60" height="60">
+          </div>
+<a class="author" href="/zh/users/dng" data-user-login="DNG">Dmitriy Gizlyk</a>      </div>
+    </section>
+  </header>
+
+    <div class="content">
+      <div class="inner formatted-content">
+        <h3>目录</h3>
+  <ul>
+    <li><a href="/zh/articles/5022#para1" target="_blank">简介</a></li>
+    <li><a href="/zh/articles/5022#para2" target="_blank">1. 组合策略的原则</a></li>
+    <li><a href="/zh/articles/5022#para3" target="_blank">2. 开发 EA 交易</a></li>
+    <li><a href="/zh/articles/5022#para31" target="_blank">2.1. 方法一</a></li>
+    <li><a href="/zh/articles/5022#para32" target="_blank">2.2. 方法二</a></li>
+    <li><a href="/zh/articles/5022#para33" target="_blank">2.3. 方法三</a></li>
+    <li><a href="/zh/articles/5022#para4" target="_blank">3. 测试 EA 交易</a></li>
+    <li>3<a href="/zh/articles/5022#para41" target="_blank">.1. 测试方法一</a></li>
+    <li>3<a href="/zh/articles/5022#para42" target="_blank">.2. 测试方法二</a></li>
+    <li>3<a href="/zh/articles/5022#para43" target="_blank">.1. 测试方法三</a></li>
+    <li><a href="/zh/articles/5022#para5" target="_blank">4. 优化策略</a></li>
+    <li><a href="/zh/articles/5022#para51" target="_blank">4.1. 优化方法一</a></li>
+    <li><a href="/zh/articles/5022#para42" target="_blank">4.2.&nbsp;</a><a href="/zh/articles/5022#para52" target="_blank">优化方法二</a></li>
+    <li><a href="/zh/articles/5022#para6" target="_blank">结论</a></li>
+  </ul>
+  <h3 id="para1">简介</h3>
+  <p>有多种多样的交易策略，它们中的一些要寻找趋势，而其它的一些会定义价格波动的范围而在其中进行交易。市场是动荡的，趋势之后永远是盘整，这对跟随趋势的交易者和在范围内低买高卖的人来说都有获利的机会。当两组中的一组人获利的时候，另一组或者在亏损或者在等待时机。 </p>
+  <p>有没有可能把这两种方法组合到一起来增加获利呢?这两种策略能否相互补充呢?让我们试试把这看起来不同的交易模型组合起来，看看这样的组合有什么结果。</p>
+  <h3 id="para2">1. 组合策略的原则</h3>
+  <p>从价格图表上可以看到不断变化的趋势，大的变化后通常是盘整的阶段，这时价格会开始在一个狭窄的范围内变化。交易者通常根据当前市场的条件来选择他们的交易策略，但是我们怎样才能确定这个时候应该选择哪个策略呢?是趋势策略还是盘整策略呢?&nbsp;</p>
+  <p style="text-align:center;"><img src="https://c.mql5.com/2/34/EURUSDM30.png" title="图表" alt="图表" width="696" height="375" style="vertical-align:middle;" /><br />
+  </p>
+  <p>有一些文章 [<a href="/zh/articles/3074" target="_blank">1</a>] 和 [<a href="/zh/articles/4534" target="_blank">2</a>] 是探讨在不同的趋势和盘整阶段的交易策略的，很容易就会发现，在评估市场条件后可以使用某种策略，这两种策略类型都使用了不同的趋势指标来确定市场的状态，只是，当在市场上有趋势时使用趋势策略入场，当市场平静时使用盘整策略建仓。因而，我们的第一种把两种策略组合到一个 EA 交易中的方法就是: 如果有趋势，就使用跟随趋势的算法，如果没有趋势，就使用盘整算法。</p>
+  <p>在更加详细地检查了价格图表之后，我们可以看到，不论趋势还是盘整，价格的变化都是没有方向性的，所有的变化都伴随着价格的波动。如果是盘整时期的变化，它们有一个很近的范围，而在有趋势时，有些变化会超过其它。这种特性可以在组合趋势和盘整策略的时候使用，思路是跟随一个趋势，尽管入场点应当是使用盘整交易的振荡指标来确认。这种方法有助于捕捉修正的结束，而减少回撤并增加价格向期望方向变化的潜在可能。</p>
+  <h3 id="para3">2. 开发 EA 交易</h3>
+  <p>为了演示组合策略的原则，我已经从文章[<a href="/zh/articles/3074" target="_blank">1</a>]中的<a href="/en/articles/3074#strategy1" target="_blank">策略1</a>和文章[<a href="/zh/articles/4534" target="_blank">2</a>]中的<a href="/en/articles/4534#str6" target="_blank">策略6</a>,这两个选定的策略都是使用 ADX 指标来判断趋势的。EA 的优化是预先在从 01.01.2017 到 8.01.2018 的时间段进行的。根据这些策略的优化结果，选择了下面的参数。 </p>
+  <p>趋势策略 1.</p>
+  <p style="text-align:center;"><img src="https://c.mql5.com/2/33/Trend1.png" title="趋势策略的参数" alt="趋势策略的参数" width="737" height="302" style="vertical-align:middle;" /><br />
+  </p>
+  <p>盘整策略 6.</p>
+  <p style="text-align:center;"><img src="https://c.mql5.com/2/33/Flat1.png" title="盘整策略的参数" alt="盘整策略的参数" width="740" height="250" style="vertical-align:middle;" /><br />
+  </p>
+  <p>在屏幕截图中提供了单个 EA 在优化参数后的交易结果。</p>
+  <p>趋势策略 1.</p>
+  <p style="text-align:center;"><img src="https://c.mql5.com/2/33/Trend2.png" title="趋势策略的测试结果" alt="趋势策略的测试结果" width="732" height="372" style="vertical-align:middle;" /><img src="https://c.mql5.com/2/33/Trend3.png" title="趋势策略的测试结果" alt="趋势策略的测试结果" width="740" height="379" style="vertical-align:middle;" /></p>
+  <p></p>
+  <p style="text-align:left;">盘整策略 6.</p>
+  <p style="text-align:center;"><img src="https://c.mql5.com/2/33/Flat2.png" title="盘整策略的测试结果" alt="盘整策略的测试结果" width="729" height="380" style="vertical-align:middle;" /><img src="https://c.mql5.com/2/33/Flat3.png" title="盘整策略的测试结果" alt="盘整策略的测试结果" width="732" height="383" style="vertical-align:middle;" /><br />
+  </p>
+  <p>这两个 EA 都是根据指标信号，在信号出现时没有开启的仓位，就会开启订单。根据预先定义的获利和止损值关闭仓位。</p>
+  <p> 这种方法可以把仓位跟踪模块排除在外，而大幅度地简化了 EA 的逻辑。当组合 EA 时，我将会保持 EA 的运行逻辑不变，来演示组合方法(而不是改变 EA 的逻辑)是如何影响结果的。</p>
+  <h4 id="para31"> 2.1. 方法一 </h4>
+  <p>第一种方法是按顺序检查两种策略的信号，而当它们中的任意一个出现时就开启仓位。每个策略都有它自己的指标参数，以及止损和获利水平。使用这种方法，如果有一种策略开启的仓位会阻止另一个策略开启仓位，所以，在市场上永远最多只有一个开启的仓位，这样可以减少风险。</p>
+  <p>这种方法的缺点是可能会丧失获利交易的机会，这在一个策略有信号而存在另一个策略所开启的仓位时可能会出现。但是，根据这种方法，所应用的策略应当在不同的市场阶段来交易，也就意味着这个缺点造成的影响应当比较小。</p>
+  <p>为了实现这个方法，把两个 EA 的代码复制到一个文件中，根据相同的函数来把它们组合在一起，为了防止名称的重复，在跟随趋势策略的函数中加上"Trend"变量，而在盘整策略的函数中加入"Flat"类的变量。</p>
+  <pre class="code"><span class="comment">//--- 公用参数</span>
+<span class="keyword">input</span> <span class="keyword">double</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Inp_Lot=<span class="number">0.01</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//手数</span>
+<span class="keyword">input</span> MarginMode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Inp_MMode=LOT;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//资金管理</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Inp_MagicNum=<span class="number">1111</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//幻数</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Inp_Deviation = <span class="number">2</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//偏差(点数)</span>
+<span class="comment">//---</span>
+<span class="keyword">input</span> <span class="keyword">string</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Trend_EaComment=<span class="string">"Trend Strategy"</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//策略的注释</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Trend_StopLoss=<span class="number">25</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//止损(点数)</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Trend_TakeProfit=<span class="number">90</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//获利(点数)</span>
+<span class="comment">//--- RSI_Color 指标参数</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Trend_RSIPeriod=<span class="number">28</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//RSI 周期数</span>
+<span class="keyword">input</span> <span class="keyword">double</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Trend_Overbuying=<span class="number">70</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//超买区域</span>
+<span class="keyword">input</span> <span class="keyword">double</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Trend_Overselling=<span class="number">30</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//超卖区域</span>
+<span class="comment">//--- ADX_Cloud 指标参数</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Trend_ADXPeriod=<span class="number">11</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//ADX 周期数</span>
+<span class="keyword">input</span> <span class="keyword">double</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Trend_alpha1 = <span class="number">0.25</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//alpha1</span>
+<span class="keyword">input</span> <span class="keyword">double</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Trend_alpha2 = <span class="number">0.25</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//alpha2</span>
+<span class="comment">//---</span>
+<span class="keyword">input</span> <span class="keyword">string</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Flat_EaComment=<span class="string">"Flat Strategy"</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//策略注释</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flat_StopLoss=<span class="number">50</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//止损(点数)</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flat_TakeProfit=<span class="number">50</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//获利(点数)</span>
+<span class="comment">//--- WPR 指标参数</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flat_WPRPeriod=<span class="number">7</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//WPR 周期数</span>
+<span class="comment">//--- ADX 指标参数</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flat_ADXPeriod=<span class="number">11</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//ADX 周期数</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flat_FlatLevel=<span class="number">40</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//ADX 平盘水平</span>
+</pre>
+
+  <p>在 <a href="/zh/docs/event_handlers/ontick" target="_blank">OnTick</a> 函数的开始, 检查是否有开启的仓位。如果没有开启的仓位，就更新指标数据并按顺序检查趋势和盘整策略的入场信号。如果有任何信号出现，就根据对应的策略开启一个仓位。</p>
+  <pre class="code"><span class="keyword">void</span> <span class="functions">OnTick</span>()
+&nbsp;&nbsp;{
+<span class="comment">//--- 检查由 EA 在早前开启的仓位</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(!Trade.IsOpenedBySymbol(<span class="predefines">_Symbol</span>,Inp_MagicNum))
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- 取得用于计算的数据</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(!GetIndValue())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">return</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- 根据趋势算法开启订单</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- 如果有买入信号，开启订单</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(TrendBuySignal())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Trade.BuyPositionOpen(<span class="functions">Symbol</span>(),Inp_Lot,Trend_StopLoss,Trend_TakeProfit,Inp_MagicNum,Trend_EaComment);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- 如果有卖出信号，开启订单</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(TrendSellSignal())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Trade.SellPositionOpen(<span class="functions">Symbol</span>(),Inp_Lot,Trend_StopLoss,Trend_TakeProfit,Inp_MagicNum,Trend_EaComment);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- 根据盘整算法开启订单</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- 如果有买入信号，开启订单</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(FlatBuySignal())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Trade.BuyPositionOpen(<span class="functions">Symbol</span>(),Inp_Lot,Flat_StopLoss,Flat_TakeProfit,Inp_MagicNum,Flat_EaComment);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- 如果有卖出信号，开启订单</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(FlatSellSignal())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Trade.SellPositionOpen(<span class="functions">Symbol</span>(),Inp_Lot,Flat_StopLoss,Flat_TakeProfit,Inp_MagicNum,Flat_EaComment);
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;}
+</pre>
+
+  <p>完整的 EA 代码在附件中 (Combination1 项目)。</p>
+  <h4 id="para32"> 2.2. 方法二 </h4>
+  <p>第二种方法的组合过程稍微复杂一些，除了第一种方法之外，还创建了两种策略相结合的信号。</p>
+  <p>在提供的趋势策略实例中，使用 ADX 云指标来定义趋势，这个指标显示了在 DI+ 和 DI- 线之间的差距，而没有检验趋势的强弱。同时，盘整策略在开启仓位之前会使用 ADX 阈值来检验趋势的强弱，这样，我们就能在交易中引入另一个过滤器，在趋势策略之后根据趋势的强弱来进行交易。</p>
+  <pre class="code"><span class="keyword">bool</span> TrendBuySignal()
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">return</span>(trend_adx[<span class="number">0</span>]&gt;trend_adx[<span class="number">1</span>] &amp;&amp; trend_rsi1[<span class="number">0</span>]==<span class="number">1</span> &amp;&amp; trend_rsi1[<span class="number">1</span>]==<span class="number">1</span> &amp;&amp;&nbsp;&nbsp;flat_adx[<span class="number">0</span>]&gt;=Flat_FlatLevel)?<span class="keyword">true</span>:<span class="keyword">false</span>;
+&nbsp;&nbsp;}
+</pre>
+
+  <p>在趋势策略中，交易是根据 RSI 指标排序的，这样我们就能够通过排除与 RSI 信号相反的方向开启仓位来减少在盘整策略之后亏损交易的数量。</p>
+  <pre class="code"><span class="keyword">bool</span> FlatBuySignal()
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="keyword">return</span>(flat_wpr[<span class="number">0</span>]&lt;-<span class="number">80</span> &amp;&amp; flat_adx[<span class="number">0</span>]&lt;Flat_FlatLevel &amp;&amp; trend_rsi2[<span class="number">0</span>]!=<span class="number">1</span>)?<span class="keyword">true</span>:<span class="keyword">false</span>;
+&nbsp;&nbsp;}
+</pre>
+
+  <p>完整的 EA 代码可以在附件中找到 (Combination2 项目)。</p>
+  <div>
+    <h4 id="para33"> 2.3. 方法三</h4>
+    <p>第三个方法是用于锁仓账户的，在单个EA中独立使用两种策略。每种策略的订单都赋予了特定的幻数，根据到来信号开启仓位，不管是否有其他策略所开启的仓位。 </p>
+    <p>这种方法精确地模拟了在一个相同账户中使用两个 EA 的情况，同时保留了这种方法的所有优点和缺点，特别是因为会根据不同的策略同时开启两个仓位，可能会增加风险。</p>
+    <pre class="code"><span class="comment">//--- 公用参数</span>
+<span class="keyword">input</span> <span class="keyword">double</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Inp_Lot=<span class="number">0.01</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//手数</span>
+<span class="keyword">input</span> MarginMode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Inp_MMode=LOT;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//资金管理</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Inp_Deviation = <span class="number">2</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//偏差(点数)</span>
+<span class="comment">//---</span>
+<span class="keyword">input</span> <span class="keyword">string</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Trend_EaComment=<span class="string">"Trend Strategy"</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//策略的注释</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Trend_StopLoss=<span class="number">25</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//止损(点数)</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Trend_TakeProfit=<span class="number">90</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//获利(点数)</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Trend_MagicNum=<span class="number">1111</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//幻数</span>
+<span class="comment">//--- RSI_Color </span><span class="comment">指标参数</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Trend_RSIPeriod=<span class="number">28</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//RSI 周期数</span>
+<span class="keyword">input</span> <span class="keyword">double</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Trend_Overbuying=<span class="number">70</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//超买区域</span>
+<span class="keyword">input</span> <span class="keyword">double</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Trend_Overselling=<span class="number">30</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//超卖区域</span>
+<span class="comment">//--- ADX_Cloud 指标参数</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Trend_ADXPeriod=<span class="number">11</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//ADX 周期数</span>
+<span class="keyword">input</span> <span class="keyword">double</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Trend_alpha1 = <span class="number">0.25</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//alpha1</span>
+<span class="keyword">input</span> <span class="keyword">double</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Trend_alpha2 = <span class="number">0.25</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//alpha2</span>
+<span class="comment">//---</span>
+<span class="keyword">input</span> <span class="keyword">string</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Flat_EaComment=<span class="string">"Flat Strategy"</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//策略注释</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flat_StopLoss=<span class="number">50</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//止损(点数)</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flat_TakeProfit=<span class="number">50</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//获利(点数)</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flat_MagicNum=<span class="number">1112</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//幻数</span>
+<span class="comment">//--- WPR 指标参数</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flat_WPRPeriod=<span class="number">7</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//WPR 周期数</span>
+<span class="comment">//--- ADX 指标参数</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flat_ADXPeriod=<span class="number">11</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//ADX 周期数</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flat_FlatLevel=<span class="number">40</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//ADX 平盘水平</span>
+</pre>
+
+    <p>在 OnTick 函数中,  独立检查由趋势策略开启的仓位的幻数和使用盘整策略开启仓位的幻数。</p>
+    <pre class="code"><span class="keyword">void</span> <span class="functions">OnTick</span>()
+&nbsp;&nbsp;{
+<span class="comment">//--- 检查之前由 EA 开启的趋势策略的订单</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(!Trade.IsOpenedBySymbol(<span class="predefines">_Symbol</span>,Trend_MagicNum))
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- 取得用于计算的数据</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(!GetIndValue())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">return</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- 如果有买入信号，开启订单</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(TrendBuySignal())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Trade.BuyPositionOpen(<span class="functions">Symbol</span>(),Inp_Lot,Trend_StopLoss,Trend_TakeProfit,Trend_MagicNum,Trend_EaComment);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- 如果有卖出信号，开启订单</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(TrendSellSignal())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Trade.SellPositionOpen(<span class="functions">Symbol</span>(),Inp_Lot,Trend_StopLoss,Trend_TakeProfit,Trend_MagicNum,Trend_EaComment);
+&nbsp;&nbsp;&nbsp;&nbsp; }
+<span class="comment">//--- 检查之前由EA 开启的盘整策略的订单</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(!Trade.IsOpenedBySymbol(<span class="predefines">_Symbol</span>,Flat_MagicNum))
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- 取得用于计算的数据</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(!GetIndValue())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">return</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- 如果有买入信号，开启订单</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(FlatBuySignal())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Trade.BuyPositionOpen(<span class="functions">Symbol</span>(),Inp_Lot,Flat_StopLoss,Flat_TakeProfit,Flat_MagicNum,Flat_EaComment);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- 如果有卖出信号，开启订单</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(FlatSellSignal())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Trade.SellPositionOpen(<span class="functions">Symbol</span>(),Inp_Lot,Flat_StopLoss,Flat_TakeProfit,Flat_MagicNum,Flat_EaComment);
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;}
+</pre>
+
+    <p></p>
+    <div style="margin:0px; padding:0px;"></div>
+    <p></p>
+    <p style="text-align:left;">完整的 EA 代码可以在附件中找到 (Combination3 项目).</p>
+  </div>
+  <h3 id="para4"> 3. 测试 EA 交易</h3>
+  <p>在准备了三个由不同的策略组合方法开发的 EA 之后，是时候来测试这些 EA 并比较结果了，为了保证结果的兼容性，测试要在不修改 EA 参数的情况下进行。</p>
+  <h4 id="para41"> 3.1. 测试方法一 </h4>
+  <div>
+    <p>第一种测试显示有利润。总的利润和恢复系数比任何一个原来的 EA 都更高。与盘整策略相比，余额曲线看起来更平坦，而交易数量上升了，而相对余额和资金的回撤都减少了。同时，获利因子略有下降，而总的利润比最初策略的总利润也少一些。</p>
+    <p style="text-align:center;"><img src="https://c.mql5.com/2/33/Combination1_Table.png" title="方法一的测试结果" alt="方法一的测试结果" width="735" height="376" style="vertical-align:middle;" /><img src="https://c.mql5.com/2/33/Combination1_Graphic.png" title="方法一的测试结果" alt="方法一的测试结果" width="734" height="286" style="vertical-align:middle;" /><br />
+    </p>
+  </div>
+  <h4 id="para42"> 3.2. 测试方法二 </h4>
+  <p>使用第二种方法与第一种方法相比可以增加更多的利润，而交易的数量还保持同样，尽管总的利润还是比最初 EA 的利润略少一些。相应地，利润的增长也增加恢复和利润因子 (后者变得与盘整策略相等了), 以及获利交易的比例。同时，最大余额回撤也减少了。</p>
+  <p style="text-align:center;"><img src="https://c.mql5.com/2/33/Combination2_Table.png" title="方法二的测试结果" alt="方法二的测试结果" width="737" height="372" style="vertical-align:middle;" /><img src="https://c.mql5.com/2/33/Combination2_Graphic.png" title="方法二的测试结果" alt="方法二的测试结果" width="735" height="286" style="vertical-align:middle;" /><br />
+  </p>
+  <h4 id="para43"> 3.3. 测试方法三 </h4>
+  <p>使用第三种方法可以增加总利润，与初始 EA 的总利润水平相同。利润的增长是可能通过增加交易数量达到的，同时，存款负载和最大余额回撤增加了。</p>
+  <p style="text-align:center;"><img src="https://c.mql5.com/2/33/Combination3_Table.png" title="方法三的测试结果" alt="方法三的测试结果" width="728" height="363" style="vertical-align:middle;" /><img src="https://c.mql5.com/2/33/Combination3_Graphic.png" title="方法三的测试结果" alt="方法三的测试结果" width="729" height="278" style="vertical-align:middle;" /><br />
+  </p>
+  <h3 id="para5"> 4. 优化策略 </h3>
+  <p>在前一部分测试的 EA 展示了在 EA 中组合策略的优点，所有这三种方法都显示了和最初的策略相比利润有所增加。但是我们不应忘记，最初的策略是为测试的时间短做了优化的，而在测试组合 EA 时我们使用了相同的初始参数。 </p>
+  <p>但是，我们都意识到 EA 逻辑中的任何影响都需要另外修改它的参数，让我们尝试使用最初的两种组合策略的方法优化 EA 来看看结果。</p>
+  <p>请记住，开发 EA 的最终目的是在市场上赚钱，而不是在历史数据中演示它们的功能。所以，我建议把测试的时间段分成两个部分，之前，我们是在从 1.01.2017 到 8.01.2018 进行测试的，现在，我建议在相同的时间段，即从 1.01.2017 到 6.01.2018 进行优化，而在剩余的时间段进行一次前瞻测试。</p>
+  <p style="text-align:center;"><img src="https://c.mql5.com/2/33/Optimization.png" title="优化周期数" alt="优化周期数" width="740" height="209" style="vertical-align:middle;" /><br />
+  </p>
+  <h4 id="para51"> 4.1. 优化方法一 </h4>
+  <p>在选择优化参数的时候，请记住我们的每个 EA 都包含两个部分的策略，在这种情况下，每个策略都使用了两个指标来入场交易，但是我们不要忘记，两个策略都使用 ADX 来判断趋势的强弱和方向，所以，EA 的逻辑使用了三个指标来定义入场点。我建议优化这三个指标的周期数，</p>
+  <p>ADX 指标周期数的优化显示出，在指标周期数从12到14的范围有最大化的利润和稳定性。下面的图片显示了 EA 利润与 ADX 和 RSI 在优化时间段的周期数变化的相互关联。</p>
+  <p style="text-align:center;"><img src="https://c.mql5.com/2/33/Combination1_ADX.png" alt="" width="740" height="367" style="vertical-align:middle;" /></p>
+  <p style="text-align:justify;">进行的前瞻测试确认了在这样的指标值范围时，可能会获利。当 ADX 周期数等于13的时候有最大的稳定性。这样，类似的优化和前瞻测试结果就证明了 EA 在非优化时间段的稳定性。</p>
+  <p style="text-align:center;"><img src="https://c.mql5.com/2/33/Combination1_ADX_Forward.png" title="ADX 前瞻测试" alt="ADX 前瞻测试" width="740" height="400" style="vertical-align:middle;" /></p>
+  <p style="text-align:justify;">WPR 周期数的优化显示了类似的结果。在优化时间段中，当指标周期数等于7的时候 EA 有最大的稳定性，同时，当 ADX 指标周期数增加时，也可能在3到5的范围会获利。下面的图片显示了 EA 的利润与 WPR 和 ADX 在优化时间段周期数改变的相互关联。</p>
+  <p style="text-align:center;"><img src="https://c.mql5.com/2/33/Combination1_Flat_WPR.png" title="WPR 优化" alt="WPR 优化" width="740" height="374" style="vertical-align:middle;" /></p>
+  <p style="text-align:justify;">前瞻测试确认指定的区域，同时，在 WPR 指标周期数为3-4的范围时利润有所增长，如果 WPR 等于7，当 ADX 指标值增加的时候 EA 的获利能力会下降。这可能是因为测试时间比较短以及它的特殊性。</p>
+  <p style="text-align:center;"><img src="https://c.mql5.com/2/33/Combination1_Flat_WPR_Forward.png" title="WPR 前瞻测试" alt="WPR 前瞻测试" width="740" height="400" style="vertical-align:middle;" /></p>
+  <p style="text-align:justify;">RSI 指标周期数的优化确认上面的结论，在优化时间段中，27到32的范围中获利能力和稳定性是最高的，下面的图片显示了 EA 利润与在优化时间段中 RSI 和 ADX 周期数变化之间的相互关联。</p>
+  <p style="text-align:center;"><img src="https://c.mql5.com/2/33/Combination1_Treand_RSI.png" title="RSI 优化" alt="RSI 优化" width="740" height="400" style="vertical-align:middle;" /></p>
+  <p style="text-align:justify;">在前瞻测试中， RSI 周期数的获利范围缩窄到30-32。</p>
+  <p style="text-align:center;"><img src="https://c.mql5.com/2/33/Combination1_Treand_RSI_Forward.png" title="RSI 前瞻测试" alt="RSI 前瞻测试" width="740" height="400" style="vertical-align:middle;" /></p>
+  <p style="text-align:justify;">尝试优化获利和止损值并没有增加 EA 的获利能力，也确认了之前选定的参数值。</p>
+  <p style="text-align:justify;">根据优化结果，最优化的参数为， ADX 周期数等于13，RSI 周期数等于30 而 WPR 周期数等于7。使用这些参数，而其它参数保持不变，EA 在优化时间段内取得了 202.33 USD 的利润，在前瞻测试中取得了 46.10 USD 的利润。这种获利能力超过了根据方法三组合 EA 在此测试时间段的获利。在使用方法三组合的 EA 中使用相同参数得到的也是差一些的结果: 分别是 166.29 USD 和 60.27 USD。</p>
+  <p style="text-align:center;"><img src="https://c.mql5.com/2/33/Opt1_Back.png" title="优化方法一" alt="优化方法一" width="720" height="379" style="vertical-align:middle;" /><img src="https://c.mql5.com/2/33/Opt1_Forw.png" title="优化方法 2" alt="优化方法一" width="722" height="375" style="vertical-align:middle;" /><img src="https://c.mql5.com/2/33/Opt1_Graphic.png" title="优化方法一" alt="优化方法一" width="734" height="306" style="vertical-align:middle;" /><br />
+  </p>
+  <p style="text-align:justify;">前瞻测试优化的结果确认了 EA 在非优化时间段的稳定性。</p>
+  <h4 id="para52"> 4.2. 优化方法 2 </h4>
+  <p style="text-align:justify;">有趣的是，根据方法二组合的 EA 在优化后取得的结果和之前优化的类似，这可以指示出交易系统的稳定性。结果指标周期数就和前一部分中优化的指标周期数类似，其它的方面都是相同的，方法二的 EA 显示出获利较低，因为交易数量有所减少。优化图在下面提供。</p>
+  <p style="text-align:center;"><img src="https://c.mql5.com/2/33/Combination2_ADX.png" title="方法 2. ADX 优化" alt="方法 2. ADX 优化" width="740" height="398" style="vertical-align:middle;" /><img src="https://c.mql5.com/2/33/Combination2_ADX_Forward.png" title="方法 2. ADX 前瞻测试" alt="方法 2. ADX 前瞻测试" width="740" height="398" style="vertical-align:middle;" /><img src="https://c.mql5.com/2/33/Combination2_Flat_WPR.png" title="方法 2. WPR 优化" alt="方法 2. WPR 优化" width="740" height="398" style="vertical-align:middle;" /><img src="https://c.mql5.com/2/33/Combination2_Flat_WPR_Forward.png" title="方法 2. WPR 前瞻测试" alt="方法 2. WPR 前瞻测试" width="740" height="398" style="vertical-align:middle;" /><img src="https://c.mql5.com/2/33/Combination2_Treand_RSI.png" title="方法 2. RSI 优化" alt="方法 2. RSI 优化" width="740" height="398" style="vertical-align:middle;" /><img src="https://c.mql5.com/2/33/Combination2_Treand_RSI_Forward.png" title="方法 2. RSI 前瞻测试" alt="方法 2. RSI 前瞻测试" width="740" height="398" style="vertical-align:middle;" /></p>
+  <p style="text-align:justify;">同时，提高了趋势策略的信号质量可以优化止损和获利水平，在优化之后，趋势策略的止损减小为从 25 到 20 个点, 而获利从90 增加到 110 个点。这增加了 EA 工作中的获利能力。止损和获利水平优化图在下面提供。</p>
+  <p style="text-align:center;"><img src="https://c.mql5.com/2/33/Combination2_Treand_SL.png" title="方法 2. SL 优化" alt="方法 2. SL 优化" width="740" height="398" style="vertical-align:middle;" /><img src="https://c.mql5.com/2/33/Combination2_Treand_SL_Forward.png" title="方法 2. SL 前瞻测试" alt="方法 2. SL 前瞻测试" width="740" height="398" style="vertical-align:middle;" /><img src="https://c.mql5.com/2/33/Combination2_Treand_TP.png" title="方法 2. TP 优化" alt="方法 2. TP 优化" width="740" height="398" style="vertical-align:middle;" /><img src="https://c.mql5.com/2/33/Combination2_Treand_TP_Forward.png" title="方法 2. TP 前瞻测试" alt="方法 2. TP 前瞻测试" width="740" height="398" style="vertical-align:middle;" /></p>
+  <p style="text-align:justify;">根据优化的结果，使用方法二组合策略的 EA 获利在三种方法里是最高的，在其它的 EA 中使用这些优化参数则结果是最差的。测试所优化 EA 的屏幕截图如下所示。</p>
+  <p style="text-align:center;"><img src="https://c.mql5.com/2/33/Opt2_Back.png" alt="" width="722" height="377" style="vertical-align:middle;" /><img src="https://c.mql5.com/2/33/Opt2_Forw.png" title="优化方法 2" alt="优化方法 2" width="726" height="386" style="vertical-align:middle;" /><img src="https://c.mql5.com/2/33/Opt2_Graphic.png" alt="" width="732" height="310" style="vertical-align:middle;" /><br />
+  </p>
+  <h3 id="para6"> 结论 </h3>
+  <p>在本文中，我提出了三种在一个 EA 交易中组合两种策略的方法，展示了如何在 EA 中这样处理以及在优化之后不改变参数对 EA 进行测试。 </p>
+  <p>下面的表格总结了所有策略的测试结果。组合 EA 的优化显示了与两个独立 EA 相比，它们有更高的获利能力。</p>
+  <p>在您的 EA 中，您也可以使用所提出的组合方法来任意组合两种或多种策略，或者加上您自己的方法。无法确定哪种方法才是最好的，在每种情况下，交易者都应当在选择组合策略的方法时有创新的思路，并且要考虑到策略本身和它们的运行逻辑。</p>
+  <table class="standart" width="100%" cellspacing="0" cellpadding="0">
+    <thead>
+      <tr>
+        <th>参数</th>
+        <th>趋势<br />策略<br /></th>
+        <th>盘整<br />策略</th>
+        <th>方法一</th>
+        <th>方法二</th>
+        <th>方法三</th>
+        <th>方法1优化<br />回溯/前瞻&nbsp;</th>
+        <th>方法2优化<br />回溯/前瞻&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>总利润</td>
+        <td style="text-align:center;">51.56</td>
+        <td style="text-align:center;">158.96</td>
+        <td style="text-align:center;">160.52</td>
+        <td style="text-align:center;">166.12</td>
+        <td style="text-align:center;">210.40</td>
+        <td style="text-align:center;">&nbsp;202.33 / 46.10</td>
+        <td style="text-align:center;">&nbsp;206.40 / 43,10</td>
+      </tr>
+      <tr>
+        <td>获利因子</td>
+        <td style="text-align:center;">2.39</td>
+        <td style="text-align:center;">1.25</td>
+        <td style="text-align:center;">1.24</td>
+        <td style="text-align:center;">1.25</td>
+        <td style="text-align:center;">1.31</td>
+        <td style="text-align:center;">&nbsp;1.25 / 1.58</td>
+        <td style="text-align:center;">&nbsp;1.25 /1.54</td>
+      </tr>
+      <tr>
+        <td>恢复系数</td>
+        <td style="text-align:center;">3.65</td>
+        <td style="text-align:center;">3.55</td>
+        <td style="text-align:center;">3.73</td>
+        <td style="text-align:center;">3.86</td>
+        <td style="text-align:center;">4.90</td>
+        <td style="text-align:center;">4.08 / 1.94</td>
+        <td style="text-align:center;">&nbsp;4.17 / 1.82</td>
+      </tr>
+      <tr>
+        <td>最大余额回撤</td>
+        <td style="text-align:center;">8.49</td>
+        <td style="text-align:center;">41.30</td>
+        <td style="text-align:center;">36.41</td>
+        <td style="text-align:center;">35.67</td>
+        <td style="text-align:center;">39.23</td>
+        <td style="text-align:center;">44.98 / 19.75</td>
+        <td style="text-align:center;">&nbsp;44.98 /19.75</td>
+      </tr>
+      <tr>
+        <td>最大净值回撤</td>
+        <td style="text-align:center;">14.14</td>
+        <td style="text-align:center;">44.76</td>
+        <td style="text-align:center;">43.04</td>
+        <td style="text-align:center;">43.04</td>
+        <td style="text-align:center;">42.96</td>
+        <td style="text-align:center;">49.53 / 23.72</td>
+        <td style="text-align:center;">&nbsp;49.53 / 23.72</td>
+      </tr>
+      <tr>
+        <td>交易数</td>
+        <td style="text-align:center;">24</td>
+        <td style="text-align:center;">290</td>
+        <td style="text-align:center;">295</td>
+        <td style="text-align:center;">295</td>
+        <td style="text-align:center;">315<br /></td>
+        <td style="text-align:center;">&nbsp;371 / 41</td>
+        <td style="text-align:center;">&nbsp;373 / 40</td>
+      </tr>
+      <tr>
+        <td>获利交易比例</td>
+        <td style="text-align:center;">41.67%</td>
+        <td style="text-align:center;">55.52%</td>
+        <td style="text-align:center;">53.22%</td>
+        <td style="text-align:center;">53.90%</td>
+        <td style="text-align:center;">54.29%</td>
+        <td style="text-align:center;">53.64 / 60.98</td>
+        <td style="text-align:center;">&nbsp;53.62 / 60</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="para7"> 参考 </h3>
+  <ol>
+    <li id="sl1"><a href="/zh/articles/3074" target="_blank">十个趋势策略的比较分析</a></li>
+    <li id="sl1"><a href="/zh/articles/4534" target="_blank">十个盘整策略的比较分析</a></li>
+    <li id="sl1"><a href="/zh/articles/3188" target="_blank">趋势会持续多久?</a></li>
+  </ol>
+  <h3 id="para7">本文中使用的程序</h3>
+  <table class="standart" width="100%" cellspacing="0" cellpadding="3" style="border-right:1px solid rgb(73, 73, 73); border-top:1px solid rgb(73, 73, 73);">
+    <thead>
+      <tr>
+        <th style="background-color:rgb(202, 202, 202); text-align:center; border-bottom:1px solid rgb(73, 73, 73); border-left:1px solid rgb(73, 73, 73);">#<br /></th>
+        <th style="background-color:rgb(202, 202, 202); text-align:center; border-bottom:1px solid rgb(73, 73, 73); border-left:1px solid rgb(73, 73, 73);">&nbsp;名称<br /></th>
+        <th style="background-color:rgb(202, 202, 202); text-align:center; border-bottom:1px solid rgb(73, 73, 73); border-left:1px solid rgb(73, 73, 73);">类型<span>&nbsp;</span><br /></th>
+        <th style="background-color:rgb(202, 202, 202); text-align:center; border-bottom:1px solid rgb(73, 73, 73); border-left:1px solid rgb(73, 73, 73);">描述<span>&nbsp;</span></th>
+      </tr>
+      <tr>
+        <td style="border-bottom:1px solid rgb(73, 73, 73); border-left:1px solid rgb(73, 73, 73); text-align:center;">1</td>
+        <td style="border-bottom:1px solid rgb(73, 73, 73); border-left:1px solid rgb(73, 73, 73);">&nbsp;Trade.mqh</td>
+        <td style="border-bottom:1px solid rgb(73, 73, 73); border-left:1px solid rgb(73, 73, 73);">&nbsp;类库</td>
+        <td style="border-bottom:1px solid rgb(73, 73, 73); border-left:1px solid rgb(73, 73, 73);">&nbsp;用于交易操作的类</td>
+      </tr>
+      <tr>
+        <td style="border-bottom:1px solid rgb(73, 73, 73); border-left:1px solid rgb(73, 73, 73); text-align:center;">2</td>
+        <td style="border-bottom:1px solid rgb(73, 73, 73); border-left:1px solid rgb(73, 73, 73);">&nbsp;Combination1.mq5</td>
+        <td style="border-bottom:1px solid rgb(73, 73, 73); border-left:1px solid rgb(73, 73, 73);">&nbsp;EA 交易</td>
+        <td style="border-bottom:1px solid rgb(73, 73, 73); border-left:1px solid rgb(73, 73, 73);">&nbsp;基于方法一组合策略的 EA 交易</td>
+      </tr>
+      <tr>
+        <td style="border-bottom:1px solid rgb(73, 73, 73); border-left:1px solid rgb(73, 73, 73); text-align:center;">3</td>
+        <td style="border-bottom:1px solid rgb(73, 73, 73); border-left:1px solid rgb(73, 73, 73);">&nbsp;Combination2.mq5</td>
+        <td style="border-bottom:1px solid rgb(73, 73, 73); border-left:1px solid rgb(73, 73, 73);">&nbsp;EA 交易</td>
+        <td style="border-bottom:1px solid rgb(73, 73, 73); border-left:1px solid rgb(73, 73, 73);">&nbsp;基于方法二组合策略的 EA 交易</td>
+      </tr>
+      <tr>
+        <td style="border-bottom:1px solid rgb(73, 73, 73); border-left:1px solid rgb(73, 73, 73); text-align:center;">4</td>
+        <td style="border-bottom:1px solid rgb(73, 73, 73); border-left:1px solid rgb(73, 73, 73);">&nbsp;Combination3.mq5</td>
+        <td style="border-bottom:1px solid rgb(73, 73, 73); border-left:1px solid rgb(73, 73, 73);">&nbsp;EA 交易</td>
+        <td style="border-bottom:1px solid rgb(73, 73, 73); border-left:1px solid rgb(73, 73, 73);">&nbsp;基于方法三组合策略的 EA 交易</td>
+      </tr>
+    </thead>
+  </table>
+      </div>
+          <p style="text-align: right;">
+            <small>
+              本文由MetaQuotes Ltd译自俄文<br>原文地址： <a href="/ru/articles/5022" target="_blank">https://www.mql5.com/ru/articles/5022</a>
+            </small>
+          </p>
+<div id="cb_5022" class="attachBlock">
+  <strong>附加的文件</strong> |
+  <div class="grouped-attachments-help">
+    <a title="下载单独ZIP中的所有附件" href="/zh/articles/download/5022.zip">
+      <i class="attach-icon attach-icon_zip"></i>下载ZIP
+    </a>
+  </div>
+    <div class="attachItem">
+      <a title="下载 MQL5.zip" href="/zh/articles/download/5022/mql5.zip"><i class="attach-icon attach-icon_zip"></i>MQL5.zip</a>
+      <span class="attachSize">(180.6 KB)</span>
+    </div>
+</div>
+    </div>
+
+  <div class="copyright">
+    <p><strong>注意:</strong> MetaQuotes Ltd.将保留所有关于这些材料的权利。全部或部分复制或者转载这些材料将被禁止。</p>
+      <p>本文由网站的一位用户撰写，反映了他们的个人观点。MetaQuotes Ltd 不对所提供信息的准确性负责，也不对因使用所述解决方案、策略或建议而产生的任何后果负责。</p>
+  </div>
+
+
+
+    <div class="article__author-with-articles">
+      
+
+
+<div class="article-footer__author">
+  <div class="article-footer__author-avatar">
+    <img id="avatar" src="https://c.mql5.com/avatar/2014/8/53E8CB77-1C48_big.png" title="Dmitriy Gizlyk" alt="Dmitriy Gizlyk" loading="lazy" width="164" height="164">
+  </div>
+  <div class="article-footer__author-content">
+    <div class="article-footer__author-name">
+      <a href="/zh/users/dng" title="Dmitriy Gizlyk">Dmitriy Gizlyk</a>
+    </div>
+    <div class="article-footer__author-info">
+      <ul>
+          <li>
+            <i title="实时" class="icons-profile icons-profile_geo"></i>
+            <a target="_blank" rel="nofollow" title="实时" href="https://www.mql5.com/go?https://maps.google.com/?z=4&q=%e4%b9%8c%e5%85%8b%e5%85%b0">乌克兰</a>
+          </li>
+        <li>
+          <i title="等级" class="icons-profile icons-profile_statistics"></i>
+          <a title="等级" href="/zh/users/dng/achievements">100373</a>
+        </li>
+      </ul>
+    </div>
+    <div class="article-footer__author-contacts">
+          <li title="X"><a class="icons-networks icons-networks_tw-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://x.com/Prognoz_2013"></a></li>
+
+    </div>
+    <div class="article-footer__author-bio">任何的MT4和MT5複雜專業寫作計劃。</div>
+  </div>
+</div>
+
+      <div class="other-author-articles ui">
+        <h4 class="other-author-articles__title">该作者的其他文章</h4>
+        <ul class="other-author-articles__list">
+          <li><a href="/zh/articles/17649" data-fz-event="MQL5+Article+From+Author+Article">神经网络在交易中的应用：基于频域的异常检测 (CATCH)</a></li>
+          <li><a href="/zh/articles/17577" data-fz-event="MQL5+Article+From+Author+Article">神经网络在交易中的应用：市场异常的自适应检测（终篇）</a></li>
+          <li><a href="/zh/articles/17549" data-fz-event="MQL5+Article+From+Author+Article">神经网络在交易中的应用：市场异常的自适应检测（DADA）</a></li>
+          <li><a href="/zh/articles/17487" data-fz-event="MQL5+Article+From+Author+Article">神经网络在交易中的应用：多元时间序列的双重聚类（终篇）</a></li>
+          <li><a href="/zh/articles/17459" data-fz-event="MQL5+Article+From+Author+Article">神经网络在交易中的应用：多元时间序列的双重聚类（DUET）</a></li>
+          <li><a href="/zh/articles/17371" data-fz-event="MQL5+Article+From+Author+Article">神经网络在交易中的应用：将混沌理论融入时间序列预测（终篇）</a></li>
+          <li><a href="/zh/articles/17351" data-fz-event="MQL5+Article+From+Author+Article">神经网络在交易中的应用：将混沌理论融入时间序列预测（Attraos）</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+  <div class="article__last-comments" id="articleAdditional">
+    
+
+<div class="comments-preview">
+    <div class="title">
+      <span></span><b>
+         最近评论 |
+ <a href="/zh/forum/282097">前往讨论</a>
+      </b>
+        (26)
+    </div>
+    <div>
+        
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2021/4/60725176-86B0.jpeg" srcset="https://c.mql5.com/avatar/2021/4/60725176-86B0_big.jpeg 2x" alt="Emmanuel Chukwudi Offor" title="Emmanuel Chukwudi Offor" data-user-login="predictions31" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/zh/users/predictions31" data-user-login="predictions31">Emmanuel Chukwudi Offor</a></b>
+              |
+              <span class="comment__date">13 9月 2019 在 08:48</span>
+              <a id="comment_57225382"></a>
+              
+            </div>
+            <div class="content" id="content57225382">
+              我在我的 MT5 上试过，但每次我把它放在图表上并点击确定后，它就会消失。我<a href="https://www.mql5.com/zh/docs/common/GetTickCount64" target="_blank" title="MQL5 文档：GetTickCount64 函数" class="linkator"><span class="mark">检查了</span></a> 所有东西，但我猜是 EA 的问题。
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2014/8/53E8CB77-1C48.png" srcset="https://c.mql5.com/avatar/2014/8/53E8CB77-1C48_big.png 2x" alt="Dmitriy Gizlyk" title="Dmitriy Gizlyk" data-user-login="DNG" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/zh/users/dng" data-user-login="DNG">Dmitriy Gizlyk</a></b>
+              |
+              <span class="comment__date">13 9月 2019 在 16:01</span>
+              <a id="comment_57225388"></a>
+              
+            </div>
+            <div class="content" id="content57225388">
+              <div class="fquote"><strong><span title="predictions31" style="color:#42639c;">predictions31</span>:</strong><br/> 我在我的 mt5 上试过，但每次我把它放在图表上并点击确定时，它就会消失。我检查了所有东西，但我猜是 ea 的问题。</div> 您好、<div>日志中有错误吗？</div>
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2021/4/60725176-86B0.jpeg" srcset="https://c.mql5.com/avatar/2021/4/60725176-86B0_big.jpeg 2x" alt="Emmanuel Chukwudi Offor" title="Emmanuel Chukwudi Offor" data-user-login="predictions31" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/zh/users/predictions31" data-user-login="predictions31">Emmanuel Chukwudi Offor</a></b>
+              |
+              <span class="comment__date">16 9月 2019 在 18:53</span>
+              <a id="comment_57225394"></a>
+              
+            </div>
+            <div class="content" id="content57225394">
+              <div class="fquote"><strong><span title="DNG" style="color:#42639c;">Dmitriy Gizlyk</span>:</strong><br/> 您好、 <div>您的日志有错误吗？ </div></div> <p>我注意到附件中没有指标文件，因此我无法在 mt5 上使用它，每次我试图拖放到图表上时，它都会消失。</p>
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2019/10/5DB6D7F9-D1F6.png" srcset="https://c.mql5.com/avatar/2019/10/5DB6D7F9-D1F6_big.png 2x" alt="Nibelungen" title="Nibelungen" data-user-login="DerWanderer" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/zh/users/derwanderer" data-user-login="DerWanderer">Nibelungen</a></b>
+              |
+              <span class="comment__date">9 12月 2019 在 23:57</span>
+              <a id="comment_57225508"></a>
+              
+            </div>
+            <div class="content" id="content57225508">
+              <blockquote> <div>2019.12.09 23:56:04.567<span> </span> 2019.01.01 00:00:00 Trend Strategy：获取 rsi_color 句柄失败 </div> </blockquote> <div> <p><br/></p> <p>同样的问题 ...</p> </div>
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/avatar_na2.png" srcset="https://c.mql5.com/avatar/avatar_na2_big.png 2x" alt="Jun Yang Chen" title="Jun Yang Chen" data-user-login="caupga2007" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/zh/users/caupga2007" data-user-login="caupga2007">Jun Yang Chen</a></b>
+              |
+              <span class="comment__date">25 9月 2022 在 05:53</span>
+              <a id="comment_42276154"></a>
+              
+            </div>
+            <div class="content" id="content42276154">
+              Good performance for 1 minute OHLC, <b>BUT</b>&nbsp;really <b>BAD</b> performance for the&nbsp;every thick&nbsp;back test.
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+  </div>
+
+
+    <div class="articles-bottom-list" id="articleAdditional">
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="深度神经网络(第八部分)。 提高袋封融合的分类品质" src="https://c.mql5.com/2/48/Deep_Neural_Networks_08.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/zh/articles/4722" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">深度神经网络(第八部分)。 提高袋封融合的分类品质</a>
+                <div class="articles-bottom-list__desc">本文研讨三种可用于提高袋封融合分类品质的方法，并对其效率进行了评估。 评估 ELM 神经网络超参数的优化效果，以及后期处理参数。</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="在MQL5.com自由职业者服务中已完成50,000个订单" src="https://c.mql5.com/2/34/freelance-icon.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/zh/articles/5226" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">在MQL5.com自由职业者服务中已完成50,000个订单</a>
+                <div class="articles-bottom-list__desc">截至2018年10月，MetaTrader官方自由职业者服务的成员已完成超过50,000个订单。这是全球最大的MQL程序员自由职业网站：超过1000名开发人员，每天几十个新订单以及7种语言本地化。</div>
+              </div>
+          </div>
+        </div>
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Elder-Ray (多头力度和空头力度)" src="https://c.mql5.com/2/33/Elder-Ray-las1su67-2niearv.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/zh/articles/5014" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Elder-Ray (多头力度和空头力度)</a>
+                <div class="articles-bottom-list__desc">本文详述了基于多头力度（Bulls Power），空头力度（Bears Power）和均线指标（EMA - 指数平均）的 Elder-Ray 交易系统。 Alexander Elder 在他的著作“为生活而交易”中描述了这个系统。</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="基于 CGraphic  用于分析数据数组(时间序列)之间相互关联的 PairPlot  图" src="https://c.mql5.com/2/33/PairPlot_Graphic.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/zh/articles/4820" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">基于 CGraphic  用于分析数据数组(时间序列)之间相互关联的 PairPlot  图</a>
+                <div class="articles-bottom-list__desc">在技术分析中比较几个时间序列是一种很常用的任务，需要合适的工具。在本文中，我提出开发一种用于图形化分析的工具，可以侦测两个或者多个时间序列之间的相互关联。</div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+<div class="clear-fix"></div>
+
+<div id='wdausxxqrpvhekbwjrjlhqjghyhesrqqau' class="r6irig5txiuua4k0m r6irig5txiuua4k0m_articles-view gg88d3drb"></div>
+    
+
+<div class="hidden" id="popupRegisterLogin">
+  <div class="register-login-popup">
+    <div class="register-login-popup__header">
+      <img src="https://c.mql5.com/i/registerlandings/logo-2.png" srcset="https://c.mql5.com/i/registerlandings/logo-2_2x.png 2x" alt="MQL5 - MetaTrader 5客户端内置的交易策略语言" loading="lazy" width="74" height="24" />
+    </div>
+    <div class="register-login-popup__content">
+      <div class="register-login-popup__desc">
+        <div class="register-login-popup__title">您错过了交易机会：</div>
+        <ul>
+<li>免费交易应用程序</li>
+<li>8,000+信号可供复制</li>
+<li>探索金融市场的经济新闻</li>
+</ul>
+      </div>
+      <div class="register-login-popup__forms ui">
+        <div class="register-login-popup__tabs" id="registerLoginPopupTabs">
+          <span data-id="register" id="registerLoginPopupTab_register" class="register-login-popup__tab register-login-popup__tab_active">注册</span>
+          <span data-id="login" id="registerLoginPopupTab_login" class="register-login-popup__tab">登录</span>
+        </div>
+        <div id="registerLoginPopupTabContent_register">
+          <div class="ui auth-form__content">
+    
+  <script type='text/javascript'>/*<![CDATA[*/ if (!window.V) var V = []; /*]]>*/</script>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/zh/auth_register_short" id="PopupRegisterquickRegisterForm" onsubmit="PopupRegisterquickRegistration.OnSubmit(this,&#39;zh&#39;);if(Validate(this)) Ajax.form(this,{onready:PopupRegisterquickRegistration.OnSuccessPopup,onerror:PopupRegisterquickRegistration.OnError,onbeginrequest:PopupRegisterquickRegistration.DisableInputs,onendrequest:PopupRegisterquickRegistration.EnableInputs});return(false);" enctype = "multipart/form-data"><input type="hidden" name="__signature" value="ddef305e4a365db46d941cee23547fc8"/>
+    <div class="auth-form__inputs">
+      <input type="hidden" value="0" name="IsValidate" id="PopupRegisterIsValidate" />
+
+      <!--[if lt IE 10]><div class="note">登录名:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input type="text" id="PopupRegisterusername" name="username" class="input" maxlength="32" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.CheckUserName();}" onkeyup="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.ValidateUserName(this, '请输入有效登录名');}" placeholder="登录名" title="可以包括字母，数字，点，破折号和下划线字符，不能以点开始或结束。允许长度为3至32个字符。" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisterusername'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisterusername',10,'您可以使用拉丁字符、数字、下划线和句号。',validate_username]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisterusername">拉丁字符（不带空格）</label>
+      </div>
+      <!--[if lt IE 10]><div class="note">您的电子邮箱:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input class="input" type="email" id="PopupRegisteremail" name="email" placeholder="您的电子邮箱" title="请输入电子邮箱地址(不能超过 256 个字符)。例如：john@example.com" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnChange(this);}" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisteremail'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisteremail',10,'请输入有效email',validate_email]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisteremail">密码将被发送至该邮箱</label>
+      </div>
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Register" />
+    </div>
+    <span id="PopupRegisterquickRegisterSubmit">
+      <input type="submit" value="注册" id="PopupRegisterquickRegisterButton"  title="注册并接收包含密码的邮件" class="button button_yellow"  />
+    </span>
+    <span id="PopupRegisterquickRegisterErrorMessage" class="quick-register-error-message field-validation-error" style="text-align: center; margin-top: 16px; display: none;">
+      发生错误
+    </span>
+</form>
+    
+</div>
+<div class="auth-social">
+  <ul class="auth-social-list" id="socialList">
+    <li><a onclick="window.fpush({name: 'MQL5+Popup+Register+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/zh/auth_oauth2?provider=Google&amp;amp;return=popup&amp;amp;reg=1" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">使用 Google 登录</a></li>
+  </ul>
+</div>
+<div class="auth-block-agree">
+  <p>
+    您同意<a target="_blank" href="/zh/about/privacy">网站政策</a>和<a target="_blank" href="/zh/about/terms">使用条款</a>
+  </p>
+</div>
+
+
+        </div>
+        <div id="registerLoginPopupTabContent_login" class="hidden">
+            <div class="auth-form__text">
+    如果您没有帐号，请<a href="https://www.mql5.com/zh/auth_register" rel="nofollow" style="vertical-align: top">注册</a>
+  </div>
+<div class="ui auth-form__content auth-form__content_login" id="loginFormWrapper">
+    
+  <div id="needCookies" class="need-cookies hidden">
+    <div class="danger-box">
+      <p>可以使用cookies登录MQL5.com网站。</p>
+<p>请在您的浏览器中启用必要的设置，否则您将无法登录。</p>
+    </div>
+  </div>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/zh/auth_login" id="loginForm" onsubmit="if(window.quickLogin){return window.quickLogin.onSubmit(this);}var result = Validate(this); if(result) { preventDoubleSubmit(this); } return result;"><input id="RedirectAfterLoginUrl" name="RedirectAfterLoginUrl" type="hidden" value="" /><input id="RegistrationUrl" name="RegistrationUrl" type="hidden" value="" /><input data-val="true" data-val-required="The ShowOpenId field is required." id="ShowOpenId" name="ShowOpenId" type="hidden" value="True" /><input id="TrackingSection" name="TrackingSection" type="hidden" value="Articles" />    <input name="ViewType" type="hidden" value="5" />
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Login" />
+    <!--[if lt IE 10]><div class="note">您的登录名:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <input class="input qa-login" id="Login" name="Login" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="登录名" title="您的登录名" type="text" value="" />
+      <script type='text/javascript' id='validate_Login'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Login',1,'输入注册时使用的登录名']);});mqGlobal.AddOnReady(function() {V.push(['Login',10,'电子邮箱无法使用。请输入您的登录名',validateLogin]);}); /*]]>*/</script>
+    </div>
+    <!--[if lt IE 10]><div class="note">密码:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <div class="input-with-show">
+        <input autocomplete="off" class="input qa-password" id="Password" name="Password" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="密码" title="请输入密码" type="password" />
+        <span class="input-with-show__icon" title="显示密码" onclick="if(window.quickLogin){window.quickLogin.showPass(this, '显示密码', '隐藏密码');}"></span>
+      </div>
+      <script type='text/javascript' id='validate_Password'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Password',1,'请输入密码']);}); /*]]>*/</script>
+    </div>
+    <script type="text/javascript">
+    function validateLogin(input) {
+      console.log('validate login ' + input.value);
+      return !/^\w+([-+.'']{1,2}\w+)* @\w+([-.]\w+)*\.\w+([-.]\w+)*$/i.test(input.value);
+    }
+    </script>
+    <div class="forgot" id="loginForgotBlock"><a id="loginForgotLink" href="https://www.mql5.com/zh/auth_forgotten?return=popup">忘记您的登录名/密码？</a></div>
+    <input type="submit" class="button button_yellow qa-submit" id="loginSubmit" value="登录" title="输入">
+</form></div>
+
+  <div class="auth-social" id="authSocialBlock">
+    <ul class="auth-social-list" id="socialList">
+      <li><a onclick="window.fpush({name: 'MQL5+Popup+Login+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/zh/auth_oauth2?provider=Google&amp;amp;return=popup" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">使用 Google 登录</a></li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script id="popupSection" type="application/json">{"section": "Articles"}</script>
+<script id="popupTranslate" data-type="translate" type="application/json">
+{
+  "popup":
+  {
+  "EmailTitle" : "密码已经发送到{0}",
+  "EmailDescription" : "使用收到的密码和注册时指定的登录名进行登录",
+  "SubmitButtonText" : "激活账户",
+  "RegistrationTip" : "如果您没有收到密码邮件，请检查垃圾箱文件夹或&lt;a href={0}&gt;重新注册&lt;/a&gt;"
+  }
+}
+</script>
+
+    
+
+    
+
+
+    </article>
+  </div>
+
+
+
+<div aria-hidden="true" class="footer  desktop" id="footer">
+  <ul class="links  links_desktop">
+      <li id="navFooterCommunity">
+        <nav>
+          <ul>
+            <li><a href="https://web.metatrader.app/terminal?mode=demo&amp;lang=zh" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Footer+Trading">在线交易 / WebTerminal</a></li>
+            <li><a href="/zh/code" data-fz-event="MQL5+Footer+CodeBase">免费技术指标和自动交易</a></li>
+            <li><a href="/zh/articles" data-fz-event="MQL5+Footer+Articles">关于编程和交易的文章</a></li>
+            <li><a href="/zh/job" data-fz-event="MQL5+Footer+Job">订购自由职业者的自动交易</a></li>
+            <li><a href="/zh/market" data-fz-event="MQL5+Footer+Market">EA交易和应用程序市场</a></li>
+            <li><a href="/zh/signals" data-fz-event="MQL5+Footer+Signals">跟随外汇信号</a></li>
+            <li><a href="/zh/vps" data-fz-event="MQL5+Footer+VPS">低延迟外汇VPS</a></li>
+            <li><a href="/zh/forum" data-fz-event="MQL5+Footer+Forum">交易者论坛</a></li>
+            <li><a href="/zh/blogs" data-fz-event="MQL5+Footer+Blogs">交易博客</a></li>
+            <li><a rel="nofollow" href="/zh/charts" data-fz-event="MQL5+Footer+Charts">图表</a></li>
+            <li><a href="/zh/widgets" data-fz-event="MQL5+Footer+Widgets">免费小工具</a></li>
+          </ul>
+        </nav>
+      </li>
+      <li id="navFooterMt5">
+        <nav>
+          <ul>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> 交易平台</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/zh/releasenotes" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span>最新更新</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/zh/news" data-fz-event="MQL5+Footer+MetaTrader+5">新闻，执行和技术</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/zh/terminal/help" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> 用户手册</a></li>
+            <li><a href="/zh/docs" data-fz-event="MQL5+Footer+Docs">交易策略的MQL5语言</a></li>
+            <li><a rel="nofollow noopener" href="https://cloud.mql5.com" data-fz-event="MQL5+Footer+Cloud">MQL5 Cloud Network</a></li>
+            <li><a rel="noopener" href="https://forge.mql5.io/?lang=zh-CN" data-fz-event="MQL5+Footer+Forge" target="_blank">MQL5 Algo Forge</a></li>
+              <li><a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Footer">下载 <span class="nobr">MetaTrader 5</span></a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/zh/terminal/help/start_advanced/installation" data-fz-event="MQL5+Footer+MetaTrader+5">安装平台</a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/zh/terminal/help/start_advanced/deinstallation" data-fz-event="MQL5+Footer+MetaTrader+5">卸载平台</a></li>
+          </ul>
+        </nav>
+
+      </li>
+    <li id="navFooterWebsite">
+        <nav>
+          <ul>
+            <li><a rel="nofollow" href="/zh/about" data-fz-event="MQL5+Footer+About">关于</a></li>
+              <li><a href="/zh/wall" data-fz-event="MQL5+Footer+Wall">时间轴</a></li>
+            <li><a rel="nofollow" href="/zh/about/terms" data-fz-event="MQL5+Footer+About">条款和条件</a></li>
+            <li><a rel="nofollow" href="/zh/about/autopayments" data-fz-event="MQL5+Footer+About">定期付款协议</a></li>
+            <li><a rel="nofollow" href="/zh/about/agencyagreement" data-fz-event="MQL5+Footer+About">代理协议 – 报价</a></li>
+            <li><a rel="nofollow" href="/zh/about/privacy" data-fz-event="MQL5+Footer+About">隐私和数据保护政策</a></li>
+            <li><a rel="nofollow" href="/zh/about/cookies" data-fz-event="MQL5+Footer+About">Cookies政策</a></li>
+            <li>
+                <a rel="nofollow" href="/zh/contact" data-fz-event="MQL5+Footer+Contacts">联系和请求</a>
+            </li>
+          </ul>
+        </nav>
+    </li>
+
+      <li>
+        <div class="footer__products">
+          <div class="footer__product">
+            <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com" class="footer__product-name">MetaTrader 5</a>
+            <div class="footer__product-links">
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon windows" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">下载MetaTrader 5 Windows</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/MetaTrader5.pkg.zip?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon macos" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">下载MetaTrader 5 MacOS</div></a>
+            <a rel="nofollow noopener" href="https://www.mql5.com/zh/articles/625?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon linux" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">下载MetaTrader 5 Linux</div></a>
+            <a rel="nofollow noopener" href="https://web.metatrader.app/terminal?mode=demo&amp;lang=zh" class="icon web"><div  class="footer__product-link-hint footer__product-link-hint-short">打开MetaTrader 5网页端</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/ios?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=zh" class="icon ios" data-fz-event="MetaTrader+5+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/2gQnNpp1I1s.png)">扫描并从App Store安装</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=zh" class="icon android" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Rw3xvJ-W-9d.png)">扫描并从Google Play安装</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon huawei" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ZRt&#x2B;zI1l&#x2B;8O.png)">扫描并从华为AppGallery安装</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon ark" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/L0Q9oag&#x2B;3eE.png)">扫描并获取Android APK文件</div></a>
+            </div>
+          </div>
+          <div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com/en/news/2270" class="footer__product-name">MQL5 Channels</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=zh" class="icon ios" data-fz-event="MQL5+Channels+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/dJ&#x2B;ywneYpcO.png)">扫描并从App Store安装</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=zh" class="icon android" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ztQ9rjR7BVd.png)">扫描并从Google Play安装</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Su&#x2B;fe4n374e.png)">扫描并从华为AppGallery安装</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mql5channels/mql5channels.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/G6Mg4NfCPzO.png)">扫描并获取Android APK文件</div></a>
+              </div>
+            </div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.tradays.com/zh/download?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MQL5+Footer+Download+Tradays" class="footer__product-name">Economic Calendar</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=zh" class="icon ios" data-fz-event="Tradays+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/hnFNkjPw-1E.png)">扫描并从App Store安装</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=zh" class="icon android" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/wG3Ztd6mYap.png)">扫描并从Google Play安装</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CrS7bbDAdAO.png)">扫描并从华为AppGallery安装</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/tradays/tradays.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/VZi8YPIb2op.png)">扫描并获取Android APK文件</div></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__networks">
+          <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow" title="Facebook"><i class="icons-networks icons-networks_fb"></i></a>
+          <a href="https://t.me/mql5dev" target="_blank" rel="nofollow" title="Telegram"><i class="icons-networks icons-networks_tg"></i></a>
+          <a href="https://x.com/mql5com" target="_blank" rel="nofollow" title="X (Twitter)"><i class="icons-networks icons-networks_tw"></i></a>
+          <a href="https://www.youtube.com/@MetaQuotesOfficial" target="_blank" rel="nofollow" title="YouTube"><i class="icons-networks icons-networks_yt"></i></a>
+          <a href="https://www.linkedin.com/company/mql5" target="_blank" rel="nofollow" title="LinkedIn"><i class="icons-networks icons-networks_linkedin"></i></a>
+          <span>订阅算法交易新闻</span>
+        </div>
+  
+        <div class="footer__other">
+          <div class="footer__not-a-broker">不是交易商，不提供真实交易账户</div>
+          <div class="copyright">35 Dodekanisou str, Germasogeia, 4043,&nbsp;Limassol,&nbsp;Cyprus</div>
+          <div class="copyright">Copyright 2000-2026, <span class="nobr">MetaQuotes Ltd</span></div>
+        </div>
+      </li>
+  </ul>
+</div>
+
+
+
+<div class="shadow-layer" id="layer"></div>
+    
+
+  <div class="b-fixed-mt" id="bFixedMt" style="display: none;">
+    
+  </div>
+
+
+<script type='text/javascript'>
+		(function (a, e, f, g, b, c, d) { a[b] || (a.FintezaCoreObject = b, a[b] = a[b] || function () { (a[b].q = a[b].q || []).push(arguments) }, a[b].l = 1 * new Date, c = e.createElement(f), d = e.getElementsByTagName(f)[0], c.async = !0, c.defer = !0, c.src = g, d && d.parentNode && d.parentNode.insertBefore(c, d)) })
+      (window, document, "script", "/ff/core.js", "fz");
+		window.fz("register", "website", {
+      id: "sqjxkxkswybhifrohpyooonwgbvsfzmayq",
+			trackLinks: true
+		});
+        mqGlobal.AddOnReady(function () { Mql5Cookie.init('mql5.com', '5089409617600473025'); });
+mqGlobal.AddOnReady(function(){if(!window.Pocket){window.Pocket=new PocketManager();}});mqGlobal.AddOnReady(function(){if(!window.translateManager){window.translateManager=new Translate(undefined,'错误：翻译失败，请稍后再试。');}if(document.querySelectorAll){var translateElements=document.querySelectorAll(".translateMenu");if(translateElements){var i=0,count=translateElements.length;for(i;i<count;i++){(function(i){var contentid=dataset(translateElements[i],"contentid"),sourcelang=dataset(translateElements[i],"sourcelang"),targetlang=dataset(translateElements[i],"targetlang"),moduleid=parseInt(dataset(translateElements[i],"moduleid")),typeid=parseInt(dataset(translateElements[i],"typeid")),entityid=parseInt(dataset(translateElements[i],"entityid"));Core.AddHandler(translateElements[i],"mouseover",function(){return translateManager.SetMenu(this,contentid,sourcelang,targetlang,moduleid,typeid,entityid);});})(i);}}}});window.fz("show","wdausxxqrpvhekbwjrjlhqjghyhesrqqau");window.mqGlobal.AddOnLoad(function(){window.fpush('MQL5+Article+Open');Articles.CheckOnScrollDown();});mqGlobal.AddOnReady(function(){window.PopupRegisterquickRegistration=new QuickRegistration('PopupRegister','Popup+Register','Articles');});function validate_username(input){var reg=/^([a-z0-9]){1}([\-._a-z0-9]){1,30}([\-_a-z0-9]){1}$/i,value=input.value,result=true;if(reg.test(value)){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Login',unit:'section',value:'Articles'});}return result;}function validate_email(input){var reg=/^\w+([-+.'']{1,2}\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/i,value=input.value,result=true,length_value=value.length;if(reg.test(value)&&length_value>=1&&length_value<=40){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Email',unit:'section',value:'Articles'});}return result;};mqGlobal.AddOnReady(function(){var username=$('PopupRegisterusername'),email=$('PopupRegisteremail');if(username)username.value='';if(email)email.value='';});mqGlobal.AddOnReady(function(){window.quickLogin=new QuickLogin('Popup+Login','Articles');});mqGlobal.AddOnLoad(function(){window.showLoginRegisterPopupAtEnd();});mqGlobal.AddOnLoad(function(){window.tooltipUserInfo.init();});mqGlobal.AddOnReady(function(){{window.initHeaderSearch('','https://www.mql5.com/zh/search');}});</script><script type="text/javascript">mqGlobal.AddOnReady(function(){window.initSuggestions("headerSearchKeyword","zh","https://search.mql5.com/api/query","https://www.mql5.com/zh/users_search/suggestion");});window.fz("show","vgckrufggwxdtfscpyalmenexmvhljduja");mqGlobal.AddOnReady(function(){window.floatVerticalPanelNode=FloatVerticalPanel('该网站使用cookies。了解有关我们<a href="/zh/about/cookies">Cookies政策</a>的更多信息。','cookie_accept');});							if (typeof Attach !== "undefined")
+			Attach.setAcceptFilter(".zip, .txt, .log, .mqh, .ex5, .mq5, .mq4, .mqproj, .ex4, .mt5, .set, .tpl, .cl, .py, .sqlite, .csv, .ini, .ipynb, .onnx, .gif, .png, .jpg, .jpeg, .mp4, .webm");
+	</script>
+
+<script type="application/ld&#x2B;json">
+		[
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"url": "https://www.mql5.com",
+				"logo": "https://c.mql5.com/i/community/logo_mql5-2.png",
+				"sameAs": [
+					"https://www.facebook.com/mql5.community",
+					"https://www.x.com/mql5com",
+					"https://www.youtube.com/user/MetaQuotesOfficial"
+				 ]
+			}
+		
+, 
+{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"论坛","description":"交易策略和算法交易的讨论。MQL5.community  最大的外汇论坛","url":"https://www.mql5.com/zh/forum","children":[]},{"@type":"SiteNavigationElement","position":2,"name":"市场","description":"MetaTrader 市场 - 自动交易，指标，交易书籍和杂志的市场","url":"https://www.mql5.com/zh/market","children":[]},{"@type":"SiteNavigationElement","position":3,"name":"信号","description":"MetaTrader的群组交易，复制交易和账户监控 - MQL5.com交易信号","url":"https://www.mql5.com/zh/signals","children":[]},{"@type":"SiteNavigationElement","position":4,"name":"自由职业者","description":"订购EA交易、技术指标和算法交易应用程序。外汇工作。MQL5.com自由职业者服务。聘请MetaTrader专家和专业人员。","url":"https://www.mql5.com/zh/job","children":[]},{"@type":"SiteNavigationElement","position":5,"name":"报价","description":"","url":"https://www.mql5.com/zh/quotes/overview","children":[]},{"@type":"SiteNavigationElement","position":6,"name":"MetaTrader","description":"","url":"https://www.metatrader.com","children":[]},{"@type":"SiteNavigationElement","position":7,"name":"网页端","description":"MetaTrader交易平台的网页端。在线外汇交易。","url":"https://web.metatrader.app/terminal?mode=demo","children":[]},{"@type":"SiteNavigationElement","position":8,"name":"经济日历","description":"","url":"https://www.mql5.com/zh/economic-calendar","children":[]},{"@type":"SiteNavigationElement","position":9,"name":"VPS","description":"","url":"https://www.mql5.com/zh/vps","children":[]},{"@type":"SiteNavigationElement","position":10,"name":"文章","description":"","url":"https://www.mql5.com/zh/articles","children":[]},{"@type":"SiteNavigationElement","position":11,"name":"代码库","description":"下载带有源代码的自动交易，技术指标和脚本 - MetaTrader 5的MQL5代码库","url":"https://www.mql5.com/zh/code","children":[]},{"@type":"SiteNavigationElement","position":12,"name":"Algo Forge","description":"","url":"https://forge.mql5.io","children":[]},{"@type":"SiteNavigationElement","position":13,"name":"文档","description":"MetaQuotes Language 5 (MQL5)语言参考 - MQL5.com文档","url":"https://www.mql5.com/zh/docs","children":[]}]}		
+,
+{"@context":"https://schema.org","@type":"TechArticle","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.mql5.com/zh/articles/5022"},"headline":"组合趋势和盘整策略","image":["https://c.mql5.com/2/34/EURUSDM30.png","https://c.mql5.com/2/33/Trend1.png","https://c.mql5.com/2/33/Flat1.png","https://c.mql5.com/2/33/Trend2.png","https://c.mql5.com/2/33/Trend3.png","https://c.mql5.com/2/33/Flat2.png","https://c.mql5.com/2/33/Flat3.png","https://c.mql5.com/2/33/Combination1_Table.png","https://c.mql5.com/2/33/Combination1_Graphic.png","https://c.mql5.com/2/33/Combination2_Table.png","https://c.mql5.com/2/33/Combination2_Graphic.png","https://c.mql5.com/2/33/Combination3_Table.png","https://c.mql5.com/2/33/Combination3_Graphic.png","https://c.mql5.com/2/33/Optimization.png","https://c.mql5.com/2/33/Combination1_ADX.png","https://c.mql5.com/2/33/Combination1_ADX_Forward.png","https://c.mql5.com/2/33/Combination1_Flat_WPR.png","https://c.mql5.com/2/33/Combination1_Flat_WPR_Forward.png","https://c.mql5.com/2/33/Combination1_Treand_RSI.png","https://c.mql5.com/2/33/Combination1_Treand_RSI_Forward.png","https://c.mql5.com/2/33/Opt1_Back.png","https://c.mql5.com/2/33/Opt1_Forw.png","https://c.mql5.com/2/33/Opt1_Graphic.png","https://c.mql5.com/2/33/Combination2_ADX.png","https://c.mql5.com/2/33/Combination2_ADX_Forward.png","https://c.mql5.com/2/33/Combination2_Flat_WPR.png","https://c.mql5.com/2/33/Combination2_Flat_WPR_Forward.png","https://c.mql5.com/2/33/Combination2_Treand_RSI.png","https://c.mql5.com/2/33/Combination2_Treand_RSI_Forward.png","https://c.mql5.com/2/33/Combination2_Treand_SL.png","https://c.mql5.com/2/33/Combination2_Treand_SL_Forward.png","https://c.mql5.com/2/33/Combination2_Treand_TP.png","https://c.mql5.com/2/33/Combination2_Treand_TP_Forward.png","https://c.mql5.com/2/33/Opt2_Back.png","https://c.mql5.com/2/33/Opt2_Forw.png","https://c.mql5.com/2/33/Opt2_Graphic.png"],"datePublished":"2018-10-04T09:34:26+00:00Z","dateModified":"2018-10-04T09:27:07+00:00Z","author":{"@type":"Person","name":"Dmitriy Gizlyk","url":"https://www.mql5.com/zh/users/dng"},"editor":{"@type":"Organization","name":"MetaQuotes","url":"https://www.mql5.com/zh/users/metaquotes","address":{"@type":"PostalAddress","addressCountry":"MY"}},"publisher":{"@type":"Organization","name":"MQL5 Community","url":"https://www.mql5.com","logo":{"@type":"ImageObject","url":"https://c.mql5.com/i/community/logo_mql5-2.png"}},"description":"有多种多样的交易策略，它们中的一些要寻找趋势，而其它的一些会定义价格波动的范围而在其中进行交易。有没有可能把这两种方法组合到一起来增加获利呢?"}
+,
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":"https://www.mql5.com/zh/articles","name":"文章"},{"@type":"ListItem","position":2,"item":"https://www.mql5.com/zh/articles/mt5","name":"MetaTrader 5"},{"@type":"ListItem","position":3,"item":"https://www.mql5.com/zh/articles/mt5/trading_systems","name":"交易系统"}]}
+
+		]
+	</script>
+</body>
+</html>

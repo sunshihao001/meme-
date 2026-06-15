@@ -1,0 +1,163 @@
+[
+  {
+    "目标名": "ZH_VWAP成交量加权平均价_外部资金流",
+    "来源标题": "价格行为分析工具包开发（第10部分）：外部资金流（二）VWAP - MQL5文章",
+    "url": "https://www.mql5.com/zh/articles/16984",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\ZH_VWAP成交量加权平均价_外部资金流.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\ZH_VWAP成交量加权平均价_外部资金流_16984.zip",
+        "https://www.mql5.com/zh/articles/download/16984.zip",
+        3689
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\ZH_VWAP成交量加权平均价_外部资金流_vwap.py",
+        "https://www.mql5.com/zh/articles/download/16984/vwap.py",
+        3981
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\ZH_VWAP成交量加权平均价_外部资金流_vwap.mq5",
+        "https://www.mql5.com/zh/articles/download/16984/vwap.mq5",
+        7153
+      ]
+    ]
+  },
+  {
+    "目标名": "EN_VWAP_ExternalFlow",
+    "来源标题": "Price Action Analysis Toolkit Development (Part 10): External Flow (II) VWAP - MQL5 Articles",
+    "url": "https://www.mql5.com/en/articles/16984",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\EN_VWAP_ExternalFlow.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\EN_VWAP_ExternalFlow_16984.zip",
+        "https://www.mql5.com/en/articles/download/16984.zip",
+        3689
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\EN_VWAP_ExternalFlow_vwap.py",
+        "https://www.mql5.com/en/articles/download/16984/vwap.py",
+        3981
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\EN_VWAP_ExternalFlow_vwap.mq5",
+        "https://www.mql5.com/en/articles/download/16984/vwap.mq5",
+        7153
+      ]
+    ]
+  },
+  {
+    "目标名": "EN_TickBufferVWAP_短窗口不平衡",
+    "来源标题": "Price Action Analysis Toolkit Development (Part 38): Tick Buffer VWAP and Short-Window Imbalance Engine - MQL5 Articles",
+    "url": "https://www.mql5.com/en/articles/19290",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\EN_TickBufferVWAP_短窗口不平衡.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\EN_TickBufferVWAP_短窗口不平衡_19290.zip",
+        "https://www.mql5.com/en/articles/download/19290.zip",
+        8002
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\EN_TickBufferVWAP_短窗口不平衡_Slippage.mq5",
+        "https://www.mql5.com/en/articles/download/19290/Slippage.mq5",
+        63818
+      ]
+    ]
+  },
+  {
+    "目标名": "EN_Code_VWAP_VolumeWeightedAveragePrice",
+    "来源标题": "Free download of the 'VWAP - Volume Weighted Average Price' indicator by 'felipealmeida' for MetaTrader 5 in the MQL5 Code Base, 2015.12.24",
+    "url": "https://www.mql5.com/en/code/14484",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\EN_Code_VWAP_VolumeWeightedAveragePrice.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\EN_Code_VWAP_VolumeWeightedAveragePrice_vwap.mq5",
+        "https://www.mql5.com/en/code/download/14484/vwap.mq5",
+        22411
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\EN_Code_VWAP_VolumeWeightedAveragePrice_14484.zip",
+        "https://www.mql5.com/en/code/download/14484.zip",
+        3223
+      ]
+    ]
+  },
+  {
+    "目标名": "EN_Code_DailyVWAP",
+    "来源标题": "Free download of the 'Daily VWAP' indicator by 'Syllyon' for MetaTrader 5 in the MQL5 Code Base, 2025.07.03",
+    "url": "https://www.mql5.com/en/code/61090",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\EN_Code_DailyVWAP.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\EN_Code_DailyVWAP_daily_vwap.mq5",
+        "https://www.mql5.com/en/code/download/61090/daily_vwap.mq5",
+        7406
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\EN_Code_DailyVWAP_61090.zip",
+        "https://www.mql5.com/en/code/download/61090.zip",
+        1358
+      ]
+    ]
+  },
+  {
+    "目标名": "EN_Forum_AnchoredVWAP_best_respected",
+    "来源标题": "How to find the best (most respected) anchored vwap at any given time. - Moving Average, MA - Technical Indicators - MQL5 programming forum",
+    "url": "https://www.mql5.com/en/forum/455444",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\EN_Forum_AnchoredVWAP_best_respected.md",
+    "附件": []
+  },
+  {
+    "目标名": "EN_Code_InstitutionalAnchoredVWAP_MT4",
+    "来源标题": "Free download of the 'Institutional Anchored VWAP (Smart Money Benchmark)' indicator by 'KayruYuta' for MetaTrader 4 in the MQL5 Code Base, 2026.03.27",
+    "url": "https://www.mql5.com/en/code/71075",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\EN_Code_InstitutionalAnchoredVWAP_MT4.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\EN_Code_InstitutionalAnchoredVWAP_MT4_Institutional_VWAP.mq4",
+        "https://www.mql5.com/en/code/download/71075/Institutional_VWAP.mq4",
+        8624
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\EN_Code_InstitutionalAnchoredVWAP_MT4_71075.zip",
+        "https://www.mql5.com/en/code/download/71075.zip",
+        1677
+      ]
+    ]
+  },
+  {
+    "目标名": "EN_MarketProfile_POC_ValueArea",
+    "来源标题": "Market Profile indicator - MQL5 Articles",
+    "url": "https://www.mql5.com/en/articles/16461",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\EN_MarketProfile_POC_ValueArea.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\EN_MarketProfile_POC_ValueArea_16461.zip",
+        "https://www.mql5.com/en/articles/download/16461.zip",
+        3825
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\EN_MarketProfile_POC_ValueArea_marketprofile.mq5",
+        "https://www.mql5.com/en/articles/download/16461/marketprofile.mq5",
+        26488
+      ]
+    ]
+  },
+  {
+    "目标名": "EN_AnalyticalVolumeProfileTrading_AVPT",
+    "来源标题": "Analytical Volume Profile Trading (AVPT): Liquidity Architecture, Market Memory, and Algorithmic Execution - MQL5 Articles",
+    "url": "https://www.mql5.com/en/articles/20327",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\EN_AnalyticalVolumeProfileTrading_AVPT.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\EN_AnalyticalVolumeProfileTrading_AVPT_20327.zip",
+        "https://www.mql5.com/en/articles/download/20327.zip",
+        5568
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\POC与AVWAP重新接受_检索资料_v0.1\\EN_AnalyticalVolumeProfileTrading_AVPT_AVPT.mq5",
+        "https://www.mql5.com/en/articles/download/20327/AVPT.mq5",
+        26251
+      ]
+    ]
+  }
+]

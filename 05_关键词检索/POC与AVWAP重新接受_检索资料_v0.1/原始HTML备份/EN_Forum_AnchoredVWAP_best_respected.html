@@ -1,0 +1,799 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+
+  <meta name="description" content="I was brainstorming the other day wondering how one would go about coding something like this logically">
+  <meta property="og:url" content="https://www.mql5.com/en/forum/455444">
+  <meta property="og:title" content="How to find the best (most respected) anchored vwap at any given time.">
+  <meta property="og:description" content="I was brainstorming the other day wondering how one would go about coding something like this logically...">
+      <meta property="og:image" content="https://www.mql5.com/en/forum/images/og/fb/455444">
+      <meta property="og:image:secure_url" content="https://www.mql5.com/en/forum/images/og/fb/455444">
+            <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@mql5com">
+  <meta name="twitter:image" content="https://www.mql5.com/en/forum/images/og/fb/455444">
+  <meta name="theme-color" content="#4a76b8">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-config" content="none">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta property="qc:admins" content="36367170677651456375">
+  <meta property="wb:webmaster" content="073d7690269bcd81">
+  <link rel="shortcut icon" href="https://c.mql5.com/i/favicon4.ico">
+  <link rel="dns-prefetch" href="https://c.mql5.com">
+  <link href="https://c.mql5.com/styles/core.444bc25de4c9131a69fedfe5ac42a082.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/all.266d64b83529847f568747dd160d42b0.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/forum.0d8462842509348c7e5f0d6151960375.css" type="text/css" rel="stylesheet" media="all">
+  <link href="/en/forum/rss" rel="alternate" type="application/rss+xml" title="MetaTrader 5 trading, automated systems and strategy testing forum">
+  <link href="/en/forum/indicators/rss" rel="alternate" type="application/rss+xml" title="Technical Indicators - MetaTrader 5 trading, automated systems and strategy testing forum">
+  <link rel="canonical" href="https://www.mql5.com/en/forum/455444">
+  <title>How to find the best (most respected) anchored vwap at any given time. - Moving Average, MA - Technical Indicators - MQL5 programming forum</title>
+
+
+
+<script type="text/javascript">
+  !function(){window.mqGlobal={};var t=!1,n=!1,e=[],o=[],i=[];function d(t){var n;for(n=0;n<t.length;n+=1)t[n]()}function c(){t||(t=!0,d(e),d(o),o=[],e=[])}function a(){c(),n||(n=!0,d(i),i=[])}if(mqGlobal.AddOnReady=function(n,i){t?n(document):i?e.push(n):o.push(n)},mqGlobal.AddOnLoad=function(t){n?t(document):i.push(t)},mqGlobal.AddOnActiveWindowChange=function(t){this._onvisibility||(this._onvisibility=[]),this._onvisibility[this._onvisibility.length]=t},document.addEventListener)document.addEventListener("DOMContentLoaded",c,!1),window.addEventListener("load",a,!1);else if(document.attachEvent&&(document.attachEvent("onreadystatechange",(function(){switch(document.readyState){case"interactive":c();break;case"complete":a()}})),window.attachEvent("onload",a),document.documentElement.doScroll&&window==window.top)){!function n(){if(!t&&document.body)try{document.documentElement.doScroll("left"),c()}catch(t){setTimeout(n,0)}}()}}();
+  mqGlobal.CookieDomain = ".mql5.com";
+  mqGlobal.Language = 'en';
+  mqGlobal.IsMobile = false;
+  mqGlobal.ClearRteStorage = function (e) { if (window.GStorage || (window.GStorage = globalStorage()), window.GStorage.supported) try { var o = e; window.GStorage.getItem("rte_autosave_uid", function (e, t) { t == o && (window.GStorage.removeItem("rte_autosave_text"), window.GStorage.removeItem("rte_autosave_date"), window.GStorage.removeItem("rte_autosave_uid")) }) } catch (e) { } };
+</script>
+  
+
+    <script src="https://c.mql5.com/js/all.c09fd283bed20d28a52c95cd70a12a27.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/vendor.1be6e9a4a90b28525f93c4c69a5058a1.js" type="text/javascript" defer="defer"></script>
+
+
+</head>
+
+<body id="cover" class="cover">
+
+
+  <nav class="head">
+    <a href="https://www.mql5.com" class="head__logo" title="MQL5 - Language of trade strategies built-in the MetaTrader 5 client terminal"></a>
+      <div class="head__content">
+        <div class="main-menu" id="mainmenu">
+          
+                    <ul class="main-menu__top-level" id="menuTopLevel">
+                    <li class="main-menu__selected"><a href="/en/forum" data-fz-event="MQL5+Menu+Forum">Forum</a></li>
+                    <li><a href="/en/market" data-fz-event="MQL5+Menu+Market">Market</a></li>
+                    <li><a href="/en/signals" data-fz-event="MQL5+Menu+Signals">Signals</a></li>
+                    <li><a href="/en/job" data-fz-event="MQL5+Menu+Job">Freelance</a></li>
+                    <li><a href="/en/vps" data-fz-event="MQL5+Menu+VPS">VPS</a></li>
+                    <li><a href="/en/quotes/overview" data-fz-event="MQL5+Menu+Overview">Quotes</a></li>
+                    <li><a href="https://www.metatrader.com" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+MetaTrader">MetaTrader</a></li>
+                  </ul><ul class="main-menu__second-level" id="menuSecondLevel">
+                    <li><a href="/en/articles" data-fz-event="MQL5+Menu+Articles"><img src="https://c.mql5.com/i/menu/icon-articles4.svg" alt="" width="16" height="16"/>Articles</a></li>
+                    <li><a href="/en/code" data-fz-event="MQL5+Menu+CodeBase"><img src="https://c.mql5.com/i/menu/icon-code4.svg" alt="" width="16" height="16"/>CodeBase</a></li>
+                    <li><a href="https://forge.mql5.io/?lang=en" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+AlgoForge"><img src="https://c.mql5.com/i/menu/icon-algoforge4.svg" alt="" width="16" height="16"/>Algo Forge</a></li>
+                    <li><a href="/en/docs" data-fz-event="MQL5+Menu+Docs"><img src="https://c.mql5.com/i/menu/icon-docs4.svg" alt="" width="16" height="16"/>Documentation</a></li>
+                    <li><a href="/en/book" data-fz-event="MQL5+Menu+Book"><img src="https://c.mql5.com/i/menu/icon-book4.svg" alt="" width="16" height="16"/>AlgoBook</a></li>
+                    <li><a href="/en/neurobook" data-fz-event="MQL5+Menu+Neurobook"><img src="https://c.mql5.com/i/menu/icon-neurobook4.svg" alt="" width="16" height="16"/>NeuroBook</a></li>
+                    <li><a href="/en/economic-calendar" data-fz-event="MQL5+Menu+Economic+Calendar"><img src="https://c.mql5.com/i/menu/icon-economic-calendar4.svg" alt="" width="16" height="16"/>Calendar</a></li>
+                    <li><a href="https://web.metatrader.app/terminal?mode=demo&lang=en" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Menu+Trading"><img src="https://c.mql5.com/i/menu/icon-trading4.svg" alt="" width="16" height="16"/>WebTerminal</a></li>
+                    <li class="main-menu__mobile"><a href="/en/about">About</a></li>
+                    <li class="main-menu__second-tools"><a rel="noopener" href="/en/vps" title="Reliable trader hosting for uninterrupted operation of robots and instant copying of trades" class="button-mt" data-vars-fz="Start+VPS+Trial+Submenu"><img width="18" height="18" src="https://c.mql5.com/i/sidebar/vpstrial2.svg" alt="" loading="lazy">Start VPS Trial</a></li>
+                    </ul>
+        </div>
+          <div class="main-menu__active">
+            <a id="mainMenuSelected" href="#">
+              <span class="main-menu__primary">Forum</span><span class="main-menu__secondary">Sections</span>
+            </a>
+          </div>
+<form action="https://www.mql5.com/en/search" onsubmit="return false;" autocomplete="off" id="headerSearchForm" class="header-search" method="post">
+<button type="button" id="headerSearchButton" title="Search" class="header-search__button"></button><div class="header-search__input"><input name="keyword" type="text" enterkeyhint="search" title="Enter search text" placeholder="Search" id="headerSearchKeyword"/><label for="headerSearchKeyword" class="header-search__placeholder">Type <span>/</span> to search:  @user, $symbol, ...</label><button id="headerSearchSubmit" class="header-search__submit"></button></div><button type="button" id="headerSearchClean" title="Close" class="header-search__clean"></button></form>        <input class="blurHandler" id="mainMenuBlurHandler" type="checkbox">
+      </div>
+      <div class="head__toolbar" id="headerToolbar">
+          <div class="container loginRegister">
+            <nav>
+              <ul id="loginRegisterButtons"><li><a class="login" title="Please sign in. OpenID supported" href="https://www.mql5.com/en/auth_login" rel="nofollow" data-fz-event="MQL5+Menu+Siginin">Log in</a></li><li><a class="registration en" title="Please register" href="https://www.mql5.com/en/auth_register" rel="nofollow" data-fz-event="MQL5+Menu+Register" onclick="window.fpush('MQL5+Button+Click');">Create an account</a></li></ul>
+            </nav>
+          </div>
+        <div class="toggle-button" id="sidebarToggleButton">
+          <i></i>
+        </div>
+
+        <div class="group-menu" id="groupMenu">
+
+
+          <div class="container lang-menu-container">
+            <div id="langMenuContainer" class="lang-menu">
+              <input class="blurHandler" id="langmenuBlurHandler" type="checkbox">
+              <nav>
+                <ul class="lang-menu__list" id="langmenu">
+                  <li class="lang-menu__list-item lang-menu__list-item_selected"><a href="/en/forum" aria-label="English (English)"><i class="icons-languages icons-languages_en"></i><span>English</span></a></li>
+<li class="lang-menu__list-item"><a href="/ru/forum" aria-label="Русский (Russian)"><i class="icons-languages icons-languages_ru"></i><span>Русский</span></a></li>
+<li class="lang-menu__list-item"><a href="/zh/forum" aria-label="中文 (Chinese)"><i class="icons-languages icons-languages_zh"></i><span>中文</span></a></li>
+<li class="lang-menu__list-item"><a href="/es/forum" aria-label="Español (Spanish)"><i class="icons-languages icons-languages_es"></i><span>Español</span></a></li>
+<li class="lang-menu__list-item"><a href="/pt/forum" aria-label="Português (Portuguese)"><i class="icons-languages icons-languages_pt"></i><span>Português</span></a></li>
+<li class="lang-menu__list-item"><a href="/ja/forum" aria-label="日本語 (Japanese)"><i class="icons-languages icons-languages_ja"></i><span>日本語</span></a></li>
+<li class="lang-menu__list-item"><a href="/de/forum" aria-label="Deutsch (German)"><i class="icons-languages icons-languages_de"></i><span>Deutsch</span></a></li>
+<li class="lang-menu__list-item"><a href="/ko/forum" aria-label="한국어 (Korean)"><i class="icons-languages icons-languages_ko"></i><span>한국어</span></a></li>
+<li class="lang-menu__list-item"><a href="/fr/forum" aria-label="Français (French)"><i class="icons-languages icons-languages_fr"></i><span>Français</span></a></li>
+<li class="lang-menu__list-item"><a href="/it/forum" aria-label="Italiano (Italian)"><i class="icons-languages icons-languages_it"></i><span>Italiano</span></a></li>
+<li class="lang-menu__list-item"><a href="/tr/forum" aria-label="Türkçe (Turkish)"><i class="icons-languages icons-languages_tr"></i><span>Türkçe</span></a></li>
+
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+  </nav>
+
+
+  <article class="articles-content splashed">
+    
+
+
+<div class="top-band__topic">
+  <h1 class="path title-min" id="forumTitle">How to find the best (most respected) anchored vwap at any given time.</h1>
+  <div style="clear: both;"></div>
+
+  <div class="forum-topic__block-controls">
+    <nav class="left-part">
+      <div class="shortlinks">
+        <a href="/en/forum" class="forum-root" title="Root"></a><a href="/en/forum/indicators" class="forum-category" title="Category: Technical Indicators"></a>
+      </div>
+
+      <div class="paginatorEx">
+      </div>
+
+    </nav>
+
+      <div class="ui topic__buttons-area">
+          <a class="button button_green button_with-icon" href="javascript:void(false);" onclick="if(window.registerLoginPopup){ window.registerLoginPopup.show(); }">
+            <i class="icons-buttons icons-buttons_new-comment"></i>New comment
+          </a>
+      </div>
+  </div>
+</div>
+
+<div class="topic" id="forumTopicComments">
+
+      <div class="comment-box comments forum-topic__comments">
+          <aside class="comment-side user">
+<div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2023/2/63ed2394-e552.jpg" srcset="https://c.mql5.com/avatar/2023/2/63ed2394-e552_big.jpg 2x" alt="Skyler James Lee" title="Skyler James Lee" data-user-login="SkylerLee" loading="lazy" width="60" height="60"></div></div><span title="Rating">307</span>
+          </aside>
+        <div class="text">
+          <header>
+            <span id="author_info_topic455444"
+                  style="font-weight: bold;">
+              <span>
+                <a class="author" itemprop="url"  href="/en/users/skylerlee">Skyler James Lee</a>
+              </span>
+            </span>
+
+            <span
+              class="comment__date"
+              id="date_455444"
+              data-date-create="2023.10.09 20:40"
+              data-date-modify=""
+              title="Created">
+              <time datetime="2023-10-09T20:40Z" itemprop="datePublished" content="2023-10-09T20:40Z">2023.10.09 20:40</time>
+            </span>
+
+
+
+              &nbsp;
+          </header>
+
+            <div
+              class="content"
+              id="contenttopic455444">
+              I was brainstorming the other day wondering how one would go about coding something like this logically. I had an idea involving plotting a 1 period sma on the highest highs of each candle (for example's sake) then with a vwap on a higher timeframe create a variable which runs through each possible period from each lowest low or highest high as an anchor point. For each period, I would measure the amount of times this 1 sma is within a small envelope surrounding each vwap line. I would take the number of periods the sma was in this envelope, divide it by its current number of periods, and save it into a new variable if it is of higher correlation than the previous. Essentially what I should be left with is the VWAP line which was most respected in terms of correlation. From here I should be able to assign the desired anchor point and use this line as my point of interest until a VWAP with a greater correlation coefficient presents itself.&nbsp;<div><br/></div><div>I thought I should write this idea down somewhere before I forgot it and figured I might as well share it in case anyone more experienced has a better method of doing something like this.&nbsp;</div><div><br/></div><div>One problem I notice frequently with a great majority of eas is the static nature of lines used for points of interest. (Moving averages, vwaps, envelopes, etc) Only in the <a href="https://www.mql5.com/en/articles/239" title="Article: The Fundamentals of Testing in MetaTrader 5 " class="linkator"><span class="mark">strategy tester</span></a> do you find the best settings overall but rarely does one find a dynamic strategy which self-optimizes based on correlation.&nbsp;</div><div><br/></div><div>The greatest problem I see with this inherent flaw is the likelihood for settings to become overfitted, and quickly rendered useless in ever changing market conditions.</div>
+            </div>
+
+              <div>
+                <div class="similarTopics" id="similarTopics">
+                  <ul>
+                      <li>
+                        <span class="ico"></span><a data-fz-event="MQL5+Similar+Topic" target="_blank" rel="noopener" href="https://www.mql5.com/en/forum/175084/4272530#comment_4272530">RSI &amp; Momentum Color&#x2B;Alarm</a>
+                      </li>
+                      <li>
+                        <span class="ico"></span><a data-fz-event="MQL5+Similar+Topic" target="_blank" rel="noopener" href="https://www.mql5.com/en/forum/132157">Simple Custom Indicators using Math.</a>
+                      </li>
+                      <li>
+                        <span class="ico"></span><a data-fz-event="MQL5+Similar+Topic" target="_blank" rel="noopener" href="https://www.mql5.com/en/forum/399506/32077376#comment_32077376">Optimisation! Share your experiences, please.</a>
+                      </li>
+                  </ul>
+                </div>
+              </div>
+          <div class="options">
+            
+
+          </div>
+        </div>
+
+      </div>
+
+  <div class="forum-topic__comments">
+    
+
+
+  
+<div class="comments" id="comments">
+        <div class="comment-box" id="comment_49837278">
+
+            <aside class="comment-side user">
+              <div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/avatar_na2.png" srcset="https://c.mql5.com/avatar/avatar_na2_big.png 2x" loading="lazy" width="60" height="60"></div></div>
+
+            </aside>
+
+          <div class="text">
+	          <header>
+		          <span id="author_info_49837278"
+		                style="font-weight: bold;">
+			          <span>
+				          <span class="removed_user">[Deleted]</span>
+			          </span>
+		          </span>
+		          <span class="comment__date" id="date_49837278" data-date-create="2023.10.09 20:42" data-date-modify="" title="Created">
+                <time datetime="2023-10-09T20:42Z" itemprop="datePublished" content="2023-10-09T20:42Z">2023.10.09 20:42</time>
+		          </span>
+
+
+
+<a class="permalink" title="Permanent link" href="/en/forum/455444#comment_49837278" rel="nofollow" onclick="return false;">#1</a>                &nbsp;
+	          </header>
+
+	          <div
+		          class="content"
+		          id="content49837278">
+		          Your topic has been moved to the section: <a href="/en/forum/indicators">Technical Indicators<br/></a>Please consider which section is most appropriate — <a href="/en/forum/172166/page6#comment_49114893" target="_blank">https://www.mql5.com/en/forum/172166/page6#comment_49114893</a>
+	          </div>
+
+
+
+	          <div class="options">
+		          
+
+	          </div>
+          </div>
+        </div>
+        <div class="comment-box" id="comment_49837281">
+
+            <aside class="comment-side user">
+              <div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/avatar_na2.png" srcset="https://c.mql5.com/avatar/avatar_na2_big.png 2x" loading="lazy" width="60" height="60"></div></div>
+
+            </aside>
+
+          <div class="text">
+	          <header>
+		          <span id="author_info_49837281"
+		                style="font-weight: bold;">
+			          <span>
+				          <span class="removed_user">[Deleted]</span>
+			          </span>
+		          </span>
+		          <span class="comment__date" id="date_49837281" data-date-create="2023.10.09 20:42" data-date-modify="" title="Created">
+                <time datetime="2023-10-09T20:42Z" itemprop="datePublished" content="2023-10-09T20:42Z">2023.10.09 20:42</time>
+		          </span>
+
+
+
+<a class="permalink" title="Permanent link" href="/en/forum/455444#comment_49837281" rel="nofollow" onclick="return false;">#2</a>                &nbsp;
+	          </header>
+
+	          <div
+		          class="content"
+		          id="content49837281">
+		          <ul> <li>Usually people who can't code don't receive free help on this forum.</li> <li>If you show your attempts and describe your problem clearly, you will most probably receive an answer from the community. <a target="_blank" href="/en/articles/24#insert-code">Use the <b>CODE button (Alt-S)</b></a> when inserting code.</li> <li>To learn MQL programming, you can research the many available <a href="/en/articles" target="_blank">Articles</a> on the subject, or examples <a target="_blank" href="/en/code">in the Codebase</a>, as well as reference the online <a href="/en/docs" target="_blank">Documentation</a>. <br/></li> <li>If you do not want to learn to code, that is not a problem. You can either&nbsp;<a target="_blank" href="/en/code">look at the Codebase</a>&nbsp;if something free already exists, or in&nbsp;<a target="_blank" href="/en/market">the Market</a>&nbsp;for paid products (also sometimes free). However, recommendations or suggestions for <a target="_blank" href="/en/market">Market</a> <span class="mark"> products are not allowed on the forum, so you will have to do your own research.</span> <br/></li> <li>Finally, you also have the option to hire a programmer in the&nbsp;<a target="_blank" href="/en/job">Freelance section</a>.<br/></li> </ul>
+	          </div>
+
+
+
+		          <div>
+			          <div class="similarInComment">
+				          <span class="ico"></span>
+					          <span class="similarItem">
+						          <a target="_blank" title="How do I code in an indicator?" href="https://www.mql5.com/en/forum/457789/50656836#comment_50656836" data-fz-event="MQL5+Similar+Comment">How do I code</a>
+							          <span class="gradientShader"></span>
+					          </span>
+					          <span class="similarItem">
+						          <a target="_blank" title="EA, OnChartEvent, HotKey scripts ?" href="https://www.mql5.com/en/forum/460138/51553193#comment_51553193" data-fz-event="MQL5+Similar+Comment">EA, OnChartEvent, HotKey scripts</a>
+							          <span class="gradientShader"></span>
+					          </span>
+					          <span class="similarItem">
+						          <a target="_blank" title="please a person remove zero divide error from this EA" href="https://www.mql5.com/en/forum/457719/50626868#comment_50626868" data-fz-event="MQL5+Similar+Comment">please a person remove</a>
+							          <span class="gradientShader"></span>
+					          </span>
+			          </div>
+		          </div>
+	          <div class="options">
+		          
+
+	          </div>
+          </div>
+        </div>
+        <div class="comment-box" id="comment_49840006">
+
+            <aside class="comment-side user">
+              <div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2025/9/68dab3ec-4506.png" srcset="https://c.mql5.com/avatar/2025/9/68dab3ec-4506_big.png 2x" alt="Conor Mcnamara" title="Conor Mcnamara" data-user-login="phade" loading="lazy" width="60" height="60"></div></div><span title="Rating">11460</span>
+
+            </aside>
+
+          <div class="text">
+	          <header>
+		          <span id="author_info_49840006"
+		                style="font-weight: bold;">
+			          <span>
+				          <a class="author" itemprop="url"  href="/en/users/phade">Conor Mcnamara</a>
+			          </span>
+		          </span>
+		          <span class="comment__date" id="date_49840006" data-date-create="2023.10.09 23:10" data-date-modify="" title="Created">
+                <time datetime="2023-10-09T23:10Z" itemprop="datePublished" content="2023-10-09T23:10Z">2023.10.09 23:10</time>
+		          </span>
+
+
+
+<a class="permalink" title="Permanent link" href="/en/forum/455444#comment_49840006" rel="nofollow" onclick="return false;">#3</a>                &nbsp;
+	          </header>
+
+	          <div
+		          class="content"
+		          id="content49840006">
+		          I think there were some creative "self optimising" vwap indicators on the marketplace (not free). Maybe you should take a look there, or are you sure the idea hasn't been put into action already?
+	          </div>
+
+
+
+		          <div>
+			          <div class="similarInComment">
+				          <span class="ico"></span>
+					          <span class="similarItem">
+						          <a target="_blank" title="Copyright - indicator based on someone elses work." href="https://www.mql5.com/en/forum/160765/3829439#comment_3829439" data-fz-event="MQL5+Similar+Comment">Copyright - indicator based</a>
+							          <span class="gradientShader"></span>
+					          </span>
+					          <span class="similarItem">
+						          <a target="_blank" title="Is there an EA which automatically enters trades at a given entry, SL and TP?" href="https://www.mql5.com/en/forum/349977/28408008#comment_28408008" data-fz-event="MQL5+Similar+Comment">Is there an EA</a>
+							          <span class="gradientShader"></span>
+					          </span>
+					          <span class="similarItem">
+						          <a target="_blank" title="EURUSD - Trends, Forecasts and Implications (Part 2)" href="https://www.mql5.com/en/forum/404904/33854278#comment_33854278" data-fz-event="MQL5+Similar+Comment">EURUSD - Trends, Forecasts</a>
+							          <span class="gradientShader"></span>
+					          </span>
+			          </div>
+		          </div>
+	          <div class="options">
+		          
+
+	          </div>
+          </div>
+        </div>
+        <div class="comment-box" id="comment_50224438">
+
+            <aside class="comment-side user">
+              <div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2023/2/63ed2394-e552.jpg" srcset="https://c.mql5.com/avatar/2023/2/63ed2394-e552_big.jpg 2x" alt="Skyler James Lee" title="Skyler James Lee" data-user-login="SkylerLee" loading="lazy" width="60" height="60"></div></div><span title="Rating">307</span>
+
+            </aside>
+
+          <div class="text">
+	          <header>
+		          <span id="author_info_50224438"
+		                style="font-weight: bold;">
+			          <span>
+				          <a class="author" itemprop="url"  href="/en/users/skylerlee">Skyler James Lee</a>
+			          </span>
+		          </span>
+		          <span class="comment__date" id="date_50224438" data-date-create="2023.10.30 15:13" data-date-modify="" title="Created">
+                <time datetime="2023-10-30T15:13Z" itemprop="datePublished" content="2023-10-30T15:13Z">2023.10.30 15:13</time>
+		          </span>
+
+
+
+<a class="permalink" title="Permanent link" href="/en/forum/455444#comment_50224438" rel="nofollow" onclick="return false;">#4</a>                &nbsp;
+	          </header>
+
+	          <div
+		          class="content"
+		          id="content50224438">
+		          <div class="fquote"><strong><span style="color:#42639C;">Conor Mcnamara <a href="/en/forum/455444#comment_49840006">#</a></span>:</strong><br/> I think there were some creative "self optimising" vwap indicators on the marketplace (not free). Maybe you should take a look there, or are you sure the idea hasn't been put into action already?</div>If there is, I haven't found anything. Marketplace indicators won't do me any good. I am looking to build this myself or pay to have it coded for me to save some time, because marketplace indicators don't come with source code. I don't know of any indicators which do this in this way. I had another idea, involving casting each period into a correlation matrix, although I think it might be a better idea to do that with use moving averages instead, and anchor them by truncating the infinite series of averaging periods at highs and lows. I came here hoping I could openly brainstorm with others and hopefully to learn alternative ways of doing this before I embark on the project. I will keep this updated as I progress, as things come to fruition, I may post developments, share code, etc.
+	          </div>
+
+
+
+		          <div>
+			          <div class="similarInComment">
+				          <span class="ico"></span>
+					          <span class="similarItem">
+						          <a target="_blank" title="Coding Documentation and Trading Help Needed" href="https://www.mql5.com/en/forum/199811" data-fz-event="MQL5+Similar+Comment">Coding Documentation and Trading</a>
+							          <span class="gradientShader"></span>
+					          </span>
+					          <span class="similarItem">
+						          <a target="_blank" title="How to write an EA?" href="https://www.mql5.com/en/forum/442539/45270644#comment_45270644" data-fz-event="MQL5+Similar+Comment">How to write an</a>
+							          <span class="gradientShader"></span>
+					          </span>
+					          <span class="similarItem">
+						          <a target="_blank" title="Jurik" href="https://www.mql5.com/en/forum/173010/4210897#comment_4210897" data-fz-event="MQL5+Similar+Comment">Jurik</a>
+					          </span>
+			          </div>
+		          </div>
+	          <div class="options">
+		          
+
+	          </div>
+          </div>
+        </div>
+        <div class="comment-box" id="comment_50257117">
+
+            <aside class="comment-side user">
+              <div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2025/3/67c6d936-d959.jpg" srcset="https://c.mql5.com/avatar/2025/3/67c6d936-d959_big.jpg 2x" alt="Lorentzos Roussos" title="Lorentzos Roussos" data-user-login="LoRio" loading="lazy" width="60" height="60"></div></div><span title="Rating">49235</span>
+
+            </aside>
+
+          <div class="text">
+	          <header>
+		          <span id="author_info_50257117"
+		                style="font-weight: bold;">
+			          <span>
+				          <a class="author" itemprop="url"  href="/en/users/lorio">Lorentzos Roussos</a>
+			          </span>
+		          </span>
+		          <span class="comment__date" id="date_50257117" data-date-create="2023.10.31 20:43" data-date-modify="" title="Created">
+                <time datetime="2023-10-31T20:43Z" itemprop="datePublished" content="2023-10-31T20:43Z">2023.10.31 20:43</time>
+		          </span>
+
+
+
+<a class="permalink" title="Permanent link" href="/en/forum/455444#comment_50257117" rel="nofollow" onclick="return false;">#5</a>                &nbsp;
+	          </header>
+
+	          <div
+		          class="content"
+		          id="content50257117">
+		          <div class="fquote"> <strong><span style="color:#42639C;">Skyler James Lee</span>:</strong><br/> I was brainstorming the other day wondering how one would go about coding something like this logically. I had an idea involving plotting a 1 period sma on the highest highs of each candle (for example's sake) then with a vwap on a higher timeframe create a variable which runs through each possible period from each lowest low or highest high as an anchor point. For each period, I would measure the amount of times this 1 sma is within a small envelope surrounding each vwap line. I would take the number of periods the sma was in this envelope, divide it by its current number of periods, and save it into a new variable if it is of higher correlation than the previous. Essentially what I should be left with is the VWAP line which was most respected in terms of correlation. From here I should be able to assign the desired anchor point and use this line as my point of interest until a VWAP with a greater correlation coefficient presents itself.&nbsp; <div> <br/> </div> <div> I thought I should write this idea down somewhere before I forgot it and figured I might as well share it in case anyone more experienced has a better method of doing something like this.&nbsp; </div> <div> <br/> </div> <div> One problem I notice frequently with a great majority of eas is the static nature of lines used for points of interest. (Moving averages, vwaps, envelopes, etc) Only in the <a href="/en/articles/239" title="Article: The Fundamentals of Testing in MetaTrader 5 " class="linkator"><span class="mark">strategy tester</span></a> do you find the best settings overall but rarely does one find a dynamic strategy which self-optimizes based on correlation.&nbsp; </div> <div> <br/> </div> <div> The greatest problem I see with this inherent flaw is the likelihood for settings to become overfitted, and quickly rendered useless in ever changing market conditions. </div> </div> <p>Won't the vwap diverge out of correlation anyway ? (because it becomes less sensitive as new bars come in.)</p> <p>Also if it is intended for SR then you are not looking for correlation as the moment the price "hits" it it will diverge again</p> <p>If you'd set some hard rules you could attempt at letting the machine do the work for you.</p> <p>Some ideas :</p> <p></p> <ul> <li>The anchored vwap starts with a new high or a new low.</li> <li>Previous anchored vwaps stop when a new one begins.</li> <li>When the price breaks a vwap (without starting a new one) you create a signal.</li> <li>The signal has properties like distance in bars from creation ,distance in price (of the vwap) from the pivot point that created it and type</li> <li>Then you monitor the signal and it's outcome</li> <li>You take all signals and store them&nbsp;</li> <li>You export the stored data to excel and let the Excel solver figure out if theres any edge there (i.e accept only between 2 distances in bars and price etc)</li> </ul> <iframe width="560" height="315" src="https://www.youtube.com/embed/dRm5MEoA3OI" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
+	          </div>
+
+
+
+		          <div>
+			          <div class="similarInComment">
+				          <span class="ico"></span>
+					          <span class="similarItem">
+						          <a target="_blank" title="Arbitration Advisor" href="https://www.mql5.com/en/forum/409951/36485906#comment_36485906" data-fz-event="MQL5+Similar+Comment">Arbitration Advisor</a>
+					          </span>
+					          <span class="similarItem">
+						          <a target="_blank" title="Creating a BUY/SELL order at touch of indicator" href="https://www.mql5.com/en/forum/358888" data-fz-event="MQL5+Similar+Comment">Creating a BUY/SELL order</a>
+							          <span class="gradientShader"></span>
+					          </span>
+					          <span class="similarItem">
+						          <a target="_blank" title="Elite indicators :)" href="https://www.mql5.com/en/forum/175037/4588513#comment_4588513" data-fz-event="MQL5+Similar+Comment">Elite indicators :)</a>
+					          </span>
+			          </div>
+		          </div>
+	          <div class="options">
+		          
+
+	          </div>
+          </div>
+        </div>
+</div>
+
+  </div>
+
+  <div class="forum-topic__bottom">
+    <div class="left-part">
+      <div class="shortlinks">
+        <a href="/en/forum" class="forum-root" title="Root"></a><a href="/en/forum/indicators" class="forum-category" title="Category: Technical Indicators"></a>
+      </div>
+    </div>
+    <div class="right-part ui">
+          <a class="button button_green button_with-icon" href="javascript:void(false);" onclick="if(window.registerLoginPopup){ window.registerLoginPopup.show(); }">
+            <i class="icons-buttons icons-buttons_new-comment"></i>New comment
+          </a>
+    </div>
+    <div class="clear-fix"></div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+    
+
+
+<div class="hidden" id="popupRegisterLogin">
+  <div class="register-login-popup">
+    <div class="register-login-popup__header">
+      <img src="https://c.mql5.com/i/registerlandings/logo-2.png" srcset="https://c.mql5.com/i/registerlandings/logo-2_2x.png 2x" alt="MQL5 - Language of trade strategies built-in the MetaTrader 5 client terminal" loading="lazy" width="74" height="24" />
+    </div>
+    <div class="register-login-popup__content">
+      <div class="register-login-popup__desc">
+        <div class="register-login-popup__title">You are missing trading opportunities:</div>
+        <ul>
+<li>Free trading apps</li>
+<li>Over 8,000 signals for copying</li>
+<li>Economic news for exploring financial markets</li>
+</ul>
+      </div>
+      <div class="register-login-popup__forms ui">
+        <div class="register-login-popup__tabs" id="registerLoginPopupTabs">
+          <span data-id="register" id="registerLoginPopupTab_register" class="register-login-popup__tab register-login-popup__tab_active">Registration</span>
+          <span data-id="login" id="registerLoginPopupTab_login" class="register-login-popup__tab">Log in</span>
+        </div>
+        <div id="registerLoginPopupTabContent_register">
+          <div class="ui auth-form__content">
+    
+  <script type='text/javascript'>/*<![CDATA[*/ if (!window.V) var V = []; /*]]>*/</script>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/en/auth_register_short" id="PopupRegisterquickRegisterForm" onsubmit="PopupRegisterquickRegistration.OnSubmit(this,&#39;en&#39;);if(Validate(this)) Ajax.form(this,{onready:PopupRegisterquickRegistration.OnSuccessPopup,onerror:PopupRegisterquickRegistration.OnError,onbeginrequest:PopupRegisterquickRegistration.DisableInputs,onendrequest:PopupRegisterquickRegistration.EnableInputs});return(false);" enctype = "multipart/form-data"><input type="hidden" name="__signature" value="b0ce1ee48467834027259ac060ff8532"/>
+    <div class="auth-form__inputs">
+      <input type="hidden" value="0" name="IsValidate" id="PopupRegisterIsValidate" />
+
+      <!--[if lt IE 10]><div class="note">Login:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input type="text" id="PopupRegisterusername" name="username" class="input" maxlength="32" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.CheckUserName();}" onkeyup="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.ValidateUserName(this, 'Enter a valid login');}" placeholder="Login" title="May contain Latin letters, digits, dots, dashes,underscore characters. Cannot start or end with a dot. The allowed length is 3 to 32 characters." onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisterusername'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisterusername',10,'You may use Latin characters, numbers, underscores and periods.',validate_username]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisterusername">latin characters without spaces</label>
+      </div>
+      <!--[if lt IE 10]><div class="note">Your email:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input class="input" type="email" id="PopupRegisteremail" name="email" placeholder="Your email" title="Please enter the email (it may not exceed 256 characters). For example: john@example.com" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnChange(this);}" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisteremail'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisteremail',10,'Enter a valid email address',validate_email]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisteremail">a password will be sent to this email</label>
+      </div>
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Register" />
+    </div>
+    <span id="PopupRegisterquickRegisterSubmit">
+      <input type="submit" value="Register" id="PopupRegisterquickRegisterButton"  title="Sign up and receive an email with your password" class="button button_yellow"  />
+    </span>
+    <span id="PopupRegisterquickRegisterErrorMessage" class="quick-register-error-message field-validation-error" style="text-align: center; margin-top: 16px; display: none;">
+      An error occurred
+    </span>
+</form>
+    
+</div>
+<div class="auth-social">
+  <ul class="auth-social-list" id="socialList">
+    <li><a onclick="window.fpush({name: 'MQL5+Popup+Register+Google', unit: 'section', value: 'Forum'}); " href="https://www.mql5.com/en/auth_oauth2?provider=Google&amp;amp;return=popup&amp;amp;reg=1" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Log in With Google</a></li>
+  </ul>
+</div>
+<div class="auth-block-agree">
+  <p>
+    You agree to <a target="_blank" href="/en/about/privacy">website policy</a> and <a target="_blank" href="/en/about/terms">terms of use</a>
+  </p>
+</div>
+
+
+        </div>
+        <div id="registerLoginPopupTabContent_login" class="hidden">
+            <div class="auth-form__text">
+    If you do not have an account, please <a href="https://www.mql5.com/en/auth_register" rel="nofollow" style="vertical-align: top">register</a>
+  </div>
+<div class="ui auth-form__content auth-form__content_login" id="loginFormWrapper">
+    
+  <div id="needCookies" class="need-cookies hidden">
+    <div class="danger-box">
+      <p>Allow the use of cookies to log in to the MQL5.com website.</p>
+<p>Please enable the necessary setting in your browser, otherwise you will not be able to log in.</p>
+    </div>
+  </div>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/en/auth_login" id="loginForm" onsubmit="if(window.quickLogin){return window.quickLogin.onSubmit(this);}var result = Validate(this); if(result) { preventDoubleSubmit(this); } return result;"><input id="RedirectAfterLoginUrl" name="RedirectAfterLoginUrl" type="hidden" value="" /><input id="RegistrationUrl" name="RegistrationUrl" type="hidden" value="" /><input data-val="true" data-val-required="The ShowOpenId field is required." id="ShowOpenId" name="ShowOpenId" type="hidden" value="True" /><input id="TrackingSection" name="TrackingSection" type="hidden" value="Forum" />    <input name="ViewType" type="hidden" value="5" />
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Login" />
+    <!--[if lt IE 10]><div class="note">Your login:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <input class="input qa-login" id="Login" name="Login" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Login" title="Your login" type="text" value="" />
+      <script type='text/javascript' id='validate_Login'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Login',1,'Enter login specified when signing up']);});mqGlobal.AddOnReady(function() {V.push(['Login',10,'Email cannot be used. Enter your login please',validateLogin]);}); /*]]>*/</script>
+    </div>
+    <!--[if lt IE 10]><div class="note">Password:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <div class="input-with-show">
+        <input autocomplete="off" class="input qa-password" id="Password" name="Password" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Password" title="Enter the password please" type="password" />
+        <span class="input-with-show__icon" title="Show password" onclick="if(window.quickLogin){window.quickLogin.showPass(this, 'Show password', 'Hide password');}"></span>
+      </div>
+      <script type='text/javascript' id='validate_Password'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Password',1,'Please enter the password']);}); /*]]>*/</script>
+    </div>
+    <script type="text/javascript">
+    function validateLogin(input) {
+      console.log('validate login ' + input.value);
+      return !/^\w+([-+.'']{1,2}\w+)* @\w+([-.]\w+)*\.\w+([-.]\w+)*$/i.test(input.value);
+    }
+    </script>
+    <div class="forgot" id="loginForgotBlock"><a id="loginForgotLink" href="https://www.mql5.com/en/auth_forgotten?return=popup">Forgot your login/password?</a></div>
+    <input type="submit" class="button button_yellow qa-submit" id="loginSubmit" value="Log in" title="Enter">
+</form></div>
+
+  <div class="auth-social" id="authSocialBlock">
+    <ul class="auth-social-list" id="socialList">
+      <li><a onclick="window.fpush({name: 'MQL5+Popup+Login+Google', unit: 'section', value: 'Forum'}); " href="https://www.mql5.com/en/auth_oauth2?provider=Google&amp;amp;return=popup" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Log in With Google</a></li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script id="popupSection" type="application/json">{"section": "Forum"}</script>
+<script id="popupTranslate" data-type="translate" type="application/json">
+{
+  "popup":
+  {
+  "EmailTitle" : "The password has been sent to {0}",
+  "EmailDescription" : "Log in using the obtained password and the login specified during the registration",
+  "SubmitButtonText" : "Activate account",
+  "RegistrationTip" : "If you have not received the password email, check the spam folder or &lt;a href={0}&gt;repeat the registration&lt;/a&gt;"
+  }
+}
+</script>
+
+    
+
+
+<div id='wdausxxqrpvhekbwjrjlhqjghyhesrqqau' class="r6irig5txiuua4k0m r6irig5txiuua4k0m_forum-topic gg88d3drb"></div>
+
+
+  </article>
+
+
+
+<div aria-hidden="true" class="footer  desktop" id="footer">
+  <ul class="links  links_desktop">
+      <li id="navFooterCommunity">
+        <nav>
+          <ul>
+            <li><a href="https://web.metatrader.app/terminal?mode=demo&amp;lang=en" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Footer+Trading">Online trading / WebTerminal</a></li>
+            <li><a href="/en/code" data-fz-event="MQL5+Footer+CodeBase">Free technical indicators and robots</a></li>
+            <li><a href="/en/articles" data-fz-event="MQL5+Footer+Articles">Articles about programming and trading</a></li>
+            <li><a href="/en/job" data-fz-event="MQL5+Footer+Job">Order trading robots on the Freelance</a></li>
+            <li><a href="/en/market" data-fz-event="MQL5+Footer+Market">Market of Expert Advisors and applications&#x9;</a></li>
+            <li><a href="/en/signals" data-fz-event="MQL5+Footer+Signals">Follow forex signals</a></li>
+            <li><a href="/en/vps" data-fz-event="MQL5+Footer+VPS">Low latency forex VPS</a></li>
+            <li><a href="/en/forum" data-fz-event="MQL5+Footer+Forum">Traders forum</a></li>
+            <li><a href="/en/blogs" data-fz-event="MQL5+Footer+Blogs">Trading blogs</a></li>
+            <li><a rel="nofollow" href="/en/charts" data-fz-event="MQL5+Footer+Charts">Charts</a></li>
+            <li><a href="/en/widgets" data-fz-event="MQL5+Footer+Widgets">Free widgets</a></li>
+          </ul>
+        </nav>
+      </li>
+      <li id="navFooterMt5">
+        <nav>
+          <ul>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> Trading Platform</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/releasenotes" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> latest updates</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/news" data-fz-event="MQL5+Footer+MetaTrader+5">News, implementations and technology</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> User Manual</a></li>
+            <li><a href="/en/docs" data-fz-event="MQL5+Footer+Docs">MQL5 language of trading strategies</a></li>
+            <li><a rel="nofollow noopener" href="https://cloud.mql5.com" data-fz-event="MQL5+Footer+Cloud">MQL5 Cloud Network</a></li>
+            <li><a rel="noopener" href="https://forge.mql5.io/?lang=en" data-fz-event="MQL5+Footer+Forge" target="_blank">MQL5 Algo Forge</a></li>
+              <li><a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Footer">Download <span class="nobr">MetaTrader 5</span></a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help/start_advanced/installation" data-fz-event="MQL5+Footer+MetaTrader+5">Install Platform</a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help/start_advanced/deinstallation" data-fz-event="MQL5+Footer+MetaTrader+5">Uninstall Platform</a></li>
+          </ul>
+        </nav>
+
+      </li>
+    <li id="navFooterWebsite">
+        <nav>
+          <ul>
+            <li><a rel="nofollow" href="/en/about" data-fz-event="MQL5+Footer+About">About</a></li>
+              <li><a href="/en/wall" data-fz-event="MQL5+Footer+Wall">Timeline</a></li>
+            <li><a rel="nofollow" href="/en/about/terms" data-fz-event="MQL5+Footer+About">Terms and Conditions</a></li>
+            <li><a rel="nofollow" href="/en/about/autopayments" data-fz-event="MQL5+Footer+About">Recurring Payment Agreement</a></li>
+            <li><a rel="nofollow" href="/en/about/agencyagreement" data-fz-event="MQL5+Footer+About">Agency Agreement – Offer</a></li>
+            <li><a rel="nofollow" href="/en/about/privacy" data-fz-event="MQL5+Footer+About">Privacy and Data Protection Policy</a></li>
+            <li><a rel="nofollow" href="/en/about/cookies" data-fz-event="MQL5+Footer+About">Cookies Policy</a></li>
+            <li>
+                <a rel="nofollow" href="/en/contact" data-fz-event="MQL5+Footer+Contacts">Contacts and requests</a>
+            </li>
+          </ul>
+        </nav>
+    </li>
+
+      <li>
+        <div class="footer__products">
+          <div class="footer__product">
+            <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com" class="footer__product-name">MetaTrader 5</a>
+            <div class="footer__product-links">
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon windows" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for Windows</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/MetaTrader5.pkg.zip?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon macos" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for MacOS</div></a>
+            <a rel="nofollow noopener" href="https://www.mql5.com/en/articles/625?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon linux" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for Linux</div></a>
+            <a rel="nofollow noopener" href="https://web.metatrader.app/terminal?mode=demo&amp;lang=en" class="icon web"><div  class="footer__product-link-hint footer__product-link-hint-short">Open MetaTrader 5 WebTerminal</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/ios?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=en" class="icon ios" data-fz-event="MetaTrader+5+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/jhZn8Ed1I1d.png)">Scan to install from App Store</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=en" class="icon android" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/kiF2Io6W-9d.png)">Scan to install from Google Play</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon huawei" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ZRt&#x2B;zI1l&#x2B;8O.png)">Scan to install from Huawei AppGallery</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon ark" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/L0Q9oag&#x2B;3eE.png)">Scan to get Android APK file</div></a>
+            </div>
+          </div>
+          <div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com/en/news/2270" class="footer__product-name">MQL5 Channels</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon ios" data-fz-event="MQL5+Channels+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/bZVfOJnYpcO.png)">Scan to install from App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon android" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/32MJFgw7BVs.png)">Scan to install from Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Su&#x2B;fe4n374e.png)">Scan to install from Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mql5channels/mql5channels.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/G6Mg4NfCPzO.png)">Scan to get Android APK file</div></a>
+              </div>
+            </div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.tradays.com/en/download?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MQL5+Footer+Download+Tradays" class="footer__product-name">Economic Calendar</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon ios" data-fz-event="Tradays+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CpD&#x2B;mhIw-1E.png)">Scan to install from App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon android" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Bgyx8UcmYap.png)">Scan to install from Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CrS7bbDAdAO.png)">Scan to install from Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/tradays/tradays.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/VZi8YPIb2op.png)">Scan to get Android APK file</div></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__networks">
+          <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow" title="Facebook"><i class="icons-networks icons-networks_fb"></i></a>
+          <a href="https://t.me/mql5dev" target="_blank" rel="nofollow" title="Telegram"><i class="icons-networks icons-networks_tg"></i></a>
+          <a href="https://x.com/mql5com" target="_blank" rel="nofollow" title="X (Twitter)"><i class="icons-networks icons-networks_tw"></i></a>
+          <a href="https://www.youtube.com/@MetaQuotesOfficial" target="_blank" rel="nofollow" title="YouTube"><i class="icons-networks icons-networks_yt"></i></a>
+          <a href="https://www.linkedin.com/company/mql5" target="_blank" rel="nofollow" title="LinkedIn"><i class="icons-networks icons-networks_linkedin"></i></a>
+          <span>Subscribe to algotrading news</span>
+        </div>
+  
+        <div class="footer__other">
+          <div class="footer__not-a-broker">Not a broker, no real trading accounts</div>
+          <div class="copyright">35 Dodekanisou str, Germasogeia, 4043,&nbsp;Limassol,&nbsp;Cyprus</div>
+          <div class="copyright">Copyright 2000-2026, <span class="nobr">MetaQuotes Ltd</span></div>
+        </div>
+      </li>
+  </ul>
+</div>
+
+
+
+<div class="shadow-layer" id="layer"></div>
+    
+
+  <div class="b-fixed-mt" id="bFixedMt" style="display: none;">
+    
+  </div>
+
+
+<script type='text/javascript'>
+		(function (a, e, f, g, b, c, d) { a[b] || (a.FintezaCoreObject = b, a[b] = a[b] || function () { (a[b].q = a[b].q || []).push(arguments) }, a[b].l = 1 * new Date, c = e.createElement(f), d = e.getElementsByTagName(f)[0], c.async = !0, c.defer = !0, c.src = g, d && d.parentNode && d.parentNode.insertBefore(c, d)) })
+      (window, document, "script", "/ff/core.js", "fz");
+		window.fz("register", "website", {
+      id: "sqjxkxkswybhifrohpyooonwgbvsfzmayq",
+			trackLinks: true
+		});
+        mqGlobal.AddOnReady(function () { Mql5Cookie.init('mql5.com', '5096004557063363043'); });
+function editCommentInline(commentId){if(!window.editComment)return false;return editComment(commentId);}function quoteInline(commentId){if(!window.quote_forum)return false;return quote_forum(commentId);}function complaintInline(itemId,moduleId,typeId,parentModuleId){if(!window.showComplaintForm)return false;return showComplaintForm(itemId,moduleId,typeId,parentModuleId,'27c4e9c0cc23127f7dba62f769dff3cd');}mqGlobal.AddOnReady(function(){if(!window.translateManager){window.translateManager=new Translate(undefined,'Error: failed to translate. Please try again later.');}TimeTagProcessor();if(!window.shareManager){window.shareManager=new Share();}window.Pocket=new PocketManager();if(document.querySelectorAll){var translateElements=document.querySelectorAll(".translateMenu");if(translateElements){var i=0,count=translateElements.length;for(i;i<count;i++){(function(i){var contentid=dataset(translateElements[i],"contentid"),sourcelang=dataset(translateElements[i],"sourcelang"),targetlang=dataset(translateElements[i],"targetlang"),moduleid=parseInt(dataset(translateElements[i],"moduleid")),typeid=parseInt(dataset(translateElements[i],"typeid")),entityid=parseInt(dataset(translateElements[i],"entityid"));Core.AddHandler(translateElements[i],"mouseover",function(){return translateManager.SetMenu(this,contentid,sourcelang,targetlang,moduleid,typeid,entityid);});})(i);}}}});function quoteTopicInline(itemId){if(!window.quote_forum)return false;return quote_forum(itemId);}function complaintTopicInline(itemId,moduleId,typeId,parentModuleId){if(!window.showComplaintForm)return false;return showComplaintForm(itemId,moduleId,typeId,parentModuleId,'a9c78108a573e5d1db13a7da652bcc55');};window.lightBoxPhrases={};lightBoxPhrases.close='Close';lightBoxPhrases.collapse='Collapse';lightBoxPhrases.showOriginal='Show original';lightBoxPhrases.errorLoading='Unable to download attachment';lightBoxPhrases.next='Next';lightBoxPhrases.previous='Previous';lightBoxPhrases.save='Open';lightBoxPhrases.linkToImg='Link to the image';mqGlobal.AddOnLoad(function(){if(!window.likes){window.likes=new Likes();}});mqGlobal.AddOnLoad(function(){window.tooltipUserInfo.init();});mqGlobal.AddOnReady(function(){window.PopupRegisterquickRegistration=new QuickRegistration('PopupRegister','Popup+Register','Forum');});function validate_username(input){var reg=/^([a-z0-9]){1}([\-._a-z0-9]){1,30}([\-_a-z0-9]){1}$/i,value=input.value,result=true;if(reg.test(value)){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Login',unit:'section',value:'Forum'});}return result;}function validate_email(input){var reg=/^\w+([-+.'']{1,2}\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/i,value=input.value,result=true,length_value=value.length;if(reg.test(value)&&length_value>=1&&length_value<=40){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Email',unit:'section',value:'Forum'});}return result;};mqGlobal.AddOnReady(function(){var username=$('PopupRegisterusername'),email=$('PopupRegisteremail');if(username)username.value='';if(email)email.value='';});mqGlobal.AddOnReady(function(){window.quickLogin=new QuickLogin('Popup+Login','Forum');});mqGlobal.AddOnLoad(function(){window.forumPopup();});window.fz("show","wdausxxqrpvhekbwjrjlhqjghyhesrqqau");mqGlobal.AddOnReady(function(){{window.initHeaderSearch('','https://www.mql5.com/en/search');}});</script><script type="text/javascript">mqGlobal.AddOnReady(function(){window.initSuggestions("headerSearchKeyword","en","https://search.mql5.com/api/query","https://www.mql5.com/en/users_search/suggestion");});mqGlobal.AddOnReady(function(){window.floatVerticalPanelNode=FloatVerticalPanel('This website uses cookies. Learn more about our <a href="/en/about/cookies">Cookies Policy</a>.','cookie_accept');});							if (typeof Attach !== "undefined")
+			Attach.setAcceptFilter(".zip, .txt, .log, .mqh, .ex5, .mq5, .mq4, .mqproj, .ex4, .mt5, .set, .tpl, .cl, .py, .sqlite, .csv, .ini, .ipynb, .onnx, .gif, .png, .jpg, .jpeg, .mp4, .webm");
+	</script>
+
+<script type="application/ld&#x2B;json">
+		[
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"url": "https://www.mql5.com",
+				"logo": "https://c.mql5.com/i/community/logo_mql5-2.png",
+				"sameAs": [
+					"https://www.facebook.com/mql5.community",
+					"https://www.x.com/mql5com",
+					"https://www.youtube.com/user/MetaQuotesOfficial"
+				 ]
+			}
+		
+, 
+{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"Forum","description":"Discussions of trading strategies and algorithmic trading. MQL5.community  the largest forex forum","url":"https://www.mql5.com/en/forum","children":[]},{"@type":"SiteNavigationElement","position":2,"name":"Market","description":"MetaTrader Market - a Market of trading robots, indicators, trading books and magazines","url":"https://www.mql5.com/en/market","children":[]},{"@type":"SiteNavigationElement","position":3,"name":"Signals","description":"Social trading, copy trading and account monitoring with MetaTrader - Trading Signals on MQL5.com","url":"https://www.mql5.com/en/signals","children":[]},{"@type":"SiteNavigationElement","position":4,"name":"Freelance","description":"Order trading robots, technical indicators and algorithmic trading applications. Forex jobs. Freelance on MQL5.com. Hire MetaTrader experts and specialists","url":"https://www.mql5.com/en/job","children":[]},{"@type":"SiteNavigationElement","position":5,"name":"Quotes","description":"","url":"https://www.mql5.com/en/quotes/overview","children":[]},{"@type":"SiteNavigationElement","position":6,"name":"MetaTrader","description":"","url":"https://www.metatrader.com","children":[]},{"@type":"SiteNavigationElement","position":7,"name":"WebTerminal","description":"WebTerminal for the MetaTrader trading platform. Online forex trading.","url":"https://web.metatrader.app/terminal?mode=demo","children":[]},{"@type":"SiteNavigationElement","position":8,"name":"Calendar","description":"","url":"https://www.mql5.com/en/economic-calendar","children":[]},{"@type":"SiteNavigationElement","position":9,"name":"VPS","description":"","url":"https://www.mql5.com/en/vps","children":[]},{"@type":"SiteNavigationElement","position":10,"name":"Articles","description":"","url":"https://www.mql5.com/en/articles","children":[]},{"@type":"SiteNavigationElement","position":11,"name":"CodeBase","description":"Download trading robots, technical indicators and scripts with source code - MQL5 Code Base for MetaTrader 5","url":"https://www.mql5.com/en/code","children":[]},{"@type":"SiteNavigationElement","position":12,"name":"Algo Forge","description":"","url":"https://forge.mql5.io","children":[]},{"@type":"SiteNavigationElement","position":13,"name":"Documentation","description":"MetaQuotes Language 5 (MQL5) Reference - Documentation on MQL5.com","url":"https://www.mql5.com/en/docs","children":[]}]}		
+,
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":"https://www.mql5.com/en/forum","name":"MQL5 Algo Trading community  forex forum for traders and developers"},{"@type":"ListItem","position":2,"item":"https://www.mql5.com/en/forum/indicators","name":"Technical Indicators"},{"@type":"ListItem","position":3,"name":"How to find the best (most respected) anchored vwap at any given time."}]}
+,
+{"@context":"https://schema.org","@type":"DiscussionForumPosting","headline":"How to find the best (most respected) anchored vwap at any given time.","url":"https://www.mql5.com/en/forum/455444","datePublished":"2023-10-31T20:45:34.0000000Z","text":"I was brainstorming the other day wondering how one would go about coding something like this logically. I had an idea involving plotting a 1 period sma on the highest highs of each candle (for example\u0027s sake) then with a vwap on a higher timeframe create a variable which runs through each possible period from each lowest low or highest high as an anchor point. For each period, I would measure the amount of times this 1 sma is within a small envelope surrounding each vwap line. I would take the number of periods the sma was in this envelope, divide it by its current number of periods, and save it into a new variable if it is of higher correlation than the previous. Essentially what I should be left with is the VWAP line which was most respected in terms of correlation. From here I should be able to assign the desired anchor point and use this line as my point of interest until a VWAP with a greater correlation coefficient presents itself.&nbsp; I thought I should write this idea down somewhere before I forgot it and figured I might as well share it in case anyone more experienced has a better method of doing something like this.&nbsp; One problem I notice frequently with a great majority of eas is the static nature of lines used for points of interest. (Moving averages, vwaps, envelopes, etc) Only in the strategy tester do you find the best settings overall but rarely does one find a dynamic strategy which self-optimizes based on correlation.&nbsp; The greatest problem I see with this inherent flaw is the likelihood for settings to become overfitted, and quickly rendered useless in ever changing market conditions. ","interactionStatistic":{"@type":"InteractionCounter","interactionType":"https://schema.org/LikeAction","userInteractionCount":0},"author":{"@type":"Person","name":"Skyler James Lee","url":"https://www.mql5.com/en/users/skylerlee","agentInteractionStatistic":{"@type":"InteractionCounter","interactionType":"https://schema.org/WriteAction","userInteractionCount":307}},"comment":[{"@type":"Comment","text":"Your topic has been moved to the section: Technical Indicators Please consider which section is most appropriate  https://www.mql5.com/en/forum/172166/page6#comment_49114893 ","datePublished":"2023-10-09T20:42:06.0000000Z","url":"https://www.mql5.com/en/forum/455444#comment_49837278","author":{"@type":"Person","name":"Fernando Carreiro","url":"https://www.mql5.com/en/users/fmic","agentInteractionStatistic":{"@type":"InteractionCounter","interactionType":"https://schema.org/WriteAction","userInteractionCount":39991}}},{"@type":"Comment","text":" Usually people who can\u0027t code don\u0027t receive free help on this forum. If you show your attempts and describe your problem clearly, you will most probably receive an answer from the community. Use the CODE button (Alt-S) when inserting code. To learn MQL programming, you can research the many available Articles on the subject, or examples in the Codebase , as well as reference the online Documentation . If you do not want to learn to code, that is not a problem. You can either&nbsp; look at the Codebase &nbsp;if something free already exists, or in&nbsp; the Market &nbsp;for paid products (also sometimes free). However, recommendations or suggestions for Market products are not allowed on the forum, so you will have to do your own research. Finally, you also have the option to hire a programmer in the&nbsp; Freelance section . ","datePublished":"2023-10-09T20:42:31.0000000Z","url":"https://www.mql5.com/en/forum/455444#comment_49837281","author":{"@type":"Person","name":"Fernando Carreiro","url":"https://www.mql5.com/en/users/fmic","agentInteractionStatistic":{"@type":"InteractionCounter","interactionType":"https://schema.org/WriteAction","userInteractionCount":39991}}},{"@type":"Comment","text":"I think there were some creative \"self optimising\" vwap indicators on the marketplace (not free). Maybe you should take a look there, or are you sure the idea hasn\u0027t been put into action already?","datePublished":"2023-10-09T23:11:00.0000000Z","url":"https://www.mql5.com/en/forum/455444#comment_49840006","author":{"@type":"Person","name":"Conor Mcnamara","url":"https://www.mql5.com/en/users/phade","agentInteractionStatistic":{"@type":"InteractionCounter","interactionType":"https://schema.org/WriteAction","userInteractionCount":11460}}},{"@type":"Comment","text":"Conor Mcnamara # : I think there were some creative \"self optimising\" vwap indicators on the marketplace (not free). Maybe you should take a look there, or are you sure the idea hasn\u0027t been put into action already? If there is, I haven\u0027t found anything. Marketplace indicators won\u0027t do me any good. I am looking to build this myself or pay to have it coded for me to save some time, because marketplace indicators don\u0027t come with source code. I don\u0027t know of any indicators which do this in this way. I had another idea, involving casting each period into a correlation matrix, although I think it might be a better idea to do that with use moving averages instead, and anchor them by truncating the infinite series of averaging periods at highs and lows. I came here hoping I could openly brainstorm with others and hopefully to learn alternative ways of doing this before I embark on the project. I will keep this updated as I progress, as things come to fruition, I may post developments, share code, etc.","datePublished":"2023-10-30T15:13:53.0000000Z","url":"https://www.mql5.com/en/forum/455444#comment_50224438","author":{"@type":"Person","name":"Skyler James Lee","url":"https://www.mql5.com/en/users/skylerlee","agentInteractionStatistic":{"@type":"InteractionCounter","interactionType":"https://schema.org/WriteAction","userInteractionCount":307}}},{"@type":"Comment","text":" Skyler James Lee : I was brainstorming the other day wondering how one would go about coding something like this logically. I had an idea involving plotting a 1 period sma on the highest highs of each candle (for example\u0027s sake) then with a vwap on a higher timeframe create a variable which runs through each possible period from each lowest low or highest high as an anchor point. For each period, I would measure the amount of times this 1 sma is within a small envelope surrounding each vwap line. I would take the number of periods the sma was in this envelope, divide it by its current number of periods, and save it into a new variable if it is of higher correlation than the previous. Essentially what I should be left with is the VWAP line which was most respected in terms of correlation. From here I should be able to assign the desired anchor point and use this line as my point of interest until a VWAP with a greater correlation coefficient presents itself.&nbsp; I thought I should write this idea down somewhere before I forgot it and figured I might as well share it in case anyone more experienced has a better method of doing something like this.&nbsp; One problem I notice frequently with a great majority of eas is the static nature of lines used for points of interest. (Moving averages, vwaps, envelopes, etc) Only in the strategy tester do you find the best settings overall but rarely does one find a dynamic strategy which self-optimizes based on correlation.&nbsp; The greatest problem I see with this inherent flaw is the likelihood for settings to become overfitted, and quickly rendered useless in ever changing market conditions. Won\u0027t the vwap diverge out of correlation anyway ? (because it becomes less sensitive as new bars come in.) Also if it is intended for SR then you are not looking for correlation as the moment the price \"hits\" it it will diverge again If you\u0027d set some hard rules you could attempt at letting the machine do the work for you. Some ideas : The anchored vwap starts with a new high or a new low. Previous anchored vwaps stop when a new one begins. When the price breaks a vwap (without starting a new one) you create a signal. The signal has properties like distance in bars from creation ,distance in price (of the vwap) from the pivot point that created it and type Then you monitor the signal and it\u0027s outcome You take all signals and store them&nbsp; You export the stored data to excel and let the Excel solver figure out if theres any edge there (i.e accept only between 2 distances in bars and price etc) ","datePublished":"2023-10-31T20:45:34.0000000Z","url":"https://www.mql5.com/en/forum/455444#comment_50257117","author":{"@type":"Person","name":"Lorentzos Roussos","url":"https://www.mql5.com/en/users/lorio","agentInteractionStatistic":{"@type":"InteractionCounter","interactionType":"https://schema.org/WriteAction","userInteractionCount":49235}}}]}
+		]
+	</script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+[
+  {
+    "目标名": "EN_OrderBlock_Inducement_BOS_流动性陷阱",
+    "来源标题": "Automating Trading Strategies in MQL5 (Part 48): Order Blocks, Inducement, Break of Structure - MQL5 Articles",
+    "url": "https://www.mql5.com/en/articles/22078",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\诱多反抽与二次启动_检索资料_v0.1\\EN_OrderBlock_Inducement_BOS_流动性陷阱.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\诱多反抽与二次启动_检索资料_v0.1\\EN_OrderBlock_Inducement_BOS_流动性陷阱_22078.zip",
+        "https://www.mql5.com/en/articles/download/22078.zip",
+        17519
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\诱多反抽与二次启动_检索资料_v0.1\\EN_OrderBlock_Inducement_BOS_流动性陷阱_Inducement_Mitigation_Block_Strategy.mq5",
+        "https://www.mql5.com/en/articles/download/22078/Inducement_Mitigation_Block_Strategy.mq5",
+        78553
+      ]
+    ]
+  },
+  {
+    "目标名": "EN_LiquidityGrab_SMC_诱导与流动性抓取",
+    "来源标题": "The Liquidity Grab Trading Strategy - MQL5 Articles",
+    "url": "https://www.mql5.com/en/articles/16518",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\诱多反抽与二次启动_检索资料_v0.1\\EN_LiquidityGrab_SMC_诱导与流动性抓取.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\诱多反抽与二次启动_检索资料_v0.1\\EN_LiquidityGrab_SMC_诱导与流动性抓取_16518.zip",
+        "https://www.mql5.com/en/articles/download/16518.zip",
+        2259
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\诱多反抽与二次启动_检索资料_v0.1\\EN_LiquidityGrab_SMC_诱导与流动性抓取_liquidity_grab_breakout_example_code.mq5",
+        "https://www.mql5.com/en/articles/download/16518/liquidity_grab_breakout_example_code.mq5",
+        9108
+      ]
+    ]
+  },
+  {
+    "目标名": "EN_LiquiditySweep_BOS_结构确认",
+    "来源标题": "Automating Trading Strategies in MQL5 (Part 46): Liquidity Sweep on Break of Structure (BoS) - MQL5 Articles",
+    "url": "https://www.mql5.com/en/articles/20569",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\诱多反抽与二次启动_检索资料_v0.1\\EN_LiquiditySweep_BOS_结构确认.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\诱多反抽与二次启动_检索资料_v0.1\\EN_LiquiditySweep_BOS_结构确认_20569.zip",
+        "https://www.mql5.com/en/articles/download/20569.zip",
+        6084
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\诱多反抽与二次启动_检索资料_v0.1\\EN_LiquiditySweep_BOS_结构确认_Liquidity_Sweep.mq5",
+        "https://www.mql5.com/en/articles/download/20569/Liquidity_Sweep.mq5",
+        56354
+      ]
+    ]
+  },
+  {
+    "目标名": "EN_DynamicSTF_LiquiditySweep_假突破回收",
+    "来源标题": "Building a Dynamic STF Liquidity Sweep Indicator in MQL5 - MQL5 Articles",
+    "url": "https://www.mql5.com/en/articles/22140",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\诱多反抽与二次启动_检索资料_v0.1\\EN_DynamicSTF_LiquiditySweep_假突破回收.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\诱多反抽与二次启动_检索资料_v0.1\\EN_DynamicSTF_LiquiditySweep_假突破回收_22140.zip",
+        "https://www.mql5.com/en/articles/download/22140.zip",
+        3457
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\诱多反抽与二次启动_检索资料_v0.1\\EN_DynamicSTF_LiquiditySweep_假突破回收_Liquidity_Sweep_Sentinel_bSTFm.mq5",
+        "https://www.mql5.com/en/articles/download/22140/Liquidity_Sweep_Sentinel_bSTFm.mq5",
+        19533
+      ]
+    ]
+  },
+  {
+    "目标名": "EN_Forum_FalseBreakout_假突破过滤",
+    "来源标题": "False breakout - Equities - General - MQL5 programming forum",
+    "url": "https://www.mql5.com/en/forum/508608",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\诱多反抽与二次启动_检索资料_v0.1\\EN_Forum_FalseBreakout_假突破过滤.md",
+    "附件": []
+  },
+  {
+    "目标名": "EN_Forum_StrongBreakout_vs_FalseBreakout",
+    "来源标题": "What Defines a Strong Breakout vs. False Breakout? - Breakout - Trading Systems - MQL5 programming forum",
+    "url": "https://www.mql5.com/en/forum/502423",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\诱多反抽与二次启动_检索资料_v0.1\\EN_Forum_StrongBreakout_vs_FalseBreakout.md",
+    "附件": []
+  },
+  {
+    "目标名": "EN_Forum_Fakeout_BullBearTrap",
+    "来源标题": "False breakouts in forex are deceptive price movements that traders can exploit with proper analysis - Trading Systems - MQL5",
+    "url": "https://www.mql5.com/en/forum/183095/page9",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\诱多反抽与二次启动_检索资料_v0.1\\EN_Forum_Fakeout_BullBearTrap.md",
+    "附件": []
+  },
+  {
+    "目标名": "RU_Forum_FalseBreakout_ATRFilter",
+    "来源标题": "\"Индикатор\" ложного пробоя уровня... - Общее обсуждение - Форум алго-трейдеров MQL5",
+    "url": "https://www.mql5.com/ru/forum/364561",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\诱多反抽与二次启动_检索资料_v0.1\\RU_Forum_FalseBreakout_ATRFilter.md",
+    "附件": []
+  },
+  {
+    "目标名": "RU_LiquidityGrab_流动性抓取",
+    "来源标题": "Торговая стратегия \"Захват ликвидности\" (Liquidity Grab) - Статьи по MQL5",
+    "url": "https://www.mql5.com/ru/articles/16518",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\诱多反抽与二次启动_检索资料_v0.1\\RU_LiquidityGrab_流动性抓取.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\诱多反抽与二次启动_检索资料_v0.1\\RU_LiquidityGrab_流动性抓取_16518.zip",
+        "https://www.mql5.com/ru/articles/download/16518.zip",
+        2259
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\05_关键词检索\\诱多反抽与二次启动_检索资料_v0.1\\RU_LiquidityGrab_流动性抓取_liquidity_grab_breakout_example_code.mq5",
+        "https://www.mql5.com/ru/articles/download/16518/liquidity_grab_breakout_example_code.mq5",
+        9108
+      ]
+    ]
+  }
+]

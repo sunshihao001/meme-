@@ -1,0 +1,959 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+
+  <meta name="robots" content="max-snippet:250,max-image-preview:large">
+  <meta name="description" content="通过我们的综合指南，掌握VWAP的强大力量！学习如何使用MQL5和Python将VWAP分析集成到您的交易策略中。最大化您的市场洞察力，并改善您今天的交易决策。">
+  <meta property="og:url" content="https://www.mql5.com/zh/articles/16984">
+  <meta property="og:title" content="价格行为分析工具包开发（第10部分）：外部资金流（二）VWAP">
+  <meta property="og:description" content="通过我们的综合指南，掌握VWAP的强大力量！学习如何使用MQL5和Python将VWAP分析集成到您的交易策略中。最大化您的市场洞察力，并改善您今天的交易决策。">
+      <meta property="og:image" content="https://c.mql5.com/2/115/Price_Action_Analysis_Toolkit_Development_Part_10_1200x628.jpg">
+      <meta property="og:image:secure_url" content="https://c.mql5.com/2/115/Price_Action_Analysis_Toolkit_Development_Part_10_1200x628.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2025-10-20T15:05:09.0000000Z">
+  <meta property="article:author" content="https://www.mql5.com/zh/users/lynnchris">
+  <meta property="article:section" content="MetaTrader 5">
+  <meta property="article:tag" content="交易系统">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@mql5com">
+  <meta name="twitter:image" content="https://c.mql5.com/2/115/Price_Action_Analysis_Toolkit_Development_Part_10_1200x628.jpg">
+  <meta name="theme-color" content="#4a76b8">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-config" content="none">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta property="qc:admins" content="36367170677651456375">
+  <meta property="wb:webmaster" content="073d7690269bcd81">
+  <link rel="shortcut icon" href="https://c.mql5.com/i/favicon4.ico">
+  <link rel="dns-prefetch" href="https://c.mql5.com">
+  <link href="https://c.mql5.com/styles/core.444bc25de4c9131a69fedfe5ac42a082.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/all.266d64b83529847f568747dd160d42b0.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/articles.bc4209e4de0b5296041832431b46f3dd.css" type="text/css" rel="stylesheet" media="all">
+  <link href="/zh/articles/rss" rel="alternate" type="application/rss+xml" title="有关MetaTrader 5自动交易和技术指标的开发和应用程序的文章">
+  <link rel="canonical" href="https://www.mql5.com/zh/articles/16984">
+  <link rel="alternate" hreflang="en" href="https://www.mql5.com/en/articles/16984">
+  <link rel="alternate" hreflang="ru" href="https://www.mql5.com/ru/articles/16984">
+  <link rel="alternate" hreflang="zh" href="https://www.mql5.com/zh/articles/16984">
+  <link rel="alternate" hreflang="es" href="https://www.mql5.com/es/articles/16984">
+  <link rel="alternate" hreflang="de" href="https://www.mql5.com/de/articles/16984">
+  <link rel="alternate" hreflang="ja" href="https://www.mql5.com/ja/articles/16984">
+  <link rel="alternate" hreflang="pt" href="https://www.mql5.com/pt/articles/16984">
+  <title>价格行为分析工具包开发（第10部分）：外部资金流（二）VWAP - MQL5文章</title>
+
+
+
+<script type="text/javascript">
+  !function(){window.mqGlobal={};var t=!1,n=!1,e=[],o=[],i=[];function d(t){var n;for(n=0;n<t.length;n+=1)t[n]()}function c(){t||(t=!0,d(e),d(o),o=[],e=[])}function a(){c(),n||(n=!0,d(i),i=[])}if(mqGlobal.AddOnReady=function(n,i){t?n(document):i?e.push(n):o.push(n)},mqGlobal.AddOnLoad=function(t){n?t(document):i.push(t)},mqGlobal.AddOnActiveWindowChange=function(t){this._onvisibility||(this._onvisibility=[]),this._onvisibility[this._onvisibility.length]=t},document.addEventListener)document.addEventListener("DOMContentLoaded",c,!1),window.addEventListener("load",a,!1);else if(document.attachEvent&&(document.attachEvent("onreadystatechange",(function(){switch(document.readyState){case"interactive":c();break;case"complete":a()}})),window.attachEvent("onload",a),document.documentElement.doScroll&&window==window.top)){!function n(){if(!t&&document.body)try{document.documentElement.doScroll("left"),c()}catch(t){setTimeout(n,0)}}()}}();
+  mqGlobal.CookieDomain = ".mql5.com";
+  mqGlobal.Language = 'zh';
+  mqGlobal.IsMobile = false;
+  mqGlobal.ClearRteStorage = function (e) { if (window.GStorage || (window.GStorage = globalStorage()), window.GStorage.supported) try { var o = e; window.GStorage.getItem("rte_autosave_uid", function (e, t) { t == o && (window.GStorage.removeItem("rte_autosave_text"), window.GStorage.removeItem("rte_autosave_date"), window.GStorage.removeItem("rte_autosave_uid")) }) } catch (e) { } };
+</script>
+  
+
+    <script src="https://c.mql5.com/js/all.c09fd283bed20d28a52c95cd70a12a27.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/vendor.1be6e9a4a90b28525f93c4c69a5058a1.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/articles.cd4c73c476b2781eecdf04f5583514b5.js" type="text/javascript" defer="defer"></script>
+
+
+</head>
+
+<body id="cover" class="cover">
+
+
+  <nav class="head">
+    <a href="https://www.mql5.com/zh" class="head__logo" title="MQL5 - MetaTrader 5客户端内置的交易策略语言"></a>
+      <div class="head__content">
+        <div class="main-menu" id="mainmenu">
+          
+                    <ul class="main-menu__top-level" id="menuTopLevel">
+                    <li><a href="/zh/forum" data-fz-event="MQL5+Menu+Forum">论坛</a></li>
+                    <li><a href="/zh/market" data-fz-event="MQL5+Menu+Market">市场</a></li>
+                    <li><a href="/zh/signals" data-fz-event="MQL5+Menu+Signals">信号</a></li>
+                    <li><a href="/zh/job" data-fz-event="MQL5+Menu+Job">自由职业者</a></li>
+                    <li><a href="/zh/vps" data-fz-event="MQL5+Menu+VPS">VPS</a></li>
+                    <li><a href="/zh/quotes/overview" data-fz-event="MQL5+Menu+Overview">报价</a></li>
+                    <li><a href="https://www.metatrader.com/zh" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+MetaTrader">MetaTrader</a></li>
+                  </ul><ul class="main-menu__second-level" id="menuSecondLevel">
+                    <li class="main-menu__selected"><a href="/zh/articles" data-fz-event="MQL5+Menu+Articles"><img src="https://c.mql5.com/i/menu/icon-articles4.svg" alt="" width="16" height="16"/>文章</a></li>
+                    <li><a href="/zh/code" data-fz-event="MQL5+Menu+CodeBase"><img src="https://c.mql5.com/i/menu/icon-code4.svg" alt="" width="16" height="16"/>代码库</a></li>
+                    <li><a href="https://forge.mql5.io/?lang=zh-CN" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+AlgoForge"><img src="https://c.mql5.com/i/menu/icon-algoforge4.svg" alt="" width="16" height="16"/>Algo Forge</a></li>
+                    <li><a href="/zh/docs" data-fz-event="MQL5+Menu+Docs"><img src="https://c.mql5.com/i/menu/icon-docs4.svg" alt="" width="16" height="16"/>文档</a></li>
+                    <li><a href="/zh/book" data-fz-event="MQL5+Menu+Book"><img src="https://c.mql5.com/i/menu/icon-book4.svg" alt="" width="16" height="16"/>算法交易教程</a></li>
+                    <li><a href="/zh/neurobook" data-fz-event="MQL5+Menu+Neurobook"><img src="https://c.mql5.com/i/menu/icon-neurobook4.svg" alt="" width="16" height="16"/>神经网络教程</a></li>
+                    <li><a href="/zh/economic-calendar" data-fz-event="MQL5+Menu+Economic+Calendar"><img src="https://c.mql5.com/i/menu/icon-economic-calendar4.svg" alt="" width="16" height="16"/>经济日历</a></li>
+                    <li><a href="https://web.metatrader.app/terminal?mode=demo&lang=zh" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Menu+Trading"><img src="https://c.mql5.com/i/menu/icon-trading4.svg" alt="" width="16" height="16"/>网页端</a></li>
+                    <li class="main-menu__mobile"><a href="/zh/about">关于</a></li>
+                    <li class="main-menu__second-tools"><a rel="noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" title="免费获取交易平台的最新版本" class="button-mt" data-vars-fz="MetaTrader+5+Desktop+Download+Submenu"><img width="18" height="18" src="https://c.mql5.com/i/sidebar/download.svg" alt="" loading="lazy">下载MetaTrader 5</a></li>
+                    </ul>
+        </div>
+          <div class="main-menu__active">
+            <a id="mainMenuSelected" href="#">
+              <span class="main-menu__primary">文章</span><span class="main-menu__secondary">部分</span>
+            </a>
+          </div>
+<form action="https://www.mql5.com/zh/search" onsubmit="return false;" autocomplete="off" id="headerSearchForm" class="header-search" method="post">
+<button type="button" id="headerSearchButton" title="查找" class="header-search__button"></button><div class="header-search__input"><input name="keyword" type="text" enterkeyhint="search" title="输入查找文本" placeholder="查找" id="headerSearchKeyword"/><label for="headerSearchKeyword" class="header-search__placeholder">键入<span>/</span>进行搜索:  @user, $symbol, ...</label><button id="headerSearchSubmit" class="header-search__submit"></button></div><button type="button" id="headerSearchClean" title="关闭" class="header-search__clean"></button></form>        <input class="blurHandler" id="mainMenuBlurHandler" type="checkbox">
+      </div>
+      <div class="head__toolbar" id="headerToolbar">
+          <div class="container loginRegister">
+            <nav>
+              <ul id="loginRegisterButtons"><li><a class="login" title="请登录，支持OpenID" href="https://www.mql5.com/zh/auth_login" rel="nofollow" data-fz-event="MQL5+Menu+Siginin">登录</a></li><li><a class="registration zh" title="请注册" href="https://www.mql5.com/zh/auth_register" rel="nofollow" data-fz-event="MQL5+Menu+Register" onclick="window.fpush('MQL5+Button+Click');">创建账户</a></li></ul>
+            </nav>
+          </div>
+        <div class="toggle-button" id="sidebarToggleButton">
+          <i></i>
+        </div>
+
+        <div class="group-menu" id="groupMenu">
+
+
+          <div class="container lang-menu-container">
+            <div id="langMenuContainer" class="lang-menu">
+              <input class="blurHandler" id="langmenuBlurHandler" type="checkbox">
+              <nav>
+                <ul class="lang-menu__list" id="langmenu">
+                  <li class="lang-menu__list-item"><a href="/en/articles" aria-label="English (English)"><i class="icons-languages icons-languages_en"></i><span>English</span></a></li>
+<li class="lang-menu__list-item"><a href="/ru/articles" aria-label="Русский (Russian)"><i class="icons-languages icons-languages_ru"></i><span>Русский</span></a></li>
+<li class="lang-menu__list-item lang-menu__list-item_selected"><a href="/zh/articles" aria-label="中文 (Chinese)"><i class="icons-languages icons-languages_zh"></i><span>中文</span></a></li>
+<li class="lang-menu__list-item"><a href="/es/articles" aria-label="Español (Spanish)"><i class="icons-languages icons-languages_es"></i><span>Español</span></a></li>
+<li class="lang-menu__list-item"><a href="/pt/articles" aria-label="Português (Portuguese)"><i class="icons-languages icons-languages_pt"></i><span>Português</span></a></li>
+<li class="lang-menu__list-item"><a href="/ja/articles" aria-label="日本語 (Japanese)"><i class="icons-languages icons-languages_ja"></i><span>日本語</span></a></li>
+<li class="lang-menu__list-item"><a href="/de/articles" aria-label="Deutsch (German)"><i class="icons-languages icons-languages_de"></i><span>Deutsch</span></a></li>
+<li class="lang-menu__list-item"><a href="/ko/articles" aria-label="한국어 (Korean)"><i class="icons-languages icons-languages_ko"></i><span>한국어</span></a></li>
+<li class="lang-menu__list-item"><a href="/fr/articles" aria-label="Français (French)"><i class="icons-languages icons-languages_fr"></i><span>Français</span></a></li>
+<li class="lang-menu__list-item"><a href="/it/articles" aria-label="Italiano (Italian)"><i class="icons-languages icons-languages_it"></i><span>Italiano</span></a></li>
+<li class="lang-menu__list-item"><a href="/tr/articles" aria-label="Türkçe (Turkish)"><i class="icons-languages icons-languages_tr"></i><span>Türkçe</span></a></li>
+
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+  </nav>
+
+
+
+  <div id="left-sidebar-selector" class="left-sidebar__selector left-sidebar__selector_padding">
+    <div class="left-sidebar__title">
+MetaTrader 5 /     交易系统
+    </div>
+    <i class="icons-ux icons-ux_arrow-down-black"></i>
+  </div>
+  <div class="articles-container block-with-sidebar">
+    <aside class="left-sidebar left-sidebar_270" id="left-sidebar">
+      
+  <ul class="tree-menu-ul"><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/examples"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples.svg" alt="" loading="lazy"/>示例</a><ul class="tree-menu__list tree-menu__list_nested"><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/examples_indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_indicators.svg" alt="" loading="lazy"/>指标</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/examples_experts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_experts.svg" alt="" loading="lazy"/>专家</a></li></ul></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/strategy_tester"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/strategy_tester.svg" alt="" loading="lazy"/>测试者</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/trading"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading.svg" alt="" loading="lazy"/>交易</a></li><li class="tree-menu__item tree-menu__item_selected"><a class="tree-menu__link" href="/zh/articles/trading_systems"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading_systems.svg" alt="" loading="lazy"/>交易系统</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/integration"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/integration.svg" alt="" loading="lazy"/>积分</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/indicator.svg" alt="" loading="lazy"/>指标</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/expert_advisors"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/expert.svg" alt="" loading="lazy"/>EA交易</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/statistics"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/statistics.svg" alt="" loading="lazy"/>统计分析</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/machine_learning"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/machine_learning.svg" alt="" loading="lazy"/>机器学习</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/interviews"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/interviews.svg" alt="" loading="lazy"/>采访</a></li></ul>
+  
+
+    <div class="hints-panel">
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_like"></i>
+        <div class="hints-panel__content">
+          您喜欢这篇文章？<br>
+          分享或-<br>发布<a href="https://www.mql5.com/zh/articles/16984" target="_blank">链接</a>！
+        </div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_fb-square icons-hints_24px"></i><div class="hints-panel__content">
+请在<a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow">Facebook</a>上找到我们！<br> 加入我们粉丝页</div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_mt-5"></i>
+        <div class="hints-panel__content">
+          使用<a href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Article" rel="nofollow sponsored noopener noreferrer">MetaTrader 5</a>新的可能性
+        </div>
+      </div>
+    </div>
+<div id='vgckrufggwxdtfscpyalmenexmvhljduja' class="roeid8y6hsc3ntv1l gg88d3drb"></div>      <div class="similar-author-articles ui">
+        <h4 class="similar-author-articles__title">相似文章</h4>
+        <ul class="similar-author-articles__list">
+            <li>
+              <a href="/zh/articles/17811" data-fz-event="MQL5+Article+Similar+Article">趋势判定标准：结论</a>
+            </li>
+            <li>
+              <a href="/zh/articles/18324" data-fz-event="MQL5+Article+Similar+Article">金融时间序列中的保形预测探索</a>
+            </li>
+            <li>
+              <a href="/zh/articles/17649" data-fz-event="MQL5+Article+Similar+Article">神经网络在交易中的应用：基于频域的异常检测 (CATCH)</a>
+            </li>
+            <li>
+              <a href="/zh/articles/18355" data-fz-event="MQL5+Article+Similar+Article">挖掘央行资产负债表数据，描绘全球流动性全貌</a>
+            </li>
+            <li>
+              <a href="/zh/articles/17577" data-fz-event="MQL5+Article+Similar+Article">神经网络在交易中的应用：市场异常的自适应检测（终篇）</a>
+            </li>
+        </ul>
+      </div>
+    <div class="freelance-hint">
+      <img src="https://c.mql5.com/i/articles/icon_freelance.svg" width="24" height="24" loading="lazy" />
+      <div class="freelance-hint__text">
+        使用本文的理念在自由职业者服务<br>订购您自己的EA交易<br>
+      </div>
+        <a target="_blank" class="button button_blue-gray-border" title="进入自由职业者服务" href="/zh/job/new" data-fz-event="MQL5+Article+New+Job">进入自由职业者服务</a>
+    </div>
+
+    </aside>
+    <article class="content-with-sidebar articles-content splashed">
+      
+
+
+  <header class="article-header article-header_light" style="background-color: rgb(118,87,72)">
+    <section class="article-tools-panel">
+        <div class="article-tools-panel__item">
+          <span class="popup framed client flags">
+            <a class="dropdown" href="javascript:void(false);">
+              <span class="icons-languages icons-languages_zh"></span><i></i>
+            </a>
+            <span class="popup">
+              <span class="tip">
+                <span></span>
+              </span>
+              <span class="items">
+                    <a href="/en/articles/16984">English</a>
+                    <a href="/ru/articles/16984">Русский</a>
+                    <a href="/es/articles/16984">Español</a>
+                    <a href="/de/articles/16984">Deutsch</a>
+                    <a href="/ja/articles/16984">日本語</a>
+                    <a href="/pt/articles/16984">Português</a>
+              </span>
+            </span>
+          </span>
+        </div>
+        
+      <div class="article-tools-panel__item">
+        <a href="#pocket" title="允许您插入一个完整的说明以及适当的注释内容。" onclick="return Pocket.Add(this,'zh',2,1,16984);" class="article-tools-panel__rounded">
+          <i class="article-pocket-icon"></i>
+        </a>
+      </div>
+      <div class="article-tools-panel__item">
+        <a href="/zh/articles/16984?print=" target="_blank" class="article-tools-panel__rounded" rel="nofollow" title="打印优化版本">
+          <i class="article-print-icon"></i>
+        </a>
+      </div>
+
+    </section>
+    <section class="article-header__image-box">
+        <img class="article-header__image-preview" loading="lazy" width="32" height="16" alt="preview" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAsICAoIBwsKCQoNDAsNERwSEQ8PESIZGhQcKSQrKigkJyctMkA3LTA9MCcnOEw5PUNFSElIKzZPVU5GVEBHSEX/2wBDAQwNDREPESESEiFFLicuRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUX/wAARCAAQACADASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAABAUG/8QAIBAAAQQBBAMAAAAAAAAAAAAAAQACAxEEBQYhMRIycf/EABYBAQEBAAAAAAAAAAAAAAAAAAUBAv/EABsRAAIDAAMAAAAAAAAAAAAAAAEDAAIhBBEx/9oADAMBAAIRAxEAPwDIO24Lth4&#x2B;pOLpAiPNo8eozg9p0ObI72W707Hsi2EHRKOLiMjIJFqvHN4toDhRoJyUxs4rtEchWxhLRYbP/9k=">
+      <div class="article-header__gradient" style="background: linear-gradient(90deg, rgba(118,87,72, 1) 0%, rgba(118,87,72, 0.72) 8.31%, rgba(118,87,72, 0) 17.1%), linear-gradient(270deg, rgba(118,87,72, 1) 0%, rgba(118,87,72, 0.72) 8.06%, rgba(118,87,72, 0) 16.59%), linear-gradient(0deg, rgba(118,87,72, 1) 8.26%, rgba(118,87,72, 0.8) 65%, rgba(118,87,72, 0) 100%);"></div>
+        <picture>
+          <source srcset="https://c.mql5.com/2/115/Price_Action_Analysis_Toolkit_Development_Part_10_600x314.jpg, https://c.mql5.com/2/115/Price_Action_Analysis_Toolkit_Development_Part_10_1200x628.jpg 2x" media="(min-width:700px)">
+          <img class="article-header__image" loading="lazy" width="600" height="314" srcset="https://c.mql5.com/2/115/Price_Action_Analysis_Toolkit_Development_Part_10_300x157.jpg, https://c.mql5.com/2/115/Price_Action_Analysis_Toolkit_Development_Part_10_600x314.jpg 2x" src="https://c.mql5.com/2/115/Price_Action_Analysis_Toolkit_Development_Part_10_600x314.jpg" alt="价格行为分析工具包开发（第10部分）：外部资金流（二）VWAP" onerror="this.style.display='none';">
+        </picture>
+    </section>
+    <section class="article-header__content">
+      <h1>价格行为分析工具包开发（第10部分）：外部资金流（二）VWAP</h1>
+      <div class="article-header__info">
+        <a href="/zh/articles/mt5">MetaTrader 5</a>
+          &mdash;
+          <a href="/zh/articles/mt5/trading_systems">交易系统</a>
+        | <time datetime="2025-10-20T15:05Z" title="15:05" datetime-type="datetime">20 十月 2025, 15:05</time>
+      </div>
+      <div class="article-header__indicators">
+        <span title="查看">
+          <img src="https://c.mql5.com/i/icons.svg#views-white-usage" width="20" height="20" alt="" />
+          984
+        </span>
+        
+          <a title="评论" href="/zh/forum/498045">
+            <img src="https://c.mql5.com/i/icons.svg#comments-white-usage" width="20" height="20" alt="" />
+            4
+          </a>
+      </div>
+      <div class="article-header__author">
+          <div class="article-header__avatar">
+            <img src="https://c.mql5.com/avatar/2025/10/68fd3661-daee.png" srcset="https://c.mql5.com/avatar/2025/10/68fd3661-daee_big.png 2x" data-user-login="Lynnchris" title="Christian Benjamin" alt="Christian Benjamin" loading="lazy" width="60" height="60">
+          </div>
+<a class="author" href="/zh/users/lynnchris" data-user-login="Lynnchris">Christian Benjamin</a>      </div>
+    </section>
+  </header>
+
+    <div class="content">
+      <div class="inner formatted-content">
+        <h3 id="para1">引言</h3> <p>在我们<a href="/zh/articles/16967" target="_blank">上一篇文章</a>中，我们介绍了市场数据与外部库的集成，展示了通过各种自动化系统分析市场的能力。Python强大的框架为高级数据分析、预测建模和可视化提供了强大的工具，而MQL5则专注于无缝的交易执行和基于图表的操作。通过结合这些优势，我们实现了一个用于市场分析和交易的灵活、高效且精密的系统。</p> <p>本文围绕成交量加权平均价格（VWAP）的概念，展示了一个强大的工具，用以提供精确的交易信号。利用Python的高级库进行计算，可以增强分析的准确性，从而产生高度可操作的VWAP信号。我们将首先探讨该策略，然后深入剖析MQL5代码的核心逻辑，并讨论其成果。最后，我们以结论作结。下面让我们看看文章的目录：</p> <ul> <li><a href="/zh/articles/16984#para2" target="_blank">理解策略</a></li> <li><a href="/zh/articles/16984#para3" target="_blank">核心逻辑</a></li> <li><a href="/zh/articles/16984#para4" target="_blank">结果</a></li> <li><a href="/zh/articles/16984#para5" target="_blank">结论</a></li> </ul> <p></p> <p><br/></p> <h3 id="para2">理解策略</h3>VWAP，即成交量加权平均价格，是一种技术分析工具，它反映了资产价格与其总交易量之间的关系。它让交易者和投资者了解某只股票在特定时期内的平均成交价格。VWAP通常被较为被动的投资者（如养老基金和共同基金）用作基准，以评估其交易的质量。对于希望确定资产是否以最优价格买入或卖出的交易者来说，它也很有价值。<br/>要计算VWAP，公式如下：<br/> <p>VWAP = ∑(资产交易量 × 资产价格) / 当日总交易量</p> <p style="text-align:center;"> <img width="235" height="153" src="https://c.mql5.com/2/114/image_2025-01-28_003832793.png" loading="lazy" title="VWAP 公式" alt="VWAP 公式" style="vertical-align:middle;"/></p> <p>VWAP通常使用单个交易日内下达的订单来计算。不过，它也可以应用于多个时间框架，以进行更广泛的市场分析。在图表上，VWAP显示为一条线，并作为一个动态的参考点。当价格位于VWAP之上时，市场通常处于上升趋势。相反，当价格位于VWAP之下时，市场通常被认为处于下降趋势。在下图中，我通过高亮显示价格倾向于在VWAP附近反应的关键水平，将VWAP策略进行了可视化。这些标记的水平展示了市场通常如何与VWAP线进行互动。</p> <p style="text-align:center;"> <img width="734" height="725" src="https://c.mql5.com/2/114/image1.png" loading="lazy" title="VWAP 策略" alt="VWAP 策略" style="vertical-align:middle;"/></p> <p style="text-align:center;"><span class="small">图例 1. VWAP 策略</span></p> <p>让我们来探索这个系统背后的逻辑。首先，我们将审视下图呈现的要点，然后进行详细解释。</p> <p style="text-align:center;"> <img width="456" height="275" src="https://c.mql5.com/2/114/FLOWCHART__1.png" loading="lazy" title="EA 逻辑" alt="EA 逻辑" style="vertical-align:middle;"/></p> <p style="text-align:center;"><span class="small">图例 2. 系统逻辑</span></p> <p>该VWAP智能交易系统（EA）旨在监控图表，并与Python无缝交互以进行高级市场分析。它将市场数据发送到Python，并将接收到的交易信号记录在MetaTrader 5的“智能交易”选项卡中。该策略利用成交量加权平均价格（VWAP）作为其核心指标，以提供精确且可操作的见解。以下是该策略的详细分解：</p> <blockquote> <p>1. <u>数据采集</u></p> </blockquote> <p>EA收集过去150根K线的历史市场数据（价格和成交量）。它确保数据有效（例如，没有缺失或零值）。数据被保存为CSV文件以便追溯，并发送到Python服务器进行分析。</p> <blockquote> <p>2. <u>Python 分析</u></p> </blockquote> <p>Python脚本使用接收到的数据计算VWAP，并利用高级库进行精确计算。两个库负责核心计算和分析：<i>Pandas</i> 和 <i>NumPy</i>。Pandas便于数据操作、滚动平均和累计计算，而 <i>NumPy</i> 则管理数值运算，包括条件逻辑和向量化计算。它们共同为时间序列数据分析提供了高效且准确的处理能力。</p> <p>分析内容包括：</p> <ul> <li>VWAP 计算：确定选定时间范围内按成交量加权的平均价格。</li> <li>信号生成：根据当前价格与VWAP水平之间的关系提供交易信号（例如，买入/卖出）。</li> <li>解释说明：每个信号都附带文本解释，以阐明其生成原因。</li> </ul> <p></p> <blockquote> <p>3. <u>信号确认</u></p> </blockquote> <p>EA引入了确认机制：</p> <p>只有当信号在多个时间间隔内（例如，2个确认周期）持续出现时，才会被更新。</p> <p>这减少了假阳性信号，并提高了信号的可靠性。</p> <blockquote> <p>4. <u>输出与警报</u></p> </blockquote> <p>信号以以下方式显示：</p> <ul> <li>警报：用于交易者立即采取行动的实时通知。</li> <li>日志消息：在EA的终端中打印，供审查使用。</li> </ul> <p></p> <p>未来版本可能会在图表上包含图形标注，以实现更好的可视化。</p> <blockquote> <table cellspacing="0" cellpadding="3" width="100%" class="standart"> <thead> <tr> <th>Python：&nbsp;<br/></th> <th>MQL5&nbsp;<br/></th> </tr> </thead> <tbody> <tr> <td>高效处理大型数据集。</td> <td>实时监控市场并与图表集成</td> </tr> <tr> <td>利用强大的库进行高级计算和建模</td> <td>提供即时警报和通知</td> </tr> <tr> <td>确保基于VWAP的策略具有更高的准确性和灵活性<br/></td> <td>在MQL5上使用VWAP有助于凸显关键的支撑和阻力位。这使得交易者能够根据市场对VWAP的反应做出决策，而VWAP通常充当价格运动的强力枢轴点。</td> </tr> </tbody> </table> <p><br/></p> </blockquote> <h3 id="para3">核心逻辑</h3> <p><b>1. MQL5 EA&nbsp;</b></p> <p><u>初始化：设置EA</u></p> <p>当您首次将智能交易应用于图表时，<i>OnInit() </i>函数会被执行。此函数负责初始化EA、设置必要的资源，并确保一切准备就绪可以运行。我们通常在这里包含设置任务，例如打印消息、初始化变量或设置参数。在我们的案例中，我们只是打印一条消息来确认EA已被初始化。此步骤还返回 INIT_SUCCEEDED，以表明初始化成功，这对于EA正常运行至关重要。</p> <pre class="code"><span class="keyword">int</span> <span class="functions">OnInit</span>()
+{
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"VWAP Expert initialized."</span>);
+&nbsp;&nbsp; <span class="keyword">return</span>(<span class="macro">INIT_SUCCEEDED</span>);
+}
+</pre> <p>初始化是EA建立其基础的第一阶段。确保任何参数或资源都已正确设置至关重要。一条简单的确认消息能让您知道EA已准备就绪。</p> <p><u>反初始化：EA停止时进行清理</u></p> <p>当EA从图表上移除或MetaTrader关闭时，就会发生反初始化。此时会调用<i>OnDeinit()</i>函数，以清理在<i>OnInit()</i>期间分配或初始化的任何资源。在这里，它只是打印一条消息，指示EA正在被反初始化。这是一个良好的实践，可以确保EA可能正在使用的任何资源或进程都被正确关闭，以防止内存泄漏或不必要的后台进程运行。</p> <pre class="code"><span class="keyword">void</span> <span class="functions">OnDeinit</span>(<span class="keyword">const</span> <span class="keyword">int</span> reason)
+{
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"VWAP Expert deinitialized."</span>);
+}<span>
+</span></pre> <p>正确的反初始化对于维持系统性能至关重要。当EA被移除时，务必清理资源，以避免留下悬空的进程。反初始化函数可能包括保存数据、关闭连接或停止计时器。</p> <p><u>收集市场数据（K线）</u></p> <p>此EA的核心涉及收集用于分析的市场数据（K线）。此过程在<i>OnTick()</i>函数内开始，该函数在每次市场价格更新时执行。EA被配置为按设定的时间间隔收集数据，每个间隔由<i>signalIntervalMinutes</i>定义。自上次信号发出经过足够的时间后，EA便开始收集最近<i>numCandles</i>根K线的市场数据（开盘价、最高价、最低价、收盘价、成交量）。</p> <p>然后将数据格式化为CSV字符串，这一点至关重要，因为它将被发送到Python服务器进行进一步处理。循环从最新的K线开始向后迭代，以确保我们捕获到最新的市场数据，并使用<i>StringFormat()</i>以标准化的方式格式化数据。</p> <pre class="code"><span class="keyword">int</span> totalBars = <span class="functions">iBars</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>());
+<span class="keyword">if</span> (totalBars &lt; numCandles)
+{
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Error: Not enough candles on the chart to collect "</span>, numCandles, <span class="string">" candles."</span>);
+&nbsp;&nbsp; <span class="keyword">return</span>;
+}
+
+<span class="keyword">for</span> (<span class="keyword">int</span> i = numCandles - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--)
+{
+&nbsp;&nbsp; <span class="keyword">datetime</span> currentTime = <span class="functions">iTime</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), i);
+&nbsp;&nbsp; <span class="keyword">if</span> (currentTime == <span class="number">0</span>) <span class="keyword">continue</span>;
+
+&nbsp;&nbsp; <span class="keyword">double</span> high = <span class="functions">iHigh</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), i);
+&nbsp;&nbsp; <span class="keyword">double</span> low = <span class="functions">iLow</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), i);
+&nbsp;&nbsp; <span class="keyword">double</span> close = <span class="functions">iClose</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), i);
+&nbsp;&nbsp; <span class="keyword">double</span> open = <span class="functions">iOpen</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), i);
+&nbsp;&nbsp; <span class="keyword">long</span> volume = <span class="functions">iVolume</span>(<span class="functions">Symbol</span>(), <span class="functions">Period</span>(), i);
+
+&nbsp;&nbsp; <span class="keyword">if</span> (high == <span class="number">0</span> || low == <span class="number">0</span> || close == <span class="number">0</span> || volume == <span class="number">0</span>)
+&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Skipping invalid data at "</span>, <span class="functions">TimeToString</span>(currentTime, <span class="macro">TIME_DATE</span> | <span class="macro">TIME_MINUTES</span>));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">continue</span>;
+&nbsp;&nbsp; }
+
+&nbsp;&nbsp; csvData += <span class="functions">StringFormat</span>(<span class="string">"%s,%.5f,%.5f,%.5f,%.5f,%ld\n"</span>,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">TimeToString</span>(currentTime, <span class="macro">TIME_DATE</span> | <span class="macro">TIME_MINUTES</span>),
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; high, low, open, close, volume);
+}
+</pre> <blockquote> <p><i>iBars():</i></p> </blockquote> <p>iBars() 函数用于检索当前品种和时间周期图表上可用的K线总数。EA会检查是否有至少 numCandles 根K线可用。如果没有，它会打印一条错误消息并从函数中返回，以阻止进一步的数据收集。</p> <blockquote> <p><i>for 循环：</i></p> </blockquote> <p>for 循环从最新的K线<i> (numCandles</i> - 1) 向后迭代到最旧的K线 (0)，以收集所需数量的K线。</p> <blockquote> <p><i>iTime(), iHigh(), iLow(), iOpen(), iClose(), iVolume():</i></p> </blockquote> <p>这些函数用于获取每根K线的相关价格数据。<i>iTime()</i>获取时间戳，<i>iHigh()</i>获取最高价，<i>iLow()</i>获取最低价，以此类推。</p> <blockquote> <p><i>数据验证：</i></p> </blockquote> <p>在将数据追加到CSV字符串之前，EA会检查是否存在缺失或无效的数据（零值）。如果任何K线的数据无效，迭代将继续，并跳过该根K线。</p> <blockquote> <p><i>字符串格式化：</i></p> </blockquote> <p><i>StringFormat()</i>用于将K线数据格式化为CSV行。每个字段由逗号分隔，时间戳使用<i>TimeToString()</i>格式化为可读的字符串。</p> <p><u>将数据写入CSV文件</u></p> <p>一旦我们收集了数据，下一步就是将其写入CSV文件。这一点至关重要，因为我们需要在将数据发送到Python服务器之前，将其在本地保存。<i>FileOpen()</i>函数以写入模式打开文件，FileWriteString() 则将格式化后的CSV数据写入其中。写入数据后，文件被关闭，以完成该过程并确保没有数据丢失。</p> <p>CSV文件保存在 MQL5\Files 目录中，这是MetaTrader中一个用于存储平台可访问文件的专用目录。这确保了在需要时可以轻松检索该文件。</p> <pre class="code"><span class="keyword">string</span> fileName = <span class="functions">StringFormat</span>(<span class="string">"%s_vwap_data.csv"</span>, <span class="functions">Symbol</span>());
+<span class="keyword">string</span> filePath = <span class="string">"MQL5\\Files\\"</span> + fileName;
+<span class="keyword">int</span> fileHandle = <span class="functions">FileOpen</span>(filePath, <span class="macro">FILE_WRITE</span> | <span class="macro">FILE_CSV</span> | <span class="macro">FILE_ANSI</span>);
+<span class="keyword">if</span> (fileHandle != <span class="macro">INVALID_HANDLE</span>) {
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">FileWriteString</span>(fileHandle, csvData);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">FileClose</span>(fileHandle);
+} <span class="keyword">else</span> {
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Failed to open file for writing: "</span>, filePath);
+}
+<span>
+</span></pre> <p>将数据写入CSV文件是一种在本地存储信息以供未来分析的方法。使用<u>FILE_CSV</u>确保数据以标准化格式保存，使其与其他系统（如Python）兼容。这里的错误处理确保了如果文件无法打开，EA能够优雅地处理该问题并打印一条错误消息。</p> <p><u>发送数据到Python服务器进行VWAP分析</u></p> <p>现在，收集好的数据已准备好发送到Python服务器进行分析。这是通过<i>WebRequest()</i>函数完成的，该函数允许EA发出HTTP请求。CSV数据被转换为字符数组<i>(StringToCharArray())</i>，并通过POST请求发送到服务器。请求头指定了发送的内容是CSV格式，服务器的响应则被捕获在一个结果数组中。</p> <p>超时参数被设置为5000毫秒（5秒），以确保如果服务器没有响应，请求不会挂起太久。</p> <pre class="code"><span class="keyword">char</span> data[];
+<span class="functions">StringToCharArray</span>(csvData, data); 
+
+<span class="keyword">string</span> headers = <span class="string">"Content-Type: text/csv\r\n"</span>;
+<span class="keyword">char</span> result[];
+<span class="keyword">string</span> resultHeaders;
+<span class="keyword">int</span> timeout = <span class="number">5000</span>;
+
+<span class="keyword">int</span> responseCode = <span class="functions">WebRequest</span>(<span class="string">"POST"</span>, pythonUrl, headers, timeout, data, result, resultHeaders);<span>
+</span></pre> <p>这里使用<u>HTTP POST</u>是因为它是向服务器发送数据而不改变URL的最佳方式。<u>WebRequest()</u>处理与Python服务器的通信，所有繁重的工作（即VWAP计算）都在那里进行。超时设置确保了如果服务器无响应，EA不会卡住，从而保持平稳运行。</p> <p><u>处理来自Python服务器的响应</u></p> <p>发送数据后，我们需要处理来自Python服务器的响应。这正是奇迹发生的地方，因为Python服务器会分析数据，并根据VWAP（成交量加权平均价格）提供一个交易信号。响应以JSON格式返回，我们使用一个辅助函数<i>ExtractValueFromJSON()</i>从响应中提取相关值（VWAP和解释说明）。</p> <p>如果响应成功（HTTP代码为200），我们解析出必要的信息并继续执行交易逻辑。如果响应包含有效数据，我们就可以着手生成一个新的信号。</p> <pre class="code"><span class="comment">// Check if the request was successful</span>
+<span class="keyword">if</span> (responseCode == <span class="number">200</span>) {
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span> response = <span class="functions">CharArrayToString</span>(result); <span class="comment">// Convert the result array to a string</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Server response: "</span>, response);&nbsp;&nbsp;<span class="comment">// Print the server's response</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Validate if the required data is present in the response</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="functions">StringFind</span>(response, <span class="string">"\"vwap\":"</span>) == -<span class="number">1</span> || <span class="functions">StringFind</span>(response, <span class="string">"\"signal_explanation\":"</span>) == -<span class="number">1</span>) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Error: Invalid response from server. Response: "</span>, response);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Extract individual data points from the JSON response</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span> vwap = ExtractValueFromJSON(response, <span class="string">"vwap"</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span> explanation = ExtractValueFromJSON(response, <span class="string">"signal_explanation"</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span> majorSupport = ExtractValueFromJSON(response, <span class="string">"major_support"</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span> majorResistance = ExtractValueFromJSON(response, <span class="string">"major_resistance"</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span> minorSupport = ExtractValueFromJSON(response, <span class="string">"minor_support"</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span> minorResistance = ExtractValueFromJSON(response, <span class="string">"minor_resistance"</span>);
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// If valid data is received, update the signal</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (vwap != <span class="string">""</span> &amp;&amp; explanation != <span class="string">""</span>) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span> newSignal = <span class="string">"VWAP: "</span> + vwap + <span class="string">"\nExplanation: "</span> + explanation
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; + <span class="string">"\nMajor Support: "</span> + majorSupport + <span class="string">"\nMajor Resistance: "</span> + majorResistance
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; + <span class="string">"\nMinor Support: "</span> + minorSupport + <span class="string">"\nMinor Resistance: "</span> + minorResistance;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Confirm the signal and handle the response further</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (newSignal != lastSignal) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;signalConfirmationCount++; <span class="comment">// Increment confirmation count</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (signalConfirmationCount &gt;= confirmationInterval) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lastSignal = newSignal;&nbsp;&nbsp;<span class="comment">// Set the new signal</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;signalConfirmationCount = <span class="number">0</span>;&nbsp;&nbsp;<span class="comment">// Reset the count</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"New VWAP signal: "</span>, newSignal);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Alert</span>(<span class="string">"New VWAP Signal Received:\n"</span> + newSignal); <span class="comment">// Alert user of the new signal</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+} <span class="keyword">else</span> {
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Error: WebRequest failed with code "</span>, responseCode, <span class="string">". Response headers: "</span>, resultHeaders);
+}
+</pre> <p>正确处理响应对于解读服务器的分析至关重要。<u>ExtractValueFromJSON()</u>函数确保我们从大量的JSON响应中，只提取我们需要的数据（VWAP和信号解释说明）。如果响应无效或未找到预期的数据，处理错误并避免根据不正确的信号进行操作就显得非常重要。</p> <p><u>信号确认与显示交易信号</u></p> <p>最后一步涉及确认交易信号。在从Python服务器接收到信号后，我们不会立即据此行动。相反，我们要求在多个时间间隔内（由 confirmationInterval 配置）得到确认。这确保了信号在设定的时间段内是一致的，这有助于避免对短期市场噪音做出反应。</p> <p>一旦信号得到确认，我们就更新<i>lastSignal</i>变量，并通过 Alert() 将信号显示给用户。然后，EA会等待下一个有效信号才会再次触发。</p> <pre class="code"><span class="comment">// Confirm the signal multiple times before updating</span>
+<span class="keyword">if</span> (newSignal != lastSignal)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;signalConfirmationCount++;&nbsp;&nbsp;<span class="comment">// Increment the confirmation count</span>
+}
+
+<span class="comment">// Once the signal has been confirmed enough times</span>
+<span class="keyword">if</span> (signalConfirmationCount &gt;= confirmationInterval)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Update the last signal and reset confirmation count</span>
+&nbsp;&nbsp;&nbsp;&nbsp;lastSignal = newSignal;
+&nbsp;&nbsp;&nbsp;&nbsp;signalConfirmationCount = <span class="number">0</span>;&nbsp;&nbsp;<span class="comment">// Reset the count after confirmation</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Display the new signal in the log and via an alert</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"New VWAP signal: "</span>, newSignal);&nbsp;&nbsp;<span class="comment">// Print to the log</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Alert</span>(<span class="string">"New VWAP Signal Received:\n"</span> + newSignal);&nbsp;&nbsp;<span class="comment">// Display alert to the user</span>
+}
+</pre> <p>信号确认有助于避免根据短暂或不可靠的信号进行操作。通过多次确认信号，我们提高了交易决策的准确性和可靠性。警报为交易者提供即时反馈，确保他们能了解重要的变化。</p> <p><b>2. Python：</b></p> <p>该脚本的流程旨在预处理数据、计算VWAP和相关指标、生成信号，并将有意义的信息返回给EA以供决策。这包括确定主要和次要的支撑/阻力位，以及VWAP和信号解释说明。让我们遵循以下步骤：</p> <p><u>数据准备与预处理</u></p> <p>脚本的第一部分通过执行几个预处理步骤，确保传入的数据是干净且可供分析的。这些步骤确保所有必要的列都包含有效数据，并处理像缺失值或无效值这样的边缘情况。</p> <pre class="code"><span class="comment"># Ensure critical columns have no missing values</span>
+df = df.dropna(subset=[<span class="string">'volume'</span>, <span class="string">'high'</span>, <span class="string">'low'</span>, <span class="string">'open'</span>, <span class="string">'close'</span>])
+
+<span class="comment"># Convert 'date' column to datetime</span>
+df.loc[:, <span class="string">'date'</span>] = pd.to_datetime(df[<span class="string">'date'</span>])
+
+<span class="comment"># Handle zero volume by replacing with NaN and dropping invalid rows</span>
+df.loc[:, <span class="string">'volume'</span>] = df[<span class="string">'volume'</span>].replace(<span class="number">0</span>, np.nan)
+df = df.dropna(subset=[<span class="string">'volume'</span>])
+
+<span class="comment"># Check if data exists after filtering</span>
+<span class="keyword">if</span> df.empty:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="built_in">print</span>(<span class="string">"No data to calculate VWAP."</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> pd.DataFrame()
+</pre> <p>脚本使用<i>dropna()</i>确保基本列（volume, high, low, open, close）不包含缺失值。它还通过将零成交量替换为 <i>NaN</i> 并删除任何成交量无效的行来处理零成交量问题。日期列被转换为日期时间格式，以便进行时间序列分析。</p> <p><u>VWAP计算与附加指标</u></p> <p>脚本计算VWAP（成交量加权平均价格）以及其他指标，如典型价格、平均价格、平均成交量和支撑/阻力位。</p> <pre class="code"><span class="comment"># Calculate VWAP and additional metrics</span>
+df.loc[:, <span class="string">'typical_price'</span>] = (df[<span class="string">'high'</span>] + df[<span class="string">'low'</span>] + df[<span class="string">'close'</span>]) / <span class="number">3</span>
+df.loc[:, <span class="string">'vwap'</span>] = (df[<span class="string">'typical_price'</span>] * df[<span class="string">'volume'</span>]).cumsum() / df[<span class="string">'volume'</span>].cumsum()
+df.loc[:, <span class="string">'avg_price'</span>] = df[[<span class="string">'high'</span>, <span class="string">'low'</span>, <span class="string">'open'</span>, <span class="string">'close'</span>]].mean(axis=<span class="number">1</span>)
+df.loc[:, <span class="string">'avg_volume'</span>] = df[<span class="string">'volume'</span>].rolling(window=<span class="number">2</span>, min_periods=<span class="number">1</span>).mean()
+df.loc[:, <span class="string">'major_support'</span>] = df[<span class="string">'low'</span>].<span class="built_in">min</span>()
+df.loc[:, <span class="string">'major_resistance'</span>] = df[<span class="string">'high'</span>].<span class="built_in">max</span>()
+df.loc[:, <span class="string">'minor_support'</span>] = df[<span class="string">'low'</span>].rolling(window=<span class="number">3</span>, min_periods=<span class="number">1</span>).mean()
+df.loc[:, <span class="string">'minor_resistance'</span>] = df[<span class="string">'high'</span>].rolling(window=<span class="number">3</span>, min_periods=<span class="number">1</span>).mean()
+</pre> <p></p> <ul> <li>VWAP计算：VWAP的计算方式为，以成交量加权的典型价格的累计总和，再除以累计成交量。 </li> <li>典型价格：典型价格是每个周期内最高价、最低价和收盘价的平均值。</li> </ul> <p></p> <p><u>支撑与阻力</u></p> <ul> <li>主要支撑：整个周期内最低价中的最低值。</li> <li>主要阻力：整个周期内最高价中的最高值。</li> <li>次要支撑/阻力：以3个周期为窗口，对最低价和最高价计算的滚动平均值。</li> </ul> <p></p> <p><u>信号生成与分析</u></p> <p>这部分计算市场趋势，并根据收盘价相对于VWAP的位置生成交易信号。它还提供了这些信号的说明。</p> <pre class="code"><span class="comment"># Calculate strength and generate signals</span>
+df.loc[:, <span class="string">'strength'</span>] = np.where(
+&nbsp;&nbsp;&nbsp;&nbsp;(df[<span class="string">'high'</span>] - df[<span class="string">'low'</span>]) != <span class="number">0</span>,
+&nbsp;&nbsp;&nbsp;&nbsp;np.<span class="built_in">abs</span>(df[<span class="string">'close'</span>] - df[<span class="string">'open'</span>]) / (df[<span class="string">'high'</span>] - df[<span class="string">'low'</span>]) * <span class="number">100</span>,
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="number">0</span>
+)
+
+<span class="comment"># Generate Buy/Sell signals based on VWAP</span>
+df.loc[:, <span class="string">'signal'</span>] = np.where(
+&nbsp;&nbsp;&nbsp;&nbsp;df[<span class="string">'close'</span>] &gt; df[<span class="string">'vwap'</span>], <span class="string">'BUY'</span>,
+&nbsp;&nbsp;&nbsp;&nbsp;np.where(df[<span class="string">'close'</span>] &lt; df[<span class="string">'vwap'</span>], <span class="string">'SELL'</span>, <span class="string">'NEUTRAL'</span>)
+)
+
+<span class="comment"># Signal explanation</span>
+df.loc[:, <span class="string">'signal_explanation'</span>] = np.where(
+&nbsp;&nbsp;&nbsp;&nbsp;df[<span class="string">'signal'</span>] == <span class="string">'BUY'</span>,
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">'The price is trading above the VWAP, indicating bullish market tendencies.'</span>,
+&nbsp;&nbsp;&nbsp;&nbsp;np.where(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;df[<span class="string">'signal'</span>] == <span class="string">'SELL'</span>,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">'The price is trading below the VWAP, indicating bearish market tendencies.'</span>,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">'The price is trading at the VWAP, indicating equilibrium in the market.'</span>
+&nbsp;&nbsp;&nbsp;&nbsp;)
+)
+</pre> <p><u>强度计算：</u>此处使用收盘价与开盘价的差值相对于最高价与最低价区间的比率来计算市场强度。数值越高，表明走势越强。</p> <p><u>信号生成</u></p> <ul> <li>买入：当收盘价高于VWAP时。</li> <li>卖出：当收盘价低于VWAP时。</li> <li>中性：当收盘价等于VWAP时。</li> <li>信号说明：根据信号，生成一段文本说明，用以指示市场趋势（看涨、看跌或中性）。</li> </ul> <p></p> <p><u>最终响应与输出</u></p> <p>所有计算完成后，脚本会准备最终的输出，其中包含VWAP、交易信号、说明以及关键的支撑/阻力位。</p> <pre class="code"><span class="comment"># Return data with major and minor support/resistance levels included</span>
+<span class="keyword">return</span> df[[<span class="string">'date'</span>, <span class="string">'vwap'</span>, <span class="string">'signal'</span>, <span class="string">'signal_explanation'</span>, <span class="string">'entry_point'</span>, <span class="string">'major_support'</span>, <span class="string">'major_resistance'</span>, <span class="string">'minor_support'</span>, <span class="string">'minor_resistance'</span>]].iloc[-<span class="number">1</span>]
+</pre> <p></p> <ul> <li>最终输出：脚本返回最近（最后一行）的数据，包括VWAP、交易信号、其说明、入场点（设置为VWAP值）以及主要和次要的支撑/阻力位。计算支撑/阻力位是为了帮助进一步识别市场趋势。发送回EA的响应包含了这些值，使其能够据此进行可视化或采取行动。</li> </ul> <p></p> <p><br/></p> <h3 id="para4">结果</h3> <p>我将从两端提供响应：MQL5端和Python端。在此之前，让我先强调一下确保Python脚本先运行的重要性。要了解更多关于创建和运行Python脚本的信息，请务必查看我之前的<a href="/zh/articles/16967" target="_blank">文章</a>。为确保MetaTrader 5与服务器之间的顺畅通信，请将<i>HTTP</i>地址添加到您的MetaTrader 5设置中。导航至<i>工具</i>&gt;<i>选项</i>，启用“允许 <i>WebRequest”</i>，并在提供的字段中输入服务器地址。请参考下面的GIF图进行操作。</p> <p style="text-align:center;"> <img width="735" height="698" src="https://c.mql5.com/2/114/Setting_Webrequest_adress.gif" loading="lazy" title="Webrequest" alt="Webrequest" style="vertical-align:middle;"/><br/><br/><span class="small">图例 3. Webrequest 设置</span><br/></p> <p>让我们来看看来自Python和MQL5的响应。</p> <ul> <li><u>命令提示符中的Python日志</u></li> </ul> <p></p> <pre class="code">Received data: date,high,low,<span class="built_in">open</span>,close,volume
+<span class="number">2025.01</span><span class="number">.22</span> <span class="number">15</span>:<span class="number">00</span>,<span class="number">8372.10000</span>,<span class="number">8365.60000</span>,<span class="number">8368.90000</span>,<span class="number">8367.80000</span>,<span class="number">3600</span>
+<span class="number">2025.01</span><span class="number">.22</span> <span class="number">16</span>:<span class="number">00</span>,<span class="number">8369.00000</span>,<span class="number">8356.60000</span>,<span class="number">8367.90000</span>,<span class="number">8356.80000</span>,<span class="number">3600</span>
+<span class="number">2025.01</span><span class="number">.22</span> <span class="number">17</span>:<span class="number">00</span>,<span class="number">8359.00000</span>,<span class="number">8347.800</span>...
+Calculating VWAP...
+<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> - - [<span class="number">28</span>/Jan/<span class="number">2025</span> <span class="number">22</span>:<span class="number">07</span>:<span class="number">59</span>] <span class="string">"POST /vwap HTTP/1.1"</span> <span class="number">200</span> -</pre> <p></p> <p>MQL5 EA成功发送了最近150根K线的数据，包括日期、最高价、最低价、开盘价、收盘价和成交量。Python成功接收到了数据，如上面的命令提示符日志所示。虽然由于数据量较大，并非所有信息都被显示出来，但我们仍然可以观察到几根K线的数值。</p> <ul> <li><u>MetaTrader 5 专家顾问日志</u></li> </ul> <pre class="code"><span class="number">2025.01</span><span class="number">.28</span> <span class="number">22</span>:<span class="number">07</span>:<span class="number">59.452</span> VWAP (Step Index,H1)&nbsp;&nbsp;&nbsp;&nbsp;VWAP Expert initialized.
+<span class="number">2025.01</span><span class="number">.28</span> <span class="number">22</span>:<span class="number">07</span>:<span class="number">59.513</span> VWAP (Step Index,H1)&nbsp;&nbsp;&nbsp;&nbsp;CSV file created: MQL5\Files\Step Index_vwap_data.csv
+<span class="number">2025.01</span><span class="number">.28</span> <span class="number">22</span>:<span class="number">07</span>:<span class="number">59.777</span> VWAP (Step Index,H1)&nbsp;&nbsp;&nbsp;&nbsp;Server response: {
+<span class="number">2025.01</span><span class="number">.28</span> <span class="number">22</span>:<span class="number">07</span>:<span class="number">59.777</span> VWAP (Step Index,H1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"entry_point"</span>: <span class="number">8356.202504986322</span>,
+<span class="number">2025.01</span><span class="number">.28</span> <span class="number">22</span>:<span class="number">07</span>:<span class="number">59.777</span> VWAP (Step Index,H1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"major_resistance"</span>: <span class="number">8404.5</span>,
+<span class="number">2025.01</span><span class="number">.28</span> <span class="number">22</span>:<span class="number">07</span>:<span class="number">59.777</span> VWAP (Step Index,H1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"major_support"</span>: <span class="number">8305.0</span>,
+<span class="number">2025.01</span><span class="number">.28</span> <span class="number">22</span>:<span class="number">07</span>:<span class="number">59.777</span> VWAP (Step Index,H1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"minor_resistance"</span>: <span class="number">8348.0</span>,
+<span class="number">2025.01</span><span class="number">.28</span> <span class="number">22</span>:<span class="number">07</span>:<span class="number">59.777</span> VWAP (Step Index,H1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"minor_support"</span>: <span class="number">8341.699999999999</span>,
+<span class="number">2025.01</span><span class="number">.28</span> <span class="number">22</span>:<span class="number">07</span>:<span class="number">59.777</span> VWAP (Step Index,H1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"signal"</span>: <span class="string">"SELL"</span>,
+<span class="number">2025.01</span><span class="number">.28</span> <span class="number">22</span>:<span class="number">07</span>:<span class="number">59.777</span> VWAP (Step Index,H1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"signal_explanation"</span>: <span class="string">"The price is trading below the VWAP, indicating bearish market tendencies."</span>,
+<span class="number">2025.01</span><span class="number">.28</span> <span class="number">22</span>:<span class="number">07</span>:<span class="number">59.777</span> VWAP (Step Index,H1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"vwap"</span>: <span class="number">8356.202504986322</span>
+<span class="number">2025.01</span><span class="number">.28</span> <span class="number">22</span>:<span class="number">07</span>:<span class="number">59.777</span> VWAP (Step Index,H1)&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre> <p>MQL5 EA成功接收了来自Python的响应，并将其记录在MetaTrader 5的“专家”日志中。让我们回顾一下分析响应，看看它与MetaTrader 5图表的匹配情况。</p> <p style="text-align:center;"> <img width="657" height="739" src="https://c.mql5.com/2/114/TESTRESULT.png" loading="lazy" title="系统结果" alt="系统结果" style="vertical-align:middle;"/></p> <p style="text-align:center;"><span class="small">图例 4. 信号显示</span></p> <p>让我们回顾一下信号触发后市场的反应，如下图所示。</p> <p style="text-align:center;"> <img width="656" height="719" src="https://c.mql5.com/2/114/RESULTS.png" loading="lazy" title="市场反应" alt="市场反应" style="vertical-align:middle;"/></p> <p style="text-align:center;"><span class="small">图 5. 市场反应</span></p> <p style="text-align:center;"><br/></p> <h3 id="para5">结论</h3> <p>成功配置VWAP系统后，监控市场方向并使用VWAP水平进行确认至关重要。VWAP水平位受到市场的高度重视，通常充当关键的支撑或阻力区域。此外，选择适合您交易策略的正确时间周期也至关重要。像M1-M15这样的较短时间周期用于捕捉日内波动，M30在精确性和更广阔的视角之间取得了平衡，H1-H4揭示了多日趋势，而日线/周线图则提供了对长期市场动态的洞察。根据适当的时间周期调整您的方法，能确保其更好地与您的交易目标保持一致。</p> <table cellspacing="0" cellpadding="3" width="100%" class="standart"> <thead> <tr> <th>日期</th> <th>工具名称&nbsp;</th> <th>说明</th> <th>版本&nbsp;</th> <th>更新&nbsp;</th> <th>提示</th> </tr> </thead> <tbody> <tr> <td data-label="日期">01/10/24</td> <td data-label="工具名称&nbsp;"><a href="/zh/articles/16014" target="_blank">图表投影仪（Chart Projector）</a></td> <td data-label="说明">用于叠加前一天价格走势（带“幽灵”效果）的脚本。</td> <td data-label="版本&nbsp;">1.0</td> <td data-label="更新&nbsp;">首次发布</td> <td data-label="提示">Lynnchris工具箱中的第一款工具</td> </tr> <tr> <td data-label="日期">18/11/24</td> <td data-label="工具名称&nbsp;"><a href="/zh/articles/15927" target="_blank">分析评论（Analytical Comment）</a></td> <td data-label="说明">它以表格形式提供前一日的市场信息，并预测市场的未来走向。</td> <td data-label="版本&nbsp;">1.0</td> <td data-label="更新&nbsp;">首次发布</td> <td data-label="提示">Lynnchris工具箱中的第二款工具</td> </tr> <tr> <td data-label="日期">27/11/24</td> <td data-label="工具名称&nbsp;"><a href="/zh/articles/16434" target="_blank">分析大师（Analytics Master）</a></td> <td data-label="说明">市场指标每两小时定期更新&nbsp;</td> <td data-label="版本&nbsp;">1.01</td> <td data-label="更新&nbsp;">第二版</td> <td data-label="提示">Lynnchris工具箱中的第三款工具</td> </tr> <tr> <td data-label="日期">02/12/24</td> <td data-label="工具名称&nbsp;"><a href="/zh/articles/16559" target="_blank">分析预测器</a>&nbsp;</td> <td data-label="说明">每两小时定期更新市场指标，并集成Telegram推送功能。</td> <td data-label="版本&nbsp;">1.1</td> <td data-label="更新&nbsp;">第三版</td> <td data-label="提示">工具4</td> </tr> <tr> <td data-label="日期">09/12/24</td> <td data-label="工具名称&nbsp;"><a href="/zh/articles/16560" target="_blank">波动性导航工具</a></td> <td data-label="说明">该EA（智能交易系统）使用布林带、RSI和ATR指标分析市场状况。</td> <td data-label="版本&nbsp;">1.0</td> <td data-label="更新&nbsp;">首次发布</td> <td data-label="提示">工具5</td> </tr> <tr> <td data-label="日期">19/12/24</td> <td data-label="工具名称&nbsp;"><a href="/zh/articles/16700" target="_blank">均值回归信号收割器&nbsp;</a></td> <td data-label="说明">使用均值回归策略分析市场并提供信号&nbsp;</td> <td data-label="版本&nbsp;">1.0&nbsp;</td> <td data-label="更新&nbsp;">首次发布&nbsp;</td> <td data-label="提示">工具6&nbsp;</td> </tr> <tr> <td data-label="日期">9/01/2025&nbsp;</td> <td data-label="工具名称&nbsp;"><a href="/zh/articles/16861" target="_blank">信号脉冲&nbsp;</a></td> <td data-label="说明">多时间框架分析器</td> <td data-label="版本&nbsp;">1.0&nbsp;</td> <td data-label="更新&nbsp;">首次发布&nbsp;</td> <td data-label="提示">工具7&nbsp;</td> </tr> <tr> <td data-label="日期">17/01/2025&nbsp;</td> <td data-label="工具名称&nbsp;"><a href="/zh/articles/16584" target="_blank">指标看板</a>&nbsp;</td> <td data-label="说明">带按钮的分析面板&nbsp;</td> <td data-label="版本&nbsp;">1.0&nbsp;</td> <td data-label="更新&nbsp;">首次发布</td> <td data-label="提示">工具8&nbsp;</td> </tr> <tr> <td data-label="日期">21/01/2025</td> <td data-label="工具名称&nbsp;"><a href="/zh/articles/16967" target="_blank">外部资金流</a></td> <td data-label="说明">通过外部库进行分析</td> <td data-label="版本&nbsp;">1.0&nbsp;</td> <td data-label="更新&nbsp;">首次发布</td> <td data-label="提示">工具9&nbsp;</td> </tr> <tr> <td data-label="日期">27/01/2025</td> <td data-label="工具名称&nbsp;">VWAP</td> <td data-label="说明">成交量加权平均价格 &nbsp;</td> <td data-label="版本&nbsp;">1.3&nbsp;</td> <td data-label="更新&nbsp;">首次发布&nbsp;</td> <td data-label="提示">工具10&nbsp;</td> </tr> </tbody> </table>
+      </div>
+          <p style="text-align: right;">
+            <small>
+              本文由MetaQuotes Ltd译自英文<br>原文地址： <a href="/en/articles/16984" target="_blank">https://www.mql5.com/en/articles/16984</a>
+            </small>
+          </p>
+<div id="cb_16984" class="attachBlock">
+  <strong>附加的文件</strong> |
+  <div class="grouped-attachments-help">
+    <a title="下载单独ZIP中的所有附件" href="/zh/articles/download/16984.zip">
+      <i class="attach-icon attach-icon_zip"></i>下载ZIP
+    </a>
+  </div>
+    <div class="attachItem">
+      <a title="下载 VWAP.py" href="/zh/articles/download/16984/vwap.py"><i class="attach-icon attach-icon_py"></i>VWAP.py</a>
+      <span class="attachSize">(3.89 KB)</span>
+    </div>
+    <div class="attachItem">
+      <a title="下载 VWAP.mq5" href="/zh/articles/download/16984/vwap.mq5"><i class="attach-icon attach-icon_mq5"></i>VWAP.mq5</a>
+      <span class="attachSize">(6.99 KB)</span>
+    </div>
+</div>
+    </div>
+
+  <div class="copyright">
+    <p><strong>注意:</strong> MetaQuotes Ltd.将保留所有关于这些材料的权利。全部或部分复制或者转载这些材料将被禁止。</p>
+      <p>本文由网站的一位用户撰写，反映了他们的个人观点。MetaQuotes Ltd 不对所提供信息的准确性负责，也不对因使用所述解决方案、策略或建议而产生的任何后果负责。</p>
+  </div>
+
+
+
+    <div class="article__author-with-articles">
+      
+
+
+<div class="article-footer__author">
+  <div class="article-footer__author-avatar">
+    <img id="avatar" src="https://c.mql5.com/avatar/2025/10/68fd3661-daee_big.png" title="Christian Benjamin" alt="Christian Benjamin" loading="lazy" width="164" height="164">
+  </div>
+  <div class="article-footer__author-content">
+    <div class="article-footer__author-name">
+      <a href="/zh/users/lynnchris" title="Christian Benjamin">Christian Benjamin</a>
+    </div>
+    <div class="article-footer__author-info">
+      <ul>
+          <li>
+            <i title="工作" class="icons-profile icons-profile_suitcase"></i>
+Developer, Trader and Pastor
+在            Out For Christ Ministries International
+          </li>
+          <li>
+            <i title="实时" class="icons-profile icons-profile_geo"></i>
+            <a target="_blank" rel="nofollow" title="实时" href="https://www.mql5.com/go?https://maps.google.com/?z=4&q=%e6%b4%a5%e5%b7%b4%e5%b8%83%e9%9f%a6">津巴布韦</a>
+          </li>
+        <li>
+          <i title="等级" class="icons-profile icons-profile_statistics"></i>
+          <a title="等级" href="/zh/users/lynnchris/achievements">19977</a>
+        </li>
+      </ul>
+    </div>
+    <div class="article-footer__author-contacts">
+          <li title="Facebook"><a class="icons-networks icons-networks_fb-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://www.facebook.com/christian benjamin"></a></li>
+
+    </div>
+    <div class="article-footer__author-bio">Excellence and integrity define my approach to every project. The same standard is maintained regardless of compensation structure, guided by the conviction that God’s reward surpasses what man can offer. This principle shapes every tool I develop.</div>
+  </div>
+</div>
+
+      <div class="other-author-articles ui">
+        <h4 class="other-author-articles__title">该作者的其他文章</h4>
+        <ul class="other-author-articles__list">
+          <li><a href="/zh/articles/18985" data-fz-event="MQL5+Article+From+Author+Article">价格行为分析工具包开发（第 35 部分）：预测模型训练与部署</a></li>
+          <li><a href="/zh/articles/18911" data-fz-event="MQL5+Article+From+Author+Article">价格行为分析工具包开发（第三十三部分）：K线区间理论工具</a></li>
+          <li><a href="/zh/articles/18824" data-fz-event="MQL5+Article+From+Author+Article">价格行为分析工具包开发（第 32 部分）：基于 Python 的 K 线识别引擎（二）—— 使用 TA-Lib 进行检测</a></li>
+          <li><a href="/zh/articles/18789" data-fz-event="MQL5+Article+From+Author+Article">价格行为分析工具开发（第 31 部分）：基于Python的K线识别引擎（一）—— 手动检测</a></li>
+          <li><a href="/zh/articles/18551" data-fz-event="MQL5+Article+From+Author+Article">价格行为分析工具包开发（第三十部分）：商品通道指数（CCI）零线的EA</a></li>
+          <li><a href="/zh/articles/18616" data-fz-event="MQL5+Article+From+Author+Article">价格行为分析工具包开发（第二十九部分）：暴涨与暴跌拦截EA</a></li>
+          <li><a href="/zh/articles/18486" data-fz-event="MQL5+Article+From+Author+Article">价格行为分析工具开发（第二十八部分）：开盘区间突破工具</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+  <div class="article__last-comments" id="articleAdditional">
+    
+
+<div class="comments-preview">
+    <div class="title">
+      <span></span><b>
+         最近评论 |
+ <a href="/zh/forum/498045">前往讨论</a>
+      </b>
+        (4)
+    </div>
+    <div>
+        
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2024/7/6691788C-22E6.png" srcset="https://c.mql5.com/avatar/2024/7/6691788C-22E6_big.png 2x" alt="Isuru Weerasinghe" title="Isuru Weerasinghe" data-user-login="isuruwe" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/zh/users/isuruwe" data-user-login="isuruwe">Isuru Weerasinghe</a></b>
+              |
+              <span class="comment__date">31 1月 2025 在 10:45</span>
+              <a id="comment_58313531"></a>
+              
+            </div>
+            <div class="content" id="content58313531">
+              您显示该代码在<a href="https://www.mql5.com/zh/articles/2612" target="_blank" title="文章：在真实点差上测试交易策略 " class="linkator"><span class="mark">回溯测试</span></a> 中正常工作，但我得到了这样的错误 HTTP Code：-错误：4014 .根据文档，它是<span>"</span><span>函数不允许</span><span>调用</span>"。 <div> <br/> </div>
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2025/10/68fd3661-daee.png" srcset="https://c.mql5.com/avatar/2025/10/68fd3661-daee_big.png 2x" alt="Christian Benjamin" title="Christian Benjamin" data-user-login="Lynnchris" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/zh/users/lynnchris" data-user-login="Lynnchris">Christian Benjamin</a></b>
+              |
+              <span class="comment__date">31 1月 2025 在 10:51</span>
+              <a id="comment_58313532"></a>
+              
+            </div>
+            <div class="content" id="content58313532">
+              <div class="fquote"><strong><span style="color:#42639C;">Isuru Weerasinghe 回溯测试 中正常工作，但我得到了这样的错误 HTTP Code：-错误：4014 .根据文档，它是<span>"</span><span>函数不允许</span><span>调用</span>"。 <div> <br/> </div></span></strong></div> 对不起。您需要在 Python 脚本中导入 Backtrader、BT 或 VectorBT 等反向测试库。没有这些库，就无法进行回溯测试。
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2025/6/68446669-e598.png" srcset="https://c.mql5.com/avatar/2025/6/68446669-e598_big.png 2x" alt="Too Chee Ng" title="Too Chee Ng" data-user-login="68360626" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/zh/users/68360626" data-user-login="68360626">Too Chee Ng</a></b>
+              |
+              <span class="comment__date">30 5月 2025 在 15:19</span>
+              <a id="comment_58313533"></a>
+              
+            </div>
+            <div class="content" id="content58313533">
+              感谢您的文章。<br/> 我们能否在 MetaTrader 上使用云代理对<i>"</i> 启用<i> WebRequest</i> 的 EA "进行<a href="https://www.mql5.com/zh/articles/2612" target="_blank" title="文章：在真实点差上测试交易策略 " class="linkator"><span class="mark">回溯测试</span></a>（优化）？
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2025/6/68446669-e598.png" srcset="https://c.mql5.com/avatar/2025/6/68446669-e598_big.png 2x" alt="Too Chee Ng" title="Too Chee Ng" data-user-login="68360626" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/zh/users/68360626" data-user-login="68360626">Too Chee Ng</a></b>
+              |
+              <span class="comment__date">30 5月 2025 在 15:45</span>
+              <a id="comment_58313534"></a>
+              
+            </div>
+            <div class="content" id="content58313534">
+              <div class="fquote"><b><span style="color:#42639C;">Too Chee Ng 回溯测试（优化）？ </span></b></div> <p>根据我的发现：</p> <p><b>- 不</b> 允许在<b>云代理</b>（远程 MQL5.com 网络）上使用 WebRequest()</p> <p>- 与 MetaTrader 云代理（阻止外部通信）不同，<b>局域网代理是</b> 允许的<br/></p>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+  </div>
+
+
+    <div class="articles-bottom-list" id="articleAdditional">
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="创建MQL5交易管理员面板（第九部分）：代码组织（1）" src="https://c.mql5.com/2/117/Creating_a_Trading_Administrator_Panel_in_MQL5_Part_IX___LOGO.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/zh/articles/16539" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">创建MQL5交易管理员面板（第九部分）：代码组织（1）</a>
+                <div class="articles-bottom-list__desc">这次将深入探讨处理大型代码库时遇到的挑战。我们将探索在MQL5中进行代码组织的最佳实践，并采用一种实用方法来提升我们交易管理面板源代码的可读性和可扩展性。此外，我们致力于开发可复用的代码组件，这些组件有可能为其他开发者在其算法开发过程中带来益处。请继续阅读并参与讨论。</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="基于Python与MQL5的特征工程（第三部分）：价格角度（2）——极坐标（Polar Coordinates）法" src="https://c.mql5.com/2/117/Feature_Engineering_With_Python_And_MQL5_Part_III_Angle_Of_Price_2__LOGO.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/zh/articles/17085" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">基于Python与MQL5的特征工程（第三部分）：价格角度（2）——极坐标（Polar Coordinates）法</a>
+                <div class="articles-bottom-list__desc">在本文中，我们将第二次尝试将任意市场的价格水平变化转化为对应的角度变化。此次，我们选择了比首次尝试更具数学复杂性的方法，而获得的结果表明，这一调整或许是正确的决策。今天，让我们共同探讨如何通过极坐标以有意义的方式计算价格水平变化所形成的角度，无论您分析的是何种市场。</div>
+              </div>
+          </div>
+        </div>
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="精通日志记录（第五部分）：通过缓存和轮转优化处理程序" src="https://c.mql5.com/2/116/logify60x60.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/zh/articles/17137" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">精通日志记录（第五部分）：通过缓存和轮转优化处理程序</a>
+                <div class="articles-bottom-list__desc">本文通过为处理器添加格式化器、引入用于管理执行周期的 CIntervalWatcher 类、以及采用缓存和文件轮转进行优化，并辅以性能测试和实际示例，从而改进了该日志库。通过这些改进，我们确保了一个高效、可扩展且能适应不同开发场景的日志系统。</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="开发回放系统（第 78 部分）：新 Chart Trade（五）" src="https://c.mql5.com/2/105/Desenvolvendo_um_sistema_de_Replay_Parte_77___LOGO.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/zh/articles/12492" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">开发回放系统（第 78 部分）：新 Chart Trade（五）</a>
+                <div class="articles-bottom-list__desc">在本文中，我们将研究如何实现部分接收方代码。在这里我们将实现一个 EA 交易来测试和了解协议交互是如何工作的。此处提供的内容仅用于教育目的。在任何情况下，除了学习和掌握所提出的概念外，都不应出于任何目的使用此应用程序。</div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+<div class="clear-fix"></div>
+
+<div id='wdausxxqrpvhekbwjrjlhqjghyhesrqqau' class="r6irig5txiuua4k0m r6irig5txiuua4k0m_articles-view gg88d3drb"></div>
+    
+
+<div class="hidden" id="popupRegisterLogin">
+  <div class="register-login-popup">
+    <div class="register-login-popup__header">
+      <img src="https://c.mql5.com/i/registerlandings/logo-2.png" srcset="https://c.mql5.com/i/registerlandings/logo-2_2x.png 2x" alt="MQL5 - MetaTrader 5客户端内置的交易策略语言" loading="lazy" width="74" height="24" />
+    </div>
+    <div class="register-login-popup__content">
+      <div class="register-login-popup__desc">
+        <div class="register-login-popup__title">您错过了交易机会：</div>
+        <ul>
+<li>免费交易应用程序</li>
+<li>8,000+信号可供复制</li>
+<li>探索金融市场的经济新闻</li>
+</ul>
+      </div>
+      <div class="register-login-popup__forms ui">
+        <div class="register-login-popup__tabs" id="registerLoginPopupTabs">
+          <span data-id="register" id="registerLoginPopupTab_register" class="register-login-popup__tab register-login-popup__tab_active">注册</span>
+          <span data-id="login" id="registerLoginPopupTab_login" class="register-login-popup__tab">登录</span>
+        </div>
+        <div id="registerLoginPopupTabContent_register">
+          <div class="ui auth-form__content">
+    
+  <script type='text/javascript'>/*<![CDATA[*/ if (!window.V) var V = []; /*]]>*/</script>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/zh/auth_register_short" id="PopupRegisterquickRegisterForm" onsubmit="PopupRegisterquickRegistration.OnSubmit(this,&#39;zh&#39;);if(Validate(this)) Ajax.form(this,{onready:PopupRegisterquickRegistration.OnSuccessPopup,onerror:PopupRegisterquickRegistration.OnError,onbeginrequest:PopupRegisterquickRegistration.DisableInputs,onendrequest:PopupRegisterquickRegistration.EnableInputs});return(false);" enctype = "multipart/form-data"><input type="hidden" name="__signature" value="c152e39b41af45db8d4de9294c0c8cc3"/>
+    <div class="auth-form__inputs">
+      <input type="hidden" value="0" name="IsValidate" id="PopupRegisterIsValidate" />
+
+      <!--[if lt IE 10]><div class="note">登录名:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input type="text" id="PopupRegisterusername" name="username" class="input" maxlength="32" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.CheckUserName();}" onkeyup="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.ValidateUserName(this, '请输入有效登录名');}" placeholder="登录名" title="可以包括字母，数字，点，破折号和下划线字符，不能以点开始或结束。允许长度为3至32个字符。" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisterusername'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisterusername',10,'您可以使用拉丁字符、数字、下划线和句号。',validate_username]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisterusername">拉丁字符（不带空格）</label>
+      </div>
+      <!--[if lt IE 10]><div class="note">您的电子邮箱:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input class="input" type="email" id="PopupRegisteremail" name="email" placeholder="您的电子邮箱" title="请输入电子邮箱地址(不能超过 256 个字符)。例如：john@example.com" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnChange(this);}" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisteremail'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisteremail',10,'请输入有效email',validate_email]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisteremail">密码将被发送至该邮箱</label>
+      </div>
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Register" />
+    </div>
+    <span id="PopupRegisterquickRegisterSubmit">
+      <input type="submit" value="注册" id="PopupRegisterquickRegisterButton"  title="注册并接收包含密码的邮件" class="button button_yellow"  />
+    </span>
+    <span id="PopupRegisterquickRegisterErrorMessage" class="quick-register-error-message field-validation-error" style="text-align: center; margin-top: 16px; display: none;">
+      发生错误
+    </span>
+</form>
+    
+</div>
+<div class="auth-social">
+  <ul class="auth-social-list" id="socialList">
+    <li><a onclick="window.fpush({name: 'MQL5+Popup+Register+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/zh/auth_oauth2?provider=Google&amp;amp;return=popup&amp;amp;reg=1" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">使用 Google 登录</a></li>
+  </ul>
+</div>
+<div class="auth-block-agree">
+  <p>
+    您同意<a target="_blank" href="/zh/about/privacy">网站政策</a>和<a target="_blank" href="/zh/about/terms">使用条款</a>
+  </p>
+</div>
+
+
+        </div>
+        <div id="registerLoginPopupTabContent_login" class="hidden">
+            <div class="auth-form__text">
+    如果您没有帐号，请<a href="https://www.mql5.com/zh/auth_register" rel="nofollow" style="vertical-align: top">注册</a>
+  </div>
+<div class="ui auth-form__content auth-form__content_login" id="loginFormWrapper">
+    
+  <div id="needCookies" class="need-cookies hidden">
+    <div class="danger-box">
+      <p>可以使用cookies登录MQL5.com网站。</p>
+<p>请在您的浏览器中启用必要的设置，否则您将无法登录。</p>
+    </div>
+  </div>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/zh/auth_login" id="loginForm" onsubmit="if(window.quickLogin){return window.quickLogin.onSubmit(this);}var result = Validate(this); if(result) { preventDoubleSubmit(this); } return result;"><input id="RedirectAfterLoginUrl" name="RedirectAfterLoginUrl" type="hidden" value="" /><input id="RegistrationUrl" name="RegistrationUrl" type="hidden" value="" /><input data-val="true" data-val-required="The ShowOpenId field is required." id="ShowOpenId" name="ShowOpenId" type="hidden" value="True" /><input id="TrackingSection" name="TrackingSection" type="hidden" value="Articles" />    <input name="ViewType" type="hidden" value="5" />
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Login" />
+    <!--[if lt IE 10]><div class="note">您的登录名:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <input class="input qa-login" id="Login" name="Login" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="登录名" title="您的登录名" type="text" value="" />
+      <script type='text/javascript' id='validate_Login'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Login',1,'输入注册时使用的登录名']);});mqGlobal.AddOnReady(function() {V.push(['Login',10,'电子邮箱无法使用。请输入您的登录名',validateLogin]);}); /*]]>*/</script>
+    </div>
+    <!--[if lt IE 10]><div class="note">密码:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <div class="input-with-show">
+        <input autocomplete="off" class="input qa-password" id="Password" name="Password" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="密码" title="请输入密码" type="password" />
+        <span class="input-with-show__icon" title="显示密码" onclick="if(window.quickLogin){window.quickLogin.showPass(this, '显示密码', '隐藏密码');}"></span>
+      </div>
+      <script type='text/javascript' id='validate_Password'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Password',1,'请输入密码']);}); /*]]>*/</script>
+    </div>
+    <script type="text/javascript">
+    function validateLogin(input) {
+      console.log('validate login ' + input.value);
+      return !/^\w+([-+.'']{1,2}\w+)* @\w+([-.]\w+)*\.\w+([-.]\w+)*$/i.test(input.value);
+    }
+    </script>
+    <div class="forgot" id="loginForgotBlock"><a id="loginForgotLink" href="https://www.mql5.com/zh/auth_forgotten?return=popup">忘记您的登录名/密码？</a></div>
+    <input type="submit" class="button button_yellow qa-submit" id="loginSubmit" value="登录" title="输入">
+</form></div>
+
+  <div class="auth-social" id="authSocialBlock">
+    <ul class="auth-social-list" id="socialList">
+      <li><a onclick="window.fpush({name: 'MQL5+Popup+Login+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/zh/auth_oauth2?provider=Google&amp;amp;return=popup" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">使用 Google 登录</a></li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script id="popupSection" type="application/json">{"section": "Articles"}</script>
+<script id="popupTranslate" data-type="translate" type="application/json">
+{
+  "popup":
+  {
+  "EmailTitle" : "密码已经发送到{0}",
+  "EmailDescription" : "使用收到的密码和注册时指定的登录名进行登录",
+  "SubmitButtonText" : "激活账户",
+  "RegistrationTip" : "如果您没有收到密码邮件，请检查垃圾箱文件夹或&lt;a href={0}&gt;重新注册&lt;/a&gt;"
+  }
+}
+</script>
+
+    
+
+    
+
+
+    </article>
+  </div>
+
+
+
+<div aria-hidden="true" class="footer  desktop" id="footer">
+  <ul class="links  links_desktop">
+      <li id="navFooterCommunity">
+        <nav>
+          <ul>
+            <li><a href="https://web.metatrader.app/terminal?mode=demo&amp;lang=zh" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Footer+Trading">在线交易 / WebTerminal</a></li>
+            <li><a href="/zh/code" data-fz-event="MQL5+Footer+CodeBase">免费技术指标和自动交易</a></li>
+            <li><a href="/zh/articles" data-fz-event="MQL5+Footer+Articles">关于编程和交易的文章</a></li>
+            <li><a href="/zh/job" data-fz-event="MQL5+Footer+Job">订购自由职业者的自动交易</a></li>
+            <li><a href="/zh/market" data-fz-event="MQL5+Footer+Market">EA交易和应用程序市场</a></li>
+            <li><a href="/zh/signals" data-fz-event="MQL5+Footer+Signals">跟随外汇信号</a></li>
+            <li><a href="/zh/vps" data-fz-event="MQL5+Footer+VPS">低延迟外汇VPS</a></li>
+            <li><a href="/zh/forum" data-fz-event="MQL5+Footer+Forum">交易者论坛</a></li>
+            <li><a href="/zh/blogs" data-fz-event="MQL5+Footer+Blogs">交易博客</a></li>
+            <li><a rel="nofollow" href="/zh/charts" data-fz-event="MQL5+Footer+Charts">图表</a></li>
+            <li><a href="/zh/widgets" data-fz-event="MQL5+Footer+Widgets">免费小工具</a></li>
+          </ul>
+        </nav>
+      </li>
+      <li id="navFooterMt5">
+        <nav>
+          <ul>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> 交易平台</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/zh/releasenotes" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span>最新更新</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/zh/news" data-fz-event="MQL5+Footer+MetaTrader+5">新闻，执行和技术</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/zh/terminal/help" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> 用户手册</a></li>
+            <li><a href="/zh/docs" data-fz-event="MQL5+Footer+Docs">交易策略的MQL5语言</a></li>
+            <li><a rel="nofollow noopener" href="https://cloud.mql5.com" data-fz-event="MQL5+Footer+Cloud">MQL5 Cloud Network</a></li>
+            <li><a rel="noopener" href="https://forge.mql5.io/?lang=zh-CN" data-fz-event="MQL5+Footer+Forge" target="_blank">MQL5 Algo Forge</a></li>
+              <li><a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Footer">下载 <span class="nobr">MetaTrader 5</span></a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/zh/terminal/help/start_advanced/installation" data-fz-event="MQL5+Footer+MetaTrader+5">安装平台</a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/zh/terminal/help/start_advanced/deinstallation" data-fz-event="MQL5+Footer+MetaTrader+5">卸载平台</a></li>
+          </ul>
+        </nav>
+
+      </li>
+    <li id="navFooterWebsite">
+        <nav>
+          <ul>
+            <li><a rel="nofollow" href="/zh/about" data-fz-event="MQL5+Footer+About">关于</a></li>
+              <li><a href="/zh/wall" data-fz-event="MQL5+Footer+Wall">时间轴</a></li>
+            <li><a rel="nofollow" href="/zh/about/terms" data-fz-event="MQL5+Footer+About">条款和条件</a></li>
+            <li><a rel="nofollow" href="/zh/about/autopayments" data-fz-event="MQL5+Footer+About">定期付款协议</a></li>
+            <li><a rel="nofollow" href="/zh/about/agencyagreement" data-fz-event="MQL5+Footer+About">代理协议 – 报价</a></li>
+            <li><a rel="nofollow" href="/zh/about/privacy" data-fz-event="MQL5+Footer+About">隐私和数据保护政策</a></li>
+            <li><a rel="nofollow" href="/zh/about/cookies" data-fz-event="MQL5+Footer+About">Cookies政策</a></li>
+            <li>
+                <a rel="nofollow" href="/zh/contact" data-fz-event="MQL5+Footer+Contacts">联系和请求</a>
+            </li>
+          </ul>
+        </nav>
+    </li>
+
+      <li>
+        <div class="footer__products">
+          <div class="footer__product">
+            <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com" class="footer__product-name">MetaTrader 5</a>
+            <div class="footer__product-links">
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon windows" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">下载MetaTrader 5 Windows</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/MetaTrader5.pkg.zip?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon macos" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">下载MetaTrader 5 MacOS</div></a>
+            <a rel="nofollow noopener" href="https://www.mql5.com/zh/articles/625?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon linux" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">下载MetaTrader 5 Linux</div></a>
+            <a rel="nofollow noopener" href="https://web.metatrader.app/terminal?mode=demo&amp;lang=zh" class="icon web"><div  class="footer__product-link-hint footer__product-link-hint-short">打开MetaTrader 5网页端</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/ios?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=zh" class="icon ios" data-fz-event="MetaTrader+5+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/2gQnNpp1I1s.png)">扫描并从App Store安装</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=zh" class="icon android" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Rw3xvJ-W-9d.png)">扫描并从Google Play安装</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon huawei" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ZRt&#x2B;zI1l&#x2B;8O.png)">扫描并从华为AppGallery安装</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon ark" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/L0Q9oag&#x2B;3eE.png)">扫描并获取Android APK文件</div></a>
+            </div>
+          </div>
+          <div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com/en/news/2270" class="footer__product-name">MQL5 Channels</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=zh" class="icon ios" data-fz-event="MQL5+Channels+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/dJ&#x2B;ywneYpcO.png)">扫描并从App Store安装</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=zh" class="icon android" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ztQ9rjR7BVd.png)">扫描并从Google Play安装</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Su&#x2B;fe4n374e.png)">扫描并从华为AppGallery安装</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mql5channels/mql5channels.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/G6Mg4NfCPzO.png)">扫描并获取Android APK文件</div></a>
+              </div>
+            </div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.tradays.com/zh/download?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MQL5+Footer+Download+Tradays" class="footer__product-name">Economic Calendar</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=zh" class="icon ios" data-fz-event="Tradays+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/hnFNkjPw-1E.png)">扫描并从App Store安装</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=zh" class="icon android" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/wG3Ztd6mYap.png)">扫描并从Google Play安装</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CrS7bbDAdAO.png)">扫描并从华为AppGallery安装</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/tradays/tradays.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/VZi8YPIb2op.png)">扫描并获取Android APK文件</div></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__networks">
+          <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow" title="Facebook"><i class="icons-networks icons-networks_fb"></i></a>
+          <a href="https://t.me/mql5dev" target="_blank" rel="nofollow" title="Telegram"><i class="icons-networks icons-networks_tg"></i></a>
+          <a href="https://x.com/mql5com" target="_blank" rel="nofollow" title="X (Twitter)"><i class="icons-networks icons-networks_tw"></i></a>
+          <a href="https://www.youtube.com/@MetaQuotesOfficial" target="_blank" rel="nofollow" title="YouTube"><i class="icons-networks icons-networks_yt"></i></a>
+          <a href="https://www.linkedin.com/company/mql5" target="_blank" rel="nofollow" title="LinkedIn"><i class="icons-networks icons-networks_linkedin"></i></a>
+          <span>订阅算法交易新闻</span>
+        </div>
+  
+        <div class="footer__other">
+          <div class="footer__not-a-broker">不是交易商，不提供真实交易账户</div>
+          <div class="copyright">35 Dodekanisou str, Germasogeia, 4043,&nbsp;Limassol,&nbsp;Cyprus</div>
+          <div class="copyright">Copyright 2000-2026, <span class="nobr">MetaQuotes Ltd</span></div>
+        </div>
+      </li>
+  </ul>
+</div>
+
+
+
+<div class="shadow-layer" id="layer"></div>
+    
+
+  <div class="b-fixed-mt" id="bFixedMt" style="display: none;">
+    
+  </div>
+
+
+<script type='text/javascript'>
+		(function (a, e, f, g, b, c, d) { a[b] || (a.FintezaCoreObject = b, a[b] = a[b] || function () { (a[b].q = a[b].q || []).push(arguments) }, a[b].l = 1 * new Date, c = e.createElement(f), d = e.getElementsByTagName(f)[0], c.async = !0, c.defer = !0, c.src = g, d && d.parentNode && d.parentNode.insertBefore(c, d)) })
+      (window, document, "script", "/ff/core.js", "fz");
+		window.fz("register", "website", {
+      id: "sqjxkxkswybhifrohpyooonwgbvsfzmayq",
+			trackLinks: true
+		});
+        mqGlobal.AddOnReady(function () { Mql5Cookie.init('mql5.com', '5089400769967843248'); });
+mqGlobal.AddOnReady(function(){if(!window.Pocket){window.Pocket=new PocketManager();}});mqGlobal.AddOnReady(function(){if(!window.translateManager){window.translateManager=new Translate(undefined,'错误：翻译失败，请稍后再试。');}if(document.querySelectorAll){var translateElements=document.querySelectorAll(".translateMenu");if(translateElements){var i=0,count=translateElements.length;for(i;i<count;i++){(function(i){var contentid=dataset(translateElements[i],"contentid"),sourcelang=dataset(translateElements[i],"sourcelang"),targetlang=dataset(translateElements[i],"targetlang"),moduleid=parseInt(dataset(translateElements[i],"moduleid")),typeid=parseInt(dataset(translateElements[i],"typeid")),entityid=parseInt(dataset(translateElements[i],"entityid"));Core.AddHandler(translateElements[i],"mouseover",function(){return translateManager.SetMenu(this,contentid,sourcelang,targetlang,moduleid,typeid,entityid);});})(i);}}}});window.fz("show","wdausxxqrpvhekbwjrjlhqjghyhesrqqau");window.mqGlobal.AddOnLoad(function(){window.fpush('MQL5+Article+Open');Articles.CheckOnScrollDown();});mqGlobal.AddOnReady(function(){window.PopupRegisterquickRegistration=new QuickRegistration('PopupRegister','Popup+Register','Articles');});function validate_username(input){var reg=/^([a-z0-9]){1}([\-._a-z0-9]){1,30}([\-_a-z0-9]){1}$/i,value=input.value,result=true;if(reg.test(value)){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Login',unit:'section',value:'Articles'});}return result;}function validate_email(input){var reg=/^\w+([-+.'']{1,2}\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/i,value=input.value,result=true,length_value=value.length;if(reg.test(value)&&length_value>=1&&length_value<=40){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Email',unit:'section',value:'Articles'});}return result;};mqGlobal.AddOnReady(function(){var username=$('PopupRegisterusername'),email=$('PopupRegisteremail');if(username)username.value='';if(email)email.value='';});mqGlobal.AddOnReady(function(){window.quickLogin=new QuickLogin('Popup+Login','Articles');});mqGlobal.AddOnLoad(function(){window.showLoginRegisterPopupAtEnd();});mqGlobal.AddOnLoad(function(){window.tooltipUserInfo.init();});mqGlobal.AddOnReady(function(){{window.initHeaderSearch('','https://www.mql5.com/zh/search');}});</script><script type="text/javascript">mqGlobal.AddOnReady(function(){window.initSuggestions("headerSearchKeyword","zh","https://search.mql5.com/api/query","https://www.mql5.com/zh/users_search/suggestion");});window.fz("show","vgckrufggwxdtfscpyalmenexmvhljduja");mqGlobal.AddOnReady(function(){window.floatVerticalPanelNode=FloatVerticalPanel('该网站使用cookies。了解有关我们<a href="/zh/about/cookies">Cookies政策</a>的更多信息。','cookie_accept');});							if (typeof Attach !== "undefined")
+			Attach.setAcceptFilter(".zip, .txt, .log, .mqh, .ex5, .mq5, .mq4, .mqproj, .ex4, .mt5, .set, .tpl, .cl, .py, .sqlite, .csv, .ini, .ipynb, .onnx, .gif, .png, .jpg, .jpeg, .mp4, .webm");
+	</script>
+
+<script type="application/ld&#x2B;json">
+		[
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"url": "https://www.mql5.com",
+				"logo": "https://c.mql5.com/i/community/logo_mql5-2.png",
+				"sameAs": [
+					"https://www.facebook.com/mql5.community",
+					"https://www.x.com/mql5com",
+					"https://www.youtube.com/user/MetaQuotesOfficial"
+				 ]
+			}
+		
+, 
+{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"论坛","description":"交易策略和算法交易的讨论。MQL5.community  最大的外汇论坛","url":"https://www.mql5.com/zh/forum","children":[]},{"@type":"SiteNavigationElement","position":2,"name":"市场","description":"MetaTrader 市场 - 自动交易，指标，交易书籍和杂志的市场","url":"https://www.mql5.com/zh/market","children":[]},{"@type":"SiteNavigationElement","position":3,"name":"信号","description":"MetaTrader的群组交易，复制交易和账户监控 - MQL5.com交易信号","url":"https://www.mql5.com/zh/signals","children":[]},{"@type":"SiteNavigationElement","position":4,"name":"自由职业者","description":"订购EA交易、技术指标和算法交易应用程序。外汇工作。MQL5.com自由职业者服务。聘请MetaTrader专家和专业人员。","url":"https://www.mql5.com/zh/job","children":[]},{"@type":"SiteNavigationElement","position":5,"name":"报价","description":"","url":"https://www.mql5.com/zh/quotes/overview","children":[]},{"@type":"SiteNavigationElement","position":6,"name":"MetaTrader","description":"","url":"https://www.metatrader.com","children":[]},{"@type":"SiteNavigationElement","position":7,"name":"网页端","description":"MetaTrader交易平台的网页端。在线外汇交易。","url":"https://web.metatrader.app/terminal?mode=demo","children":[]},{"@type":"SiteNavigationElement","position":8,"name":"经济日历","description":"","url":"https://www.mql5.com/zh/economic-calendar","children":[]},{"@type":"SiteNavigationElement","position":9,"name":"VPS","description":"","url":"https://www.mql5.com/zh/vps","children":[]},{"@type":"SiteNavigationElement","position":10,"name":"文章","description":"","url":"https://www.mql5.com/zh/articles","children":[]},{"@type":"SiteNavigationElement","position":11,"name":"代码库","description":"下载带有源代码的自动交易，技术指标和脚本 - MetaTrader 5的MQL5代码库","url":"https://www.mql5.com/zh/code","children":[]},{"@type":"SiteNavigationElement","position":12,"name":"Algo Forge","description":"","url":"https://forge.mql5.io","children":[]},{"@type":"SiteNavigationElement","position":13,"name":"文档","description":"MetaQuotes Language 5 (MQL5)语言参考 - MQL5.com文档","url":"https://www.mql5.com/zh/docs","children":[]}]}		
+,
+{"@context":"https://schema.org","@type":"TechArticle","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.mql5.com/zh/articles/16984"},"headline":"价格行为分析工具包开发（第10部分）：外部资金流（二）VWAP","image":["https://c.mql5.com/2/114/image_2025-01-28_003832793.png","https://c.mql5.com/2/114/image1.png","https://c.mql5.com/2/114/FLOWCHART__1.png","https://c.mql5.com/2/114/Setting_Webrequest_adress.gif","https://c.mql5.com/2/114/TESTRESULT.png","https://c.mql5.com/2/114/RESULTS.png"],"datePublished":"2025-10-20T15:05:09+00:00Z","dateModified":"2025-10-20T15:02:58+00:00Z","author":{"@type":"Person","name":"Christian Benjamin","url":"https://www.mql5.com/zh/users/lynnchris"},"editor":{"@type":"Organization","name":"MetaQuotes","url":"https://www.mql5.com/zh/users/metaquotes","address":{"@type":"PostalAddress","addressCountry":"MY"}},"publisher":{"@type":"Organization","name":"MQL5 Community","url":"https://www.mql5.com","logo":{"@type":"ImageObject","url":"https://c.mql5.com/i/community/logo_mql5-2.png"}},"description":"通过我们的综合指南，掌握VWAP的强大力量！学习如何使用MQL5和Python将VWAP分析集成到您的交易策略中。最大化您的市场洞察力，并改善您今天的交易决策。"}
+,
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":"https://www.mql5.com/zh/articles","name":"文章"},{"@type":"ListItem","position":2,"item":"https://www.mql5.com/zh/articles/mt5","name":"MetaTrader 5"},{"@type":"ListItem","position":3,"item":"https://www.mql5.com/zh/articles/mt5/trading_systems","name":"交易系统"}]}
+
+		]
+	</script>
+</body>
+</html>

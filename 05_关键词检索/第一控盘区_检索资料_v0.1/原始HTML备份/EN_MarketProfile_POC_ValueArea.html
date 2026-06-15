@@ -1,0 +1,1100 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+
+  <meta name="robots" content="max-snippet:250,max-image-preview:large">
+  <meta name="description" content="In this article, we will consider Market Profile indicator. We will find out what lies behind this name, try to understand its operation principles and have a look at its terminal version (MarketProfile).">
+  <meta property="og:url" content="https://www.mql5.com/en/articles/16461">
+  <meta property="og:title" content="Market Profile indicator">
+  <meta property="og:description" content="In this article, we will consider Market Profile indicator. We will find out what lies behind this name, try to understand its operation principles and have a look at its terminal version (MarketProfile).">
+      <meta property="og:image" content="https://c.mql5.com/2/103/Learning_about_the_Market_Profile_indicator_1200x628.jpg">
+      <meta property="og:image:secure_url" content="https://c.mql5.com/2/103/Learning_about_the_Market_Profile_indicator_1200x628.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2025-07-14T11:49:41.0000000Z">
+  <meta property="article:author" content="https://www.mql5.com/en/users/artmedia70">
+  <meta property="article:section" content="MetaTrader 5">
+  <meta property="article:tag" content="Examples">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@mql5com">
+  <meta name="twitter:image" content="https://c.mql5.com/2/103/Learning_about_the_Market_Profile_indicator_1200x628.jpg">
+  <meta name="theme-color" content="#4a76b8">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-config" content="none">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta property="qc:admins" content="36367170677651456375">
+  <meta property="wb:webmaster" content="073d7690269bcd81">
+  <link rel="shortcut icon" href="https://c.mql5.com/i/favicon4.ico">
+  <link rel="dns-prefetch" href="https://c.mql5.com">
+  <link href="https://c.mql5.com/styles/core.444bc25de4c9131a69fedfe5ac42a082.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/all.266d64b83529847f568747dd160d42b0.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/articles.bc4209e4de0b5296041832431b46f3dd.css" type="text/css" rel="stylesheet" media="all">
+  <link href="/en/articles/rss" rel="alternate" type="application/rss+xml" title="Articles on the development and application of MetaTrader 5 trading robots and technical indicators">
+  <link rel="canonical" href="https://www.mql5.com/en/articles/16461">
+  <link rel="alternate" hreflang="en" href="https://www.mql5.com/en/articles/16461">
+  <link rel="alternate" hreflang="ru" href="https://www.mql5.com/ru/articles/16461">
+  <link rel="alternate" hreflang="zh" href="https://www.mql5.com/zh/articles/16461">
+  <link rel="alternate" hreflang="es" href="https://www.mql5.com/es/articles/16461">
+  <link rel="alternate" hreflang="de" href="https://www.mql5.com/de/articles/16461">
+  <link rel="alternate" hreflang="ja" href="https://www.mql5.com/ja/articles/16461">
+  <link rel="alternate" hreflang="pt" href="https://www.mql5.com/pt/articles/16461">
+  <title>Market Profile indicator - MQL5 Articles</title>
+
+
+
+<script type="text/javascript">
+  !function(){window.mqGlobal={};var t=!1,n=!1,e=[],o=[],i=[];function d(t){var n;for(n=0;n<t.length;n+=1)t[n]()}function c(){t||(t=!0,d(e),d(o),o=[],e=[])}function a(){c(),n||(n=!0,d(i),i=[])}if(mqGlobal.AddOnReady=function(n,i){t?n(document):i?e.push(n):o.push(n)},mqGlobal.AddOnLoad=function(t){n?t(document):i.push(t)},mqGlobal.AddOnActiveWindowChange=function(t){this._onvisibility||(this._onvisibility=[]),this._onvisibility[this._onvisibility.length]=t},document.addEventListener)document.addEventListener("DOMContentLoaded",c,!1),window.addEventListener("load",a,!1);else if(document.attachEvent&&(document.attachEvent("onreadystatechange",(function(){switch(document.readyState){case"interactive":c();break;case"complete":a()}})),window.attachEvent("onload",a),document.documentElement.doScroll&&window==window.top)){!function n(){if(!t&&document.body)try{document.documentElement.doScroll("left"),c()}catch(t){setTimeout(n,0)}}()}}();
+  mqGlobal.CookieDomain = ".mql5.com";
+  mqGlobal.Language = 'en';
+  mqGlobal.IsMobile = false;
+  mqGlobal.ClearRteStorage = function (e) { if (window.GStorage || (window.GStorage = globalStorage()), window.GStorage.supported) try { var o = e; window.GStorage.getItem("rte_autosave_uid", function (e, t) { t == o && (window.GStorage.removeItem("rte_autosave_text"), window.GStorage.removeItem("rte_autosave_date"), window.GStorage.removeItem("rte_autosave_uid")) }) } catch (e) { } };
+</script>
+  
+
+    <script src="https://c.mql5.com/js/all.c09fd283bed20d28a52c95cd70a12a27.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/vendor.1be6e9a4a90b28525f93c4c69a5058a1.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/articles.cd4c73c476b2781eecdf04f5583514b5.js" type="text/javascript" defer="defer"></script>
+
+
+</head>
+
+<body id="cover" class="cover">
+
+
+  <nav class="head">
+    <a href="https://www.mql5.com" class="head__logo" title="MQL5 - Language of trade strategies built-in the MetaTrader 5 client terminal"></a>
+      <div class="head__content">
+        <div class="main-menu" id="mainmenu">
+          
+                    <ul class="main-menu__top-level" id="menuTopLevel">
+                    <li><a href="/en/forum" data-fz-event="MQL5+Menu+Forum">Forum</a></li>
+                    <li><a href="/en/market" data-fz-event="MQL5+Menu+Market">Market</a></li>
+                    <li><a href="/en/signals" data-fz-event="MQL5+Menu+Signals">Signals</a></li>
+                    <li><a href="/en/job" data-fz-event="MQL5+Menu+Job">Freelance</a></li>
+                    <li><a href="/en/vps" data-fz-event="MQL5+Menu+VPS">VPS</a></li>
+                    <li><a href="/en/quotes/overview" data-fz-event="MQL5+Menu+Overview">Quotes</a></li>
+                    <li><a href="https://www.metatrader.com" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+MetaTrader">MetaTrader</a></li>
+                  </ul><ul class="main-menu__second-level" id="menuSecondLevel">
+                    <li class="main-menu__selected"><a href="/en/articles" data-fz-event="MQL5+Menu+Articles"><img src="https://c.mql5.com/i/menu/icon-articles4.svg" alt="" width="16" height="16"/>Articles</a></li>
+                    <li><a href="/en/code" data-fz-event="MQL5+Menu+CodeBase"><img src="https://c.mql5.com/i/menu/icon-code4.svg" alt="" width="16" height="16"/>CodeBase</a></li>
+                    <li><a href="https://forge.mql5.io/?lang=en" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+AlgoForge"><img src="https://c.mql5.com/i/menu/icon-algoforge4.svg" alt="" width="16" height="16"/>Algo Forge</a></li>
+                    <li><a href="/en/docs" data-fz-event="MQL5+Menu+Docs"><img src="https://c.mql5.com/i/menu/icon-docs4.svg" alt="" width="16" height="16"/>Documentation</a></li>
+                    <li><a href="/en/book" data-fz-event="MQL5+Menu+Book"><img src="https://c.mql5.com/i/menu/icon-book4.svg" alt="" width="16" height="16"/>AlgoBook</a></li>
+                    <li><a href="/en/neurobook" data-fz-event="MQL5+Menu+Neurobook"><img src="https://c.mql5.com/i/menu/icon-neurobook4.svg" alt="" width="16" height="16"/>NeuroBook</a></li>
+                    <li><a href="/en/economic-calendar" data-fz-event="MQL5+Menu+Economic+Calendar"><img src="https://c.mql5.com/i/menu/icon-economic-calendar4.svg" alt="" width="16" height="16"/>Calendar</a></li>
+                    <li><a href="https://web.metatrader.app/terminal?mode=demo&lang=en" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Menu+Trading"><img src="https://c.mql5.com/i/menu/icon-trading4.svg" alt="" width="16" height="16"/>WebTerminal</a></li>
+                    <li class="main-menu__mobile"><a href="/en/about">About</a></li>
+                    <li class="main-menu__second-tools"><a rel="noopener" target="_blank" href="https://t.me/mql5dev" title="Follow us on socials for top articles and CodeBase updates" class="button-mt" data-vars-fz="Algo+Trading+Channel+Submenu"><img width="18" height="18" src="https://c.mql5.com/i/sidebar/tg.svg" alt="" loading="lazy">Algo Trading Channel</a></li>
+                    </ul>
+        </div>
+          <div class="main-menu__active">
+            <a id="mainMenuSelected" href="#">
+              <span class="main-menu__primary">Articles</span><span class="main-menu__secondary">Sections</span>
+            </a>
+          </div>
+<form action="https://www.mql5.com/en/search" onsubmit="return false;" autocomplete="off" id="headerSearchForm" class="header-search" method="post">
+<button type="button" id="headerSearchButton" title="Search" class="header-search__button"></button><div class="header-search__input"><input name="keyword" type="text" enterkeyhint="search" title="Enter search text" placeholder="Search" id="headerSearchKeyword"/><label for="headerSearchKeyword" class="header-search__placeholder">Type <span>/</span> to search:  @user, $symbol, ...</label><button id="headerSearchSubmit" class="header-search__submit"></button></div><button type="button" id="headerSearchClean" title="Close" class="header-search__clean"></button></form>        <input class="blurHandler" id="mainMenuBlurHandler" type="checkbox">
+      </div>
+      <div class="head__toolbar" id="headerToolbar">
+          <div class="container loginRegister">
+            <nav>
+              <ul id="loginRegisterButtons"><li><a class="login" title="Please sign in. OpenID supported" href="https://www.mql5.com/en/auth_login" rel="nofollow" data-fz-event="MQL5+Menu+Siginin">Log in</a></li><li><a class="registration en" title="Please register" href="https://www.mql5.com/en/auth_register" rel="nofollow" data-fz-event="MQL5+Menu+Register" onclick="window.fpush('MQL5+Button+Click');">Create an account</a></li></ul>
+            </nav>
+          </div>
+        <div class="toggle-button" id="sidebarToggleButton">
+          <i></i>
+        </div>
+
+        <div class="group-menu" id="groupMenu">
+
+
+          <div class="container lang-menu-container">
+            <div id="langMenuContainer" class="lang-menu">
+              <input class="blurHandler" id="langmenuBlurHandler" type="checkbox">
+              <nav>
+                <ul class="lang-menu__list" id="langmenu">
+                  <li class="lang-menu__list-item lang-menu__list-item_selected"><a href="/en/articles" aria-label="English (English)"><i class="icons-languages icons-languages_en"></i><span>English</span></a></li>
+<li class="lang-menu__list-item"><a href="/ru/articles" aria-label="Русский (Russian)"><i class="icons-languages icons-languages_ru"></i><span>Русский</span></a></li>
+<li class="lang-menu__list-item"><a href="/zh/articles" aria-label="中文 (Chinese)"><i class="icons-languages icons-languages_zh"></i><span>中文</span></a></li>
+<li class="lang-menu__list-item"><a href="/es/articles" aria-label="Español (Spanish)"><i class="icons-languages icons-languages_es"></i><span>Español</span></a></li>
+<li class="lang-menu__list-item"><a href="/pt/articles" aria-label="Português (Portuguese)"><i class="icons-languages icons-languages_pt"></i><span>Português</span></a></li>
+<li class="lang-menu__list-item"><a href="/ja/articles" aria-label="日本語 (Japanese)"><i class="icons-languages icons-languages_ja"></i><span>日本語</span></a></li>
+<li class="lang-menu__list-item"><a href="/de/articles" aria-label="Deutsch (German)"><i class="icons-languages icons-languages_de"></i><span>Deutsch</span></a></li>
+<li class="lang-menu__list-item"><a href="/ko/articles" aria-label="한국어 (Korean)"><i class="icons-languages icons-languages_ko"></i><span>한국어</span></a></li>
+<li class="lang-menu__list-item"><a href="/fr/articles" aria-label="Français (French)"><i class="icons-languages icons-languages_fr"></i><span>Français</span></a></li>
+<li class="lang-menu__list-item"><a href="/it/articles" aria-label="Italiano (Italian)"><i class="icons-languages icons-languages_it"></i><span>Italiano</span></a></li>
+<li class="lang-menu__list-item"><a href="/tr/articles" aria-label="Türkçe (Turkish)"><i class="icons-languages icons-languages_tr"></i><span>Türkçe</span></a></li>
+
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+  </nav>
+
+
+
+  <div id="left-sidebar-selector" class="left-sidebar__selector left-sidebar__selector_padding">
+    <div class="left-sidebar__title">
+MetaTrader 5 /     Examples
+    </div>
+    <i class="icons-ux icons-ux_arrow-down-black"></i>
+  </div>
+  <div class="articles-container block-with-sidebar">
+    <aside class="left-sidebar left-sidebar_270" id="left-sidebar">
+      
+  <ul class="tree-menu-ul"><li class="tree-menu__item tree-menu__item_selected"><a class="tree-menu__link" href="/en/articles/examples"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples.svg" alt="" loading="lazy"/>Examples</a><ul class="tree-menu__list tree-menu__list_nested"><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/examples_indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_indicators.svg" alt="" loading="lazy"/>Indicators</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/examples_experts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_experts.svg" alt="" loading="lazy"/>Experts</a></li></ul></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/strategy_tester"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/strategy_tester.svg" alt="" loading="lazy"/>Tester</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/trading"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading.svg" alt="" loading="lazy"/>Trading</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/trading_systems"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading_systems.svg" alt="" loading="lazy"/>Trading systems</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/integration"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/integration.svg" alt="" loading="lazy"/>Integration</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/indicator.svg" alt="" loading="lazy"/>Indicators</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/expert_advisors"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/expert.svg" alt="" loading="lazy"/>Expert Advisors</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/statistics"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/statistics.svg" alt="" loading="lazy"/>Statistics and analysis</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/machine_learning"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/machine_learning.svg" alt="" loading="lazy"/>Machine learning</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/interviews"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/interviews.svg" alt="" loading="lazy"/>Interviews</a></li></ul>
+  
+
+    <div class="hints-panel">
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_like"></i>
+        <div class="hints-panel__content">
+          Do you like the article?<br>
+          Share it with others —<br>post a <a href="https://www.mql5.com/en/articles/16461" target="_blank">link</a> to it!
+        </div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_tg-square icons-hints_24px"></i><div class="hints-panel__content">
+Find us on <a href="https://t.me/mql5dev" target="_blank" rel="nofollow">Telegram</a>!<br> Join our fan page</div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_mt-5"></i>
+        <div class="hints-panel__content">
+          Use new possibilities of <a href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Article" rel="nofollow sponsored noopener noreferrer">MetaTrader 5</a>
+        </div>
+      </div>
+    </div>
+<div id='vgckrufggwxdtfscpyalmenexmvhljduja' class="roeid8y6hsc3ntv1l gg88d3drb"></div>      <div class="similar-author-articles ui">
+        <h4 class="similar-author-articles__title">Similar articles</h4>
+        <ul class="similar-author-articles__list">
+            <li>
+              <a href="/en/articles/22691" data-fz-event="MQL5+Article+Similar+Article">Step-by-Step Implementation of a Local Stop Loss System in MQL5</a>
+            </li>
+            <li>
+              <a href="/en/articles/22563" data-fz-event="MQL5+Article+Similar+Article">How to Detect and Normalize Chart Objects in MQL5 (Part 2): Collecting and Structuring Data from Complex Analytical Objects</a>
+            </li>
+            <li>
+              <a href="/en/articles/17608" data-fz-event="MQL5+Article+Similar+Article">Developing a Multi-Currency Expert Advisor (Part 28): Adding a Position Closing Manager</a>
+            </li>
+            <li>
+              <a href="/en/articles/18111" data-fz-event="MQL5+Article+Similar+Article">Implementing a Breakeven Mechanism in MQL5 (Part 2): ATR- and RRR-Based Breakeven</a>
+            </li>
+            <li>
+              <a href="/en/articles/22666" data-fz-event="MQL5+Article+Similar+Article">Interactive Supply and Demand Zone Manager in MQL5: From Manual to Automated Lifecycle</a>
+            </li>
+        </ul>
+      </div>
+    <div class="freelance-hint">
+      <img src="https://c.mql5.com/i/articles/icon_freelance.svg" width="24" height="24" loading="lazy" />
+      <div class="freelance-hint__text">
+        Use the ideas from this article<br>to order your own robot<br>on Freelance
+      </div>
+        <a target="_blank" class="button button_blue-gray-border" title="Go to Freelance" href="/en/job/new" data-fz-event="MQL5+Article+New+Job">Go to Freelance</a>
+    </div>
+
+    </aside>
+    <article class="content-with-sidebar articles-content splashed">
+      
+
+
+  <header class="article-header article-header_light" style="background-color: rgb(42,26,45)">
+    <section class="article-tools-panel">
+        <div class="article-tools-panel__item">
+          <span class="popup framed client flags">
+            <a class="dropdown" href="javascript:void(false);">
+              <span class="icons-languages icons-languages_en"></span><i></i>
+            </a>
+            <span class="popup">
+              <span class="tip">
+                <span></span>
+              </span>
+              <span class="items">
+                    <a href="/ru/articles/16461">Русский</a>
+                    <a href="/zh/articles/16461">中文</a>
+                    <a href="/es/articles/16461">Español</a>
+                    <a href="/de/articles/16461">Deutsch</a>
+                    <a href="/ja/articles/16461">日本語</a>
+                    <a href="/pt/articles/16461">Português</a>
+              </span>
+            </span>
+          </span>
+        </div>
+        
+      <div class="article-tools-panel__item">
+        <a href="#pocket" title="Pocket allows you to insert a complete content description to the appropriate comment" onclick="return Pocket.Add(this,'en',2,1,16461);" class="article-tools-panel__rounded">
+          <i class="article-pocket-icon"></i>
+        </a>
+      </div>
+      <div class="article-tools-panel__item">
+        <a href="/en/articles/16461?print=" target="_blank" class="article-tools-panel__rounded" rel="nofollow" title="Printer friendly version">
+          <i class="article-print-icon"></i>
+        </a>
+      </div>
+
+    </section>
+    <section class="article-header__image-box">
+        <img class="article-header__image-preview" loading="lazy" width="32" height="16" alt="preview" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAsICAoIBwsKCQoNDAsNERwSEQ8PESIZGhQcKSQrKigkJyctMkA3LTA9MCcnOEw5PUNFSElIKzZPVU5GVEBHSEX/2wBDAQwNDREPESESEiFFLicuRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUX/wAARCAAQACADASIAAhEBAxEB/8QAGAAAAgMAAAAAAAAAAAAAAAAAAwQBAgf/xAAfEAACAgEEAwAAAAAAAAAAAAABAgADBRETIVEVMUH/xAAWAQEBAQAAAAAAAAAAAAAAAAADAAH/xAAZEQADAQEBAAAAAAAAAAAAAAAAAQIRMVH/2gAMAwEAAhEDEQA/AM6qxaAam1dYVcbUvO4CYnut3LC09zUnvRG58GmxqMdTYJHjVX1YsCLCfsItnHJj5pRUrqP/2Q==">
+      <div class="article-header__gradient" style="background: linear-gradient(90deg, rgba(42,26,45, 1) 0%, rgba(42,26,45, 0.72) 8.31%, rgba(42,26,45, 0) 17.1%), linear-gradient(270deg, rgba(42,26,45, 1) 0%, rgba(42,26,45, 0.72) 8.06%, rgba(42,26,45, 0) 16.59%), linear-gradient(0deg, rgba(42,26,45, 1) 8.26%, rgba(42,26,45, 0.8) 65%, rgba(42,26,45, 0) 100%);"></div>
+        <picture>
+          <source srcset="https://c.mql5.com/2/103/Learning_about_the_Market_Profile_indicator_600x314.jpg, https://c.mql5.com/2/103/Learning_about_the_Market_Profile_indicator_1200x628.jpg 2x" media="(min-width:700px)">
+          <img class="article-header__image" loading="lazy" width="600" height="314" srcset="https://c.mql5.com/2/103/Learning_about_the_Market_Profile_indicator_300x157.jpg, https://c.mql5.com/2/103/Learning_about_the_Market_Profile_indicator_600x314.jpg 2x" src="https://c.mql5.com/2/103/Learning_about_the_Market_Profile_indicator_600x314.jpg" alt="Market Profile indicator" onerror="this.style.display='none';">
+        </picture>
+    </section>
+    <section class="article-header__content">
+      <h1>Market Profile indicator</h1>
+      <div class="article-header__info">
+        <a href="/en/articles/mt5">MetaTrader 5</a>
+          &mdash;
+          <a href="/en/articles/mt5/examples">Examples</a>
+        | <time datetime="2025-07-14T11:49Z" title="11:49" datetime-type="datetime">14 July 2025, 11:49</time>
+      </div>
+      <div class="article-header__indicators">
+        <span title="Views">
+          <img src="https://c.mql5.com/i/icons.svg#views-white-usage" width="20" height="20" alt="" />
+          12 224
+        </span>
+        
+          <a title="Comments" href="/en/forum/491030">
+            <img src="https://c.mql5.com/i/icons.svg#comments-white-usage" width="20" height="20" alt="" />
+            9
+          </a>
+      </div>
+      <div class="article-header__author">
+          <div class="article-header__avatar">
+            <img src="https://c.mql5.com/avatar/2022/7/62C4775C-ABD6.jpg" srcset="https://c.mql5.com/avatar/2022/7/62C4775C-ABD6_big.jpg 2x" data-user-login="artmedia70" title="Artyom Trishkin" alt="Artyom Trishkin" loading="lazy" width="60" height="60">
+          </div>
+<a class="author" href="/en/users/artmedia70" data-user-login="artmedia70">Artyom Trishkin</a>      </div>
+    </section>
+  </header>
+
+    <div class="content">
+      <div class="inner formatted-content">
+        <h3 id="node00">Contents</h3> <ul> <li><a href="/en/articles/16461#node01">What is Market Profile?</a></li> <li><a href="/en/articles/16461#node02">Market Profile in MetaTrader 5 terminal</a><br/></li> <li><a href="/en/articles/16461#node03">Structure and principles</a></li> <li><a href="/en/articles/16461#node04">Conclusion</a><br/></li> </ul> <h3 id="node01"><br/><br/>What is Market Profile?</h3> <p>Peter Steidlmayer developed the Market Profile concept in the 1980s with the Chicago Mercantile Exchange. Traders who use this method note its usefulness for deep understanding of the market and improving trading efficiency.</p> <p>Market Profile is not a traditional technical indicator and it does not provide direct trading signals. But it complements a trading system, allowing traders to arrange the data and determine who controls the market, what fair value is, and what factors influence price movements. </p> <p>The Market Profile reflects the organization of trading based on time, price and volume. Each day a range is formed with a price area representing the balance between buyers and sellers. Prices fluctuate in this area, and Market Profile helps traders interpret these changes both during and after trading. It is plotted on a normal distribution curve, where about 70% of the value lies within one standard deviation of the mean. In other words, it is an analysis tool that shows the distribution of volumes or the time spent by the price at certain levels. It helps traders understand where the biggest trades are happening and identify key supply and demand levels. </p> <p>Using Market Profile requires understanding some concepts that are driven by market behavior and are directly or indirectly displayed on the chart. Recommended timeframe for analysis is M30.</p> <p>The first trading hour forms the main pattern of the trading day and is the basis for studying the market participants' activity throughout the session. This period is important in determining what traders are doing on the market to find the price at which the buyer and seller will agree to strike a deal. </p> <p>There are two categories of market participants: </p> <ol> <li><b>day-timeframe trader</b> — a trader working intraday in large volumes of several ticks;</li> <li><b>other-timeframe trader</b> — a trader who trades on other time periods, ensuring the price moves to new levels. <br/></li> </ol> <p>Let's look at some basic concepts that will help you better understand the Market Profile.</p> <ul> <p></p> <li><b>Initial balance</b> — range of market prices during the first hour of a trading session (two 30-minute bars after the session opening).<br/><br/> <p style="text-align:center;"> <img width="714" height="399" src="https://c.mql5.com/2/156/OCCqrxbjV6__1.png" style="vertical-align:middle;" loading="lazy" alt/></p></li> <p></p> <li><b>Range</b> — range, absolute height of the entire Market Profile. <p></p> <p style="text-align:center;"> <img width="714" height="399" src="https://c.mql5.com/2/156/7kQMWwPwYX__1.png" style="vertical-align:middle;" loading="lazy" alt/></p></li> <p></p> <li><b>Range extension</b> — expansion of the range when the price moves in relation to the initial balance.<br/><br/> <p style="text-align:center;"> <img width="714" height="399" src="https://c.mql5.com/2/156/8q3fZvwF3R__1.png" style="vertical-align:middle;" loading="lazy" alt/></p></li> <li><b>Value area </b> — value zone, a price range that includes 70% of trading activity.<br/><br/> <p style="text-align:center;"> <img width="714" height="399" src="https://c.mql5.com/2/156/XaePNjPn8k__1.png" style="vertical-align:middle;" loading="lazy" alt/></p></li> <li><b>Point of control (POC)</b> — the longest profile line, which is also the closest to the center of the range.<br/><br/> <p style="text-align:center;"> <img width="714" height="399" src="https://c.mql5.com/2/156/mZuDkksI78__1.png" style="vertical-align:middle;" loading="lazy" alt/></p></li> <li><b>Closing range</b> — located near the closure of the trading session.<br/><br/> <p style="text-align:center;"> <img width="714" height="399" src="https://c.mql5.com/2/156/TnQHOROKN2__1.png" style="vertical-align:middle;" loading="lazy" alt/></p></li> <li><b>Buying/Selling tail</b>. The presence of such tails indicates the sharply increasing activity of "other-timeframe" traders. <br/>The short length of the tails indicates sufficient aggressiveness of "other-timeframe" traders, both from the buyers' and sellers' side. <br/><br/> <p style="text-align:center;"> <img width="714" height="399" src="https://c.mql5.com/2/156/XXsRkrcOru__1.png" style="vertical-align:middle;" loading="lazy" alt/></p></li> </ul> <p></p> <p>To read Market Profile, you can follow these basic principles:</p> <ol> <li><b>Defining Price-Volume</b><br/>Market Profile displays the price levels that witnessed the highest volume. Lines or blocks on the chart (usually horizontal) show how much time the price spent at a certain level, or how much volume was traded there. Longer lines mean more time or more volume - these are key support and resistance levels.<br/><br/></li> <li><b>Point of Control (POC)</b><br/>This is the price level, at which the maximum trading volume occurred during the period. It often acts as a strong support or resistance level, as the price here is most "acceptable" to market participants.<br/><br/></li> <li><b>Fair and unfair price zones (Value Area and Non-Value Area)</b><br/> <ul> <li><b>Value Area</b> typically accounts for about 70% of the trading volume for the period. This is the range where the price found "balance" between supply and demand most of the time.</li> <li><b>Non-Value Area</b> - levels above or below the Value Area are considered low interest areas. If the price moves into these zones, it can either quickly return to the Value Area or continue moving due to the imbalance of supply and demand.</li> </ul><br/></li> <li><b>Detecting trends and flats</b><br/> <ul> <li><b>Trend day</b> - Market Profile "extends" in one direction when the market moves steadily up or down. In these cases, the price does not linger at the levels, but moves, creating new areas of interest. A trend day has a small initial balance, representing less than 25% of the entire day's range. In fact, this is a significant dominance of buyers or sellers with a strong range extension in one of the directions. <br/></li> <li><b>Flat day</b> - the profile is concentrated around one level, and the Value Area remains narrow. This indicates balance and the absence of a strong trend.</li> <li><b>Non-trend day</b> features a narrow initial balance that subsequently contains the entire day's price range.</li> <li><b>Normal day</b> - such a day has a wide initial balance, approximately equal to 80% of the entire range. This is the most common type of trading day. <br/></li> <li><b> Normal change of a normal day</b> - initial balance of such a structure is approximately 50% of the day's range. In this case, an expansion of the range is formed in either one direction or the other. <br/></li> <li><b> Neutral day</b> - such a profile is not characterized by its initial balance, there is range expansion in both directions, and the day ends near the center of the range. <br/><br/></li> </ul></li> <li><b>Understanding extremes and price reaction</b><br/> <ul> <li>If price reaches new levels with low volume and quickly returns to the POC or Value Area, this may indicate a rebound.</li> <li>If the price continues to trade outside the Value Area and creates a new POC, this signals the possible start of a new trend.</li> </ul><br/></li> <li><b>Practical application of Market Profile</b><br/> <ul> <li><b> To find entry points:</b> Identify support and resistance levels using POC and Value Area boundaries, expect pullbacks from these levels or breakouts in the direction of the trend.</li> <li><b>To set stop losses and targets:</b> Use POC and Value Area High/Low as levels to place protective stops and take profits.</li> </ul></li> </ol> <p>The classic Market Profile is based on TPOs (Time-Price Opportunities), which are capital letters of the Latin alphabet, with each letter representing 30 minutes of a trading session. </p> <h3 id="node02"><br/><br/>Market Profile in MetaTrader 5 terminal</h3> <p>MetaTrader 5 client terminal, namely the \MQL5\Indicators\<b>Free Indicators\</b> directory, features a simple version of the Market Profile. You can find its code in<b> MarketProfile.mq5</b>. This indicator, unlike its classical representation, builds vertical volume profiles by sessions (Asia, Europe, America), visualizing the zones where the price spent more time. It analyzes intraday bars and breaks them down into three time periods that reflect different market sessions. The indicator calculates the amount of time spent at each price level during these sessions and visually displays them as rectangles on the chart.</p> <p style="text-align:center;"> <img width="481" height="561" src="https://c.mql5.com/2/156/wNNAEXRrL6__1.png" style="vertical-align:middle;" loading="lazy" alt/></p> <p>Key points to read this indicator:</p> <ol> <li><b>Division into trading sessions:</b><br/> <ul> <li>The whole day is divided into three sessions: Asian, European and American.</li> <li>The color zones on the chart show the time spent at the price level in each session.</li> </ul><br/></li> <li><b>Price levels:</b><br/> <ul> <li>Each price level is colored according to the session and the length of time the price has been there. Levels where the price lingered longer are considered important levels as there was active trading there.</li> </ul><br/></li> <li><b>POC (Point of Control):</b><br/> <ul> <li>The indicator does not calculate POC directly, but we can visually highlight the levels with the greatest length of colored zones - these are the control points indicating the key levels of supply and demand.</li> </ul><br/></li> <li><b>Value Areas:</b><br/> <ul> <li>As with the standard Market Profile, areas of higher volume concentration (long stays of price) can be viewed as levels that price may seek to return to.</li> </ul></li> </ol> <p>Thus, the Market Profile indicator in this code helps to understand at what levels the main activity was concentrated during the day and to highlight support and resistance levels for each trading session.</p> <p>Let's figure out how this indicator works.</p> <h3 id="node03"><br/><br/>Structure and principles</h3> <p>The indicator inputs include:</p> <ol> <li>the number of days, the profile should be shown for,</li> <li>index of the day closest to the current one:<br/> <ul> <li>0 — current day,</li> <li>1 — previous,</li> <li>2 — day before previous, etc.,</li> </ul></li> <li>colors used to render the sessions (Asian, European and American),</li> <li>opening hours of the European and American sessions (Asian session opens at the opening of the day)</li> <li>histogram segment length multiplier:</li> </ol> <pre class="code"><span class="comment">//--- input parameters</span>
+<span class="keyword">input</span> <span class="keyword">uint</span>&nbsp;&nbsp;InpStartDate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =<span class="number">0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">/* day number to start calculation */</span>&nbsp;&nbsp;<span class="comment">// 0 - current, 1 - previous, etc.</span>
+<span class="keyword">input</span> <span class="keyword">uint</span>&nbsp;&nbsp;InpShowDays&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=<span class="number">3</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">/* number of days to display */</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// starting with and including the day in InpStartDate</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp; InpMultiplier&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=<span class="number">1</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">/* histogram length multiplier */</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"></span>
+<span class="keyword">input</span> <span class="keyword">color</span> InpAsiaSession&nbsp;&nbsp;&nbsp;&nbsp; =<span class="macro">clrGold</span>;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">/* Asian session */</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"></span>
+<span class="keyword">input</span> <span class="keyword">color</span> InpEuropeSession&nbsp;&nbsp; =<span class="macro">clrBlue</span>;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">/* European session */</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment"></span>
+<span class="keyword">input</span> <span class="keyword">color</span> InpAmericaSession&nbsp;&nbsp;=<span class="macro">clrViolet</span>;&nbsp;&nbsp; <span class="comment">/* American session */</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment"></span>
+<span class="keyword">input</span> <span class="keyword">uint</span>&nbsp;&nbsp;InpEuropeStartHour =<span class="number">8</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">/* European session opening hour */</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"></span>
+<span class="keyword">input</span> <span class="keyword">uint</span>&nbsp;&nbsp;InpAmericaStartHour=<span class="number">14</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">/* American session opening hour */</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"></span>
+
+</pre> <p>When initializing the indicator, we create a unique ID for the object names from the last four digits of the number of milliseconds that have passed since the system started:</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Custom indicator initialization function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">int</span> <span class="functions">OnInit</span>()
+&nbsp;&nbsp;{
+<span class="comment">//--- create a prefix for object names</span>
+&nbsp;&nbsp; <span class="keyword">string</span> number=<span class="functions">StringFormat</span>(<span class="string">"%I64d"</span>, <span class="functions">GetTickCount64</span>());
+&nbsp;&nbsp; ExtPrefixUniq=<span class="functions">StringSubstr</span>(number, <span class="functions">StringLen</span>(number)-<span class="number">4</span>);
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Indicator \"Market Profile\" started, prefix="</span>, ExtPrefixUniq);
+
+&nbsp;&nbsp; <span class="keyword">return</span>(<span class="macro">INIT_SUCCEEDED</span>);
+&nbsp;&nbsp;}
+
+</pre> <div id="help"></div> <p>This number will then be used when creating names of the indicator's graphical objects, and objects will be deleted using the same prefix during deinitialization:</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Custom indicator deinitialization function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> <span class="functions">OnDeinit</span>(<span class="keyword">const</span> <span class="keyword">int</span> reason)
+&nbsp;&nbsp;{
+<span class="comment">//--- after use, delete all graphical objects created by the indicator</span>
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Indicator \"Market Profile\" stopped, delete all objects with prefix="</span>, ExtPrefixUniq);
+&nbsp;&nbsp; <span class="functions">ObjectsDeleteAll</span>(<span class="number">0</span>, ExtPrefixUniq, <span class="number">0</span>, <span class="macro">OBJ_RECTANGLE</span>);
+&nbsp;&nbsp; <span class="functions">ChartRedraw</span>(<span class="number">0</span>);
+&nbsp;&nbsp;}
+
+</pre> <p>So how does the indicator work? What is its rendering logic? Let's imagine that the full size of a daily candle from its Low to High is the size of the table. Then the rows of the table will be price levels: each price point is one table row. The table columns in the simplest version are the distance from one intraday bar to another. The row with zero index is the lowest price, equal to the Low of the bar. Price with index 1 is the Low of the bar plus one point. Accordingly, the string defining the High of the bar is the string with the Low index of the bar plus the number of points from the Low to the High of the bar. </p> <p>If we now create a simple array corresponding to the rows of this table, then its zero index will store the number of bars that managed to be at the Low price of the bar during the price movement during the day. In the same way, all the other cells of this array will store the number of times the price managed to be at these levels. </p> <p>How can we determine this? It is very easy. Since the Low of the daily bar at the opening of the day is the zero index of the array, the indices of all other intraday bars can be calculated: the index of the row corresponding to the bar following the opening bar is the Low of that bar minus the Low of the opening of the day in points. The last index for this bar will be the High of this bar minus the opening Low of the day.</p> <p>The figure below shows the start and end indices in the Array for four six-hour intraday bars: Bar0, Bar1, Bar2, and Bar3:</p> <p style="text-align:center;"> <img width="680" height="222" src="https://c.mql5.com/2/156/Market_Profile_indexes__2.png" style="vertical-align:middle;" loading="lazy" alt/></p> <p>If we now mark in the array the number of bars that have been at price levels and draw the rectangles of the market profile, we will get the following picture in the array and on the chart:</p> <p style="text-align:center;"> <img width="673" height="220" src="https://c.mql5.com/2/156/Market_Profile_indexes1__1.png" style="vertical-align:middle;" loading="lazy" alt/></p> <p>The Array is cleared on each new tick, a new Range size of the daily bar is set for it, and its indices are filled anew with the value of the number of bars that have been at each price level. Thus, the market profile is dynamically filled in and displayed on the chart with current information about the state of the market, and the longer the price is at any level (more bars include the level), the longer the line indicating this level.</p> <p>Let's see how this is implemented in the indicator code:</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Custom indicator iteration function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">int</span> <span class="functions">OnCalculate</span>(<span class="keyword">const</span> <span class="keyword">int</span> rates_total,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">int</span> prev_calculated,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">datetime</span> &amp;time[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">double</span> &amp;open[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">double</span> &amp;high[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">double</span> &amp;low[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">double</span> &amp;close[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">long</span> &amp;tick_volume[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">long</span> &amp;volume[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">int</span> &amp;spread[])
+&nbsp;&nbsp;{
+<span class="comment">//--- opening time of the current daily bar</span>
+&nbsp;&nbsp; <span class="keyword">datetime</span> <span class="keyword">static</span> open_time=<span class="number">0</span>;
+
+<span class="comment">//--- number of the last day for calculations</span>
+<span class="comment">//--- (if InpStartDate = 0 and InpShowDays = 3, lastday = 3)</span>
+<span class="comment">//--- (if InpStartDate = 1 and InpShowDays = 3, lastday = 4) etc ...</span>
+&nbsp;&nbsp; <span class="keyword">uint</span> lastday=InpStartDate+InpShowDays;
+
+<span class="comment">//--- if the first calculation has already been made</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(prev_calculated!=<span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- get the opening time of the current daily bar</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> current_open=<span class="functions">iTime</span>(<span class="functions">Symbol</span>(), <span class="macro">PERIOD_D1</span>, <span class="number">0</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- if we do not calculate the current day</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(InpStartDate!=<span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- if the opening time was not received, leave</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(current_open==open_time)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>(rates_total);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- update opening time</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;open_time=current_open;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- we will only calculate one day from now on, since all other days have already been calculated during the first run</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lastday=InpStartDate+<span class="number">1</span>;
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+<span class="comment">//--- in a loop for the specified number of days (either InpStartDate+InpShowDays on first run, or InpStartDate+1 on each tick)</span>
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">uint</span> day=InpStartDate; day&lt;lastday; day++)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- get the data of the day with index day into the structure</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="predefines">MqlRates</span> day_rate[];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- if the indicator is launched on weekends or holidays when there are no ticks, you should first open the daily chart of the symbol</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- if we have not received bar data for the day index of the daily period, we leave until the next call to OnCalculate()</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">CopyRates</span>(<span class="functions">Symbol</span>(), <span class="macro">PERIOD_D1</span>, day, <span class="number">1</span>, day_rate)==-<span class="number">1</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">return</span>(prev_calculated);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- get daily range (Range) in points</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> high_day=day_rate[<span class="number">0</span>].high;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> low_day=day_rate[<span class="number">0</span>].low;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> point=<span class="functions">SymbolInfoDouble</span>(<span class="functions">Symbol</span>(), <span class="macro">SYMBOL_POINT</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;day_size=(<span class="keyword">int</span>)((high_day-low_day)/point);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- prepare arrays for storing price level rectangles</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> boxes_asia[], boxes_europe[], boxes_america[];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- array sizes equal to the number of points in the day range</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayResize</span>(boxes_asia, day_size);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayResize</span>(boxes_europe, day_size);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayResize</span>(boxes_america, day_size);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- zero out the arrays</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ZeroMemory</span>(boxes_asia);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ZeroMemory</span>(boxes_europe);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ZeroMemory</span>(boxes_america);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- get all intraday bars of the current day</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="predefines">MqlRates</span> bars_in_day[];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> start_time=day_rate[<span class="number">0</span>].time+<span class="functions">PeriodSeconds</span>(<span class="macro">PERIOD_D1</span>)-<span class="number">1</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> stop_time=day_rate[<span class="number">0</span>].time;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- if the indicator is launched on weekends or holidays when there are no ticks, you should first open the daily chart of the symbol</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- if it was not possible to get the bars of the current timeframe for the specified day, leave until the next call of OnCalculate()</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">CopyRates</span>(<span class="functions">Symbol</span>(), <span class="macro">PERIOD_CURRENT</span>, start_time, stop_time, bars_in_day)==-<span class="number">1</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">return</span>(prev_calculated);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- we go through all the bars of the current day in a loop and mark the price cells that the bars fall into</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> size=<span class="functions">ArraySize</span>(bars_in_day);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;size; i++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- calculate the range of price level indices in the daily range</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; start_box=(<span class="keyword">int</span>)((bars_in_day[i].low-low_day)/point);&nbsp;&nbsp;<span class="comment">// index of the first cell of the price array corresponding to the Low price of the current i bar</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; stop_box =(<span class="keyword">int</span>)((bars_in_day[i].high-low_day)/point); <span class="comment">// index of the last cell of the price array corresponding to the High price of the current i bar</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- get the bar hour by the loop index</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="predefines">MqlDateTime</span> bar_time;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">TimeToStruct</span>(bars_in_day[i].time, bar_time);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">uint</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hour=bar_time.hour;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- determine which session the bar belongs to by the bar hour</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- American session</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(hour&gt;=InpAmericaStartHour)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- in the American session array, in cells from start_box to stop_box, increase the bar counters</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> ind=start_box; ind&lt;stop_box; ind++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; boxes_america[ind]++;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Europe or Asia</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- European session</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(hour&gt;=InpEuropeStartHour &amp;&amp; hour&lt;InpAmericaStartHour)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- in the European session array, in cells from start_box to stop_box, increase the bar counters</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> ind=start_box; ind&lt;stop_box; ind++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;boxes_europe[ind]++;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Asian session</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- in the Asian session array, in cells from start_box to stop_box, increase the bar counters</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> ind=start_box; ind&lt;stop_box; ind++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;boxes_asia[ind]++;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- draw a market profile based on the created arrays of price levels</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//---  market profile on the chart is drawn with segments of colored lines using the color specified in the settings for each trading session</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- segments are drawn as rectangle objects with the height of the rectangle equal to one price point and the width equal to the distance to the next bar to the right</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- define the day for the name of the graphical object and the width of the rectangle</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span> day_prefix=<span class="functions">TimeToString</span>(day_rate[<span class="number">0</span>].time, <span class="macro">TIME_DATE</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;box_length=<span class="functions">PeriodSeconds</span>(<span class="macro">PERIOD_CURRENT</span>);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Asian session</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- in a loop by the number of points of the daily bar</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> ind=<span class="number">0</span>; ind&lt;day_size; ind++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- if the Asian session array is full</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(boxes_asia[ind]&gt;<span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- get the next price by adding the number of 'ind' points to the Low price of the daily bar</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- get the start time of the segment (opening time of the daily bar)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- and the end time of the segment (opening time of the daily bar + the number of bars stored in the 'ind' cell of the boxes_asia[] array)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span>&nbsp;&nbsp; price=low_day+ind*point;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time1=day_rate[<span class="number">0</span>].time;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time2=time1+boxes_asia[ind]*box_length*InpMultiplier;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- create a prefix for the name of the Asian session graphical object</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span>&nbsp;&nbsp; prefix=ExtPrefixUniq+<span class="string">"_"</span>+day_prefix+<span class="string">"_Asia_"</span>+<span class="functions">StringFormat</span>(<span class="string">"%.5f"</span>, price);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- draw a rectangle (line segment) at the calculated coordinates with the color for the Asian session</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DrawBox(prefix, price, time1, time2, InpAsiaSession);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- European session</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> ind=<span class="number">0</span>; ind&lt;day_size; ind++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- if the European session array is full</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(boxes_europe[ind]&gt;<span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- get the next price by adding the number of 'ind' points to the Low price of the daily bar</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- get the start time of the segment (opening time of the daily bar + time of the right edge of the Asian session profile)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- and the end time of the segment (start time of the European session segment + the number of bars stored in the 'ind' cell of the boxes_europe[] array)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span>&nbsp;&nbsp; price=low_day+ind*point;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time1=day_rate[<span class="number">0</span>].time+boxes_asia[ind]*box_length*InpMultiplier;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time2=time1+boxes_europe[ind]*box_length*InpMultiplier;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- create a prefix for the name of the graphical object of the European session</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span>&nbsp;&nbsp; prefix=ExtPrefixUniq+<span class="string">"_"</span>+day_prefix+<span class="string">"_Europe_"</span>+<span class="functions">StringFormat</span>(<span class="string">"%.5f"</span>, price);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- draw a rectangle (line segment) at the calculated coordinates with the color for the European session</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DrawBox(prefix, price, time1, time2, InpEuropeSession);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- American session</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> ind=<span class="number">0</span>; ind&lt;day_size; ind++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- if the American session array is full</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(boxes_america[ind]&gt;<span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- get the next price by adding the number of 'ind' points to the Low price of the daily bar</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- get the start time of the segment (opening time of the daily bar + time of the right edge of the Asian session profile + time of the right edge of the European session profile)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- and the end time of the segment (start time of the American session segment + the number of bars stored in the 'ind' cell of the boxes_america[] array) </span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span>&nbsp;&nbsp; price=low_day+ind*point;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time1=day_rate[<span class="number">0</span>].time+(boxes_asia[ind]+boxes_europe[ind])*box_length*InpMultiplier;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time2=time1+boxes_america[ind]*box_length*InpMultiplier;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- create a prefix for the name of the American session graphical object</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span>&nbsp;&nbsp; prefix=ExtPrefixUniq+<span class="string">"_"</span>+day_prefix+<span class="string">"_America_"</span>+<span class="functions">StringFormat</span>(<span class="string">"%.5f"</span>, price);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- draw a rectangle (line segment) at the calculated coordinates with the color for the American session</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DrawBox(prefix, price, time1, time2, InpAmericaSession);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+<span class="comment">//--- when the loop is complete, redraw the chart</span>
+&nbsp;&nbsp; <span class="functions">ChartRedraw</span>(<span class="number">0</span>);
+
+<span class="comment">//--- return the number of bars for the next OnCalculate call</span>
+&nbsp;&nbsp; <span class="keyword">return</span>(rates_total);
+&nbsp;&nbsp;}
+
+</pre> <p>The code is commented in sufficient detail. The indicator can draw a profile for several days at once. All of them are rendered in a loop according to the number of days displayed. </p> <p><br/></p> <h3>Main algorithm<br/></h3> <p>Let's look at the algorithm of the above code in more detail. Each individual day is drawn like this: </p> <ul> <li>depending on the chart period the indicator is running on we get the bars included in the displayed day:<br/> <pre class="code"><span class="predefines">MqlRates</span> day_rate[];
+<span class="keyword">if</span>(<span class="functions">CopyRates</span>(<span class="functions">Symbol</span>(), <span class="macro">PERIOD_D1</span>, day, <span class="number">1</span>, day_rate)==-<span class="number">1</span>)
+&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>(prev_calculated);
+
+<span class="predefines">MqlRates</span> bars_in_day[];
+<span class="keyword">datetime</span> start_time=day_rate[<span class="number">0</span>].time+<span class="functions">PeriodSeconds</span>(<span class="macro">PERIOD_D1</span>)-<span class="number">1</span>;
+<span class="keyword">datetime</span> stop_time=day_rate[<span class="number">0</span>].time;
+
+<span class="keyword">if</span>(<span class="functions">CopyRates</span>(<span class="functions">Symbol</span>(), <span class="macro">PERIOD_CURRENT</span>, start_time, stop_time, bars_in_day)==-<span class="number">1</span>)
+&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>(prev_calculated);
+
+</pre></li> <li>in a loop by the number of intraday bars<br/> <pre class="code"><span class="keyword">int</span> size=<span class="functions">ArraySize</span>(bars_in_day);
+<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;size; i++)
+
+</pre></li> <ul> <li>for the current bar selected in the loop, we calculate the indices of the beginning and end of the price range the selected bar is located in within the daily bar<br/> <pre class="code"><span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; start_box=(<span class="keyword">int</span>)((bars_in_day[i].low-low_day)/point);&nbsp;&nbsp;<span class="comment">// index of the first cell of the price array corresponding to the Low price of the current i bar</span>
+<span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; stop_box =(<span class="keyword">int</span>)((bars_in_day[i].high-low_day)/point); <span class="comment">// index of the last cell of the price array corresponding to the High price of the current i bar</span>
+
+</pre></li> <li>determine the session, the bar selected in the loop is located in, and in the corresponding array we increase the bar counters in all cells located in the price range of the intraday bar<br/> <pre class="code"><span class="predefines">MqlDateTime</span> bar_time;
+<span class="functions">TimeToStruct</span>(bars_in_day[i].time, bar_time);
+<span class="keyword">uint</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hour=bar_time.hour;
+
+<span class="keyword">if</span>(hour&gt;=InpAmericaStartHour)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> ind=start_box; ind&lt;stop_box; ind++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;boxes_america[ind]++;
+&nbsp;&nbsp;}
+<span class="keyword">else</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(hour&gt;=InpEuropeStartHour &amp;&amp; hour&lt;InpAmericaStartHour)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> ind=start_box; ind&lt;stop_box; ind++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;boxes_europe[ind]++;
+&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> ind=start_box; ind&lt;stop_box; ind++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;boxes_asia[ind]++;
+&nbsp;&nbsp;&nbsp;}
+
+</pre></li> </ul> </ul> <ul> <li>after going in a loop through all the intraday bars, each cell of the session arrays will record the number of bars that have been at this price. All session arrays will have the same size, equal to the number of price points in the daily range from Low to High of the daily candle, but each array will be filled in accordance with what price levels were reached in this session.<br/></li> <li>Next, in the loop through all filled session arrays, graphical objects are displayed on the chart according to the calculated coordinates:<br/> <pre class="code"><span class="keyword">for</span>(<span class="keyword">int</span> ind=<span class="number">0</span>; ind&lt;day_size; ind++)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(boxes_asia[ind]&gt;<span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span>&nbsp;&nbsp; price=low_day+ind*point;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time1=day_rate[<span class="number">0</span>].time;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time2=time1+boxes_asia[ind]*box_length*InpMultiplier;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span>&nbsp;&nbsp; prefix=ExtPrefixUniq+<span class="string">"_"</span>+day_prefix+<span class="string">"_Asia_"</span>+<span class="functions">StringFormat</span>(<span class="string">"%.5f"</span>, price);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DrawBox(prefix, price, time1, time2, InpAsiaSession);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+
+<span class="keyword">for</span>(<span class="keyword">int</span> ind=<span class="number">0</span>; ind&lt;day_size; ind++)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(boxes_europe[ind]&gt;<span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span>&nbsp;&nbsp; price=low_day+ind*point;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time1=day_rate[<span class="number">0</span>].time+boxes_asia[ind]*box_length*InpMultiplier;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time2=time1+boxes_europe[ind]*box_length*InpMultiplier;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span>&nbsp;&nbsp; prefix=ExtPrefixUniq+<span class="string">"_"</span>+day_prefix+<span class="string">"_Europe_"</span>+<span class="functions">StringFormat</span>(<span class="string">"%.5f"</span>, price);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DrawBox(prefix, price, time1, time2, InpEuropeSession);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+
+<span class="keyword">for</span>(<span class="keyword">int</span> ind=<span class="number">0</span>; ind&lt;day_size; ind++)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(boxes_america[ind]&gt;<span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span>&nbsp;&nbsp; price=low_day+ind*point;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time1=day_rate[<span class="number">0</span>].time+(boxes_asia[ind]+boxes_europe[ind])*box_length*InpMultiplier;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time2=time1+boxes_america[ind]*box_length*InpMultiplier;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span>&nbsp;&nbsp; prefix=ExtPrefixUniq+<span class="string">"_"</span>+day_prefix+<span class="string">"_America_"</span>+<span class="functions">StringFormat</span>(<span class="string">"%.5f"</span>, price);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DrawBox(prefix, price, time1, time2, InpAmericaSession);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+</pre></li> <li>As a result, the chart will show the market profile for one day.<br/></li> </ul> <p>The function that draws line segments:</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Draw color box&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> DrawBox(<span class="keyword">string</span> bar_prefix, <span class="keyword">double</span> price, <span class="keyword">datetime</span> time1, <span class="keyword">datetime</span> time2, <span class="keyword">color</span> clr)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="functions">ObjectCreate</span>(<span class="number">0</span>, bar_prefix, <span class="macro">OBJ_RECTANGLE</span>, <span class="number">0</span>, time1, price, time2, price);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, bar_prefix, <span class="macro">OBJPROP_COLOR</span>, clr);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, bar_prefix, <span class="macro">OBJPROP_STYLE</span>, <span class="macro">STYLE_SOLID</span>);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, bar_prefix, <span class="macro">OBJPROP_WIDTH</span>, <span class="number">1</span>);
+&nbsp;&nbsp; <span class="functions">ObjectSetString</span>(<span class="number">0</span>, bar_prefix, <span class="macro">OBJPROP_TOOLTIP</span>, <span class="string">"\n"</span>);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, bar_prefix, <span class="macro">OBJPROP_BACK</span>, <span class="macro">true</span>);
+&nbsp;&nbsp;}
+
+</pre> <p>The segments are drawn using graphical objects - rectangles (you can also draw using trend lines by disabling the "ray to the left" and "ray to the right" properties for them). The function receives the coordinates of the rectangle in the form of its start and end time, and the price, which is the same for both sides of the rectangle. This results in a regular line with the color specified in the inputs.</p> <p>By running the indicator on the EURUSD M30 chart, we can see the following picture of the market profile:</p> <p style="text-align:center;"> <img width="707" height="375" src="https://c.mql5.com/2/156/terminal64_atbx0MwvSc__1.png" style="vertical-align:middle;" loading="lazy" alt/></p> <p>If we draw lines from each of the previous days (from its Point of Control), we can clearly see the levels of the "fair" price, which may well serve as support and resistance levels, or attraction (the gap of the current day may very well be closed, while this is the POC of the previous day).</p> <p><br/></p> <h3 id="node04">Conclusion</h3> <p>By studying the Market Profile, you will be able to better understand market dynamics, identify key levels, and find efficient entry and exit points. The Market Profile differs from the tick chart by combining price, volume, and time in a convenient form. It allows identifying price equilibrium levels and analyzing who controls the market at the moment. This provides an advantage in trading decisions by allowing adaptation to changes in traders' fair value assessments. </p> <p>Having familiarized ourselves with the Market Profile indicator supplied with the MetaTrader 5 client terminal, we now understand the simplicity of its operation, understand the logic of its construction, and can use it both to assess the market situation in the form provided, and to create something more advanced and complex on its basis.</p> <p>For a full understanding and comparison with other concepts, you can read other works on the Market Profile presented on <a href="/" target="_blank">mql5.com</a>:</p> <ul> <li><a href="/en/articles/17" target="_blank">The Price Histogram (Market Profile) and its implementation in MQL5</a></li> <li><a href="/en/code/9777" target="_blank">Market Profile — indicator for MetaTrader 4</a></li> <li><a href="/en/code/8115" target="_blank">MarketProfile — indicator for MetaTrader 4</a></li> <li><a href="/en/code/501" target="_blank">MarketProfile — indicator for MetaTrader 5</a><br/></li> </ul> <p>The fully commented code of the indicator considered in the article is attached below for hyou to download and study.</p>
+      </div>
+          <p style="text-align: right;">
+            <small>
+              Translated from Russian by MetaQuotes Ltd. <br>Original article: <a href="/ru/articles/16461" target="_blank">https://www.mql5.com/ru/articles/16461</a>
+            </small>
+          </p>
+<div id="cb_16461" class="attachBlock">
+  <strong>Attached files</strong> |
+  <div class="grouped-attachments-help">
+    <a title="Download all attachments in the single ZIP archive" href="/en/articles/download/16461.zip">
+      <i class="attach-icon attach-icon_zip"></i>Download ZIP
+    </a>
+  </div>
+    <div class="attachItem">
+      <a title="Download MarketProfile.mq5" href="/en/articles/download/16461/marketprofile.mq5"><i class="attach-icon attach-icon_mq5"></i>MarketProfile.mq5</a>
+      <span class="attachSize">(25.87 KB)</span>
+    </div>
+</div>
+    </div>
+
+  <div class="copyright">
+    <p><strong>Warning:</strong> All rights to these materials are reserved by MetaQuotes Ltd. Copying or reprinting of these materials in whole or in part is prohibited.</p>
+      <p>This article was written by a user of the site and reflects their personal views. MetaQuotes Ltd is not responsible for the accuracy of the information presented, nor for any consequences resulting from the use of the solutions, strategies or recommendations described.</p>
+  </div>
+
+
+
+    <div class="article__author-with-articles">
+      
+
+
+<div class="article-footer__author">
+  <div class="article-footer__author-avatar">
+    <img id="avatar" src="https://c.mql5.com/avatar/2022/7/62C4775C-ABD6_big.jpg" title="Artyom Trishkin" alt="Artyom Trishkin" loading="lazy" width="164" height="164">
+  </div>
+  <div class="article-footer__author-content">
+    <div class="article-footer__author-name">
+      <a href="/en/users/artmedia70" title="Artyom Trishkin">Artyom Trishkin</a>
+    </div>
+    <div class="article-footer__author-info">
+      <ul>
+          <li>
+            <i title="Lives" class="icons-profile icons-profile_geo"></i>
+            <a target="_blank" rel="nofollow" title="Lives" href="https://www.mql5.com/go?https://maps.google.com/?z=4&q=Russia">Russia</a>
+          </li>
+        <li>
+          <i title="Rating" class="icons-profile icons-profile_statistics"></i>
+          <a title="Rating" href="/en/users/artmedia70/achievements">87275</a>
+        </li>
+      </ul>
+    </div>
+    <div class="article-footer__author-contacts">
+          <li title="Facebook"><a class="icons-networks icons-networks_fb-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://www.facebook.com/profile.php?id=100007373025859"></a></li>
+    <li title="LinkedIn"><a class="icons-networks icons-networks_linkedin-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://ru.linkedin.com/pub/artyom-trishkin/97/144/604/"></a></li>
+    <li title="X"><a class="icons-networks icons-networks_tw-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://x.com/artmedia70"></a></li>
+    <li title="VKontakte"><a class="icons-networks icons-networks_vk-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://vk.me/artmedia70"></a></li>
+
+    </div>
+    <div class="article-footer__author-bio">Writing scripts, indicators, EAs on mql5 and mql4 <br/> ------------------------------------------------ <br/> Reliable, high quality. Help you check your strategy in StrategyTester, offer options to increase profitability. I write as a tester, and for demo and live trading. <br/> ------------------------------------------------ <br/> For all questions, please contact personal messages. <br/> ------------------------------------------------</div>
+  </div>
+</div>
+
+      <div class="other-author-articles ui">
+        <h4 class="other-author-articles__title">Other articles by this author</h4>
+        <ul class="other-author-articles__list">
+          <li><a href="/en/articles/19979" data-fz-event="MQL5+Article+From+Author+Article">Tables in the MVC Paradigm in MQL5: Customizable and sortable table columns</a></li>
+          <li><a href="/en/articles/19441" data-fz-event="MQL5+Article+From+Author+Article">How to publish code to CodeBase: A practical guide</a></li>
+          <li><a href="/en/articles/19288" data-fz-event="MQL5+Article+From+Author+Article">Tables in the MVC Paradigm in MQL5: Integrating the Model Component into the View Component</a></li>
+          <li><a href="/en/articles/18941" data-fz-event="MQL5+Article+From+Author+Article">The View and Controller components for tables in the MQL5 MVC paradigm: Resizable elements</a></li>
+          <li><a href="/en/articles/18658" data-fz-event="MQL5+Article+From+Author+Article">The View and Controller components for tables in the MQL5 MVC paradigm: Containers</a></li>
+          <li><a href="/en/articles/18221" data-fz-event="MQL5+Article+From+Author+Article">The View and Controller components for tables in the MQL5 MVC paradigm: Simple controls</a></li>
+          <li><a href="/en/articles/17960" data-fz-event="MQL5+Article+From+Author+Article">The View component for tables in the MQL5 MVC paradigm: Base graphical element</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+  <div class="article__last-comments" id="articleAdditional">
+    
+
+<div class="comments-preview">
+    <div class="title">
+      <span></span><b>
+         Last comments |
+ <a href="/en/forum/491030">Go to discussion</a>
+      </b>
+        (9)
+    </div>
+    <div>
+        
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/avatar_na2.png" srcset="https://c.mql5.com/avatar/avatar_na2_big.png 2x" alt="Forex210" title="Forex210" data-user-login="Forex210" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/forex210" data-user-login="Forex210">Forex210</a></b>
+              |
+              <span class="comment__date">4 Dec 2025 at 09:42</span>
+              <a id="comment_58653950"></a>
+              
+            </div>
+            <div class="content" id="content58653950">
+              WOULD YOU PLEASE confirm this is the same one used on <a href="https://www.metatrader5.com/en/mobile-trading" target="_blank" title="Mobile Trading Platform MetaTrader 5" class="linkator"><span class="mark">mt5 mobile</span></a> app?????&nbsp;
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2012/5/4FC60566-2EEC.jpg" srcset="https://c.mql5.com/avatar/2012/5/4FC60566-2EEC_big.jpg 2x" alt="Rashid Umarov" title="Rashid Umarov" data-user-login="Rosh" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/rosh" data-user-login="Rosh">Rashid Umarov</a></b>
+              |
+              <span class="comment__date">4 Dec 2025 at 11:10</span>
+              <a id="comment_58654633"></a>
+              
+            </div>
+            <div class="content" id="content58654633">
+              Yes, the calculation algorithm is the same.
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2021/3/6062D850-3704.jpg" srcset="https://c.mql5.com/avatar/2021/3/6062D850-3704_big.jpg 2x" alt="Gyanbote Anand Ratilal" title="Gyanbote Anand Ratilal" data-user-login="anandgyanbote" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/anandgyanbote" data-user-login="anandgyanbote">Gyanbote Anand Ratilal</a></b>
+              |
+              <span class="comment__date">11 Mar 2026 at 14:28</span>
+              <a id="comment_59357119"></a>
+              
+            </div>
+            <div class="content" id="content59357119">
+              <p>Indicator is Good and Very much Helpful for the Traders ,</p> <p>but after compiling it wont give error,</p> <p>but after applied on mt5 chart , mt5 gets hang ,need to close ,not responding window comes please&nbsp;</p> <p>solve this problem</p>
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2021/3/6062D850-3704.jpg" srcset="https://c.mql5.com/avatar/2021/3/6062D850-3704_big.jpg 2x" alt="Gyanbote Anand Ratilal" title="Gyanbote Anand Ratilal" data-user-login="anandgyanbote" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/anandgyanbote" data-user-login="anandgyanbote">Gyanbote Anand Ratilal</a></b>
+              |
+              <span class="comment__date">11 Mar 2026 at 14:29</span>
+              <a id="comment_59357126"></a>
+              
+            </div>
+            <div class="content" id="content59357126">
+              <div class="fquote"> <strong><span style="color:#42639C;">Rashid Umarov <a href="/en/forum/491030#comment_58654633">#</a></span>:</strong><br/> Yes, the calculation algorithm is the same. </div> <p>Indicator is Good and Very much Helpful for the Traders ,</p> <p>but after compiling it wont give error,</p> <p>but after applied on mt5 chart , mt5 gets hang ,need to close ,not responding window comes please&nbsp;</p> <p>solve this problem</p>
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2022/7/62C4775C-ABD6.jpg" srcset="https://c.mql5.com/avatar/2022/7/62C4775C-ABD6_big.jpg 2x" alt="Artyom Trishkin" title="Artyom Trishkin" data-user-login="artmedia70" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/artmedia70" data-user-login="artmedia70">Artyom Trishkin</a></b>
+              |
+              <span class="comment__date">11 Mar 2026 at 17:37</span>
+              <a id="comment_59358619"></a>
+              
+            </div>
+            <div class="content" id="content59358619">
+              <div class="fquote"> <b><span style="color:#42639C;">Gyanbote Anand Ratilal <a href="/ru/forum/477309#comment_59357127">#</a></span>:</b><br/><p>The indicator is good and very useful for traders,</p> <p>but it does not generate an error after compilation,</p> <p>but after applying it on mt5 chart, mt5 hangs, need to close, "not responding" window appears, please solve this problem.</p> <p>solve this problem</p> </div> <p>Checked. Both variants of the indicator run fine on the chart.</p> <p>Need more data about where and how you run it.</p>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+  </div>
+
+
+    <div class="articles-bottom-list" id="articleAdditional">
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Developing a Replay System (Part 75): New Chart Trade (II)" src="https://c.mql5.com/2/102/Desenvolvendo_um_sistema_de_Replay_Parte_75___LOGO.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/12442" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Developing a Replay System (Part 75): New Chart Trade (II)</a>
+                <div class="articles-bottom-list__desc">In this article, we will talk about the C_ChartFloatingRAD class. This is what makes Chart Trade work. However, the explanation does not end there. We will complete it in the next article, as the content of this article is quite extensive and requires deep understanding. The content presented here is intended solely for educational purposes. Under no circumstances should the application be viewed for any purpose other than to learn and master the concepts presented.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Price Action Analysis Toolkit Development (Part 31): Python Candlestick Recognition Engine (I) — Manual Detection" src="https://c.mql5.com/2/156/18789-price-action-analysis-toolkit-logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/18789" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Price Action Analysis Toolkit Development (Part 31): Python Candlestick Recognition Engine (I) — Manual Detection</a>
+                <div class="articles-bottom-list__desc">Candlestick patterns are fundamental to price-action trading, offering valuable insights into potential market reversals or continuations. Envision a reliable tool that continuously monitors each new price bar, identifies key formations such as engulfing patterns, hammers, dojis, and stars, and promptly notifies you when a significant trading setup is detected. This is precisely the functionality we have developed. Whether you are new to trading or an experienced professional, this system provides real-time alerts for candlestick patterns, enabling you to focus on executing trades with greater confidence and efficiency. Continue reading to learn how it operates and how it can enhance your trading strategy.</div>
+              </div>
+          </div>
+        </div>
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="From Basic to Intermediate: Recursion" src="https://c.mql5.com/2/102/Do_bbsico_ao_intermedilrio_Recursividade__LOGO.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/15504" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">From Basic to Intermediate: Recursion</a>
+                <div class="articles-bottom-list__desc">In this article we will look at a very interesting and quite challenging programming concept, although it should be treated with great caution, as its misuse or misunderstanding can turn relatively simple programs into something unnecessarily complex. But when used correctly and adapted perfectly to equally suitable situations, recursion becomes an excellent ally in solving problems that would otherwise be much more laborious and time-consuming. The materials presented here are intended for educational purposes only. Under no circumstances should the application be viewed for any purpose other than to learn and master the concepts presented.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Neural Networks in Trading: Optimizing the Transformer for Time Series Forecasting (LSEAttention)" src="https://c.mql5.com/2/101/Neural_Networks_in_Trading_Optimizing_Transformer_for_Time_Series_Forecasting___LOGO5.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/16360" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Neural Networks in Trading: Optimizing the Transformer for Time Series Forecasting (LSEAttention)</a>
+                <div class="articles-bottom-list__desc">The LSEAttention framework offers improvements to the Transformer architecture. It was designed specifically for long-term multivariate time series forecasting. The approaches proposed by the authors of the method can be applied to solve problems of entropy collapse and learning instability, which are often encountered with vanilla Transformer.</div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+<div class="clear-fix"></div>
+
+<div id='wdausxxqrpvhekbwjrjlhqjghyhesrqqau' class="r6irig5txiuua4k0m r6irig5txiuua4k0m_articles-view gg88d3drb"></div>
+    
+
+<div class="hidden" id="popupRegisterLogin">
+  <div class="register-login-popup">
+    <div class="register-login-popup__header">
+      <img src="https://c.mql5.com/i/registerlandings/logo-2.png" srcset="https://c.mql5.com/i/registerlandings/logo-2_2x.png 2x" alt="MQL5 - Language of trade strategies built-in the MetaTrader 5 client terminal" loading="lazy" width="74" height="24" />
+    </div>
+    <div class="register-login-popup__content">
+      <div class="register-login-popup__desc">
+        <div class="register-login-popup__title">You are missing trading opportunities:</div>
+        <ul>
+<li>Free trading apps</li>
+<li>Over 8,000 signals for copying</li>
+<li>Economic news for exploring financial markets</li>
+</ul>
+      </div>
+      <div class="register-login-popup__forms ui">
+        <div class="register-login-popup__tabs" id="registerLoginPopupTabs">
+          <span data-id="register" id="registerLoginPopupTab_register" class="register-login-popup__tab register-login-popup__tab_active">Registration</span>
+          <span data-id="login" id="registerLoginPopupTab_login" class="register-login-popup__tab">Log in</span>
+        </div>
+        <div id="registerLoginPopupTabContent_register">
+          <div class="ui auth-form__content">
+    
+  <script type='text/javascript'>/*<![CDATA[*/ if (!window.V) var V = []; /*]]>*/</script>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/en/auth_register_short" id="PopupRegisterquickRegisterForm" onsubmit="PopupRegisterquickRegistration.OnSubmit(this,&#39;en&#39;);if(Validate(this)) Ajax.form(this,{onready:PopupRegisterquickRegistration.OnSuccessPopup,onerror:PopupRegisterquickRegistration.OnError,onbeginrequest:PopupRegisterquickRegistration.DisableInputs,onendrequest:PopupRegisterquickRegistration.EnableInputs});return(false);" enctype = "multipart/form-data"><input type="hidden" name="__signature" value="3aa7810a51661d6aa0dd44ed1c954e0d"/>
+    <div class="auth-form__inputs">
+      <input type="hidden" value="0" name="IsValidate" id="PopupRegisterIsValidate" />
+
+      <!--[if lt IE 10]><div class="note">Login:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input type="text" id="PopupRegisterusername" name="username" class="input" maxlength="32" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.CheckUserName();}" onkeyup="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.ValidateUserName(this, 'Enter a valid login');}" placeholder="Login" title="May contain Latin letters, digits, dots, dashes,underscore characters. Cannot start or end with a dot. The allowed length is 3 to 32 characters." onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisterusername'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisterusername',10,'You may use Latin characters, numbers, underscores and periods.',validate_username]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisterusername">latin characters without spaces</label>
+      </div>
+      <!--[if lt IE 10]><div class="note">Your email:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input class="input" type="email" id="PopupRegisteremail" name="email" placeholder="Your email" title="Please enter the email (it may not exceed 256 characters). For example: john@example.com" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnChange(this);}" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisteremail'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisteremail',10,'Enter a valid email address',validate_email]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisteremail">a password will be sent to this email</label>
+      </div>
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Register" />
+    </div>
+    <span id="PopupRegisterquickRegisterSubmit">
+      <input type="submit" value="Register" id="PopupRegisterquickRegisterButton"  title="Sign up and receive an email with your password" class="button button_yellow"  />
+    </span>
+    <span id="PopupRegisterquickRegisterErrorMessage" class="quick-register-error-message field-validation-error" style="text-align: center; margin-top: 16px; display: none;">
+      An error occurred
+    </span>
+</form>
+    
+</div>
+<div class="auth-social">
+  <ul class="auth-social-list" id="socialList">
+    <li><a onclick="window.fpush({name: 'MQL5+Popup+Register+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/en/auth_oauth2?provider=Google&amp;amp;return=popup&amp;amp;reg=1" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Log in With Google</a></li>
+  </ul>
+</div>
+<div class="auth-block-agree">
+  <p>
+    You agree to <a target="_blank" href="/en/about/privacy">website policy</a> and <a target="_blank" href="/en/about/terms">terms of use</a>
+  </p>
+</div>
+
+
+        </div>
+        <div id="registerLoginPopupTabContent_login" class="hidden">
+            <div class="auth-form__text">
+    If you do not have an account, please <a href="https://www.mql5.com/en/auth_register" rel="nofollow" style="vertical-align: top">register</a>
+  </div>
+<div class="ui auth-form__content auth-form__content_login" id="loginFormWrapper">
+    
+  <div id="needCookies" class="need-cookies hidden">
+    <div class="danger-box">
+      <p>Allow the use of cookies to log in to the MQL5.com website.</p>
+<p>Please enable the necessary setting in your browser, otherwise you will not be able to log in.</p>
+    </div>
+  </div>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/en/auth_login" id="loginForm" onsubmit="if(window.quickLogin){return window.quickLogin.onSubmit(this);}var result = Validate(this); if(result) { preventDoubleSubmit(this); } return result;"><input id="RedirectAfterLoginUrl" name="RedirectAfterLoginUrl" type="hidden" value="" /><input id="RegistrationUrl" name="RegistrationUrl" type="hidden" value="" /><input data-val="true" data-val-required="The ShowOpenId field is required." id="ShowOpenId" name="ShowOpenId" type="hidden" value="True" /><input id="TrackingSection" name="TrackingSection" type="hidden" value="Articles" />    <input name="ViewType" type="hidden" value="5" />
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Login" />
+    <!--[if lt IE 10]><div class="note">Your login:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <input class="input qa-login" id="Login" name="Login" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Login" title="Your login" type="text" value="" />
+      <script type='text/javascript' id='validate_Login'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Login',1,'Enter login specified when signing up']);});mqGlobal.AddOnReady(function() {V.push(['Login',10,'Email cannot be used. Enter your login please',validateLogin]);}); /*]]>*/</script>
+    </div>
+    <!--[if lt IE 10]><div class="note">Password:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <div class="input-with-show">
+        <input autocomplete="off" class="input qa-password" id="Password" name="Password" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Password" title="Enter the password please" type="password" />
+        <span class="input-with-show__icon" title="Show password" onclick="if(window.quickLogin){window.quickLogin.showPass(this, 'Show password', 'Hide password');}"></span>
+      </div>
+      <script type='text/javascript' id='validate_Password'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Password',1,'Please enter the password']);}); /*]]>*/</script>
+    </div>
+    <script type="text/javascript">
+    function validateLogin(input) {
+      console.log('validate login ' + input.value);
+      return !/^\w+([-+.'']{1,2}\w+)* @\w+([-.]\w+)*\.\w+([-.]\w+)*$/i.test(input.value);
+    }
+    </script>
+    <div class="forgot" id="loginForgotBlock"><a id="loginForgotLink" href="https://www.mql5.com/en/auth_forgotten?return=popup">Forgot your login/password?</a></div>
+    <input type="submit" class="button button_yellow qa-submit" id="loginSubmit" value="Log in" title="Enter">
+</form></div>
+
+  <div class="auth-social" id="authSocialBlock">
+    <ul class="auth-social-list" id="socialList">
+      <li><a onclick="window.fpush({name: 'MQL5+Popup+Login+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/en/auth_oauth2?provider=Google&amp;amp;return=popup" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Log in With Google</a></li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script id="popupSection" type="application/json">{"section": "Articles"}</script>
+<script id="popupTranslate" data-type="translate" type="application/json">
+{
+  "popup":
+  {
+  "EmailTitle" : "The password has been sent to {0}",
+  "EmailDescription" : "Log in using the obtained password and the login specified during the registration",
+  "SubmitButtonText" : "Activate account",
+  "RegistrationTip" : "If you have not received the password email, check the spam folder or &lt;a href={0}&gt;repeat the registration&lt;/a&gt;"
+  }
+}
+</script>
+
+    
+
+    
+
+
+    </article>
+  </div>
+
+
+
+<div aria-hidden="true" class="footer  desktop" id="footer">
+  <ul class="links  links_desktop">
+      <li id="navFooterCommunity">
+        <nav>
+          <ul>
+            <li><a href="https://web.metatrader.app/terminal?mode=demo&amp;lang=en" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Footer+Trading">Online trading / WebTerminal</a></li>
+            <li><a href="/en/code" data-fz-event="MQL5+Footer+CodeBase">Free technical indicators and robots</a></li>
+            <li><a href="/en/articles" data-fz-event="MQL5+Footer+Articles">Articles about programming and trading</a></li>
+            <li><a href="/en/job" data-fz-event="MQL5+Footer+Job">Order trading robots on the Freelance</a></li>
+            <li><a href="/en/market" data-fz-event="MQL5+Footer+Market">Market of Expert Advisors and applications&#x9;</a></li>
+            <li><a href="/en/signals" data-fz-event="MQL5+Footer+Signals">Follow forex signals</a></li>
+            <li><a href="/en/vps" data-fz-event="MQL5+Footer+VPS">Low latency forex VPS</a></li>
+            <li><a href="/en/forum" data-fz-event="MQL5+Footer+Forum">Traders forum</a></li>
+            <li><a href="/en/blogs" data-fz-event="MQL5+Footer+Blogs">Trading blogs</a></li>
+            <li><a rel="nofollow" href="/en/charts" data-fz-event="MQL5+Footer+Charts">Charts</a></li>
+            <li><a href="/en/widgets" data-fz-event="MQL5+Footer+Widgets">Free widgets</a></li>
+          </ul>
+        </nav>
+      </li>
+      <li id="navFooterMt5">
+        <nav>
+          <ul>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> Trading Platform</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/releasenotes" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> latest updates</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/news" data-fz-event="MQL5+Footer+MetaTrader+5">News, implementations and technology</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> User Manual</a></li>
+            <li><a href="/en/docs" data-fz-event="MQL5+Footer+Docs">MQL5 language of trading strategies</a></li>
+            <li><a rel="nofollow noopener" href="https://cloud.mql5.com" data-fz-event="MQL5+Footer+Cloud">MQL5 Cloud Network</a></li>
+            <li><a rel="noopener" href="https://forge.mql5.io/?lang=en" data-fz-event="MQL5+Footer+Forge" target="_blank">MQL5 Algo Forge</a></li>
+              <li><a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Footer">Download <span class="nobr">MetaTrader 5</span></a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help/start_advanced/installation" data-fz-event="MQL5+Footer+MetaTrader+5">Install Platform</a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help/start_advanced/deinstallation" data-fz-event="MQL5+Footer+MetaTrader+5">Uninstall Platform</a></li>
+          </ul>
+        </nav>
+
+      </li>
+    <li id="navFooterWebsite">
+        <nav>
+          <ul>
+            <li><a rel="nofollow" href="/en/about" data-fz-event="MQL5+Footer+About">About</a></li>
+              <li><a href="/en/wall" data-fz-event="MQL5+Footer+Wall">Timeline</a></li>
+            <li><a rel="nofollow" href="/en/about/terms" data-fz-event="MQL5+Footer+About">Terms and Conditions</a></li>
+            <li><a rel="nofollow" href="/en/about/autopayments" data-fz-event="MQL5+Footer+About">Recurring Payment Agreement</a></li>
+            <li><a rel="nofollow" href="/en/about/agencyagreement" data-fz-event="MQL5+Footer+About">Agency Agreement – Offer</a></li>
+            <li><a rel="nofollow" href="/en/about/privacy" data-fz-event="MQL5+Footer+About">Privacy and Data Protection Policy</a></li>
+            <li><a rel="nofollow" href="/en/about/cookies" data-fz-event="MQL5+Footer+About">Cookies Policy</a></li>
+            <li>
+                <a rel="nofollow" href="/en/contact" data-fz-event="MQL5+Footer+Contacts">Contacts and requests</a>
+            </li>
+          </ul>
+        </nav>
+    </li>
+
+      <li>
+        <div class="footer__products">
+          <div class="footer__product">
+            <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com" class="footer__product-name">MetaTrader 5</a>
+            <div class="footer__product-links">
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon windows" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for Windows</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/MetaTrader5.pkg.zip?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon macos" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for MacOS</div></a>
+            <a rel="nofollow noopener" href="https://www.mql5.com/en/articles/625?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon linux" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for Linux</div></a>
+            <a rel="nofollow noopener" href="https://web.metatrader.app/terminal?mode=demo&amp;lang=en" class="icon web"><div  class="footer__product-link-hint footer__product-link-hint-short">Open MetaTrader 5 WebTerminal</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/ios?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=en" class="icon ios" data-fz-event="MetaTrader+5+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/jhZn8Ed1I1d.png)">Scan to install from App Store</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=en" class="icon android" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/kiF2Io6W-9d.png)">Scan to install from Google Play</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon huawei" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ZRt&#x2B;zI1l&#x2B;8O.png)">Scan to install from Huawei AppGallery</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon ark" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/L0Q9oag&#x2B;3eE.png)">Scan to get Android APK file</div></a>
+            </div>
+          </div>
+          <div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com/en/news/2270" class="footer__product-name">MQL5 Channels</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon ios" data-fz-event="MQL5+Channels+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/bZVfOJnYpcO.png)">Scan to install from App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon android" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/32MJFgw7BVs.png)">Scan to install from Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Su&#x2B;fe4n374e.png)">Scan to install from Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mql5channels/mql5channels.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/G6Mg4NfCPzO.png)">Scan to get Android APK file</div></a>
+              </div>
+            </div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.tradays.com/en/download?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MQL5+Footer+Download+Tradays" class="footer__product-name">Economic Calendar</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon ios" data-fz-event="Tradays+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CpD&#x2B;mhIw-1E.png)">Scan to install from App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon android" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Bgyx8UcmYap.png)">Scan to install from Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CrS7bbDAdAO.png)">Scan to install from Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/tradays/tradays.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/VZi8YPIb2op.png)">Scan to get Android APK file</div></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__networks">
+          <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow" title="Facebook"><i class="icons-networks icons-networks_fb"></i></a>
+          <a href="https://t.me/mql5dev" target="_blank" rel="nofollow" title="Telegram"><i class="icons-networks icons-networks_tg"></i></a>
+          <a href="https://x.com/mql5com" target="_blank" rel="nofollow" title="X (Twitter)"><i class="icons-networks icons-networks_tw"></i></a>
+          <a href="https://www.youtube.com/@MetaQuotesOfficial" target="_blank" rel="nofollow" title="YouTube"><i class="icons-networks icons-networks_yt"></i></a>
+          <a href="https://www.linkedin.com/company/mql5" target="_blank" rel="nofollow" title="LinkedIn"><i class="icons-networks icons-networks_linkedin"></i></a>
+          <span>Subscribe to algotrading news</span>
+        </div>
+  
+        <div class="footer__other">
+          <div class="footer__not-a-broker">Not a broker, no real trading accounts</div>
+          <div class="copyright">35 Dodekanisou str, Germasogeia, 4043,&nbsp;Limassol,&nbsp;Cyprus</div>
+          <div class="copyright">Copyright 2000-2026, <span class="nobr">MetaQuotes Ltd</span></div>
+        </div>
+      </li>
+  </ul>
+</div>
+
+
+
+<div class="shadow-layer" id="layer"></div>
+    
+
+  <div class="b-fixed-mt" id="bFixedMt" style="display: none;">
+    
+  </div>
+
+
+<script type='text/javascript'>
+		(function (a, e, f, g, b, c, d) { a[b] || (a.FintezaCoreObject = b, a[b] = a[b] || function () { (a[b].q = a[b].q || []).push(arguments) }, a[b].l = 1 * new Date, c = e.createElement(f), d = e.getElementsByTagName(f)[0], c.async = !0, c.defer = !0, c.src = g, d && d.parentNode && d.parentNode.insertBefore(c, d)) })
+      (window, document, "script", "/ff/core.js", "fz");
+		window.fz("register", "website", {
+      id: "sqjxkxkswybhifrohpyooonwgbvsfzmayq",
+			trackLinks: true
+		});
+        mqGlobal.AddOnReady(function () { Mql5Cookie.init('mql5.com', '5095785032694929399'); });
+mqGlobal.AddOnReady(function(){if(!window.Pocket){window.Pocket=new PocketManager();}});mqGlobal.AddOnReady(function(){if(!window.translateManager){window.translateManager=new Translate(undefined,'Error: failed to translate. Please try again later.');}if(document.querySelectorAll){var translateElements=document.querySelectorAll(".translateMenu");if(translateElements){var i=0,count=translateElements.length;for(i;i<count;i++){(function(i){var contentid=dataset(translateElements[i],"contentid"),sourcelang=dataset(translateElements[i],"sourcelang"),targetlang=dataset(translateElements[i],"targetlang"),moduleid=parseInt(dataset(translateElements[i],"moduleid")),typeid=parseInt(dataset(translateElements[i],"typeid")),entityid=parseInt(dataset(translateElements[i],"entityid"));Core.AddHandler(translateElements[i],"mouseover",function(){return translateManager.SetMenu(this,contentid,sourcelang,targetlang,moduleid,typeid,entityid);});})(i);}}}});window.fz("show","wdausxxqrpvhekbwjrjlhqjghyhesrqqau");window.mqGlobal.AddOnLoad(function(){window.fpush('MQL5+Article+Open');Articles.CheckOnScrollDown();});mqGlobal.AddOnReady(function(){window.PopupRegisterquickRegistration=new QuickRegistration('PopupRegister','Popup+Register','Articles');});function validate_username(input){var reg=/^([a-z0-9]){1}([\-._a-z0-9]){1,30}([\-_a-z0-9]){1}$/i,value=input.value,result=true;if(reg.test(value)){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Login',unit:'section',value:'Articles'});}return result;}function validate_email(input){var reg=/^\w+([-+.'']{1,2}\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/i,value=input.value,result=true,length_value=value.length;if(reg.test(value)&&length_value>=1&&length_value<=40){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Email',unit:'section',value:'Articles'});}return result;};mqGlobal.AddOnReady(function(){var username=$('PopupRegisterusername'),email=$('PopupRegisteremail');if(username)username.value='';if(email)email.value='';});mqGlobal.AddOnReady(function(){window.quickLogin=new QuickLogin('Popup+Login','Articles');});mqGlobal.AddOnLoad(function(){window.showLoginRegisterPopupAtEnd();});mqGlobal.AddOnLoad(function(){window.tooltipUserInfo.init();});mqGlobal.AddOnReady(function(){{window.initHeaderSearch('','https://www.mql5.com/en/search');}});</script><script type="text/javascript">mqGlobal.AddOnReady(function(){window.initSuggestions("headerSearchKeyword","en","https://search.mql5.com/api/query","https://www.mql5.com/en/users_search/suggestion");});window.fz("show","vgckrufggwxdtfscpyalmenexmvhljduja");mqGlobal.AddOnReady(function(){window.floatVerticalPanelNode=FloatVerticalPanel('This website uses cookies. Learn more about our <a href="/en/about/cookies">Cookies Policy</a>.','cookie_accept');});							if (typeof Attach !== "undefined")
+			Attach.setAcceptFilter(".zip, .txt, .log, .mqh, .ex5, .mq5, .mq4, .mqproj, .ex4, .mt5, .set, .tpl, .cl, .py, .sqlite, .csv, .ini, .ipynb, .onnx, .gif, .png, .jpg, .jpeg, .mp4, .webm");
+	</script>
+
+<script type="application/ld&#x2B;json">
+		[
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"url": "https://www.mql5.com",
+				"logo": "https://c.mql5.com/i/community/logo_mql5-2.png",
+				"sameAs": [
+					"https://www.facebook.com/mql5.community",
+					"https://www.x.com/mql5com",
+					"https://www.youtube.com/user/MetaQuotesOfficial"
+				 ]
+			}
+		
+, 
+{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"Forum","description":"Discussions of trading strategies and algorithmic trading. MQL5.community  the largest forex forum","url":"https://www.mql5.com/en/forum","children":[]},{"@type":"SiteNavigationElement","position":2,"name":"Market","description":"MetaTrader Market - a Market of trading robots, indicators, trading books and magazines","url":"https://www.mql5.com/en/market","children":[]},{"@type":"SiteNavigationElement","position":3,"name":"Signals","description":"Social trading, copy trading and account monitoring with MetaTrader - Trading Signals on MQL5.com","url":"https://www.mql5.com/en/signals","children":[]},{"@type":"SiteNavigationElement","position":4,"name":"Freelance","description":"Order trading robots, technical indicators and algorithmic trading applications. Forex jobs. Freelance on MQL5.com. Hire MetaTrader experts and specialists","url":"https://www.mql5.com/en/job","children":[]},{"@type":"SiteNavigationElement","position":5,"name":"Quotes","description":"","url":"https://www.mql5.com/en/quotes/overview","children":[]},{"@type":"SiteNavigationElement","position":6,"name":"MetaTrader","description":"","url":"https://www.metatrader.com","children":[]},{"@type":"SiteNavigationElement","position":7,"name":"WebTerminal","description":"WebTerminal for the MetaTrader trading platform. Online forex trading.","url":"https://web.metatrader.app/terminal?mode=demo","children":[]},{"@type":"SiteNavigationElement","position":8,"name":"Calendar","description":"","url":"https://www.mql5.com/en/economic-calendar","children":[]},{"@type":"SiteNavigationElement","position":9,"name":"VPS","description":"","url":"https://www.mql5.com/en/vps","children":[]},{"@type":"SiteNavigationElement","position":10,"name":"Articles","description":"","url":"https://www.mql5.com/en/articles","children":[]},{"@type":"SiteNavigationElement","position":11,"name":"CodeBase","description":"Download trading robots, technical indicators and scripts with source code - MQL5 Code Base for MetaTrader 5","url":"https://www.mql5.com/en/code","children":[]},{"@type":"SiteNavigationElement","position":12,"name":"Algo Forge","description":"","url":"https://forge.mql5.io","children":[]},{"@type":"SiteNavigationElement","position":13,"name":"Documentation","description":"MetaQuotes Language 5 (MQL5) Reference - Documentation on MQL5.com","url":"https://www.mql5.com/en/docs","children":[]}]}		
+,
+{"@context":"https://schema.org","@type":"TechArticle","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.mql5.com/en/articles/16461"},"headline":"Market Profile indicator","image":["https://c.mql5.com/2/156/OCCqrxbjV6__1.png","https://c.mql5.com/2/156/7kQMWwPwYX__1.png","https://c.mql5.com/2/156/8q3fZvwF3R__1.png","https://c.mql5.com/2/156/XaePNjPn8k__1.png","https://c.mql5.com/2/156/mZuDkksI78__1.png","https://c.mql5.com/2/156/TnQHOROKN2__1.png","https://c.mql5.com/2/156/XXsRkrcOru__1.png","https://c.mql5.com/2/156/wNNAEXRrL6__1.png","https://c.mql5.com/2/156/Market_Profile_indexes__2.png","https://c.mql5.com/2/156/Market_Profile_indexes1__1.png","https://c.mql5.com/2/156/terminal64_atbx0MwvSc__1.png"],"datePublished":"2025-07-14T11:49:41+00:00Z","dateModified":"2025-07-14T11:46:13+00:00Z","author":{"@type":"Person","name":"Artyom Trishkin","url":"https://www.mql5.com/en/users/artmedia70"},"editor":{"@type":"Organization","name":"MetaQuotes","url":"https://www.mql5.com/en/users/metaquotes","address":{"@type":"PostalAddress","addressCountry":"CY"}},"publisher":{"@type":"Organization","name":"MQL5 Community","url":"https://www.mql5.com","logo":{"@type":"ImageObject","url":"https://c.mql5.com/i/community/logo_mql5-2.png"}},"description":"In this article, we will consider Market Profile indicator. We will find out what lies behind this name, try to understand its operation principles and have a look at its terminal version (MarketProfile)."}
+,
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":"https://www.mql5.com/en/articles","name":"Articles"},{"@type":"ListItem","position":2,"item":"https://www.mql5.com/en/articles/mt5","name":"MetaTrader 5"},{"@type":"ListItem","position":3,"item":"https://www.mql5.com/en/articles/mt5/examples","name":"Examples"}]}
+
+		]
+	</script>
+</body>
+</html>

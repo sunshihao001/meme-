@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+  <link rel="dns-prefetch" href="https://c.mql5.com">
+  <meta name="description" content="这是一个在图表上显示成交量曲线的指标，计算简单，执行速度极快。 - 在MQL5代码库免费下载MetaTrader 5的&#x27;Volume Profile&#x27; (&#x27;baset84&#x27;)指标, 2025.12.30">
+  <meta property="og:url" content="https://www.mql5.com/zh/code/47784">
+  <meta property="og:title" content="Volume Profile">
+  <meta property="og:description" content="这是一个在图表上显示成交量曲线的指标，计算简单，执行速度极快。">
+      <meta property="og:image" content="https://c.mql5.com/18/176/XAUUSDDaily__5.png">
+      <meta property="og:image:secure_url" content="https://c.mql5.com/18/176/XAUUSDDaily__5.png">
+            <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="object">
+  <meta property="article:published_time" content="2025-12-30T13:43:44.0000000Z">
+  <meta property="article:author" content="https://www.mql5.com/zh/users/baset84">
+  <meta property="article:section" content="MetaTrader 5">
+  <meta property="article:tag" content="指标">
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:site" content="@mql5com">
+  <meta name="twitter:image" content="https://c.mql5.com/18/176/XAUUSDDaily__5.png">
+  <meta name="theme-color" content="#4a76b8">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="manifest" href="https://www.mql5.com/manifest.json">
+  <link rel="apple-touch-icon" sizes="57x57" href="https://www.mql5.com/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="https://www.mql5.com/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="https://www.mql5.com/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="https://www.mql5.com/apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="https://www.mql5.com/apple-touch-icon-167x167.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://www.mql5.com/apple-touch-icon-180x180.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="https://www.mql5.com/apple-touch-icon-192x192.png">
+  <link rel="icon" sizes="192x192" href="https://www.mql5.com/android-touch-icon-192x192.png">
+  <link rel="icon" sizes="128x128" href="https://www.mql5.com/android-touch-icon-128x128.png">
+  <link rel="shortcut icon" href="https://c.mql5.com/i/favicon4.ico">
+  <meta name="msapplication-config" content="none"/>
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta property="qc:admins" content="36367170677651456375"/>
+  <meta property="wb:webmaster" content="073d7690269bcd81"/>
+  <link href="https://c.mql5.com/styles/core.444bc25de4c9131a69fedfe5ac42a082.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/all.266d64b83529847f568747dd160d42b0.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/codebase.b60ba9023f9f4873a22b4fb71e2dfaa7.css" type="text/css" rel="stylesheet" media="all">
+  <link href="/zh/code/rss" rel="alternate" type="application/rss+xml" title="代码库 - MetaTrader 5自动交易和技术指标的免费数据库">
+  <link rel="canonical" href="https://www.mql5.com/zh/code/47784">
+  <link rel="alternate" hreflang="en" href="https://www.mql5.com/en/code/47784">
+  <link rel="alternate" hreflang="ru" href="https://www.mql5.com/ru/code/47784">
+  <link rel="alternate" hreflang="zh" href="https://www.mql5.com/zh/code/47784">
+  <link rel="alternate" hreflang="es" href="https://www.mql5.com/es/code/47784">
+  <link rel="alternate" hreflang="de" href="https://www.mql5.com/de/code/47784">
+  <link rel="alternate" hreflang="ja" href="https://www.mql5.com/ja/code/47784">
+  <link rel="alternate" hreflang="pt" href="https://www.mql5.com/pt/code/47784">
+  <link rel="alternate" hreflang="ko" href="https://www.mql5.com/ko/code/47784">
+  <link rel="alternate" hreflang="fr" href="https://www.mql5.com/fr/code/47784">
+  <link rel="alternate" hreflang="it" href="https://www.mql5.com/it/code/47784">
+  <link rel="alternate" hreflang="tr" href="https://www.mql5.com/tr/code/47784">
+  <title>在MQL5代码库免费下载MetaTrader 5的&#x27;Volume Profile&#x27; (&#x27;baset84&#x27;)指标, 2025.12.30</title>
+  <script type='text/javascript'>
+  (function(a,e,f,g,b,c,d){a[b]||(a.FintezaCoreObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=!0,c.defer=!0,c.src=g,d&&d.parentNode&&d.parentNode.insertBefore(c,d))})
+      (window, document, "script", "/ff/core.js", "fz");
+  window.fz("register", "website", {
+      id: "sqjxkxkswybhifrohpyooonwgbvsfzmayq",
+    trackLinks: true,
+    sendEventsByBeacon: true,
+  });
+  </script>
+
+
+<script type="text/javascript">
+  !function(){window.mqGlobal={};var t=!1,n=!1,e=[],o=[],i=[];function d(t){var n;for(n=0;n<t.length;n+=1)t[n]()}function c(){t||(t=!0,d(e),d(o),o=[],e=[])}function a(){c(),n||(n=!0,d(i),i=[])}if(mqGlobal.AddOnReady=function(n,i){t?n(document):i?e.push(n):o.push(n)},mqGlobal.AddOnLoad=function(t){n?t(document):i.push(t)},mqGlobal.AddOnActiveWindowChange=function(t){this._onvisibility||(this._onvisibility=[]),this._onvisibility[this._onvisibility.length]=t},document.addEventListener)document.addEventListener("DOMContentLoaded",c,!1),window.addEventListener("load",a,!1);else if(document.attachEvent&&(document.attachEvent("onreadystatechange",(function(){switch(document.readyState){case"interactive":c();break;case"complete":a()}})),window.attachEvent("onload",a),document.documentElement.doScroll&&window==window.top)){!function n(){if(!t&&document.body)try{document.documentElement.doScroll("left"),c()}catch(t){setTimeout(n,0)}}()}}();
+  mqGlobal.CookieDomain = ".mql5.com";
+  mqGlobal.Language = 'zh';
+  mqGlobal.IsMobile = false;
+  mqGlobal.ClearRteStorage = function (e) { if (window.GStorage || (window.GStorage = globalStorage()), window.GStorage.supported) try { var o = e; window.GStorage.getItem("rte_autosave_uid", function (e, t) { t == o && (window.GStorage.removeItem("rte_autosave_text"), window.GStorage.removeItem("rte_autosave_date"), window.GStorage.removeItem("rte_autosave_uid")) }) } catch (e) { } };
+</script>
+  
+
+
+    <script src="https://c.mql5.com/js/all.c09fd283bed20d28a52c95cd70a12a27.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/vendor.1be6e9a4a90b28525f93c4c69a5058a1.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/articles.cd4c73c476b2781eecdf04f5583514b5.js" type="text/javascript" defer="defer"></script>
+
+
+</head>
+
+<body>
+
+<div class="cover" id="cover">
+
+    <header class="head">
+      <a href="https://www.mql5.com/zh" class="head__logo" title="MQL5 - MetaTrader 5客户端内置的交易策略语言"></a>
+        <div class="head__content">
+          <nav class="main-menu" id="mainmenu">
+            
+                    <ul class="main-menu__top-level" id="menuTopLevel">
+                    <li><a href="/zh/forum" data-fz-event="MQL5+Menu+Forum">论坛</a></li>
+                    <li><a href="/zh/market" data-fz-event="MQL5+Menu+Market">市场</a></li>
+                    <li><a href="/zh/signals" data-fz-event="MQL5+Menu+Signals">信号</a></li>
+                    <li><a href="/zh/job" data-fz-event="MQL5+Menu+Job">自由职业者</a></li>
+                    <li><a href="/zh/vps" data-fz-event="MQL5+Menu+VPS">VPS</a></li>
+                    <li><a href="/zh/quotes/overview" data-fz-event="MQL5+Menu+Overview">报价</a></li>
+                    <li><a href="https://www.metatrader.com/zh" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+MetaTrader">MetaTrader</a></li>
+                  </ul><ul class="main-menu__second-level" id="menuSecondLevel">
+                    <li><a href="/zh/articles" data-fz-event="MQL5+Menu+Articles"><img src="https://c.mql5.com/i/menu/icon-articles4.svg" alt="" width="16" height="16"/>文章</a></li>
+                    <li class="main-menu__selected"><a href="/zh/code" data-fz-event="MQL5+Menu+CodeBase"><img src="https://c.mql5.com/i/menu/icon-code4.svg" alt="" width="16" height="16"/>代码库</a></li>
+                    <li><a href="https://forge.mql5.io/?lang=zh-CN" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+AlgoForge"><img src="https://c.mql5.com/i/menu/icon-algoforge4.svg" alt="" width="16" height="16"/>Algo Forge</a></li>
+                    <li><a href="/zh/docs" data-fz-event="MQL5+Menu+Docs"><img src="https://c.mql5.com/i/menu/icon-docs4.svg" alt="" width="16" height="16"/>文档</a></li>
+                    <li><a href="/zh/book" data-fz-event="MQL5+Menu+Book"><img src="https://c.mql5.com/i/menu/icon-book4.svg" alt="" width="16" height="16"/>算法交易教程</a></li>
+                    <li><a href="/zh/neurobook" data-fz-event="MQL5+Menu+Neurobook"><img src="https://c.mql5.com/i/menu/icon-neurobook4.svg" alt="" width="16" height="16"/>神经网络教程</a></li>
+                    <li><a href="/zh/economic-calendar" data-fz-event="MQL5+Menu+Economic+Calendar"><img src="https://c.mql5.com/i/menu/icon-economic-calendar4.svg" alt="" width="16" height="16"/>经济日历</a></li>
+                    <li><a href="https://web.metatrader.app/terminal?mode=demo&lang=zh" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Menu+Trading"><img src="https://c.mql5.com/i/menu/icon-trading4.svg" alt="" width="16" height="16"/>网页端</a></li>
+                    <li class="main-menu__mobile"><a href="/zh/about">关于</a></li>
+                    <li class="main-menu__second-tools"><a rel="noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" title="免费获取交易平台的最新版本" class="button-mt" data-vars-fz="MetaTrader+5+Desktop+Download+Submenu"><img width="18" height="18" src="https://c.mql5.com/i/sidebar/download.svg" alt="" loading="lazy">下载MetaTrader 5</a></li>
+                    </ul>
+          </nav>
+            <div class="main-menu__active">
+              <a id="mainMenuSelected" href="#">
+                <span class="main-menu__primary">代码库</span><span class="main-menu__secondary">部分</span>
+              </a>
+            </div>
+<form action="https://www.mql5.com/zh/search" onsubmit="return false;" autocomplete="off" id="headerSearchForm" class="header-search" method="post">
+<button type="button" id="headerSearchButton" title="查找" class="header-search__button"></button><div class="header-search__input"><input name="keyword" type="text" enterkeyhint="search" title="输入查找文本" placeholder="查找" id="headerSearchKeyword"/><label for="headerSearchKeyword" class="header-search__placeholder">键入<span>/</span>进行搜索:  @user, $symbol, ...</label><button id="headerSearchSubmit" class="header-search__submit"></button></div><button type="button" id="headerSearchClean" title="关闭" class="header-search__clean"></button></form>          <input class="blurHandler" id="mainMenuBlurHandler" type="checkbox">
+        </div>
+        <div class="head__toolbar" id="headerToolbar">
+            <div class="container loginRegister">
+              <nav>
+                <ul id="loginRegisterButtons"><li><a class="login" title="请登录，支持OpenID" href="https://www.mql5.com/zh/auth_login" rel="nofollow" data-fz-event="MQL5+Menu+Siginin">登录</a></li><li><a class="registration zh" title="请注册" href="https://www.mql5.com/zh/auth_register" rel="nofollow" data-fz-event="MQL5+Menu+Register" onclick="window.fpush('MQL5+Button+Click');">创建账户</a></li></ul>
+              </nav>
+            </div>
+          <div class="container">
+            <div class="toggle-button" id="sidebarToggleButton">
+              <i></i>
+            </div>
+          </div>
+
+          <div class="group-menu" id="groupMenu">
+
+
+            <div class="container lang-menu-container">
+              <div id="langMenuContainer" class="lang-menu">
+                <input class="blurHandler" id="langmenuBlurHandler" type="checkbox">
+                <nav>
+                  <ul class="lang-menu__list" id="langmenu">
+                    <li class="lang-menu__list-item"><a href="/en/code/47784" aria-label="English (English)"><i class="icons-languages icons-languages_en"></i><span>English</span></a></li>
+<li class="lang-menu__list-item"><a href="/ru/code/47784" aria-label="Русский (Russian)"><i class="icons-languages icons-languages_ru"></i><span>Русский</span></a></li>
+<li class="lang-menu__list-item lang-menu__list-item_selected"><a href="/zh/code/47784" aria-label="中文 (Chinese)"><i class="icons-languages icons-languages_zh"></i><span>中文</span></a></li>
+<li class="lang-menu__list-item"><a href="/es/code/47784" aria-label="Español (Spanish)"><i class="icons-languages icons-languages_es"></i><span>Español</span></a></li>
+<li class="lang-menu__list-item"><a href="/pt/code/47784" aria-label="Português (Portuguese)"><i class="icons-languages icons-languages_pt"></i><span>Português</span></a></li>
+<li class="lang-menu__list-item"><a href="/ja/code/47784" aria-label="日本語 (Japanese)"><i class="icons-languages icons-languages_ja"></i><span>日本語</span></a></li>
+<li class="lang-menu__list-item"><a href="/de/code/47784" aria-label="Deutsch (German)"><i class="icons-languages icons-languages_de"></i><span>Deutsch</span></a></li>
+<li class="lang-menu__list-item"><a href="/ko/code/47784" aria-label="한국어 (Korean)"><i class="icons-languages icons-languages_ko"></i><span>한국어</span></a></li>
+<li class="lang-menu__list-item"><a href="/fr/code/47784" aria-label="Français (French)"><i class="icons-languages icons-languages_fr"></i><span>Français</span></a></li>
+<li class="lang-menu__list-item"><a href="/it/code/47784" aria-label="Italiano (Italian)"><i class="icons-languages icons-languages_it"></i><span>Italiano</span></a></li>
+<li class="lang-menu__list-item"><a href="/tr/code/47784" aria-label="Türkçe (Turkish)"><i class="icons-languages icons-languages_tr"></i><span>Türkçe</span></a></li>
+
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+    </header>
+
+  <main>
+
+    <article class="body" id="bodyContent">
+      <header class="top-band">
+        
+
+      
+    
+
+      </header>
+
+      
+
+<div id="left-panel" class="left-panel left-panel_270">
+  <div class="tree-menu tree-menu_code">
+    <ul class="tree-menu__list"><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/code/mt5"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/mt.svg" alt="" loading="lazy"/>MetaTrader 5</a><ul class="tree-menu__list tree-menu__list_nested"><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/code/mt5/experts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/expert.svg" alt="" loading="lazy"/>EA</a></li><li class="tree-menu__item tree-menu__item_selected"><a class="tree-menu__link" href="/zh/code/mt5/indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/indicator.svg" alt="" loading="lazy"/>指标</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/code/mt5/scripts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/scripts.svg" alt="" loading="lazy"/>脚本</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/code/mt5/libraries"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/library.svg" alt="" loading="lazy"/>程序库</a></li></ul></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/code/mt4"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/mt.svg" alt="" loading="lazy"/>MetaTrader 4</a><ul class="tree-menu__list tree-menu__list_nested"><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/code/mt4/experts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/expert.svg" alt="" loading="lazy"/>EA</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/code/mt4/indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/indicator.svg" alt="" loading="lazy"/>指标</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/code/mt4/scripts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/scripts.svg" alt="" loading="lazy"/>脚本</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/code/mt4/libraries"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/library.svg" alt="" loading="lazy"/>程序库</a></li></ul></li></ul><ul class="tree-menu__list"><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/code/storage"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/storage.svg" alt="" loading="lazy"/>存储</a></li></ul>
+  </div>
+
+  
+
+
+    <div class="hints-panel">
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_watch"></i>
+        <div class="hints-panel__content">
+          <a href="https://youtu.be/rloNyFVtHuA?list=PLltlMLQ7OLeKwyQwC8FhiKwjl9syKhOCK" target="_blank" rel="nofollow">请观看</a>如何免费下载自动交易
+        </div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_fb-square icons-hints_24px"></i><div class="hints-panel__content">
+请在<a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow">Facebook</a>上找到我们！<br> 加入我们粉丝页</div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_like-script"></i>
+        <div class="hints-panel__content">
+          有趣的脚本？<br>
+          因此发布一个<a href="/zh/code/47784" target="_blank">链接</a> -<br>让其他人评价
+        </div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_mt-5"></i>
+        <div class="hints-panel__content">
+          喜欢这个脚本？ 在<a href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Code" rel="nofollow">MetaTrader 5</a>客户端尝试它
+        </div>
+      </div>
+    </div>
+<div id='vgckrufggwxdtfscpyalmenexmvhljduja' class="roeid8y6hsc3ntv1l gg88d3drb"></div></div>
+<div class="code-content">
+  <div>
+    <div class="header inline-translation">
+        <div class="header__tools">
+            
+          <div class="header__tools-item header__tools-item_pocket">
+            <a href="#pocket" title="允许您插入一个完整的说明以及适当的注释内容。" onclick="return Pocket.Add(this,'zh',18,1,47784);" class="pocket icon">到包裹</a>
+          </div>
+        </div>
+        <img loading="lazy" width="60" height="60" src="https://c.mql5.com/i/code/indicator.png" alt="指标">
+
+      <h1><span>Volume Profile - MetaTrader 5脚本</span></h1>
+      <div class="author-line">
+        <span>
+          <span class="authorIco"></span>
+
+  <div class="user-popup">
+      <a href="/zh/users/baset84" class="user-popup__trigger">Mohammad Baset</a>
+    <div class="user-popup__content">
+      <div class="user-popup__avatar">
+        <img src="https://c.mql5.com/avatar/2024/1/65930fb1-5225.jpg" srcset="https://c.mql5.com/avatar/2024/1/65930fb1-5225_big.jpg 2x" width="60" height="60" alt="Mohammad Baset" title="Mohammad Baset" loading="lazy">
+      </div>
+      <div class="user-popup__meta">
+        <div class="user-popup__title">
+          <h4>
+              <a href="/zh/users/baset84">Mohammad Baset</a>
+          </h4>
+        </div>
+
+        <div class="user-popup__info">
+          <ul>
+              <li>
+                <i title="实时" class="icons-profile icons-profile_geo"></i>
+              <a target="_blank" rel="nofollow" title="实时" href="https://www.mql5.com/go?https://maps.google.com/?z=4&q=%e4%bc%8a%e6%9c%97">伊朗</a>
+            </li>
+            <li>
+              <i title="等级" class="icons-profile icons-profile_statistics"></i>
+              <a title="等级" href="/zh/users/baset84/achievements">1514</a>
+            </li>
+          </ul>
+        </div>
+
+
+        <ul class="user-popup__contacts">
+          
+        </ul>
+      </div>
+    
+
+      <div class="user-popup__counters">
+        <a href="/zh/users/baset84/publications" target="_blank">
+          <span>1</span> 代码
+        </a>
+        <a href="/zh/users/baset84/publications/all" target="_blank">
+          <span>6</span> 评论
+        </a>
+    </div>
+
+    </div>
+  </div>
+        </span>            |
+            <span class="popup framed client" style="padding: 0; margin: 0;">
+              <a class="dropdown" href="javascript:void(false);"><span style="border-bottom: dotted 1px #333;">Chinese</span><i></i></a>
+              <span class="popup">
+                <span class="items">
+                      <a href="/en/code/47784">English</a>
+                      <a href="/ru/code/47784">Русский</a>
+                      <a href="/es/code/47784">Español</a>
+                      <a href="/de/code/47784">Deutsch</a>
+                      <a href="/ja/code/47784">日本語</a>
+                      <a href="/pt/code/47784">Português</a>
+                      <a href="/ko/code/47784">한국어</a>
+                      <a href="/fr/code/47784">Français</a>
+                      <a href="/it/code/47784">Italiano</a>
+                      <a href="/tr/code/47784">Türkçe</a>
+                </span>
+              </span>
+            </span>
+      </div>
+    </div>
+      <dl class="code-table">
+        <dt>显示: </dt>
+        <dd>883</dd>
+
+          <dt>等级: </dt>
+          <dd style="margin-top: -2px;">
+            <div class="g-rating  g-rating_v45" onmouseover="if(window.tooltip) window.tooltip(this, createRatingTooltip(reviewTypes.slice(1), [4.8,4.7,4.7]));"></div><span class="g-rating__info">(25)</span>
+
+          </dd>
+
+        <dt>已发布: </dt>
+        <dd><time datetime="2025-12-30T13:43Z" title="13:43" datetime-type="datetime">30 十二月 2025, 13:43</time></dd>
+          <dt>已更新: </dt>
+          <dd><time datetime="2026-01-29T13:50Z" title="13:50" datetime-type="datetime">29 一月 2026, 13:50</time></dd>
+        <dt class="code-table__spaced"></dt>
+        <dd class="attachments">
+<div id="codeAttachments" class="grouped-attachments">
+        <div class="attachItem">
+          <a title="Volume Profile.mq5" class="attach-item__link" rel="nofollow" href="/zh/code/download/47784/volume_profile.mq5" data-fz-event="MQL5+Code+Download" onclick="window.showLoginRegisterPopupAtDownload(event);"><i class="attach-icon attach-icon_mq5"></i>Volume Profile.mq5</a>
+          <span class="attachSize">(15.55 KB)</span>
+                  <a href="#" class="attach-item__view" title="预览" onclick="Code('/zh/code/viewcode/47784/346011/volume_profile.mq5');return(false);">预览</a>
+        </div>
+</div><div class="grouped-attachments-help">
+        
+    <i class="codebase-tooltip__icon codebase-tooltip__icon_1" style="position: fixed; left: -9999px;"></i>
+    <span id="codebaseDownloadZip"><a title="下载单独ZIP文档中的全部附件" rel="nofollow" href="/zh/code/download/47784.zip" data-fz-event="MQL5+Code+Download" onclick="window.showLoginRegisterPopupAtDownload(event);"><i class="attach-icon attach-icon_zip-blue"></i>下载ZIP</a></span> <a href="https://www.metatrader5.com/zh/metaeditor/help/workspace/toolbox#codebase" rel="nofollow" target="_blank"><i class="attach-icon attach-icon_code"></i>在MetaEditor如何使用下载的代码</a></div>
+
+<div class="hidden" id="popupRegisterLogin">
+  <div class="register-login-popup">
+    <div class="register-login-popup__header">
+      <img src="https://c.mql5.com/i/registerlandings/logo-2.png" srcset="https://c.mql5.com/i/registerlandings/logo-2_2x.png 2x" alt="MQL5 - MetaTrader 5客户端内置的交易策略语言" loading="lazy" width="74" height="24" />
+    </div>
+    <div class="register-login-popup__content">
+      <div class="register-login-popup__desc">
+        <div class="register-login-popup__title">您错过了交易机会：</div>
+        <ul>
+<li>免费交易应用程序</li>
+<li>8,000+信号可供复制</li>
+<li>探索金融市场的经济新闻</li>
+</ul>
+      </div>
+      <div class="register-login-popup__forms ui">
+        <div class="register-login-popup__tabs" id="registerLoginPopupTabs">
+          <span data-id="register" id="registerLoginPopupTab_register" class="register-login-popup__tab register-login-popup__tab_active">注册</span>
+          <span data-id="login" id="registerLoginPopupTab_login" class="register-login-popup__tab">登录</span>
+        </div>
+        <div id="registerLoginPopupTabContent_register">
+          <div class="ui auth-form__content">
+    
+  <script type='text/javascript'>/*<![CDATA[*/ if (!window.V) var V = []; /*]]>*/</script>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/zh/auth_register_short" id="PopupRegisterquickRegisterForm" onsubmit="PopupRegisterquickRegistration.OnSubmit(this,&#39;zh&#39;);if(Validate(this)) Ajax.form(this,{onready:PopupRegisterquickRegistration.OnSuccessPopup,onerror:PopupRegisterquickRegistration.OnError,onbeginrequest:PopupRegisterquickRegistration.DisableInputs,onendrequest:PopupRegisterquickRegistration.EnableInputs});return(false);" enctype = "multipart/form-data"><input type="hidden" name="__signature" value="fcb9fd45e0b1a89c7f4c6acbc2428888"/>
+    <div class="auth-form__inputs">
+      <input type="hidden" value="0" name="IsValidate" id="PopupRegisterIsValidate" />
+
+      <!--[if lt IE 10]><div class="note">登录名:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input type="text" id="PopupRegisterusername" name="username" class="input" maxlength="32" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.CheckUserName();}" onkeyup="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.ValidateUserName(this, '请输入有效登录名');}" placeholder="登录名" title="可以包括字母，数字，点，破折号和下划线字符，不能以点开始或结束。允许长度为3至32个字符。" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisterusername'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisterusername',10,'您可以使用拉丁字符、数字、下划线和句号。',validate_username]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisterusername">拉丁字符（不带空格）</label>
+      </div>
+      <!--[if lt IE 10]><div class="note">您的电子邮箱:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input class="input" type="email" id="PopupRegisteremail" name="email" placeholder="您的电子邮箱" title="请输入电子邮箱地址(不能超过 256 个字符)。例如：john@example.com" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnChange(this);}" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisteremail'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisteremail',10,'请输入有效email',validate_email]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisteremail">密码将被发送至该邮箱</label>
+      </div>
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Register" />
+    </div>
+    <span id="PopupRegisterquickRegisterSubmit">
+      <input type="submit" value="注册" id="PopupRegisterquickRegisterButton"  title="注册并接收包含密码的邮件" class="button button_yellow"  />
+    </span>
+    <span id="PopupRegisterquickRegisterErrorMessage" class="quick-register-error-message field-validation-error" style="text-align: center; margin-top: 16px; display: none;">
+      发生错误
+    </span>
+</form>
+    
+</div>
+<div class="auth-social">
+  <ul class="auth-social-list" id="socialList">
+    <li><a onclick="window.fpush({name: 'MQL5+Popup+Register+Google', unit: 'section', value: 'Code'}); " href="https://www.mql5.com/zh/auth_oauth2?provider=Google&amp;amp;return=popup&amp;amp;reg=1" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">使用 Google 登录</a></li>
+  </ul>
+</div>
+<div class="auth-block-agree">
+  <p>
+    您同意<a target="_blank" href="/zh/about/privacy">网站政策</a>和<a target="_blank" href="/zh/about/terms">使用条款</a>
+  </p>
+</div>
+
+
+        </div>
+        <div id="registerLoginPopupTabContent_login" class="hidden">
+            <div class="auth-form__text">
+    如果您没有帐号，请<a href="https://www.mql5.com/zh/auth_register" rel="nofollow" style="vertical-align: top">注册</a>
+  </div>
+<div class="ui auth-form__content auth-form__content_login" id="loginFormWrapper">
+    
+  <div id="needCookies" class="need-cookies hidden">
+    <div class="danger-box">
+      <p>可以使用cookies登录MQL5.com网站。</p>
+<p>请在您的浏览器中启用必要的设置，否则您将无法登录。</p>
+    </div>
+  </div>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/zh/auth_login" id="loginForm" onsubmit="if(window.quickLogin){return window.quickLogin.onSubmit(this);}var result = Validate(this); if(result) { preventDoubleSubmit(this); } return result;"><input id="RedirectAfterLoginUrl" name="RedirectAfterLoginUrl" type="hidden" value="" /><input id="RegistrationUrl" name="RegistrationUrl" type="hidden" value="" /><input data-val="true" data-val-required="The ShowOpenId field is required." id="ShowOpenId" name="ShowOpenId" type="hidden" value="True" /><input id="TrackingSection" name="TrackingSection" type="hidden" value="Code" />    <input name="ViewType" type="hidden" value="5" />
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Login" />
+    <!--[if lt IE 10]><div class="note">您的登录名:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <input class="input qa-login" id="Login" name="Login" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="登录名" title="您的登录名" type="text" value="" />
+      <script type='text/javascript' id='validate_Login'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Login',1,'输入注册时使用的登录名']);});mqGlobal.AddOnReady(function() {V.push(['Login',10,'电子邮箱无法使用。请输入您的登录名',validateLogin]);}); /*]]>*/</script>
+    </div>
+    <!--[if lt IE 10]><div class="note">密码:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <div class="input-with-show">
+        <input autocomplete="off" class="input qa-password" id="Password" name="Password" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="密码" title="请输入密码" type="password" />
+        <span class="input-with-show__icon" title="显示密码" onclick="if(window.quickLogin){window.quickLogin.showPass(this, '显示密码', '隐藏密码');}"></span>
+      </div>
+      <script type='text/javascript' id='validate_Password'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Password',1,'请输入密码']);}); /*]]>*/</script>
+    </div>
+    <script type="text/javascript">
+    function validateLogin(input) {
+      console.log('validate login ' + input.value);
+      return !/^\w+([-+.'']{1,2}\w+)* @\w+([-.]\w+)*\.\w+([-.]\w+)*$/i.test(input.value);
+    }
+    </script>
+    <div class="forgot" id="loginForgotBlock"><a id="loginForgotLink" href="https://www.mql5.com/zh/auth_forgotten?return=popup">忘记您的登录名/密码？</a></div>
+    <input type="submit" class="button button_yellow qa-submit" id="loginSubmit" value="登录" title="输入">
+</form></div>
+
+  <div class="auth-social" id="authSocialBlock">
+    <ul class="auth-social-list" id="socialList">
+      <li><a onclick="window.fpush({name: 'MQL5+Popup+Login+Google', unit: 'section', value: 'Code'}); " href="https://www.mql5.com/zh/auth_oauth2?provider=Google&amp;amp;return=popup" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">使用 Google 登录</a></li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script id="popupSection" type="application/json">{"section": "Code"}</script>
+<script id="popupTranslate" data-type="translate" type="application/json">
+{
+  "popup":
+  {
+  "EmailTitle" : "密码已经发送到{0}",
+  "EmailDescription" : "使用收到的密码和注册时指定的登录名进行登录",
+  "SubmitButtonText" : "激活账户",
+  "RegistrationTip" : "如果您没有收到密码邮件，请检查垃圾箱文件夹或&lt;a href={0}&gt;重新注册&lt;/a&gt;"
+  }
+}
+</script>
+
+        </dd>
+        <dt class="code-table__spaced"></dt>
+        <dd class="job-hint">
+          <span class="job-hint__text"><img src="https://c.mql5.com/i/code/icon_freelance.svg" width="16px" height="16px" loading="lazy" alt="MQL5自由职业者" />
+          需要基于此代码的EA交易或指标吗？请在自由职业者服务中订购
+          </span>
+          <a target="_blank" class="button button_blue-gray-border" title="进入自由职业者服务" href="/zh/job/new" data-fz-event="MQL5+Code+New+Job">进入自由职业者服务</a>
+        </dd>
+      </dl>
+  </div>
+  <div class="code-text">
+    <div id="publication_content" class="formatted-content">
+      <h3>什么是成交量曲线？<br/></h3> <p>交易量曲线工具又称水平交易量，使用水平柱状图显示特定时间范围内每个价格的交易量。较长的柱状图表示该价格的交易量较大，而较短的柱状图则表示交易活动较少。该指标的计算方法简单，可实现高速、轻量级执行。</p> <h3>如何使用<br/> </h3> <div> <p>要显示特定时间间隔内的交易量概况，可将执行指标后出现的两条垂直线分别放在该时间间隔的开始和结束处。调整这些线将根据所选时间间隔改变成交量曲线。</p> <p><br/></p> </div> <p style="text-align:center;"> <img width="626" height="284" src="https://c.mql5.com/18/176/XAUUSDDaily__5.png" loading="lazy" title="示例截图" alt="示例截图" style="vertical-align:middle;"/><br/></p> <p style="text-align:center;"><b><span class="small">示例截图</span></b></p> <h3>输入设置<br/></h3> <p></p> <ul> <li><b>计算时间框架</b>：该指标的计算假设是，交易量在整个蜡烛长度内（从低点到高点）均匀分布，这可能会导致结果不够准确，尤其是在使用较小的时间范围时（见图 1）。通过更改输入部分的这一选项，可以基于较低的时间范围（如 1 分钟）进行计算，从而获得与使用刻度线数据计算几乎相当的精确结果（见图 2）。</li> <li><b>VP 条数</b>：柱状图条数，较小的数字表示发生最多交易的<b>价格范围</b>，较大的数字表示发生最多交易的<b>确切价格</b>。更改此输入值时，控制点 (POC) 的位置可能会移动，但这不是因为计算错误或代码错误，而是因为您在寻找不同的东西。</li> <li><b>应用体积</b>：默认应用成交量为实际成交量。但是，如果在输入中选择 "tick_volume"，或者服务器上没有实际成交量数据，指标将使用刻度线成交量数据。</li> </ul> <p></p> <p></p> <ul> <li><b>最大 VP 柱长度与图表宽度比</b>：您可以调整 VP 柱的长度与图表宽度的比率。</li> </ul> <p></p> <h3><br/></h3> <p style="text-align:center;"><img width="626" height="369" src="https://c.mql5.com/18/176/current_tf__4.png" loading="lazy" title="图 1（当前时间框架）" alt="图 1（当前时间框架）" style="vertical-align:middle;"/></p> <p style="text-align:center;"><b><span class="small">图 1：基于当前时间框架的计算</span></b></p> <p style="text-align:center;"><br/></p> <p style="text-align:center;"> <img width="626" height="369" src="https://c.mql5.com/18/176/1minute_tf__4.png" loading="lazy" title="图 2（1 分钟时限）" alt="图 2（1 分钟时限）" style="vertical-align:middle;"/></p> <p style="text-align:center;"><span class="small"><b>图 2：基于 1 分钟时间框架的计算</b></span></p> <h3><span>注意事项</span><br/></h3> <p>使用较低的时间框架进行计算时，指标需要该时间框架的价格数据，而这些数据可能尚未下载。下载可能需要一些时间，因此请耐心拖放垂直线，直到下载完成！</p> <p style="text-align:left;"><span>我希望它能帮助你成功交易，并通过评论代码中的错误让我感到高兴！</span></p> <ul></ul>
+    </div>
+        <p style="text-align: right;"><small>由MetaQuotes Ltd译自英文<br>原代码： <a href="/en/code/47784" target="_blank">https://www.mql5.com/en/code/47784</a></small></p>
+  </div>
+  <div>
+      <div class="article-navigator">
+          <div class="right">
+              <img alt="Cosine distance and cosine similarity" src="https://c.mql5.com/i/code/library.png" loading="lazy" width="60" height="60" class="icon">
+              <a href="/zh/code/47793" class="title">Cosine distance and cosine similarity</a>
+              <p>计算两个向量之间的余弦距离和相似度。 余弦距离为 1-余弦相似度，余弦相似度为两个向量大小相乘的点积。</p>
+              <img alt="Connect Disconnect Sound Alert" src="https://c.mql5.com/i/code/expert.png" loading="lazy" width="60" height="60" class="icon">
+              <a href="/zh/code/47846" class="title">Connect Disconnect Sound Alert</a>
+              <p>本实用程序是在连接/断开时添加声音提示的简单示例</p>
+          </div>
+          <div class="left">
+              <img alt="键盘操盘手 (KeyTrader Pro)" src="https://c.mql5.com/i/code/expert.png" loading="lazy" width="60" height="60" class="icon">
+              <a href="/zh/code/67766" class="title">键盘操盘手 (KeyTrader Pro)</a>
+              <p>告别繁琐计算，D键做多，J键做空。集成了自动风控计算与HUD面板的终极键盘交易工具。 英文：Stop calculating, start trading. The ultimate keyboard trading tool with auto risk management and HUD.</p>
+              <img alt="COLLECT ALL INDICATORS DATA" src="https://c.mql5.com/i/code/script.png" loading="lazy" width="60" height="60" class="icon">
+              <a href="/zh/code/47755" class="title">COLLECT ALL INDICATORS DATA</a>
+              <p>该脚本收集所有 MQL5 内置指标缓冲区，并将其存储到 CSV 文件中，以用于分析。</p>
+          </div>
+      </div>
+  </div>
+
+<div id='wdausxxqrpvhekbwjrjlhqjghyhesrqqau' class="r6irig5txiuua4k0m r6irig5txiuua4k0m_code gg88d3drb"></div></div>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","applicationSubCategory":"指标","applicationCategory":"FinanceApplication","operatingSystem":"Windows","description":"这是一个在图表上显示成交量曲线的指标，计算简单，执行速度极快。","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.mql5.com/zh/code/47784"},"name":"Volume Profile","interactionCount":"UserDownloads:14387","image":{"@type":"ImageObject","url":"https://c.mql5.com/i/code/indicator.png","width":60,"height":60},"aggregateRating":{"@type":"AggregateRating","ratingValue":4.733333333333333,"ratingCount":25},"offers":{"price":0,"priceCurrency":"USD"},"datePublished":"2025-12-30T13:43:44","dateModified":"2026-01-29T13:50:23","author":{"@type":"Person","name":"Mohammad Baset","url":"https://www.mql5.com/zh/users/baset84"},"publisher":{"@type":"Organization","name":"MQL5 Community","url":"https://www.mql5.com","logo":{"@type":"ImageObject","url":"https://c.mql5.com/i/community/logo_mql5-2.png"}}}
+</script>
+
+
+
+
+    </article>
+  </main>
+
+    <footer aria-hidden="true">
+
+
+<div aria-hidden="true" class="footer  desktop" id="footer">
+  <ul class="links  links_desktop">
+      <li id="navFooterCommunity">
+        <nav>
+          <ul>
+            <li><a href="https://web.metatrader.app/terminal?mode=demo&amp;lang=zh" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Footer+Trading">在线交易 / WebTerminal</a></li>
+            <li><a href="/zh/code" data-fz-event="MQL5+Footer+CodeBase">免费技术指标和自动交易</a></li>
+            <li><a href="/zh/articles" data-fz-event="MQL5+Footer+Articles">关于编程和交易的文章</a></li>
+            <li><a href="/zh/job" data-fz-event="MQL5+Footer+Job">订购自由职业者的自动交易</a></li>
+            <li><a href="/zh/market" data-fz-event="MQL5+Footer+Market">EA交易和应用程序市场</a></li>
+            <li><a href="/zh/signals" data-fz-event="MQL5+Footer+Signals">跟随外汇信号</a></li>
+            <li><a href="/zh/vps" data-fz-event="MQL5+Footer+VPS">低延迟外汇VPS</a></li>
+            <li><a href="/zh/forum" data-fz-event="MQL5+Footer+Forum">交易者论坛</a></li>
+            <li><a href="/zh/blogs" data-fz-event="MQL5+Footer+Blogs">交易博客</a></li>
+            <li><a rel="nofollow" href="/zh/charts" data-fz-event="MQL5+Footer+Charts">图表</a></li>
+            <li><a href="/zh/widgets" data-fz-event="MQL5+Footer+Widgets">免费小工具</a></li>
+          </ul>
+        </nav>
+      </li>
+      <li id="navFooterMt5">
+        <nav>
+          <ul>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> 交易平台</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/zh/releasenotes" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span>最新更新</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/zh/news" data-fz-event="MQL5+Footer+MetaTrader+5">新闻，执行和技术</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/zh/terminal/help" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> 用户手册</a></li>
+            <li><a href="/zh/docs" data-fz-event="MQL5+Footer+Docs">交易策略的MQL5语言</a></li>
+            <li><a rel="nofollow noopener" href="https://cloud.mql5.com" data-fz-event="MQL5+Footer+Cloud">MQL5 Cloud Network</a></li>
+            <li><a rel="noopener" href="https://forge.mql5.io/?lang=zh-CN" data-fz-event="MQL5+Footer+Forge" target="_blank">MQL5 Algo Forge</a></li>
+              <li><a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Footer">下载 <span class="nobr">MetaTrader 5</span></a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/zh/terminal/help/start_advanced/installation" data-fz-event="MQL5+Footer+MetaTrader+5">安装平台</a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/zh/terminal/help/start_advanced/deinstallation" data-fz-event="MQL5+Footer+MetaTrader+5">卸载平台</a></li>
+          </ul>
+        </nav>
+
+      </li>
+    <li id="navFooterWebsite">
+        <nav>
+          <ul>
+            <li><a rel="nofollow" href="/zh/about" data-fz-event="MQL5+Footer+About">关于</a></li>
+              <li><a href="/zh/wall" data-fz-event="MQL5+Footer+Wall">时间轴</a></li>
+            <li><a rel="nofollow" href="/zh/about/terms" data-fz-event="MQL5+Footer+About">条款和条件</a></li>
+            <li><a rel="nofollow" href="/zh/about/autopayments" data-fz-event="MQL5+Footer+About">定期付款协议</a></li>
+            <li><a rel="nofollow" href="/zh/about/agencyagreement" data-fz-event="MQL5+Footer+About">代理协议 – 报价</a></li>
+            <li><a rel="nofollow" href="/zh/about/privacy" data-fz-event="MQL5+Footer+About">隐私和数据保护政策</a></li>
+            <li><a rel="nofollow" href="/zh/about/cookies" data-fz-event="MQL5+Footer+About">Cookies政策</a></li>
+            <li>
+                <a rel="nofollow" href="/zh/contact" data-fz-event="MQL5+Footer+Contacts">联系和请求</a>
+            </li>
+          </ul>
+        </nav>
+    </li>
+
+      <li>
+        <div class="footer__products">
+          <div class="footer__product">
+            <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com" class="footer__product-name">MetaTrader 5</a>
+            <div class="footer__product-links">
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon windows" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">下载MetaTrader 5 Windows</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/MetaTrader5.pkg.zip?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon macos" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">下载MetaTrader 5 MacOS</div></a>
+            <a rel="nofollow noopener" href="https://www.mql5.com/zh/articles/625?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon linux" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">下载MetaTrader 5 Linux</div></a>
+            <a rel="nofollow noopener" href="https://web.metatrader.app/terminal?mode=demo&amp;lang=zh" class="icon web"><div  class="footer__product-link-hint footer__product-link-hint-short">打开MetaTrader 5网页端</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/ios?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=zh" class="icon ios" data-fz-event="MetaTrader+5+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/2gQnNpp1I1s.png)">扫描并从App Store安装</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=zh" class="icon android" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Rw3xvJ-W-9d.png)">扫描并从Google Play安装</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon huawei" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ZRt&#x2B;zI1l&#x2B;8O.png)">扫描并从华为AppGallery安装</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon ark" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/L0Q9oag&#x2B;3eE.png)">扫描并获取Android APK文件</div></a>
+            </div>
+          </div>
+          <div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com/en/news/2270" class="footer__product-name">MQL5 Channels</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=zh" class="icon ios" data-fz-event="MQL5+Channels+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/dJ&#x2B;ywneYpcO.png)">扫描并从App Store安装</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=zh" class="icon android" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ztQ9rjR7BVd.png)">扫描并从Google Play安装</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Su&#x2B;fe4n374e.png)">扫描并从华为AppGallery安装</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mql5channels/mql5channels.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/G6Mg4NfCPzO.png)">扫描并获取Android APK文件</div></a>
+              </div>
+            </div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.tradays.com/zh/download?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MQL5+Footer+Download+Tradays" class="footer__product-name">Economic Calendar</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=zh" class="icon ios" data-fz-event="Tradays+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/hnFNkjPw-1E.png)">扫描并从App Store安装</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=zh" class="icon android" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/wG3Ztd6mYap.png)">扫描并从Google Play安装</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CrS7bbDAdAO.png)">扫描并从华为AppGallery安装</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/tradays/tradays.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/VZi8YPIb2op.png)">扫描并获取Android APK文件</div></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__networks">
+          <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow" title="Facebook"><i class="icons-networks icons-networks_fb"></i></a>
+          <a href="https://t.me/mql5dev" target="_blank" rel="nofollow" title="Telegram"><i class="icons-networks icons-networks_tg"></i></a>
+          <a href="https://x.com/mql5com" target="_blank" rel="nofollow" title="X (Twitter)"><i class="icons-networks icons-networks_tw"></i></a>
+          <a href="https://www.youtube.com/@MetaQuotesOfficial" target="_blank" rel="nofollow" title="YouTube"><i class="icons-networks icons-networks_yt"></i></a>
+          <a href="https://www.linkedin.com/company/mql5" target="_blank" rel="nofollow" title="LinkedIn"><i class="icons-networks icons-networks_linkedin"></i></a>
+          <span>订阅算法交易新闻</span>
+        </div>
+  
+        <div class="footer__other">
+          <div class="footer__not-a-broker">不是交易商，不提供真实交易账户</div>
+          <div class="copyright">35 Dodekanisou str, Germasogeia, 4043,&nbsp;Limassol,&nbsp;Cyprus</div>
+          <div class="copyright">Copyright 2000-2026, <span class="nobr">MetaQuotes Ltd</span></div>
+        </div>
+      </li>
+  </ul>
+</div>
+
+
+    </footer>
+
+  <div class="shadow-layer" id="layer"></div>
+      
+</div>
+
+<script type="text/javascript">
+           mqGlobal.AddOnReady(function () { Mql5Cookie.init('mql5.com','5089410867435956163'); });
+window.fz("show","vgckrufggwxdtfscpyalmenexmvhljduja");mqGlobal.AddOnReady(function(){if(!window.Pocket){window.Pocket=new PocketManager();}});window.codebaseTooltipText="<div class=\"codebase-tooltip ui\"><i class=\"codebase-tooltip__icon codebase-tooltip__icon_4\"></i><div class=\"codebase-tooltip__text\">注册并获得前24小时免费外汇VPS，使应用程序24小时工作</div><a href=\"https://www.mql5.com/zh/auth_register?pageid=3\" data-fz-event=\"MQL5+Code+Tooltip04+Register\" class=\"button\">加入 >></a></div>";mqGlobal.AddOnReady(function(){window.PopupRegisterquickRegistration=new QuickRegistration('PopupRegister','Popup+Register','Code');});function validate_username(input){var reg=/^([a-z0-9]){1}([\-._a-z0-9]){1,30}([\-_a-z0-9]){1}$/i,value=input.value,result=true;if(reg.test(value)){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Login',unit:'section',value:'Code'});}return result;}function validate_email(input){var reg=/^\w+([-+.'']{1,2}\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/i,value=input.value,result=true,length_value=value.length;if(reg.test(value)&&length_value>=1&&length_value<=40){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Email',unit:'section',value:'Code'});}return result;};mqGlobal.AddOnReady(function(){var username=$('PopupRegisterusername'),email=$('PopupRegisteremail');if(username)username.value='';if(email)email.value='';});mqGlobal.AddOnReady(function(){window.quickLogin=new QuickLogin('Popup+Login','Code');});window.fz("show","wdausxxqrpvhekbwjrjlhqjghyhesrqqau");mqGlobal.AddOnReady(function(){if(!window.shareManager){window.shareManager=new Share();}});mqGlobal.AddOnReady(function(){{window.initHeaderSearch('','https://www.mql5.com/zh/search');}});</script><script type="text/javascript">mqGlobal.AddOnReady(function(){window.initSuggestions("headerSearchKeyword","zh","https://search.mql5.com/api/query","https://www.mql5.com/zh/users_search/suggestion");});function complaintInline(itemId,moduleId,typeId,parentModuleId){if(!window.showComplaintForm)return false;return showComplaintForm(itemId,moduleId,typeId,parentModuleId,'ddd9668250f593173447e19fd3671719');};let reviewTypes=['没有分类的评级','发布描述和图片的质量','格式，代码质量和评论','对您有用的代码'];mqGlobal.AddOnReady(function(){window.floatVerticalPanelNode=FloatVerticalPanel('该网站使用cookies。了解有关我们<a href="/zh/about/cookies">Cookies政策</a>的更多信息。','cookie_accept');});      if (typeof Attach !== "undefined")
+        Attach.setAcceptFilter(".zip, .txt, .log, .mqh, .ex5, .mq5, .mq4, .mqproj, .ex4, .mt5, .set, .tpl, .cl, .py, .sqlite, .csv, .ini, .ipynb, .onnx, .gif, .png, .jpg, .jpeg, .mp4, .webm");
+  </script>
+
+  <div class="b-fixed-mt" id="bFixedMt" style="display: none;">
+    
+  </div>
+
+  <script type="application/ld&#x2B;json">
+  [{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"论坛","description":"交易策略和算法交易的讨论。MQL5.community  最大的外汇论坛","url":"https://www.mql5.com/zh/forum","children":[]},{"@type":"SiteNavigationElement","position":2,"name":"市场","description":"MetaTrader 市场 - 自动交易，指标，交易书籍和杂志的市场","url":"https://www.mql5.com/zh/market","children":[]},{"@type":"SiteNavigationElement","position":3,"name":"信号","description":"MetaTrader的群组交易，复制交易和账户监控 - MQL5.com交易信号","url":"https://www.mql5.com/zh/signals","children":[]},{"@type":"SiteNavigationElement","position":4,"name":"自由职业者","description":"订购EA交易、技术指标和算法交易应用程序。外汇工作。MQL5.com自由职业者服务。聘请MetaTrader专家和专业人员。","url":"https://www.mql5.com/zh/job","children":[]},{"@type":"SiteNavigationElement","position":5,"name":"报价","description":"","url":"https://www.mql5.com/zh/quotes/overview","children":[]},{"@type":"SiteNavigationElement","position":6,"name":"MetaTrader","description":"","url":"https://www.metatrader.com","children":[]},{"@type":"SiteNavigationElement","position":7,"name":"网页端","description":"MetaTrader交易平台的网页端。在线外汇交易。","url":"https://web.metatrader.app/terminal?mode=demo","children":[]},{"@type":"SiteNavigationElement","position":8,"name":"经济日历","description":"","url":"https://www.mql5.com/zh/economic-calendar","children":[]},{"@type":"SiteNavigationElement","position":9,"name":"VPS","description":"","url":"https://www.mql5.com/zh/vps","children":[]},{"@type":"SiteNavigationElement","position":10,"name":"文章","description":"","url":"https://www.mql5.com/zh/articles","children":[]},{"@type":"SiteNavigationElement","position":11,"name":"代码库","description":"下载带有源代码的自动交易，技术指标和脚本 - MetaTrader 5的MQL5代码库","url":"https://www.mql5.com/zh/code","children":[]},{"@type":"SiteNavigationElement","position":12,"name":"Algo Forge","description":"","url":"https://forge.mql5.io","children":[]},{"@type":"SiteNavigationElement","position":13,"name":"文档","description":"MetaQuotes Language 5 (MQL5)语言参考 - MQL5.com文档","url":"https://www.mql5.com/zh/docs","children":[]}]}  
+,
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":"https://www.mql5.com/zh/code","name":"代码库"},{"@type":"ListItem","position":2,"item":"https://www.mql5.com/zh/code/mt5","name":"MetaTrader 5"},{"@type":"ListItem","position":3,"item":"https://www.mql5.com/zh/code/mt5/indicators","name":"指标"}]}
+
+  ]
+</script>
+</body>
+</html>

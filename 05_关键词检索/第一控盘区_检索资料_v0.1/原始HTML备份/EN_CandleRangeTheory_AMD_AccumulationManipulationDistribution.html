@@ -1,0 +1,1137 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+
+  <meta name="robots" content="max-snippet:250,max-image-preview:large">
+  <meta name="description" content="In this article, we develop a Candle Range Theory (CRT) trading system in MQL5 that identifies accumulation ranges on a specified timeframe, detects breaches with manipulation depth filtering, and confirms reversals for entry trades in the distribution phase. The system supports dynamic or static stop-loss and take-profit calculations based on risk-reward ratios, optional trailing stops, and limits on positions per direction for controlled risk management.">
+  <meta property="og:url" content="https://www.mql5.com/en/articles/20323">
+  <meta property="og:title" content="Automating Trading Strategies in MQL5 (Part 41): Candle Range Theory (CRT) – Accumulation, Manipulation, Distribution (AMD)">
+  <meta property="og:description" content="In this article, we develop a Candle Range Theory (CRT) trading system in MQL5 that identifies accumulation ranges on a specified timeframe, detects breaches with manipulation depth filtering, and confirms reversals for entry trades in the distribution phase. The system supports dynamic or static stop-loss and take-profit calculations based on risk-reward ratios, optional trailing stops, and limits on positions per direction for controlled risk management.">
+      <meta property="og:image" content="https://c.mql5.com/2/182/20323-automating-trading-strategies-in-mql5-part-41-candle-range_1200x628.jpg">
+      <meta property="og:image:secure_url" content="https://c.mql5.com/2/182/20323-automating-trading-strategies-in-mql5-part-41-candle-range_1200x628.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2025-11-21T09:49:01.0000000Z">
+  <meta property="article:author" content="https://www.mql5.com/en/users/29210372">
+  <meta property="article:section" content="MetaTrader 5">
+  <meta property="article:tag" content="Trading">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@mql5com">
+  <meta name="twitter:image" content="https://c.mql5.com/2/182/20323-automating-trading-strategies-in-mql5-part-41-candle-range_1200x628.jpg">
+  <meta name="theme-color" content="#4a76b8">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-config" content="none">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta property="qc:admins" content="36367170677651456375">
+  <meta property="wb:webmaster" content="073d7690269bcd81">
+  <link rel="shortcut icon" href="https://c.mql5.com/i/favicon4.ico">
+  <link rel="dns-prefetch" href="https://c.mql5.com">
+  <link href="https://c.mql5.com/styles/core.444bc25de4c9131a69fedfe5ac42a082.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/all.266d64b83529847f568747dd160d42b0.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/articles.bc4209e4de0b5296041832431b46f3dd.css" type="text/css" rel="stylesheet" media="all">
+  <link href="/en/articles/rss" rel="alternate" type="application/rss+xml" title="Articles on the development and application of MetaTrader 5 trading robots and technical indicators">
+  <link rel="canonical" href="https://www.mql5.com/en/articles/20323">
+  <link rel="alternate" hreflang="en" href="https://www.mql5.com/en/articles/20323">
+  <link rel="alternate" hreflang="de" href="https://www.mql5.com/de/articles/20323">
+  <link rel="alternate" hreflang="ja" href="https://www.mql5.com/ja/articles/20323">
+  <title>Automating Trading Strategies in MQL5 (Part 41): Candle Range Theory (CRT) – Accumulation, Manipulation, Distribution (AMD) - MQL5 Articles</title>
+
+
+
+<script type="text/javascript">
+  !function(){window.mqGlobal={};var t=!1,n=!1,e=[],o=[],i=[];function d(t){var n;for(n=0;n<t.length;n+=1)t[n]()}function c(){t||(t=!0,d(e),d(o),o=[],e=[])}function a(){c(),n||(n=!0,d(i),i=[])}if(mqGlobal.AddOnReady=function(n,i){t?n(document):i?e.push(n):o.push(n)},mqGlobal.AddOnLoad=function(t){n?t(document):i.push(t)},mqGlobal.AddOnActiveWindowChange=function(t){this._onvisibility||(this._onvisibility=[]),this._onvisibility[this._onvisibility.length]=t},document.addEventListener)document.addEventListener("DOMContentLoaded",c,!1),window.addEventListener("load",a,!1);else if(document.attachEvent&&(document.attachEvent("onreadystatechange",(function(){switch(document.readyState){case"interactive":c();break;case"complete":a()}})),window.attachEvent("onload",a),document.documentElement.doScroll&&window==window.top)){!function n(){if(!t&&document.body)try{document.documentElement.doScroll("left"),c()}catch(t){setTimeout(n,0)}}()}}();
+  mqGlobal.CookieDomain = ".mql5.com";
+  mqGlobal.Language = 'en';
+  mqGlobal.IsMobile = false;
+  mqGlobal.ClearRteStorage = function (e) { if (window.GStorage || (window.GStorage = globalStorage()), window.GStorage.supported) try { var o = e; window.GStorage.getItem("rte_autosave_uid", function (e, t) { t == o && (window.GStorage.removeItem("rte_autosave_text"), window.GStorage.removeItem("rte_autosave_date"), window.GStorage.removeItem("rte_autosave_uid")) }) } catch (e) { } };
+</script>
+  
+
+    <script src="https://c.mql5.com/js/all.c09fd283bed20d28a52c95cd70a12a27.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/vendor.1be6e9a4a90b28525f93c4c69a5058a1.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/articles.cd4c73c476b2781eecdf04f5583514b5.js" type="text/javascript" defer="defer"></script>
+
+
+</head>
+
+<body id="cover" class="cover">
+
+
+  <nav class="head">
+    <a href="https://www.mql5.com" class="head__logo" title="MQL5 - Language of trade strategies built-in the MetaTrader 5 client terminal"></a>
+      <div class="head__content">
+        <div class="main-menu" id="mainmenu">
+          
+                    <ul class="main-menu__top-level" id="menuTopLevel">
+                    <li><a href="/en/forum" data-fz-event="MQL5+Menu+Forum">Forum</a></li>
+                    <li><a href="/en/market" data-fz-event="MQL5+Menu+Market">Market</a></li>
+                    <li><a href="/en/signals" data-fz-event="MQL5+Menu+Signals">Signals</a></li>
+                    <li><a href="/en/job" data-fz-event="MQL5+Menu+Job">Freelance</a></li>
+                    <li><a href="/en/vps" data-fz-event="MQL5+Menu+VPS">VPS</a></li>
+                    <li><a href="/en/quotes/overview" data-fz-event="MQL5+Menu+Overview">Quotes</a></li>
+                    <li><a href="https://www.metatrader.com" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+MetaTrader">MetaTrader</a></li>
+                  </ul><ul class="main-menu__second-level" id="menuSecondLevel">
+                    <li class="main-menu__selected"><a href="/en/articles" data-fz-event="MQL5+Menu+Articles"><img src="https://c.mql5.com/i/menu/icon-articles4.svg" alt="" width="16" height="16"/>Articles</a></li>
+                    <li><a href="/en/code" data-fz-event="MQL5+Menu+CodeBase"><img src="https://c.mql5.com/i/menu/icon-code4.svg" alt="" width="16" height="16"/>CodeBase</a></li>
+                    <li><a href="https://forge.mql5.io/?lang=en" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+AlgoForge"><img src="https://c.mql5.com/i/menu/icon-algoforge4.svg" alt="" width="16" height="16"/>Algo Forge</a></li>
+                    <li><a href="/en/docs" data-fz-event="MQL5+Menu+Docs"><img src="https://c.mql5.com/i/menu/icon-docs4.svg" alt="" width="16" height="16"/>Documentation</a></li>
+                    <li><a href="/en/book" data-fz-event="MQL5+Menu+Book"><img src="https://c.mql5.com/i/menu/icon-book4.svg" alt="" width="16" height="16"/>AlgoBook</a></li>
+                    <li><a href="/en/neurobook" data-fz-event="MQL5+Menu+Neurobook"><img src="https://c.mql5.com/i/menu/icon-neurobook4.svg" alt="" width="16" height="16"/>NeuroBook</a></li>
+                    <li><a href="/en/economic-calendar" data-fz-event="MQL5+Menu+Economic+Calendar"><img src="https://c.mql5.com/i/menu/icon-economic-calendar4.svg" alt="" width="16" height="16"/>Calendar</a></li>
+                    <li><a href="https://web.metatrader.app/terminal?mode=demo&lang=en" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Menu+Trading"><img src="https://c.mql5.com/i/menu/icon-trading4.svg" alt="" width="16" height="16"/>WebTerminal</a></li>
+                    <li class="main-menu__mobile"><a href="/en/about">About</a></li>
+                    <li class="main-menu__second-tools"><a rel="noopener" href="/en/vps" title="Reliable trader hosting for uninterrupted operation of robots and instant copying of trades" class="button-mt" data-vars-fz="Start+VPS+Trial+Submenu"><img width="18" height="18" src="https://c.mql5.com/i/sidebar/vpstrial2.svg" alt="" loading="lazy">Start VPS Trial</a></li>
+                    </ul>
+        </div>
+          <div class="main-menu__active">
+            <a id="mainMenuSelected" href="#">
+              <span class="main-menu__primary">Articles</span><span class="main-menu__secondary">Sections</span>
+            </a>
+          </div>
+<form action="https://www.mql5.com/en/search" onsubmit="return false;" autocomplete="off" id="headerSearchForm" class="header-search" method="post">
+<button type="button" id="headerSearchButton" title="Search" class="header-search__button"></button><div class="header-search__input"><input name="keyword" type="text" enterkeyhint="search" title="Enter search text" placeholder="Search" id="headerSearchKeyword"/><label for="headerSearchKeyword" class="header-search__placeholder">Type <span>/</span> to search:  @user, $symbol, ...</label><button id="headerSearchSubmit" class="header-search__submit"></button></div><button type="button" id="headerSearchClean" title="Close" class="header-search__clean"></button></form>        <input class="blurHandler" id="mainMenuBlurHandler" type="checkbox">
+      </div>
+      <div class="head__toolbar" id="headerToolbar">
+          <div class="container loginRegister">
+            <nav>
+              <ul id="loginRegisterButtons"><li><a class="login" title="Please sign in. OpenID supported" href="https://www.mql5.com/en/auth_login" rel="nofollow" data-fz-event="MQL5+Menu+Siginin">Log in</a></li><li><a class="registration en" title="Please register" href="https://www.mql5.com/en/auth_register" rel="nofollow" data-fz-event="MQL5+Menu+Register" onclick="window.fpush('MQL5+Button+Click');">Create an account</a></li></ul>
+            </nav>
+          </div>
+        <div class="toggle-button" id="sidebarToggleButton">
+          <i></i>
+        </div>
+
+        <div class="group-menu" id="groupMenu">
+
+
+          <div class="container lang-menu-container">
+            <div id="langMenuContainer" class="lang-menu">
+              <input class="blurHandler" id="langmenuBlurHandler" type="checkbox">
+              <nav>
+                <ul class="lang-menu__list" id="langmenu">
+                  <li class="lang-menu__list-item lang-menu__list-item_selected"><a href="/en/articles" aria-label="English (English)"><i class="icons-languages icons-languages_en"></i><span>English</span></a></li>
+<li class="lang-menu__list-item"><a href="/ru/articles" aria-label="Русский (Russian)"><i class="icons-languages icons-languages_ru"></i><span>Русский</span></a></li>
+<li class="lang-menu__list-item"><a href="/zh/articles" aria-label="中文 (Chinese)"><i class="icons-languages icons-languages_zh"></i><span>中文</span></a></li>
+<li class="lang-menu__list-item"><a href="/es/articles" aria-label="Español (Spanish)"><i class="icons-languages icons-languages_es"></i><span>Español</span></a></li>
+<li class="lang-menu__list-item"><a href="/pt/articles" aria-label="Português (Portuguese)"><i class="icons-languages icons-languages_pt"></i><span>Português</span></a></li>
+<li class="lang-menu__list-item"><a href="/ja/articles" aria-label="日本語 (Japanese)"><i class="icons-languages icons-languages_ja"></i><span>日本語</span></a></li>
+<li class="lang-menu__list-item"><a href="/de/articles" aria-label="Deutsch (German)"><i class="icons-languages icons-languages_de"></i><span>Deutsch</span></a></li>
+<li class="lang-menu__list-item"><a href="/ko/articles" aria-label="한국어 (Korean)"><i class="icons-languages icons-languages_ko"></i><span>한국어</span></a></li>
+<li class="lang-menu__list-item"><a href="/fr/articles" aria-label="Français (French)"><i class="icons-languages icons-languages_fr"></i><span>Français</span></a></li>
+<li class="lang-menu__list-item"><a href="/it/articles" aria-label="Italiano (Italian)"><i class="icons-languages icons-languages_it"></i><span>Italiano</span></a></li>
+<li class="lang-menu__list-item"><a href="/tr/articles" aria-label="Türkçe (Turkish)"><i class="icons-languages icons-languages_tr"></i><span>Türkçe</span></a></li>
+
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+  </nav>
+
+
+
+  <div id="left-sidebar-selector" class="left-sidebar__selector left-sidebar__selector_padding">
+    <div class="left-sidebar__title">
+MetaTrader 5 /     Trading
+    </div>
+    <i class="icons-ux icons-ux_arrow-down-black"></i>
+  </div>
+  <div class="articles-container block-with-sidebar">
+    <aside class="left-sidebar left-sidebar_270" id="left-sidebar">
+      
+  <ul class="tree-menu-ul"><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/examples"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples.svg" alt="" loading="lazy"/>Examples</a><ul class="tree-menu__list tree-menu__list_nested"><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/examples_indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_indicators.svg" alt="" loading="lazy"/>Indicators</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/examples_experts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_experts.svg" alt="" loading="lazy"/>Experts</a></li></ul></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/strategy_tester"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/strategy_tester.svg" alt="" loading="lazy"/>Tester</a></li><li class="tree-menu__item tree-menu__item_selected"><a class="tree-menu__link" href="/en/articles/trading"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading.svg" alt="" loading="lazy"/>Trading</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/trading_systems"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading_systems.svg" alt="" loading="lazy"/>Trading systems</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/integration"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/integration.svg" alt="" loading="lazy"/>Integration</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/indicator.svg" alt="" loading="lazy"/>Indicators</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/expert_advisors"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/expert.svg" alt="" loading="lazy"/>Expert Advisors</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/statistics"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/statistics.svg" alt="" loading="lazy"/>Statistics and analysis</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/machine_learning"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/machine_learning.svg" alt="" loading="lazy"/>Machine learning</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/interviews"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/interviews.svg" alt="" loading="lazy"/>Interviews</a></li></ul>
+  
+
+    <div class="hints-panel">
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_like"></i>
+        <div class="hints-panel__content">
+          Do you like the article?<br>
+          Share it with others —<br>post a <a href="https://www.mql5.com/en/articles/20323" target="_blank">link</a> to it!
+        </div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_tg-square icons-hints_24px"></i><div class="hints-panel__content">
+Find us on <a href="https://t.me/mql5dev" target="_blank" rel="nofollow">Telegram</a>!<br> Join our fan page</div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_mt-5"></i>
+        <div class="hints-panel__content">
+          Use new possibilities of <a href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Article" rel="nofollow sponsored noopener noreferrer">MetaTrader 5</a>
+        </div>
+      </div>
+    </div>
+<div id='vgckrufggwxdtfscpyalmenexmvhljduja' class="roeid8y6hsc3ntv1l gg88d3drb"></div>      <div class="similar-author-articles ui">
+        <h4 class="similar-author-articles__title">Similar articles</h4>
+        <ul class="similar-author-articles__list">
+            <li>
+              <a href="/en/articles/18755" data-fz-event="MQL5+Article+Similar+Article">Extremal Optimization (EO)</a>
+            </li>
+            <li>
+              <a href="/en/articles/22691" data-fz-event="MQL5+Article+Similar+Article">Step-by-Step Implementation of a Local Stop Loss System in MQL5</a>
+            </li>
+            <li>
+              <a href="/en/articles/22855" data-fz-event="MQL5+Article+Similar+Article">Position Management: A Reusable Trade Journal with Live Maximum Adverse Excursion, Maximum Favorable Excursion, and R-Multiple Tracking in MQL5</a>
+            </li>
+            <li>
+              <a href="/en/articles/18111" data-fz-event="MQL5+Article+Similar+Article">Implementing a Breakeven Mechanism in MQL5 (Part 2): ATR- and RRR-Based Breakeven</a>
+            </li>
+            <li>
+              <a href="/en/articles/22628" data-fz-event="MQL5+Article+Similar+Article">Automating Classic Market Methods in MQL5 (Part 1): Wyckoff Accumulation and Distribution</a>
+            </li>
+        </ul>
+      </div>
+    <div class="freelance-hint">
+      <img src="https://c.mql5.com/i/articles/icon_freelance.svg" width="24" height="24" loading="lazy" />
+      <div class="freelance-hint__text">
+        Use the ideas from this article<br>to order your own robot<br>on Freelance
+      </div>
+        <a target="_blank" class="button button_blue-gray-border" title="Go to Freelance" href="/en/job/new" data-fz-event="MQL5+Article+New+Job">Go to Freelance</a>
+    </div>
+
+    </aside>
+    <article class="content-with-sidebar articles-content splashed">
+      
+
+
+  <header class="article-header" style="background-color: rgb(172,209,228)">
+    <section class="article-tools-panel">
+        <div class="article-tools-panel__item">
+          <span class="popup framed client flags">
+            <a class="dropdown" href="javascript:void(false);">
+              <span class="icons-languages icons-languages_en"></span><i></i>
+            </a>
+            <span class="popup">
+              <span class="tip">
+                <span></span>
+              </span>
+              <span class="items">
+                    <a href="/de/articles/20323">Deutsch</a>
+                    <a href="/ja/articles/20323">日本語</a>
+              </span>
+            </span>
+          </span>
+        </div>
+        
+      <div class="article-tools-panel__item">
+        <a href="#pocket" title="Pocket allows you to insert a complete content description to the appropriate comment" onclick="return Pocket.Add(this,'en',2,1,20323);" class="article-tools-panel__rounded">
+          <i class="article-pocket-icon"></i>
+        </a>
+      </div>
+      <div class="article-tools-panel__item">
+        <a href="/en/articles/20323?print=" target="_blank" class="article-tools-panel__rounded" rel="nofollow" title="Printer friendly version">
+          <i class="article-print-icon"></i>
+        </a>
+      </div>
+
+    </section>
+    <section class="article-header__image-box">
+        <img class="article-header__image-preview" loading="lazy" width="32" height="16" alt="preview" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAsICAoIBwsKCQoNDAsNERwSEQ8PESIZGhQcKSQrKigkJyctMkA3LTA9MCcnOEw5PUNFSElIKzZPVU5GVEBHSEX/2wBDAQwNDREPESESEiFFLicuRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUX/wAARCAAQACADASIAAhEBAxEB/8QAFwAAAwEAAAAAAAAAAAAAAAAAAAEDBv/EABsQAAMBAQADAAAAAAAAAAAAAAABAhEDEjFB/8QAFwEAAwEAAAAAAAAAAAAAAAAAAgMEBf/EABcRAAMBAAAAAAAAAAAAAAAAAAABERL/2gAMAwEAAhEDEQA/ANi7dVr&#x2B;ifRt4pLvnIvCUV0z0kSW&#x2B;2Wm3gYgxAu0csw//9k=">
+      <div class="article-header__gradient" style="background: linear-gradient(90deg, rgba(172,209,228, 1) 0%, rgba(172,209,228, 0.72) 8.31%, rgba(172,209,228, 0) 17.1%), linear-gradient(270deg, rgba(172,209,228, 1) 0%, rgba(172,209,228, 0.72) 8.06%, rgba(172,209,228, 0) 16.59%), linear-gradient(0deg, rgba(172,209,228, 1) 8.26%, rgba(172,209,228, 0.8) 65%, rgba(172,209,228, 0) 100%);"></div>
+        <picture>
+          <source srcset="https://c.mql5.com/2/182/20323-automating-trading-strategies-in-mql5-part-41-candle-range_600x314.jpg, https://c.mql5.com/2/182/20323-automating-trading-strategies-in-mql5-part-41-candle-range_1200x628.jpg 2x" media="(min-width:700px)">
+          <img class="article-header__image" loading="lazy" width="600" height="314" srcset="https://c.mql5.com/2/182/20323-automating-trading-strategies-in-mql5-part-41-candle-range_300x157.jpg, https://c.mql5.com/2/182/20323-automating-trading-strategies-in-mql5-part-41-candle-range_600x314.jpg 2x" src="https://c.mql5.com/2/182/20323-automating-trading-strategies-in-mql5-part-41-candle-range_600x314.jpg" alt="Automating Trading Strategies in MQL5 (Part 41): Candle Range Theory (CRT) – Accumulation, Manipulation, Distribution (AMD)" onerror="this.style.display='none';">
+        </picture>
+    </section>
+    <section class="article-header__content">
+      <h1>Automating Trading Strategies in MQL5 (Part 41): Candle Range Theory (CRT) – Accumulation, Manipulation, Distribution (AMD)</h1>
+      <div class="article-header__info">
+        <a href="/en/articles/mt5">MetaTrader 5</a>
+          &mdash;
+          <a href="/en/articles/mt5/trading">Trading</a>
+        | <time datetime="2025-11-21T09:49Z" title="09:49" datetime-type="datetime">21 November 2025, 09:49</time>
+      </div>
+      <div class="article-header__indicators">
+        <span title="Views">
+          <img src="https://c.mql5.com/i/icons.svg#views-usage" width="20" height="20" alt="" />
+          33 488
+        </span>
+        
+          <a title="Comments" href="/en/forum/500539">
+            <img src="https://c.mql5.com/i/icons.svg#comments-usage" width="20" height="20" alt="" />
+            6
+          </a>
+      </div>
+      <div class="article-header__author">
+          <div class="article-header__avatar">
+            <img src="https://c.mql5.com/avatar/2022/11/637df59b-9551.jpg" srcset="https://c.mql5.com/avatar/2022/11/637df59b-9551_big.jpg 2x" data-user-login="29210372" title="Allan Munene Mutiiria" alt="Allan Munene Mutiiria" loading="lazy" width="60" height="60">
+          </div>
+<a class="author" href="/en/users/29210372" data-user-login="29210372">Allan Munene Mutiiria</a>      </div>
+    </section>
+  </header>
+
+    <div class="content">
+      <div class="inner formatted-content">
+        <h3 id="para1">Introduction</h3> <p>In our <a href="/en/articles/20221" target="_blank">previous article (Part 40)</a>, we developed a <a href="/go?link=https://learnpriceaction.com/fibonacci-retracement-trading-strategies/" title="https://learnpriceaction.com/fibonacci-retracement-trading-strategies/" rel="nofollow" target="_blank">Fibonacci Retracement</a> trading system in <a href="https://www.metaquotes.net/en/metatrader5/algorithmic-trading/mql5" title="https://www.metaquotes.net/en/metatrader5/algorithmic-trading/mql5" target="_blank">MetaQuotes Language 5</a> (MQL5) that calculated retracement levels using either daily candle ranges or lookback arrays, identified bullish or bearish setups, triggered entries on price crossings of specified levels, and included optional closures on new Fib calculations. In Part 41, we develop a <a href="/go?link=https://innercircletrader.net/tutorials/candle-range-theory-crt/" title="https://innercircletrader.net/tutorials/candle-range-theory-crt/" rel="nofollow" target="_blank">Candle Range Theory (CRT)</a> trading system incorporating <a href="/go?link=https://innercircletrader.net/tutorials/ict-power-of-3/" title="https://innercircletrader.net/tutorials/ict-power-of-3/" rel="nofollow" target="_blank">Accumulation, Manipulation, and Distribution</a> (AMD) phases.</p> <p>This system identifies accumulation ranges on a specified timeframe, detects breaches with optional manipulation depth filtering, confirms reversals through bar closures for entry trades in the distribution phase, supports dynamic or static stop-loss and take-profit calculations based on risk-reward ratios, includes optional trailing stops and position limits per direction for risk management, and visualizes phases with colored rectangles, levels, and text labels on the chart. We will cover the following topics:</p> <ol> <li><a href="/en/articles/20323#para2"> Understanding the Candle Range Theory (CRT) Framework</a></li> <li><a href="/en/articles/20323#para3"> Implementation in MQL5</a></li> <li><a href="/en/articles/20323#para4"> Backtesting</a></li> <li><a href="/en/articles/20323#para5"> Conclusion</a></li> </ol> <p></p> <p>By the end, you’ll have a functional MQL5 strategy for Candle Range Theory trading with <a href="/go?link=https://innercircletrader.net/tutorials/ict-power-of-3/" title="https://innercircletrader.net/tutorials/ict-power-of-3/" rel="nofollow" target="_blank">AMD phases</a>, ready for customization—let’s dive in!</p> <p><br/></p> <h3 id="para2">Understanding the Candle Range Theory (CRT) Framework</h3> <p>The <a href="/go?link=https://innercircletrader.net/tutorials/candle-range-theory-crt/" title="https://innercircletrader.net/tutorials/candle-range-theory-crt/" rel="nofollow" target="_blank">Candle Range Theory (CRT)</a> is a price action strategy that focuses on identifying key phases within a candle's range to capture high-probability reversal trades. It breaks down market movements into <a href="/go?link=https://innercircletrader.net/tutorials/ict-power-of-3/" title="https://innercircletrader.net/tutorials/ict-power-of-3/" rel="nofollow" target="_blank">three core phases</a>: accumulation, where price consolidates within a defined range often signaling institutional buildup; manipulation, where price briefly breaches the range extremes to trap traders and shake out weak positions; and distribution, where the true directional move unfolds after a confirmed reversal back into the range. This approach leverages the idea that significant breaches are often false moves designed to create liquidity, followed by a strong counter-move in the opposite direction.</p> <p>In a positive (bullish) range setup, we look for an upward-closing candle range, anticipate a downward breach as manipulation to raid stops below the low, and enter a buy trade upon reversal back above the low with confirmation, expecting an upward distribution. Conversely, in a negative (bearish) range setup, we identify a downward-closing candle range, watch for an upward breach as manipulation above the high, and initiate a sell trade on reversal back below the high, aiming for downward distribution. By incorporating filters like minimum manipulation depth and bar-based reversal confirmation, we can avoid low-quality setups and focus on those with stronger conviction. Have a look below at a CRT setup sample.</p> <p style="text-align:center;"> <img width="686" height="329" src="https://c.mql5.com/2/181/Screenshot_2025-11-17_140256.png" loading="lazy" title="CANDLE RANGE THEORY (CRT) SETUP" alt="CANDLE RANGE THEORY (CRT) SETUP" style="vertical-align:middle;"/></p> <p>Our plan is to define accumulation ranges on a user-specified timeframe. We will detect breaches and validate manipulation depth against a percentage threshold if this option is enabled. We also confirm reversals through a set number of closing bars on a confirmation timeframe. Trades are executed with limits on positions per direction. We apply dynamic or static stop-loss and take-profit levels based on risk-reward ratios. After a profit threshold is reached, we can incorporate optional trailing stops. All phases are visualized with on-chart rectangles, levels, and labels for intuitive monitoring. In brief, here is a visual representation of our objectives. </p> <p style="text-align:center;"> <img width="700" height="482" src="https://c.mql5.com/2/181/Screenshot_2025-11-17_141002.png" loading="lazy" title="CRT FRAMEWORK SAMPLE" alt="CRT FRAMEWORK SAMPLE" style="vertical-align:middle;"/></p> <p><br/></p> <h3 id="para3">Implementation in MQL5</h3> <p>To create the program in MQL5, open the&nbsp;<a href="https://www.metatrader5.com/en/automated-trading/metaeditor" title="https://www.metatrader5.com/en/automated-trading/metaeditor" target="_blank">MetaEditor</a>, go to the Navigator, locate the Experts folder, click on the "New" tab, and follow the prompts to create the file. Once it is made, in the coding environment, we will need to declare some&nbsp;<a href="/en/docs/basis/variables/inputvariables" target="_blank">input parameters</a>&nbsp;and&nbsp;<a href="/en/docs/basis/variables/global" target="_blank">global variables</a>&nbsp;that we will use throughout the program.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CRT Candle Range Theory EA.mq5 |</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Copyright 2025, Allan Munene Mutiiria. |</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; https://t.me/Forex_Algo_Trader |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="preprocessor">#property </span><span class="macro">copyright</span> <span class="string">"Copyright 2025, Allan Munene Mutiiria."</span>
+<span class="preprocessor">#property </span><span class="macro">link</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"https://t.me/Forex_Algo_Trader"</span>
+<span class="preprocessor">#property </span><span class="macro">version</span>&nbsp;&nbsp; <span class="string">"1.00"</span>
+
+<span class="preprocessor">#include </span>&lt;Trade\Trade.mqh&gt;
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Enums&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">enum</span> SLTP_Method {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Define SL/TP method enum</span>
+&nbsp;&nbsp; Dynamic_Method = <span class="number">0</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Dynamic based on breach extreme</span>
+&nbsp;&nbsp; Static_Method&nbsp;&nbsp;= <span class="number">1</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Static based on fixed points</span>
+};
+
+<span class="keyword">enum</span> TrailingTypeEnum {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Define trailing type enum</span>
+&nbsp;&nbsp; Trailing_None&nbsp;&nbsp; = <span class="number">0</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// None</span>
+&nbsp;&nbsp; Trailing_Points = <span class="number">1</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// By Points</span>
+};
+
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Input Parameters&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">input</span> <span class="macro">ENUM_TIMEFRAMES</span> RangeTF = <span class="macro">PERIOD_H4</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Timeframe for Range Definition</span>
+<span class="keyword">input</span> <span class="keyword">double</span> TradeVolume = <span class="number">0.01</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Trade Volume Size</span>
+<span class="keyword">input</span> <span class="keyword">double</span> RR_Ratio = <span class="number">1.3</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Risk to Reward Ratio</span>
+<span class="keyword">input</span> SLTP_Method SLTP_Approach = Static_Method;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// SL/TP Calculation Method</span>
+<span class="keyword">input</span> <span class="keyword">int</span> SL_Points = <span class="number">100</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// SL Points (for Static Method)</span>
+<span class="keyword">input</span> TrailingTypeEnum TrailingType = Trailing_None;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Trailing Stop Type</span>
+<span class="keyword">input</span> <span class="keyword">double</span> Trailing_Stop_Points = <span class="number">30.0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Trailing Stop in Points</span>
+<span class="keyword">input</span> <span class="keyword">double</span> Min_Profit_To_Trail_Points = <span class="number">50.0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Min Profit to Start Trailing in Points</span>
+<span class="keyword">input</span> <span class="keyword">int</span> UniqueID = <span class="number">123456789</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Unique Trade Identifier</span>
+<span class="keyword">input</span> <span class="keyword">int</span> MaxPositionsDir = <span class="number">1</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Max Positions per Direction</span>
+<span class="keyword">input</span> <span class="macro">ENUM_TIMEFRAMES</span> ConfirmTF = <span class="macro">PERIOD_CURRENT</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Confirmation Timeframe (for bar closures)</span>
+<span class="keyword">input</span> <span class="keyword">int</span> ConfirmBars = <span class="number">1</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Bars to Confirm Reversal on Close (0 to disable)</span>
+<span class="keyword">input</span> <span class="keyword">bool</span> UseManipFilter = <span class="macro">true</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Use Manipulation Depth Filter</span>
+<span class="keyword">input</span> <span class="keyword">double</span> MinManipPct = <span class="number">5.0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Min Manipulation % of Range (if filter enabled)</span>
+<span class="keyword">input</span> <span class="keyword">double</span> DistribProjPct = <span class="number">50.0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Distribution Projection % of Range Duration</span>
+<span>
+</span></pre> <p>We begin the implementation by including the trade library with "<a href="/en/docs/basis/preprosessor/include" target="_blank">#include</a> &lt;Trade\Trade.mqh&gt;". This library provides essential classes and functions for trade operations. Next, we define <a href="/en/docs/basis/types/integer/enumeration" target="_blank">enumerations</a> to categorize user-configurable options. We create the "SLTP_Method" enum with values "Dynamic_Method" for dynamic stop-loss and take-profit calculation based on the breach extreme, and "Static_Method" for fixed points. We also define the "TrailingTypeEnum" enum. "Trailing_None" disables trailing stops, and "Trailing_Points" enables trailing by a set number of points. These will allow flexible risk management configurations.</p> <p>We then declare a series of <a href="/en/docs/basis/variables/inputvariables" target="_blank">input parameters</a> that users can adjust via the Expert Advisor properties dialog. These include "RangeTF" to specify the timeframe for defining the accumulation range, "TradeVolume" for setting the lot size of each trade, "RR_Ratio" to determine the risk-to-reward ratio, "SLTP_Approach" to select the stop-loss and take-profit method using the previously defined enum, and the rest, which are self-explanatory. These inputs will make the system adaptable to different market conditions and user preferences. On compilation, we should get the following input sets.</p> <p style="text-align:center;"> <img width="700" height="366" src="https://c.mql5.com/2/181/Screenshot_2025-11-17_141749.png" loading="lazy" title="INPUT SETS" alt="INPUT SETS" style="vertical-align:middle;"/></p> <p>With that done, we can define some <a href="/en/docs/basis/variables/global" target="_blank">global variables</a> that we'll use throughout the program.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Global Variables&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+CTrade obj_Trade;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Trade object</span>
+<span class="keyword">datetime</span> prevRangeTime = <span class="number">0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Previous range time</span>
+<span class="keyword">double</span> rangeMax = <span class="number">0.0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Range maximum</span>
+<span class="keyword">double</span> rangeMin = <span class="number">0.0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Range minimum</span>
+<span class="keyword">bool</span> positiveDirection = <span class="macro">false</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Positive direction flag</span>
+<span class="keyword">bool</span> rangeBreached = <span class="macro">false</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Range breached flag</span>
+<span class="keyword">double</span> breachPoint = <span class="number">0.0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Breach point</span>
+<span class="keyword">string</span> maxLevelObj = <span class="string">"RangeMaxLevel"</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Max level object name</span>
+<span class="keyword">string</span> minLevelObj = <span class="string">"RangeMinLevel"</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Min level object name</span>
+<span class="keyword">string</span> maxTextObj = <span class="string">"CRT_High_Text"</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- CRT high text object</span>
+<span class="keyword">string</span> minTextObj = <span class="string">"CRT_Low_Text"</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- CRT low text object</span>
+<span class="keyword">bool</span> tradedSetup = <span class="macro">false</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Traded setup flag</span>
+<span class="keyword">datetime</span> breachTime = <span class="number">0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Breach time</span>
+<span class="keyword">datetime</span> lastConfirmTime = <span class="number">0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Last confirm time</span>
+</pre> <p>We proceed by declaring <a href="/en/docs/basis/variables/global" target="_blank">global variables</a> that will be used across the program to maintain state and manage the CRT logic. We instantiate the "obj_Trade" object from the <a href="/en/docs/standardlibrary/tradeclasses/ctrade" target="_blank">CTrade</a> class to handle all trade-related operations, such as opening and modifying positions. We then define variables for tracking the accumulation range: "prevRangeTime" to store the timestamp of the previous range candle, "rangeMax" and "rangeMin" to hold the high and low prices of the current range, and "positiveDirection" as a boolean flag to indicate if the range candle closed positively (bullish) or negatively (bearish). Additional flags and values include "rangeBreached" to signal when a breach occurs, "breachPoint" to record the extreme price level during manipulation, and "tradedSetup" to prevent multiple trades on the same setup.</p> <p>We also set up string variables for chart object names, such as "maxLevelObj" and "minLevelObj" for horizontal lines marking the range extremes, and "maxTextObj" and "minTextObj" for text labels identifying CRT highs and lows. Finally, we include "breachTime" to timestamp the start of the manipulation phase and "lastConfirmTime" to track the last confirmation bar time, ensuring the system can monitor timing-sensitive events effectively. We are all set. We'll begin by setting the magic number in the <a href="/en/docs/event_handlers/oninit" target="_blank">OnInit</a>&nbsp;event handler for trades.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| EA Start Function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">int</span> <span class="functions">OnInit</span>() {
+&nbsp;&nbsp; obj_Trade.SetExpertMagicNumber(UniqueID);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Set magic number</span>
+&nbsp;&nbsp; <span class="keyword">return</span>(<span class="macro">INIT_SUCCEEDED</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Return success</span>
+}</pre> <p>In the <a href="/en/docs/event_handlers/oninit" target="_blank">OnInit</a>&nbsp;event handler, which is executed when the Expert Advisor starts or is attached to a chart, we configure the trade object by calling "obj_Trade.SetExpertMagicNumber" with the "UniqueID" input, which assigns a unique identifier to all trades opened by the program for easy filtering and management. Finally, we return <a href="/en/docs/basis/function/events#enum_init_retcode" target="_blank">INIT_SUCCEEDED</a>&nbsp;to confirm that the initialization was successful and the program is ready to operate. We will proceed to define some helper functions that we will need for rendering the labels and levels on the chart for visualization. Here is the logic we used to achieve that.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Render Horizontal Level&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> RenderLevel(<span class="keyword">string</span> objName, <span class="keyword">double</span> levelVal, <span class="keyword">color</span> levelClr, <span class="keyword">string</span> levelDesc) {
+&nbsp;&nbsp; <span class="functions">ObjectDelete</span>(<span class="functions">ChartID</span>(), objName);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <span class="comment">//--- Delete object</span>
+&nbsp;&nbsp; <span class="functions">ObjectCreate</span>(<span class="functions">ChartID</span>(), objName, <span class="macro">OBJ_HLINE</span>, <span class="number">0</span>, <span class="number">0</span>, levelVal);&nbsp;&nbsp;   <span class="comment">//--- Create hline</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), objName, <span class="macro">OBJPROP_COLOR</span>, levelClr);   <span class="comment">//--- Set color</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), objName, <span class="macro">OBJPROP_STYLE</span>, <span class="macro">STYLE_DOT</span>);  <span class="comment">//--- Set style</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetString</span>(<span class="functions">ChartID</span>(), objName, <span class="macro">OBJPROP_TOOLTIP</span>, levelDesc); <span class="comment">//--- Set tooltip</span>
+&nbsp;&nbsp; <span class="functions">ChartRedraw</span>(<span class="functions">ChartID</span>());&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;<span class="comment">//--- Redraw chart</span>
+}
+
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Render Text Label&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> RenderText(<span class="keyword">string</span> objName, <span class="keyword">datetime</span> timeVal, <span class="keyword">double</span> priceVal, <span class="keyword">string</span> textStr, <span class="keyword">color</span> textClr, <span class="keyword">int</span> anchorVal) {
+&nbsp;&nbsp; <span class="functions">ObjectDelete</span>(<span class="functions">ChartID</span>(), objName);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   &nbsp;<span class="comment">//--- Delete object</span>
+&nbsp;&nbsp; <span class="functions">ObjectCreate</span>(<span class="functions">ChartID</span>(), objName, <span class="macro">OBJ_TEXT</span>, <span class="number">0</span>, timeVal, priceVal); <span class="comment">//--- Create text</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetString</span>(<span class="functions">ChartID</span>(), objName, <span class="macro">OBJPROP_TEXT</span>, textStr);&nbsp;&nbsp;&nbsp;   &nbsp;<span class="comment">//--- Set text</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), objName, <span class="macro">OBJPROP_COLOR</span>, textClr);&nbsp;&nbsp;   <span class="comment">//--- Set color</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), objName, <span class="macro">OBJPROP_ANCHOR</span>, anchorVal);  <span class="comment">//--- Set anchor</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), objName, <span class="macro">OBJPROP_FONTSIZE</span>, <span class="number">10</span>);&nbsp;&nbsp;&nbsp;   &nbsp;<span class="comment">//--- Set fontsize</span>
+&nbsp;&nbsp; <span class="functions">ChartRedraw</span>(<span class="functions">ChartID</span>());&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   <span class="comment">//--- Redraw chart</span>
+}<span>
+</span></pre> <p>First, we define the "RenderLevel" function to draw or update a horizontal line on the chart representing key price levels, such as range maxima or minima. It takes parameters for the object name, price level value, color, and description. Inside the function, we first delete any existing object with the same name using <a href="/en/docs/objects/objectdelete" target="_blank">ObjectDelete</a>&nbsp;to avoid duplicates, then create a new horizontal line object with <a href="/en/docs/objects/objectcreate" target="_blank">ObjectCreate</a>&nbsp;specifying <a href="/en/docs/constants/objectconstants/enum_object/obj_hline" target="_blank">OBJ_HLINE</a>&nbsp;as the type and positioning it at the given price level. We set its color with <a href="/en/docs/objects/objectsetinteger" target="_blank">ObjectSetInteger</a>&nbsp;and <a href="/en/docs/constants/objectconstants/enum_object_property#enum_object_property_integer" target="_blank">OBJPROP_COLOR</a>, apply a dotted style via "OBJPROP_STYLE" and <a href="/en/docs/constants/indicatorconstants/drawstyles#enum_line_style" target="_blank">STYLE_DOT</a>, add a tooltip description through "OBJPROP_TOOLTIP", and finally redraw the chart with <a href="/en/docs/chart_operations/ChartRedraw" target="_blank">ChartRedraw</a>&nbsp;to display the changes immediately.</p> <p>Similarly, we create the "RenderText" function to place or update text labels on the chart for annotations like phase identifiers. This function accepts parameters for the object name, time, and price coordinates, text string, color, and anchor point. We begin by removing any prior instance of the object with "ObjectDelete", followed by creating a new text object using "ObjectCreate" with "OBJ_TEXT" as the type at the specified time and price. We configure the text content via <a href="/en/docs/objects/objectsetstring" target="_blank">ObjectSetString</a>&nbsp;and <a href="/en/docs/constants/objectconstants/enum_object_property#enum_object_property_string" target="_blank">OBJPROP_TEXT</a>, set the color with "ObjectSetInteger" and "OBJPROP_COLOR", define the anchor position using "OBJPROP_ANCHOR", adjust the font size to 10 through "OBJPROP_FONTSIZE", and conclude by redrawing the chart with "ChartRedraw" to ensure the label appears correctly. Armed with these functions, we can define the range and visualize it on the chart in the <a href="/en/docs/event_handlers/ontick" target="_blank">OnTick</a>&nbsp;event handler.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Tick Processing Function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> <span class="functions">OnTick</span>() {
+&nbsp;&nbsp; <span class="keyword">double</span> currBid = <span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_BID</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Get current bid</span>
+&nbsp;&nbsp; <span class="keyword">double</span> currAsk = <span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_ASK</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Get current ask</span>
+&nbsp;&nbsp; <span class="keyword">datetime</span> currRangeTime = <span class="functions">iTime</span>(<span class="predefines">_Symbol</span>, RangeTF, <span class="number">0</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Get current range time</span>
+&nbsp;&nbsp; <span class="keyword">if</span> (currRangeTime != prevRangeTime) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Check new range</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prevRangeTime = currRangeTime;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Update prev time</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> prevMax = <span class="functions">iHigh</span>(<span class="predefines">_Symbol</span>, RangeTF, <span class="number">1</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Get prev high</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> prevMin = <span class="functions">iLow</span>(<span class="predefines">_Symbol</span>, RangeTF, <span class="number">1</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Get prev low</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> prevStart = <span class="functions">iOpen</span>(<span class="predefines">_Symbol</span>, RangeTF, <span class="number">1</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Get prev open</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> prevEnd = <span class="functions">iClose</span>(<span class="predefines">_Symbol</span>, RangeTF, <span class="number">1</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Get prev close</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rangeMax = prevMax;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set range max</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rangeMin = prevMin;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set range min</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;positiveDirection = (prevEnd &gt; prevStart);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Set direction</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rangeBreached = <span class="macro">false</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Reset breached</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;breachPoint = positiveDirection ? rangeMin : rangeMax;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Set breach point</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tradedSetup = <span class="macro">false</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Reset traded</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;breachTime = <span class="number">0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Reset breach time</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lastConfirmTime = <span class="number">0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Reset confirm time</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RenderLevel(maxLevelObj, rangeMax, <span class="macro">clrOrange</span>, <span class="string">"Range Max"</span>); <span class="comment">//--- Render max level</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RenderLevel(minLevelObj, rangeMin, <span class="macro">clrPurple</span>, <span class="string">"Range Min"</span>); <span class="comment">//--- Render min level</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Add text labels for current CRT High and Low</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> labelTime = currRangeTime;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set label time</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RenderText(maxTextObj, labelTime, rangeMax, <span class="string">"CRT High"</span>, <span class="macro">clrOrange</span>, <span class="macro">ANCHOR_RIGHT_LOWER</span>); <span class="comment">//--- Render high text</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RenderText(minTextObj, labelTime, rangeMin, <span class="string">"CRT Low"</span>, <span class="macro">clrPurple</span>, <span class="macro">ANCHOR_RIGHT_UPPER</span>);  <span class="comment">//--- Render low text</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Draw background rectangle for the accumulation phase (range candle) with fill true</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span> rangeRectObj = <span class="string">"RangeRectangle_"</span> + <span class="functions">IntegerToString</span>(currRangeTime);               <span class="comment">//--- Range rect name</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> rangeStartTime = <span class="functions">iTime</span>(<span class="predefines">_Symbol</span>, RangeTF, <span class="number">1</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                             <span class="comment">//--- Get start time</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> rangeEndTime = currRangeTime;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                            &nbsp;&nbsp;<span class="comment">//--- Set end time</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectCreate</span>(<span class="functions">ChartID</span>(), rangeRectObj, <span class="macro">OBJ_RECTANGLE</span>, <span class="number">0</span>, rangeStartTime, rangeMax, rangeEndTime, rangeMin); <span class="comment">//--- Create rect</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">color</span> rectClr = positiveDirection ? <span class="macro">clrLightGreen</span> : <span class="macro">clrLightPink</span>;                       <span class="comment">//--- Set rect color</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), rangeRectObj, <span class="macro">OBJPROP_COLOR</span>, rectClr);                      <span class="comment">//--- Set color</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), rangeRectObj, <span class="macro">OBJPROP_FILL</span>, <span class="macro">true</span>);                          <span class="comment">//--- Set fill</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), rangeRectObj, <span class="macro">OBJPROP_BACK</span>, <span class="macro">true</span>);                          <span class="comment">//--- Set back</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), rangeRectObj, <span class="macro">OBJPROP_STYLE</span>, <span class="macro">STYLE_SOLID</span>);                  <span class="comment">//--- Set style</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ChartRedraw</span>(<span class="functions">ChartID</span>());&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                             <span class="comment">//--- Redraw chart</span>
+&nbsp;&nbsp; }
+}<span>
+</span></pre> <p>In the <a href="/en/docs/event_handlers/ontick" target="_blank">OnTick</a>&nbsp;event handler, we start by retrieving the current bid price with <a href="/en/docs/marketinformation/symbolinfodouble" target="_blank">SymbolInfoDouble</a>&nbsp;using <a href="/en/docs/constants/environment_state/marketinfoconstants#enum_symbol_info_double" target="_blank">SYMBOL_BID</a>&nbsp;and assigning it to "currBid", and similarly for the ask price with <a href="/en/docs/constants/environment_state/marketinfoconstants#enum_symbol_info_double" target="_blank">SYMBOL_ASK</a>&nbsp;into "currAsk". We then fetch the timestamp of the most recent bar on the range timeframe via <a href="/en/docs/series/itime" target="_blank">iTime</a>&nbsp;at shift 0, storing it in "currRangeTime". If this timestamp differs from "prevRangeTime", indicating a new range bar, we update "prevRangeTime", and gather the previous bar's high with <a href="/en/docs/series/ihigh" target="_blank">iHigh</a>&nbsp;at shift 1 into "prevMax", low with "iLow" into "prevMin", open with "iOpen" into "prevStart", and close with <a href="/en/docs/series/iclose" target="_blank">iClose</a>&nbsp;into "prevEnd". We set the range boundaries by assigning "rangeMax" to the high and "rangeMin" to the low, determining "positiveDirection" as true if the close exceeds the open for a bullish setup, resetting "rangeBreached" to false, initializing "breachPoint" to the minimum for positive or maximum for negative directions, clearing "tradedSetup", and zeroing out "breachTime" and "lastConfirmTime".</p> <p>For visualization, we invoke "RenderLevel" to draw the maximum level with orange color and "Range Max" description, and the minimum with purple and "Range Min". We add labels by setting "labelTime" to the current range time, then calling "RenderText" for "CRT High" in orange, anchored right-lower at the max, and "CRT Low" in purple, anchored right-upper at the min. To highlight the accumulation phase, we create a unique rectangle name by combining "RangeRectangle_" with the converted current range time string. We get the previous bar's start time via "iTime" at shift 1 into "rangeStartTime", set "rangeEndTime" to the current time, and create the rectangle with <a href="/en/docs/objects/objectcreate" target="_blank">ObjectCreate</a>&nbsp;using <a href="/en/docs/constants/objectconstants/enum_object/obj_rectangle" target="_blank">OBJ_RECTANGLE</a>&nbsp;spanning the time and price range. We choose light green for positive or light pink for negative directions, apply the color, enable filling, set it as background, use a solid style, and redraw the chart to reflect the updates. It is always a good programming practice to compile your program on every milestone to see the objectives' achievement. In our case, we get the following outcome.</p> <p style="text-align:center;"> <img width="700" height="482" src="https://c.mql5.com/2/181/Screenshot_2025-11-17_142307.png" loading="lazy" title="CRT RANGE SETTING" alt="CRT RANGE SETTING" style="vertical-align:middle;"/></p> <p>We can see we have set the ranges successfully. We can proceed to determine breaches and trade the setups.</p> <pre class="code"><span class="keyword">if</span> (rangeMax == <span class="number">0.0</span> || rangeMin == <span class="number">0.0</span>) <span class="keyword">return</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Return if no range</span>
+<span class="keyword">bool</span> justBreached = <span class="macro">false</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Init just breached</span>
+<span class="keyword">if</span> (positiveDirection &amp;&amp; currBid &lt;= rangeMin) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Check positive breach</span>
+&nbsp;&nbsp; <span class="keyword">if</span> (!rangeBreached) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Check not breached</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rangeBreached = <span class="macro">true</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Set breached</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;justBreached = <span class="macro">true</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set just breached</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;breachTime = <span class="functions">TimeCurrent</span>();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Set breach time</span>
+&nbsp;&nbsp; }
+&nbsp;&nbsp; breachPoint = <span class="functions">MathMin</span>(breachPoint, currBid);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Update breach point</span>
+} <span class="keyword">else</span> <span class="keyword">if</span> (!positiveDirection &amp;&amp; currBid &gt;= rangeMax) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Check negative breach</span>
+&nbsp;&nbsp; <span class="keyword">if</span> (!rangeBreached) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Check not breached</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rangeBreached = <span class="macro">true</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Set breached</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;justBreached = <span class="macro">true</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set just breached</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;breachTime = <span class="functions">TimeCurrent</span>();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Set breach time</span>
+&nbsp;&nbsp; }
+&nbsp;&nbsp; breachPoint = <span class="functions">MathMax</span>(breachPoint, currBid);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Update breach point</span>
+}
+<span class="keyword">if</span> (rangeBreached &amp;&amp; !tradedSetup) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Check breached and not traded</span>
+&nbsp;&nbsp; <span class="comment">// Check for confirmed reversal on bar closures</span>
+&nbsp;&nbsp; <span class="keyword">bool</span> reversalConfirmed = <span class="macro">false</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Init confirmed</span>
+&nbsp;&nbsp; <span class="keyword">if</span> (ConfirmBars == <span class="number">0</span>) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Check no confirm</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reversalConfirmed = <span class="macro">true</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set confirmed</span>
+&nbsp;&nbsp; } <span class="keyword">else</span> {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> currConfirmTime = <span class="functions">iTime</span>(<span class="predefines">_Symbol</span>, ConfirmTF, <span class="number">0</span>);&nbsp;&nbsp;<span class="comment">//--- Get confirm time</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (currConfirmTime != lastConfirmTime) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Check new confirm</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lastConfirmTime = currConfirmTime;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Update last confirm</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">int</span> confirmedCount = <span class="number">0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Init count</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= ConfirmBars; i++) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Iterate bars</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> confirmClose = <span class="functions">iClose</span>(<span class="predefines">_Symbol</span>, ConfirmTF, i); <span class="comment">//--- Get close</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (positiveDirection &amp;&amp; confirmClose &gt; rangeMin) { <span class="comment">//--- Check positive</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; confirmedCount++;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Increment count</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <span class="keyword">else</span> <span class="keyword">if</span> (!positiveDirection &amp;&amp; confirmClose &lt; rangeMax) { <span class="comment">//--- Check negative</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; confirmedCount++;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Increment count</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span> (confirmedCount &gt;= ConfirmBars) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Check confirmed</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reversalConfirmed = <span class="macro">true</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set confirmed</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="comment">// Calculate manipulation depth for filter</span>
+&nbsp;&nbsp; <span class="keyword">bool</span> manipSufficient = <span class="macro">true</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Init sufficient</span>
+&nbsp;&nbsp; <span class="keyword">double</span> rangeSize = rangeMax - rangeMin;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Calc range size</span>
+&nbsp;&nbsp; <span class="keyword">double</span> manipDepth = positiveDirection ? (rangeMin - breachPoint) : (breachPoint - rangeMax); <span class="comment">//--- Calc depth</span>
+&nbsp;&nbsp; <span class="keyword">double</span> manipPct = (manipDepth / rangeSize) * <span class="number">100.0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Calc percent</span>
+&nbsp;&nbsp; <span class="keyword">if</span> (UseManipFilter) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Check filter</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (manipPct &lt; MinManipPct) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Check insufficient</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; manipSufficient = <span class="macro">false</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set insufficient</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">bool</span> justEntered = <span class="macro">false</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Init entered</span>
+&nbsp;&nbsp; <span class="keyword">datetime</span> entryTime = <span class="number">0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Init entry time</span>
+&nbsp;&nbsp; <span class="keyword">double</span> entryPrice = <span class="number">0.0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Init entry price</span>
+&nbsp;&nbsp; <span class="keyword">double</span> gainTarget = <span class="number">0.0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Init target</span>
+&nbsp;&nbsp; <span class="keyword">if</span> (reversalConfirmed &amp;&amp; manipSufficient) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Check confirmed and sufficient</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (positiveDirection &amp;&amp; currBid &gt; rangeMin &amp;&amp; ActivePositions(<span class="macro">POSITION_TYPE_BUY</span>) &lt; MaxPositionsDir) { <span class="comment">//--- Check buy entry</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">double</span> lossStop;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Init SL</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span> (SLTP_Approach == Dynamic_Method) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Check dynamic</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lossStop = <span class="functions">NormalizeDouble</span>(breachPoint, <span class="predefines">_Digits</span>);&nbsp;&nbsp; <span class="comment">//--- Set SL</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> riskDistance = currAsk - breachPoint;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Calc risk</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gainTarget = <span class="functions">NormalizeDouble</span>(currAsk + riskDistance * RR_Ratio, <span class="predefines">_Digits</span>); <span class="comment">//--- Set TP</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } <span class="keyword">else</span> {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Static</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lossStop = <span class="functions">NormalizeDouble</span>(currAsk - SL_Points * <span class="predefines">_Point</span>, <span class="predefines">_Digits</span>); <span class="comment">//--- Set SL</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gainTarget = <span class="functions">NormalizeDouble</span>(currAsk + SL_Points * RR_Ratio * <span class="predefines">_Point</span>, <span class="predefines">_Digits</span>); <span class="comment">//--- Set TP</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span> (obj_Trade.Buy(TradeVolume, <span class="predefines">_Symbol</span>, currAsk, lossStop, gainTarget, <span class="string">"CRT Positive Entry"</span>)) { <span class="comment">//--- Open buy</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (obj_Trade.ResultRetcode() == <span class="macro">TRADE_RETCODE_DONE</span>) { <span class="comment">//--- Check success</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Positive Signal: Range raided below min, reversed back in (confirmed). Entry at "</span>, <span class="functions">DoubleToString</span>(currAsk, <span class="predefines">_Digits</span>), 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="string">" SL at "</span>, <span class="functions">DoubleToString</span>(lossStop, <span class="predefines">_Digits</span>), <span class="string">" TP at "</span>, <span class="functions">DoubleToString</span>(gainTarget, <span class="predefines">_Digits</span>)); <span class="comment">//--- Log entry</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Debug: Accumulation Range: "</span>, <span class="functions">DoubleToString</span>(rangeSize / <span class="predefines">_Point</span>, <span class="number">0</span>), <span class="string">" points. Manipulation Depth: "</span>, <span class="functions">DoubleToString</span>(manipDepth / <span class="predefines">_Point</span>, <span class="number">0</span>), <span class="string">" points ("</span>, <span class="functions">DoubleToString</span>(manipPct, <span class="number">2</span>), <span class="string">"% of range)"</span>); <span class="comment">//--- Log debug</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">string</span> markerName = <span class="string">"EntryMarker_"</span> + <span class="functions">IntegerToString</span>(<span class="functions">TimeCurrent</span>()); <span class="comment">//--- Marker name</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">ObjectCreate</span>(<span class="functions">ChartID</span>(), markerName, <span class="macro">OBJ_ARROW</span>, <span class="number">0</span>, <span class="functions">TimeCurrent</span>(), currBid); <span class="comment">//--- Create marker</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), markerName, <span class="macro">OBJPROP_ARROWCODE</span>, <span class="number">233</span>); <span class="comment">//--- Set code</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), markerName, <span class="macro">OBJPROP_COLOR</span>, <span class="macro">clrBlue</span>); <span class="comment">//--- Set color</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), markerName, <span class="macro">OBJPROP_ANCHOR</span>, <span class="macro">ANCHOR_BOTTOM</span>); <span class="comment">//--- Set anchor</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tradedSetup = <span class="macro">true</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set traded</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; justEntered = <span class="macro">true</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set entered</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; entryTime = <span class="functions">TimeCurrent</span>();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Set entry time</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; entryPrice = currAsk;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set entry price</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <span class="keyword">else</span> <span class="keyword">if</span> (!positiveDirection &amp;&amp; currBid &lt; rangeMax &amp;&amp; ActivePositions(<span class="macro">POSITION_TYPE_SELL</span>) &lt; MaxPositionsDir) { <span class="comment">//--- Check sell entry</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">double</span> lossStop;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Init SL</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span> (SLTP_Approach == Dynamic_Method) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Check dynamic</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lossStop = <span class="functions">NormalizeDouble</span>(breachPoint, <span class="predefines">_Digits</span>);&nbsp;&nbsp; <span class="comment">//--- Set SL</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> riskDistance = breachPoint - currBid;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Calc risk</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gainTarget = <span class="functions">NormalizeDouble</span>(currBid - riskDistance * RR_Ratio, <span class="predefines">_Digits</span>); <span class="comment">//--- Set TP</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } <span class="keyword">else</span> {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Static</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lossStop = <span class="functions">NormalizeDouble</span>(currBid + SL_Points * <span class="predefines">_Point</span>, <span class="predefines">_Digits</span>); <span class="comment">//--- Set SL</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gainTarget = <span class="functions">NormalizeDouble</span>(currBid - SL_Points * RR_Ratio * <span class="predefines">_Point</span>, <span class="predefines">_Digits</span>); <span class="comment">//--- Set TP</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span> (obj_Trade.Sell(TradeVolume, <span class="predefines">_Symbol</span>, currBid, lossStop, gainTarget, <span class="string">"CRT Negative Entry"</span>)) { <span class="comment">//--- Open sell</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (obj_Trade.ResultRetcode() == <span class="macro">TRADE_RETCODE_DONE</span>) { <span class="comment">//--- Check success</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Negative Signal: Range raided above max, reversed back in (confirmed). Entry at "</span>, <span class="functions">DoubleToString</span>(currBid, <span class="predefines">_Digits</span>), 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="string">" SL at "</span>, <span class="functions">DoubleToString</span>(lossStop, <span class="predefines">_Digits</span>), <span class="string">" TP at "</span>, <span class="functions">DoubleToString</span>(gainTarget, <span class="predefines">_Digits</span>)); <span class="comment">//--- Log entry</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Debug: Accumulation Range: "</span>, <span class="functions">DoubleToString</span>(rangeSize / <span class="predefines">_Point</span>, <span class="number">0</span>), <span class="string">" points. Manipulation Depth: "</span>, <span class="functions">DoubleToString</span>(manipDepth / <span class="predefines">_Point</span>, <span class="number">0</span>), <span class="string">" points ("</span>, <span class="functions">DoubleToString</span>(manipPct, <span class="number">2</span>), <span class="string">"% of range)"</span>); <span class="comment">//--- Log debug</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">string</span> markerName = <span class="string">"EntryMarker_"</span> + <span class="functions">IntegerToString</span>(<span class="functions">TimeCurrent</span>()); <span class="comment">//--- Marker name</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">ObjectCreate</span>(<span class="functions">ChartID</span>(), markerName, <span class="macro">OBJ_ARROW</span>, <span class="number">0</span>, <span class="functions">TimeCurrent</span>(), currAsk); <span class="comment">//--- Create marker</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), markerName, <span class="macro">OBJPROP_ARROWCODE</span>, <span class="number">234</span>); <span class="comment">//--- Set code</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), markerName, <span class="macro">OBJPROP_COLOR</span>, <span class="macro">clrRed</span>); <span class="comment">//--- Set color</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), markerName, <span class="macro">OBJPROP_ANCHOR</span>, <span class="macro">ANCHOR_TOP</span>); <span class="comment">//--- Set anchor</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tradedSetup = <span class="macro">true</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set traded</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; justEntered = <span class="macro">true</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set entered</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; entryTime = <span class="functions">TimeCurrent</span>();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Set entry time</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; entryPrice = currBid;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set entry price</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp; }
+}</pre> <p>Continuing in the tick function, we first verify if the range is properly defined by checking if "rangeMax" or "rangeMin" is zero, returning early if so to avoid processing invalid states. We initialize a boolean "justBreached" to false for tracking new breaches. For a positive direction setup, if the current bid is at or below the range minimum and the range hasn't been breached yet, we set "rangeBreached" to true, mark "justBreached" as true, and record the breach time with&nbsp; the <a href="/en/docs/dateandtime/timecurrent" target="_blank">TimeCurrent</a>&nbsp;function. We then update "breachPoint" to the lower of its current value or the bid using the <a href="/en/docs/math/mathmin" target="_blank">MathMin</a>&nbsp;function. Similarly, for negative directions, we do the same.</p> <p>If a breach has occurred and no trade has been placed for this setup, we proceed to confirm the reversal. We initialize "reversalConfirmed" to false; if no confirmation bars are required via "ConfirmBars" being zero, we set it to true immediately. Otherwise, we fetch the latest bar time on the confirmation timeframe with <a href="/en/docs/series/itime" target="_blank">iTime</a>&nbsp;at shift zero into "currConfirmTime", and if it's new compared to "lastConfirmTime", we update the last time and count confirming closes: looping from shift one to "ConfirmBars", we get each close price with <a href="/en/docs/series/iclose" target="_blank">iClose</a>, incrementing a counter if closes are above the minimum for positive setups or below the maximum for negative. If the count meets or exceeds "ConfirmBars", we confirm the reversal. Next, we assess manipulation sufficiency, starting with "manipSufficient" as true. We calculate the range size as the difference between maximum and minimum, manipulation depth as the distance from the range edge to the breach point (subtracting for positive, adding for negative), and percentage by dividing depth by size times 100. If the filter is enabled via "UseManipFilter" and the percentage falls below "MinManipPct", we set sufficiency to false.</p> <p>Next, we prepare entry variables and initialize them. If both reversal is confirmed and manipulation is sufficient, we check buy entry conditions for positive directions—if the bid exceeds the minimum and buy positions from "ActivePositions" with <a href="/en/docs/constants/tradingconstants/positionproperties#enum_position_type" target="_blank">POSITION_TYPE_BUY</a>&nbsp;are below "MaxPositionsDir", we calculate the entry levels. The "ActivePositions" function is a helper function we defined to modularize the code and return our active positions. See its implementation below.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Count Active Positions by Type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">int</span> ActivePositions(<span class="macro">ENUM_POSITION_TYPE</span> posType) {
+&nbsp;&nbsp; <span class="keyword">int</span> total = <span class="number">0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Init total</span>
+&nbsp;&nbsp; <span class="keyword">for</span> (<span class="keyword">int</span> pos = <span class="functions">PositionsTotal</span>() - <span class="number">1</span>; pos &gt;= <span class="number">0</span>; pos--) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Iterate positions</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="functions">PositionGetSymbol</span>(pos) == <span class="predefines">_Symbol</span> &amp;&amp; <span class="functions">PositionGetInteger</span>(<span class="macro">POSITION_MAGIC</span>) == UniqueID &amp;&amp; <span class="functions">PositionGetInteger</span>(<span class="macro">POSITION_TYPE</span>) == posType) { <span class="comment">//--- Check position</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; total++;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Increment total</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">return</span> total;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Return total</span>
+}</pre> <p>The function is straightforward. We've added comments for clarity. Back to the logic, we attempt to open a buy order using "obj_Trade.Buy" with volume, symbol, ask, stop-loss, take-profit, and a comment. If successful per "ResultRetcode" equaling <a href="/en/docs/constants/errorswarnings/enum_trade_return_codes" target="_blank">TRADE_RETCODE_DONE</a>, we print log messages for the signal and debug info on range and depth, create an entry marker arrow with "ObjectCreate" using <a href="/en/docs/constants/objectconstants/enum_object/obj_arrow" target="_blank">OBJ_ARROW</a>&nbsp;at current time and bid, setting arrow code 233, blue color, and bottom anchor, then flag "tradedSetup" and "justEntered" true, and record entry time and price. MQL5 offers the arrow codes from the <a href="/en/docs/constants/objectconstants/wingdings" target="_blank">Wingdings</a> font that you can choose your desired as below.</p> <p style="text-align:center;"> <img width="749" height="297" src="https://c.mql5.com/2/181/C_MQL5_WINGDINGS.png" loading="lazy" title="MQL5 WINGDINGS" alt="MQL5 WINGDINGS" style="vertical-align:middle;"/></p> <p>For negative directions, we mirror the logic: check if bid is below maximum and sell positions below limit, compute stop-loss dynamically as normalized breach point with risk from breach to bid, and take-profit subtracting risk times ratio, or statically adding "SL_Points" times point to bid for stop-loss and subtracting for take-profit. Open a sell with "obj_Trade.Sell" using bid, and on success, log similarly, draw a marker with code 234, red color, and top anchor, updating flags and entry details accordingly. Upon compilation, we get the following outcome.</p> <p style="text-align:center;"> <img width="700" height="482" src="https://c.mql5.com/2/181/Screenshot_2025-11-17_145133.png" loading="lazy" title="ENTRY CONFIRMATIONS" alt="ENTRY CONFIRMATIONS" style="vertical-align:middle;"/></p> <p>From the image, we can see that we can confirm trades when there are confirmations. What we need to do is visualize the levels for clarity when trading, so we can visually track what is really happening.</p> <pre class="code"><span class="comment">// If just entered trade, draw manipulation rectangle, distribution, and labels (including accumulation)</span>
+<span class="keyword">if</span> (justEntered) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Check entered</span>
+&nbsp;&nbsp; <span class="keyword">string</span> setupSuffix = <span class="functions">IntegerToString</span>(prevRangeTime);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <span class="comment">//--- Setup suffix</span>
+&nbsp;&nbsp; <span class="comment">// Label the range as Accumulation phase (now only for complete setups)</span>
+&nbsp;&nbsp; <span class="keyword">string</span> accumTextUnique = <span class="string">"AccumText_"</span> + setupSuffix;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Accum text name</span>
+&nbsp;&nbsp; <span class="keyword">double</span> accumPrice = (rangeMax + rangeMin) / <span class="number">2</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Accum price</span>
+&nbsp;&nbsp; <span class="keyword">datetime</span> labelTime = prevRangeTime;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Label time</span>
+&nbsp;&nbsp; RenderText(accumTextUnique, labelTime, accumPrice, <span class="string">"Accumulation"</span>, <span class="macro">clrBlue</span>, <span class="macro">ANCHOR_RIGHT</span>); <span class="comment">//--- Render accum text</span>
+&nbsp;&nbsp; <span class="comment">// Calculate the manipulation extreme using candle highs/lows between currRangeTime and entryTime</span>
+&nbsp;&nbsp; <span class="keyword">int</span> startBar = <span class="functions">iBarShift</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, prevRangeTime); <span class="comment">//--- Start bar</span>
+&nbsp;&nbsp; <span class="keyword">int</span> endBar = <span class="functions">iBarShift</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, entryTime); <span class="comment">//--- End bar</span>
+&nbsp;&nbsp; <span class="keyword">if</span> (startBar &lt; <span class="number">0</span> || endBar &lt; <span class="number">0</span>) <span class="keyword">return</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Return invalid</span>
+&nbsp;&nbsp; <span class="keyword">if</span> (startBar &lt; endBar) { <span class="keyword">int</span> temp = startBar; startBar = endBar; endBar = temp; } <span class="comment">//--- Swap if needed</span>
+&nbsp;&nbsp; <span class="keyword">int</span> barCount = startBar - endBar + <span class="number">1</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Calc bar count</span>
+&nbsp;&nbsp; <span class="keyword">double</span> manipExtreme;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Init manip extreme</span>
+&nbsp;&nbsp; <span class="keyword">double</span> manipStartPrice = positiveDirection ? rangeMin : rangeMax; <span class="comment">//--- Manip start</span>
+&nbsp;&nbsp; <span class="keyword">if</span> (positiveDirection) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Check positive</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> lowestBar = <span class="functions">iLowest</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, <span class="macro">MODE_LOW</span>, barCount, endBar); <span class="comment">//--- Get lowest</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;manipExtreme = <span class="functions">iLow</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, lowestBar); <span class="comment">//--- Set extreme</span>
+&nbsp;&nbsp; } <span class="keyword">else</span> {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Negative</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> highestBar = <span class="functions">iHighest</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, <span class="macro">MODE_HIGH</span>, barCount, endBar); <span class="comment">//--- Get highest</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;manipExtreme = <span class="functions">iHigh</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, highestBar); <span class="comment">//--- Set extreme</span>
+&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="comment">// Draw manipulation rectangle (border only) from CRT end to signal time</span>
+&nbsp;&nbsp; <span class="keyword">string</span> manipRectObj = <span class="string">"ManipRectangle_"</span> + setupSuffix;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Manip rect name</span>
+&nbsp;&nbsp; <span class="keyword">double</span> topPrice = <span class="functions">MathMax</span>(manipStartPrice, manipExtreme);&nbsp;&nbsp; <span class="comment">//--- Top price</span>
+&nbsp;&nbsp; <span class="keyword">double</span> bottomPrice = <span class="functions">MathMin</span>(manipStartPrice, manipExtreme); <span class="comment">//--- Bottom price</span>
+&nbsp;&nbsp; <span class="functions">ObjectCreate</span>(<span class="functions">ChartID</span>(), manipRectObj, <span class="macro">OBJ_RECTANGLE</span>, <span class="number">0</span>, prevRangeTime, topPrice, entryTime, bottomPrice); <span class="comment">//--- Create rect</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), manipRectObj, <span class="macro">OBJPROP_COLOR</span>, <span class="macro">clrBlue</span>); <span class="comment">//--- Set color</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), manipRectObj, <span class="macro">OBJPROP_FILL</span>, <span class="macro">false</span>); <span class="comment">//--- Set no fill</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), manipRectObj, <span class="macro">OBJPROP_BACK</span>, <span class="macro">true</span>); <span class="comment">//--- Set back</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), manipRectObj, <span class="macro">OBJPROP_STYLE</span>, <span class="macro">STYLE_DOT</span>); <span class="comment">//--- Set style</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), manipRectObj, <span class="macro">OBJPROP_WIDTH</span>, <span class="number">2</span>); <span class="comment">//--- Set width</span>
+&nbsp;&nbsp; <span class="functions">ChartRedraw</span>(<span class="functions">ChartID</span>());&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Redraw chart</span>
+&nbsp;&nbsp; <span class="comment">// Add manipulation text label at breach time</span>
+&nbsp;&nbsp; <span class="keyword">string</span> manipTextUnique = <span class="string">"ManipText_"</span> + setupSuffix;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Manip text name</span>
+&nbsp;&nbsp; <span class="keyword">int</span> anchorManip = positiveDirection ? <span class="macro">ANCHOR_RIGHT_UPPER</span> : <span class="macro">ANCHOR_RIGHT_LOWER</span>; <span class="comment">//--- Manip anchor</span>
+&nbsp;&nbsp; RenderText(manipTextUnique, breachTime, manipExtreme, <span class="string">"Manipulation"</span>, <span class="macro">clrBlue</span>, anchorManip); <span class="comment">//--- Render manip text</span>
+&nbsp;&nbsp; <span class="comment">// Label and draw distribution</span>
+&nbsp;&nbsp; <span class="keyword">string</span> distribTextUnique = <span class="string">"DistribText_"</span> + setupSuffix;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Distrib text name</span>
+&nbsp;&nbsp; <span class="keyword">color</span> distribClr = positiveDirection ? <span class="macro">clrGreen</span> : <span class="macro">clrRed</span>;&nbsp;&nbsp; <span class="comment">//--- Distrib color</span>
+&nbsp;&nbsp; <span class="keyword">int</span> anchor = positiveDirection ? <span class="macro">ANCHOR_LEFT_LOWER</span> : <span class="macro">ANCHOR_LEFT_UPPER</span>; <span class="comment">//--- Distrib anchor</span>
+&nbsp;&nbsp; RenderText(distribTextUnique, entryTime, entryPrice, <span class="string">"Distribution"</span>, distribClr, anchor); <span class="comment">//--- Render distrib text</span>
+&nbsp;&nbsp; <span class="comment">// Draw border rectangle (fill false) for distribution phase (% of range duration)</span>
+&nbsp;&nbsp; <span class="keyword">string</span> distribRectObj = <span class="string">"DistribRectangle_"</span> + setupSuffix;&nbsp;&nbsp;<span class="comment">//--- Distrib rect name</span>
+&nbsp;&nbsp; <span class="keyword">datetime</span> rangeStartTime = <span class="functions">iTime</span>(<span class="predefines">_Symbol</span>, RangeTF, <span class="number">1</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Range start</span>
+&nbsp;&nbsp; <span class="keyword">datetime</span> rangeEndTime = prevRangeTime;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Range end</span>
+&nbsp;&nbsp; <span class="keyword">long</span> duration = rangeEndTime - rangeStartTime;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Calc duration</span>
+&nbsp;&nbsp; <span class="keyword">double</span> projFactor = <span class="functions">MathMax</span>(DistribProjPct / <span class="number">100.0</span>, <span class="number">0.01</span>);&nbsp;&nbsp;<span class="comment">//--- Proj factor</span>
+&nbsp;&nbsp; <span class="keyword">datetime</span> projEndTime = entryTime + (<span class="keyword">datetime</span>)(duration * projFactor); <span class="comment">//--- Proj end</span>
+&nbsp;&nbsp; <span class="keyword">double</span> topDistrib = <span class="functions">MathMax</span>(entryPrice, gainTarget);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Top distrib</span>
+&nbsp;&nbsp; <span class="keyword">double</span> bottomDistrib = <span class="functions">MathMin</span>(entryPrice, gainTarget);&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Bottom distrib</span>
+&nbsp;&nbsp; <span class="functions">ObjectCreate</span>(<span class="functions">ChartID</span>(), distribRectObj, <span class="macro">OBJ_RECTANGLE</span>, <span class="number">0</span>, entryTime, topDistrib, projEndTime, bottomDistrib); <span class="comment">//--- Create rect</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), distribRectObj, <span class="macro">OBJPROP_COLOR</span>, distribClr); <span class="comment">//--- Set color</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), distribRectObj, <span class="macro">OBJPROP_FILL</span>, <span class="macro">false</span>); <span class="comment">//--- Set no fill</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), distribRectObj, <span class="macro">OBJPROP_BACK</span>, <span class="macro">true</span>); <span class="comment">//--- Set back</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), distribRectObj, <span class="macro">OBJPROP_STYLE</span>, <span class="macro">STYLE_SOLID</span>); <span class="comment">//--- Set style</span>
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="functions">ChartID</span>(), distribRectObj, <span class="macro">OBJPROP_WIDTH</span>, <span class="number">2</span>); <span class="comment">//--- Set width</span>
+&nbsp;&nbsp; <span class="functions">ChartRedraw</span>(<span class="functions">ChartID</span>());&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Redraw chart</span>
+}</pre> <p>Here, if a trade has just been entered, as indicated by "justEntered" being true, we proceed to visualize the remaining phases. We create a unique suffix for object names using <a href="/en/docs/convert/IntegerToString" target="_blank">IntegerToString</a>&nbsp;on "prevRangeTime". For the accumulation label, we generate a unique text name by appending the suffix to "AccumText_", calculate the midpoint price as the average of the range maximum and minimum, set the label time to "prevRangeTime", and call "RenderText" to place "Accumulation" in blue at the right anchor. To determine the manipulation extreme, we convert times to bar indices with "iBarShift" for start at "prevRangeTime" and end at "entryTime", returning early if invalid. We ensure start is greater than end by swapping if necessary, compute the bar count, and set "manipStartPrice" to the range minimum for positive or maximum for negative directions. For positive, we find the lowest bar with "iLowest" using "MODE_LOW" over the count from the end bar, getting the low price via <a href="/en/docs/series/ilow" target="_blank">iLow</a>; for negative, we use <a href="/en/docs/series/ihighest" target="_blank">iHighest</a>&nbsp;with <a href="/en/docs/constants/chartconstants/enum_timeframes#enum_seriesmode" target="_blank">MODE_HIGH</a>&nbsp;and <a href="/en/docs/series/ihigh" target="_blank">iHigh</a>&nbsp;for the extreme.</p> <p>We then draw the manipulation rectangle by creating a unique name with the suffix appended to "ManipRectangle_", determining top and bottom prices as the max and min of start and extreme using <a href="/en/docs/math/mathmax" target="_blank">MathMax</a>&nbsp;and "MathMin", and creating it with <a href="/en/docs/objects/objectcreate" target="_blank">ObjectCreate</a>&nbsp;as <a href="/en/docs/constants/objectconstants/enum_object/obj_rectangle" target="_blank">OBJ_RECTANGLE</a>&nbsp;spanning from the previous range time at the top to the entry time at the bottom. We set its color to blue, disable filling, place it in the background, apply a dotted style with a width of 2, and redraw the chart. Next, we add a manipulation label with a unique name suffixed to "ManipText_", choosing an upper-right anchor for positive or lower-right for negative, and render "Manipulation" in blue at breach time and extreme price. For distribution, we create a label name with a suffix on "DistribText_", select green for positive or red for negative color, set the lower-left anchor for positive or the upper-left for negative, and render "Distribution" at entry time and price. Finally, we draw the distribution rectangle using a similar logic, and redraw the chart. Here is the outcome.</p> <p style="text-align:center;"> <img width="700" height="482" src="https://c.mql5.com/2/181/Screenshot_2025-11-17_150347.png" loading="lazy" title="ACCUMULATION, MANIPULATION &amp; DISTRIBUTION PHASES" alt="ACCUMULATION, MANIPULATION &amp; DISTRIBUTION PHASES" style="vertical-align:middle;"/></p> <p>From the image, we can see that we have added the manipulation and distribution phases for clarity. What now remains is managing the positions that move in our favour by adding a trailing stop logic. We will house that in a function as well.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Apply Points Trailing Stop&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> ApplyPointsTrailing() {
+&nbsp;&nbsp; <span class="keyword">double</span> point = <span class="predefines">_Point</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Get point</span>
+&nbsp;&nbsp; <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="functions">PositionsTotal</span>() - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Iterate positions</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="functions">PositionGetTicket</span>(i) &gt; <span class="number">0</span>) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Check ticket</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span> (<span class="functions">PositionGetString</span>(<span class="macro">POSITION_SYMBOL</span>) == <span class="predefines">_Symbol</span> &amp;&amp; <span class="functions">PositionGetInteger</span>(<span class="macro">POSITION_MAGIC</span>) == UniqueID) { <span class="comment">//--- Check symbol magic</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> sl = <span class="functions">PositionGetDouble</span>(<span class="macro">POSITION_SL</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Get SL</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> tp = <span class="functions">PositionGetDouble</span>(<span class="macro">POSITION_TP</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Get TP</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> openPrice = <span class="functions">PositionGetDouble</span>(<span class="macro">POSITION_PRICE_OPEN</span>); <span class="comment">//--- Get open</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">ulong</span> ticket = <span class="functions">PositionGetInteger</span>(<span class="macro">POSITION_TICKET</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Get ticket</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="functions">PositionGetInteger</span>(<span class="macro">POSITION_TYPE</span>) == <span class="macro">POSITION_TYPE_BUY</span>) { <span class="comment">//--- Check buy</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">double</span> newSL = <span class="functions">NormalizeDouble</span>(<span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_BID</span>) - Trailing_Stop_Points * point, <span class="predefines">_Digits</span>); <span class="comment">//--- Calc new SL</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span> (newSL &gt; sl &amp;&amp; <span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_BID</span>) - openPrice &gt; Min_Profit_To_Trail_Points * point) { <span class="comment">//--- Check conditions</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj_Trade.PositionModify(ticket, newSL, tp);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Modify position</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <span class="keyword">else</span> <span class="keyword">if</span> (<span class="functions">PositionGetInteger</span>(<span class="macro">POSITION_TYPE</span>) == <span class="macro">POSITION_TYPE_SELL</span>) { <span class="comment">//--- Check sell</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">double</span> newSL = <span class="functions">NormalizeDouble</span>(<span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_ASK</span>) + Trailing_Stop_Points * point, <span class="predefines">_Digits</span>); <span class="comment">//--- Calc new SL</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span> (newSL &lt; sl &amp;&amp; openPrice - <span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_ASK</span>) &gt; Min_Profit_To_Trail_Points * point) { <span class="comment">//--- Check conditions</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj_Trade.PositionModify(ticket, newSL, tp);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Modify position</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp; }
+}
+
+<span class="comment">//--- Call the function per tick in the "OnTick" event handler</span>
+
+<span class="keyword">if</span> (TrailingType == Trailing_Points &amp;&amp; <span class="functions">PositionsTotal</span>() &gt; <span class="number">0</span>) { <span class="comment">//--- Check trailing</span>
+&nbsp;&nbsp; ApplyPointsTrailing();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Apply trailing</span>
+}
+</pre> <p>We define the "ApplyPointsTrailing" function to manage trailing stop-loss adjustments based on points when enabled. We start by assigning the symbol's point value to "point" using <a href="/en/docs/predefined/_point" target="_blank">_Point</a>. We then loop backward through all open positions with <a href="/en/docs/trading/positionstotal" target="_blank">PositionsTotal</a>&nbsp;to avoid index issues during modifications, checking each ticket's validity with the <a href="/en/docs/trading/positiongetticket" target="_blank">PositionGetTicket</a>&nbsp;function. For positions matching our symbol via <a href="/en/docs/trading/positiongetstring" target="_blank">PositionGetString</a>&nbsp;with <a href="/en/docs/constants/tradingconstants/positionproperties#enum_position_property_string" target="_blank">POSITION_SYMBOL</a>&nbsp;and magic number through "PositionGetInteger" with "POSITION_MAGIC", we retrieve the current stop-loss with "PositionGetDouble" and "POSITION_SL", take-profit with "POSITION_TP", open price via "POSITION_PRICE_OPEN", and ticket number with "POSITION_TICKET". For buy positions identified by "POSITION_TYPE_BUY", we calculate a new stop-loss by subtracting "Trailing_Stop_Points" times point from the current bid obtained via <a href="/en/docs/marketinformation/symbolinfodouble" target="_blank">SymbolInfoDouble</a>&nbsp;with <a href="/en/docs/constants/environment_state/marketinfoconstants#enum_symbol_info_double" target="_blank">SYMBOL_BID</a>, normalizing it to the symbol's digits. If this new value exceeds the existing stop-loss and the profit (bid minus open) surpasses "Min_Profit_To_Trail_Points" times point, we modify the position using "obj_Trade.PositionModify" with the new stop-loss and unchanged take-profit.</p> <p>Similarly, for sell positions with <a href="/en/docs/constants/tradingconstants/positionproperties#enum_position_type" target="_blank">POSITION_TYPE_SELL</a>, we compute the new stop-loss, and if it's below the current stop-loss and profit (open minus ask) meets the minimum threshold, we update the position accordingly. Finally, within the "OnTick" function, if "TrailingType" equals "Trailing_Points" and there are open positions per "PositionsTotal", we invoke "ApplyPointsTrailing" to apply these adjustments on each tick. We now need to take care of the objects we have created by deleting them on de-initialization.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| EA Stop Function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> <span class="functions">OnDeinit</span>(<span class="keyword">const</span> <span class="keyword">int</span> code) {
+&nbsp;&nbsp; <span class="functions">ObjectDelete</span>(<span class="functions">ChartID</span>(), maxLevelObj);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Delete max level</span>
+&nbsp;&nbsp; <span class="functions">ObjectDelete</span>(<span class="functions">ChartID</span>(), minLevelObj);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Delete min level</span>
+&nbsp;&nbsp; <span class="functions">ObjectDelete</span>(<span class="functions">ChartID</span>(), maxTextObj);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Delete max text</span>
+&nbsp;&nbsp; <span class="functions">ObjectDelete</span>(<span class="functions">ChartID</span>(), minTextObj);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Delete min text</span>
+&nbsp;&nbsp; <span class="comment">// Clean dynamic rects and texts</span>
+&nbsp;&nbsp; <span class="functions">ObjectsDeleteAll</span>(<span class="functions">ChartID</span>(), <span class="string">"RangeRectangle_"</span>, <span class="macro">OBJ_RECTANGLE</span>); <span class="comment">//--- Delete range rects</span>
+&nbsp;&nbsp; <span class="functions">ObjectsDeleteAll</span>(<span class="functions">ChartID</span>(), <span class="string">"ManipRectangle_"</span>, <span class="macro">OBJ_RECTANGLE</span>); <span class="comment">//--- Delete manip rects</span>
+&nbsp;&nbsp; <span class="functions">ObjectsDeleteAll</span>(<span class="functions">ChartID</span>(), <span class="string">"DistribRectangle_"</span>, <span class="macro">OBJ_RECTANGLE</span>); <span class="comment">//--- Delete distrib rects</span>
+&nbsp;&nbsp; <span class="functions">ObjectsDeleteAll</span>(<span class="functions">ChartID</span>(), <span class="string">"AccumText_"</span>, <span class="macro">OBJ_TEXT</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Delete accum texts</span>
+&nbsp;&nbsp; <span class="functions">ObjectsDeleteAll</span>(<span class="functions">ChartID</span>(), <span class="string">"ManipText_"</span>, <span class="macro">OBJ_TEXT</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Delete manip texts</span>
+&nbsp;&nbsp; <span class="functions">ObjectsDeleteAll</span>(<span class="functions">ChartID</span>(), <span class="string">"DistribText_"</span>, <span class="macro">OBJ_TEXT</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Delete distrib texts</span>
+}<span>
+</span></pre> <p>In the <a href="/en/docs/event_handlers/ondeinit" target="_blank">OnDeinit</a>&nbsp;event handler, which is executed when the program is removed from the chart or shut down, we start by individually deleting static chart objects using <a href="/en/docs/objects/objectdelete" target="_blank">ObjectDelete</a>&nbsp;with the current chart identifier from <a href="/en/docs/chart_operations/chartid" target="_blank">ChartID</a>: the maximum level horizontal line via "maxLevelObj", the minimum level with "minLevelObj", the CRT high text label through "maxTextObj", and the CRT low text with "minTextObj".</p> <p>To handle dynamically created objects, we employ <a href="/en/docs/objects/objectdeleteall" target="_blank">ObjectsDeleteAll</a>&nbsp;to remove all matching items on the chart: all rectangles prefixed with "RangeRectangle_" of type <a href="/en/docs/constants/objectconstants/enum_object/obj_rectangle" target="_blank">OBJ_RECTANGLE</a>&nbsp;for accumulation phases, similarly for "ManipRectangle_" to clear manipulation borders, and "DistribRectangle_" for distribution projections; then all text objects starting with "AccumText_" of type <a href="/en/docs/constants/objectconstants/enum_object/obj_text" target="_blank">OBJ_TEXT</a>&nbsp;for accumulation labels, "ManipText_" for manipulation annotations, and "DistribText_" for distribution markers. This ensures a complete cleanup without leaving residual visuals. Upon compilation, we get the following outcome when the trailing stop is enabled.</p> <p style="text-align:center;"> <img width="700" height="551" src="https://c.mql5.com/2/181/Screenshot_2025-11-17_151727.png" loading="lazy" title="FINAL OUTCOME WITH TRAILING STOP ENABLED" alt="FINAL OUTCOME WITH TRAILING STOP ENABLED" style="vertical-align:middle;"/></p> <p>From the image, we can see that we manage the positions by applying trailing stops when needed, hence achieving our objectives. The thing that remains is backtesting the program, and that is handled in the next section.</p> <h3 id="para4"><br/><br/>Backtesting</h3> <p>After thorough backtesting, we have the following results.</p> <p>Backtest graph:</p> <p style="text-align:center;"> <img width="700" height="418" src="https://c.mql5.com/2/181/Screenshot_2025-11-17_154934.png" loading="lazy" title="GRAPH" alt="GRAPH" style="vertical-align:middle;"/></p> <p>Backtest report:</p> <p style="text-align:center;"> <img width="700" height="418" src="https://c.mql5.com/2/181/Screenshot_2025-11-17_154945.png" loading="lazy" title="REPORT" alt="REPORT" style="vertical-align:middle;"/></p> <p><br/></p> <h3 id="para5">Conclusion</h3> <p>In conclusion, we’ve developed a <a href="/go?link=https://innercircletrader.net/tutorials/candle-range-theory-crt/" title="https://innercircletrader.net/tutorials/candle-range-theory-crt/" rel="nofollow" target="_blank">Candle Range Theory (CRT)</a> trading system in <a href="/" target="_blank">MQL5</a> that identifies accumulation ranges on a specified timeframe, detects breaches with manipulation depth filtering, confirms reversals through bar closures, and executes trades in the distribution phase with dynamic or static stop-loss and take-profit based on risk-reward ratios.</p> <div class="atten"> <p>Disclaimer: This article is for educational purposes only. Trading carries significant financial risks, and market volatility may result in losses. Thorough backtesting and careful risk management are crucial before deploying this program in live markets.</p> </div> <p>With this Candle Range Theory strategy incorporating <a href="/go?link=https://innercircletrader.net/tutorials/ict-power-of-3/" title="https://innercircletrader.net/tutorials/ict-power-of-3/" rel="nofollow" target="_blank">Accumulation, Manipulation, and Distribution (AMD)</a> phases, you’re equipped to trade reversal opportunities, ready for further optimization in your trading journey. Happy trading!</p>
+      </div>
+<div id="cb_20323" class="attachBlock">
+  <strong>Attached files</strong> |
+  <div class="grouped-attachments-help">
+    <a title="Download all attachments in the single ZIP archive" href="/en/articles/download/20323.zip">
+      <i class="attach-icon attach-icon_zip"></i>Download ZIP
+    </a>
+  </div>
+    <div class="attachItem">
+      <a title="Download CRT_Candle_Range_Theory_EA.mq5" href="/en/articles/download/20323/CRT_Candle_Range_Theory_EA.mq5"><i class="attach-icon attach-icon_mq5"></i>CRT_Candle_Range_Theory_EA.mq5</a>
+      <span class="attachSize">(56.82 KB)</span>
+    </div>
+</div>
+    </div>
+
+  <div class="copyright">
+    <p><strong>Warning:</strong> All rights to these materials are reserved by MetaQuotes Ltd. Copying or reprinting of these materials in whole or in part is prohibited.</p>
+      <p>This article was written by a user of the site and reflects their personal views. MetaQuotes Ltd is not responsible for the accuracy of the information presented, nor for any consequences resulting from the use of the solutions, strategies or recommendations described.</p>
+  </div>
+
+
+
+    <div class="article__author-with-articles">
+      
+
+
+<div class="article-footer__author">
+  <div class="article-footer__author-avatar">
+    <img id="avatar" src="https://c.mql5.com/avatar/2022/11/637df59b-9551_big.jpg" title="Allan Munene Mutiiria" alt="Allan Munene Mutiiria" loading="lazy" width="164" height="164">
+  </div>
+  <div class="article-footer__author-content">
+    <div class="article-footer__author-name">
+      <a href="/en/users/29210372" title="Allan Munene Mutiiria">Allan Munene Mutiiria</a>
+    </div>
+    <div class="article-footer__author-info">
+      <ul>
+          <li>
+            <i title="Lives" class="icons-profile icons-profile_geo"></i>
+            <a target="_blank" rel="nofollow" title="Lives" href="https://www.mql5.com/go?https://maps.google.com/?z=4&q=Kenya">Kenya</a>
+          </li>
+        <li>
+          <i title="Rating" class="icons-profile icons-profile_statistics"></i>
+          <a title="Rating" href="/en/users/29210372/achievements">194457</a>
+        </li>
+      </ul>
+    </div>
+    <div class="article-footer__author-contacts">
+          <li title="Website"><a target="_blank" rel="noreferrer noopener nofollow" href="https://forexalgo-trader.com/" class="icons-profile icons-profile_net"></a>
+      <a target="_blank" rel="noreferrer noopener nofollow" href="https://forexalgo-trader.com/" style="display: inline-block; vertical-align: top; margin-top: -2px;">https://forexalgo-trader.com/</a></li>
+
+    </div>
+    <div class="article-footer__author-bio"></div>
+  </div>
+</div>
+
+      <div class="other-author-articles ui">
+        <h4 class="other-author-articles__title">Other articles by this author</h4>
+        <ul class="other-author-articles__list">
+          <li><a href="/en/articles/22838" data-fz-event="MQL5+Article+From+Author+Article">MQL5 Trading Tools (Part 35): Adding Channel, Pitchfork, Gann, and Fibonacci Tools to the Canvas Drawing Layer</a></li>
+          <li><a href="/en/articles/22786" data-fz-event="MQL5+Article+From+Author+Article">MQL5 Trading Tools (Part 34): Replacing Native Chart Objects with an Interactive Canvas Drawing Layer</a></li>
+          <li><a href="/en/articles/22303" data-fz-event="MQL5+Article+From+Author+Article">MQL5 Trading Tools (Part 33): Building a Rich Content Markup Documentation System for MQL5 Programs</a></li>
+          <li><a href="/en/articles/22608" data-fz-event="MQL5+Article+From+Author+Article">Trading with the MQL5 Economic Calendar (Part 12): SQLite Storage and Deduplication</a></li>
+          <li><a href="/en/articles/22597" data-fz-event="MQL5+Article+From+Author+Article">Trading with the MQL5 Economic Calendar (Part 11): Modular Canvas News Dashboard</a></li>
+          <li><a href="/en/articles/22233" data-fz-event="MQL5+Article+From+Author+Article">MQL5 Trading Tools (Part 32): Crosshair, Magnifier, and Measure Mode</a></li>
+          <li><a href="/en/articles/22495" data-fz-event="MQL5+Article+From+Author+Article">Building AI-Powered Trading Systems in MQL5 (Part 9): Creating an AI Signal Dispatcher</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+  <div class="article__last-comments" id="articleAdditional">
+    
+
+<div class="comments-preview">
+    <div class="title">
+      <span></span><b>
+         Last comments |
+ <a href="/en/forum/500539">Go to discussion</a>
+      </b>
+        (6)
+    </div>
+    <div>
+        
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2010/10/4CA7CFA0-1F0C.jpg" srcset="https://c.mql5.com/avatar/2010/10/4CA7CFA0-1F0C_big.jpg 2x" alt="Stanislav Korotky" title="Stanislav Korotky" data-user-login="marketeer" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/marketeer" data-user-login="marketeer">Stanislav Korotky</a></b>
+              |
+              <span class="comment__date">21 Nov 2025 at 14:11</span>
+              <a id="comment_58569628"></a>
+              
+            </div>
+            <div class="content" id="content58569628">
+              You did not explain how the beginning of each new accumulation phase is detected.
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2022/11/637df59b-9551.jpg" srcset="https://c.mql5.com/avatar/2022/11/637df59b-9551_big.jpg 2x" alt="Allan Munene Mutiiria" title="Allan Munene Mutiiria" data-user-login="29210372" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/29210372" data-user-login="29210372">Allan Munene Mutiiria</a></b>
+              |
+              <span class="comment__date">22 Nov 2025 at 06:18</span>
+              <a id="comment_58573384"></a>
+              
+            </div>
+            <div class="content" id="content58573384">
+              <div class="fquote"> <strong><span style="color:#42639C;">Christian Gomez <a href="/en/forum/500539#comment_58567619">#</a></span>:</strong><br/> Thanks, it looks interesting. </div> Thanks
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2022/11/637df59b-9551.jpg" srcset="https://c.mql5.com/avatar/2022/11/637df59b-9551_big.jpg 2x" alt="Allan Munene Mutiiria" title="Allan Munene Mutiiria" data-user-login="29210372" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/29210372" data-user-login="29210372">Allan Munene Mutiiria</a></b>
+              |
+              <span class="comment__date">22 Nov 2025 at 06:24</span>
+              <a id="comment_58573387"></a>
+              
+            </div>
+            <div class="content" id="content58573387">
+              <div class="fquote"> <strong><span style="color:#42639C;">Stanislav Korotky <a href="/en/forum/500539#comment_58569628">#</a></span>:</strong><br/> You did not explain how the beginning of each new accumulation phase is detected. </div> <p>That's the candle ranges as visualized.</p> <pre class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> prevMax = <span class="functions">iHigh</span>(<span class="predefines">_Symbol</span>, RangeTF, <span class="number">1</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Get prev high</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> prevMin = <span class="functions">iLow</span>(<span class="predefines">_Symbol</span>, RangeTF, <span class="number">1</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Get prev low</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> prevStart = <span class="functions">iOpen</span>(<span class="predefines">_Symbol</span>, RangeTF, <span class="number">1</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- Get prev open</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> prevEnd = <span class="functions">iClose</span>(<span class="predefines">_Symbol</span>, RangeTF, <span class="number">1</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Get prev close</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rangeMax = prevMax;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Set range max</span></pre>
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2010/10/4CA7CFA0-1F0C.jpg" srcset="https://c.mql5.com/avatar/2010/10/4CA7CFA0-1F0C_big.jpg 2x" alt="Stanislav Korotky" title="Stanislav Korotky" data-user-login="marketeer" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/marketeer" data-user-login="marketeer">Stanislav Korotky</a></b>
+              |
+              <span class="comment__date">22 Nov 2025 at 18:21</span>
+              <a id="comment_58575428"></a>
+              
+            </div>
+            <div class="content" id="content58575428">
+              <div class="fquote"> <strong><span style="color:#42639C;">Allan Munene Mutiiria <a href="/en/forum/500539#comment_58573387">#</a></span>:</strong><br/> <p>That's the candle ranges as visualized.</p> </div> <p>This does not answer the question - how do you find the beginning of the&nbsp;accumulation phase (each and every, because the phase occurs again and again on different sections of the chart). It is about time, not a range of prices. It is not about visualization as well.</p>
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2019/4/5CB0FE21-E283.jpg" srcset="https://c.mql5.com/avatar/2019/4/5CB0FE21-E283_big.jpg 2x" alt="Juvenille Emperor Limited" title="Juvenille Emperor Limited" data-user-login="eleanna74" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/eleanna74" data-user-login="eleanna74">Eleni Anna Branou</a></b>
+              |
+              <span class="comment__date">24 Nov 2025 at 08:12</span>
+              <a id="comment_58582655"></a>
+              
+            </div>
+            <div class="content" id="content58582655">
+              <div class="atten">Comments that do not relate to this topic, have been moved to &quot;<a href="/en/forum/339471">Off-topic posts</a>&quot;.</div>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+  </div>
+
+
+    <div class="articles-bottom-list" id="articleAdditional">
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Price Action Analysis Toolkit Development (Part 51): Revolutionary Chart Search Technology for Candlestick Pattern Discovery" src="https://c.mql5.com/2/182/20313-price-action-analysis-toolkit-logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/20313" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Price Action Analysis Toolkit Development (Part 51): Revolutionary Chart Search Technology for Candlestick Pattern Discovery</a>
+                <div class="articles-bottom-list__desc">This article is intended for algorithmic traders, quantitative analysts, and MQL5 developers interested in enhancing their understanding of candlestick pattern recognition through practical implementation. It provides an in‑depth exploration of the CandlePatternSearch.mq5 Expert Advisor—a complete framework for detecting, visualizing, and monitoring classical candlestick formations in MetaTrader 5. Beyond a line‑by‑line review of the code, the article discusses architectural design, pattern detection logic, GUI integration, and alert mechanisms, illustrating how traditional price‑action analysis can be automated efficiently.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Automating Black-Scholes Greeks: Advanced Scalping and Microstructure Trading" src="https://c.mql5.com/2/182/20287-automating-black-scholes-greeks-logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/20287" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Automating Black-Scholes Greeks: Advanced Scalping and Microstructure Trading</a>
+                <div class="articles-bottom-list__desc">Gamma and Delta were originally developed as risk-management tools for hedging options exposure, but over time they evolved into powerful instruments for advanced scalping, order-flow modeling, and microstructure trading. Today, they serve as real-time indicators of price sensitivity and liquidity behavior, enabling traders to anticipate short-term volatility with remarkable precision.</div>
+              </div>
+          </div>
+        </div>
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Analytical Volume Profile Trading (AVPT): Liquidity Architecture, Market Memory, and Algorithmic Execution" src="https://c.mql5.com/2/182/20327-analytical-volume-profile-trading-logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/20327" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Analytical Volume Profile Trading (AVPT): Liquidity Architecture, Market Memory, and Algorithmic Execution</a>
+                <div class="articles-bottom-list__desc">Analytical Volume Profile Trading (AVPT) explores how liquidity architecture and market memory shape price behavior, enabling more profound insight into institutional positioning and volume-driven structure. By mapping POC, HVNs, LVNs, and Value Areas, traders can identify acceptance, rejection, and imbalance zones with precision.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Overcoming The Limitation of Machine Learning (Part 7): Automatic Strategy Selection" src="https://c.mql5.com/2/181/20256-overcoming-the-limitation-of-logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/20256" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Overcoming The Limitation of Machine Learning (Part 7): Automatic Strategy Selection</a>
+                <div class="articles-bottom-list__desc">This article demonstrates how to automatically identify potentially profitable trading strategies using MetaTrader 5. White-box solutions, powered by unsupervised matrix factorization, are faster to configure, more interpretable, and provide clear guidance on which strategies to retain. Black-box solutions, while more time-consuming, are better suited for complex market conditions that white-box approaches may not capture. Join us as we discuss how our trading strategies can help us carefully identify profitable strategies under any circumstance.</div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+<div class="clear-fix"></div>
+
+<div id='wdausxxqrpvhekbwjrjlhqjghyhesrqqau' class="r6irig5txiuua4k0m r6irig5txiuua4k0m_articles-view gg88d3drb"></div>
+    
+
+<div class="hidden" id="popupRegisterLogin">
+  <div class="register-login-popup">
+    <div class="register-login-popup__header">
+      <img src="https://c.mql5.com/i/registerlandings/logo-2.png" srcset="https://c.mql5.com/i/registerlandings/logo-2_2x.png 2x" alt="MQL5 - Language of trade strategies built-in the MetaTrader 5 client terminal" loading="lazy" width="74" height="24" />
+    </div>
+    <div class="register-login-popup__content">
+      <div class="register-login-popup__desc">
+        <div class="register-login-popup__title">You are missing trading opportunities:</div>
+        <ul>
+<li>Free trading apps</li>
+<li>Over 8,000 signals for copying</li>
+<li>Economic news for exploring financial markets</li>
+</ul>
+      </div>
+      <div class="register-login-popup__forms ui">
+        <div class="register-login-popup__tabs" id="registerLoginPopupTabs">
+          <span data-id="register" id="registerLoginPopupTab_register" class="register-login-popup__tab register-login-popup__tab_active">Registration</span>
+          <span data-id="login" id="registerLoginPopupTab_login" class="register-login-popup__tab">Log in</span>
+        </div>
+        <div id="registerLoginPopupTabContent_register">
+          <div class="ui auth-form__content">
+    
+  <script type='text/javascript'>/*<![CDATA[*/ if (!window.V) var V = []; /*]]>*/</script>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/en/auth_register_short" id="PopupRegisterquickRegisterForm" onsubmit="PopupRegisterquickRegistration.OnSubmit(this,&#39;en&#39;);if(Validate(this)) Ajax.form(this,{onready:PopupRegisterquickRegistration.OnSuccessPopup,onerror:PopupRegisterquickRegistration.OnError,onbeginrequest:PopupRegisterquickRegistration.DisableInputs,onendrequest:PopupRegisterquickRegistration.EnableInputs});return(false);" enctype = "multipart/form-data"><input type="hidden" name="__signature" value="d4da088990853295ad914cfa412baf20"/>
+    <div class="auth-form__inputs">
+      <input type="hidden" value="0" name="IsValidate" id="PopupRegisterIsValidate" />
+
+      <!--[if lt IE 10]><div class="note">Login:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input type="text" id="PopupRegisterusername" name="username" class="input" maxlength="32" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.CheckUserName();}" onkeyup="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.ValidateUserName(this, 'Enter a valid login');}" placeholder="Login" title="May contain Latin letters, digits, dots, dashes,underscore characters. Cannot start or end with a dot. The allowed length is 3 to 32 characters." onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisterusername'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisterusername',10,'You may use Latin characters, numbers, underscores and periods.',validate_username]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisterusername">latin characters without spaces</label>
+      </div>
+      <!--[if lt IE 10]><div class="note">Your email:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input class="input" type="email" id="PopupRegisteremail" name="email" placeholder="Your email" title="Please enter the email (it may not exceed 256 characters). For example: john@example.com" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnChange(this);}" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisteremail'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisteremail',10,'Enter a valid email address',validate_email]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisteremail">a password will be sent to this email</label>
+      </div>
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Register" />
+    </div>
+    <span id="PopupRegisterquickRegisterSubmit">
+      <input type="submit" value="Register" id="PopupRegisterquickRegisterButton"  title="Sign up and receive an email with your password" class="button button_yellow"  />
+    </span>
+    <span id="PopupRegisterquickRegisterErrorMessage" class="quick-register-error-message field-validation-error" style="text-align: center; margin-top: 16px; display: none;">
+      An error occurred
+    </span>
+</form>
+    
+</div>
+<div class="auth-social">
+  <ul class="auth-social-list" id="socialList">
+    <li><a onclick="window.fpush({name: 'MQL5+Popup+Register+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/en/auth_oauth2?provider=Google&amp;amp;return=popup&amp;amp;reg=1" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Log in With Google</a></li>
+  </ul>
+</div>
+<div class="auth-block-agree">
+  <p>
+    You agree to <a target="_blank" href="/en/about/privacy">website policy</a> and <a target="_blank" href="/en/about/terms">terms of use</a>
+  </p>
+</div>
+
+
+        </div>
+        <div id="registerLoginPopupTabContent_login" class="hidden">
+            <div class="auth-form__text">
+    If you do not have an account, please <a href="https://www.mql5.com/en/auth_register" rel="nofollow" style="vertical-align: top">register</a>
+  </div>
+<div class="ui auth-form__content auth-form__content_login" id="loginFormWrapper">
+    
+  <div id="needCookies" class="need-cookies hidden">
+    <div class="danger-box">
+      <p>Allow the use of cookies to log in to the MQL5.com website.</p>
+<p>Please enable the necessary setting in your browser, otherwise you will not be able to log in.</p>
+    </div>
+  </div>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/en/auth_login" id="loginForm" onsubmit="if(window.quickLogin){return window.quickLogin.onSubmit(this);}var result = Validate(this); if(result) { preventDoubleSubmit(this); } return result;"><input id="RedirectAfterLoginUrl" name="RedirectAfterLoginUrl" type="hidden" value="" /><input id="RegistrationUrl" name="RegistrationUrl" type="hidden" value="" /><input data-val="true" data-val-required="The ShowOpenId field is required." id="ShowOpenId" name="ShowOpenId" type="hidden" value="True" /><input id="TrackingSection" name="TrackingSection" type="hidden" value="Articles" />    <input name="ViewType" type="hidden" value="5" />
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Login" />
+    <!--[if lt IE 10]><div class="note">Your login:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <input class="input qa-login" id="Login" name="Login" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Login" title="Your login" type="text" value="" />
+      <script type='text/javascript' id='validate_Login'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Login',1,'Enter login specified when signing up']);});mqGlobal.AddOnReady(function() {V.push(['Login',10,'Email cannot be used. Enter your login please',validateLogin]);}); /*]]>*/</script>
+    </div>
+    <!--[if lt IE 10]><div class="note">Password:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <div class="input-with-show">
+        <input autocomplete="off" class="input qa-password" id="Password" name="Password" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Password" title="Enter the password please" type="password" />
+        <span class="input-with-show__icon" title="Show password" onclick="if(window.quickLogin){window.quickLogin.showPass(this, 'Show password', 'Hide password');}"></span>
+      </div>
+      <script type='text/javascript' id='validate_Password'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Password',1,'Please enter the password']);}); /*]]>*/</script>
+    </div>
+    <script type="text/javascript">
+    function validateLogin(input) {
+      console.log('validate login ' + input.value);
+      return !/^\w+([-+.'']{1,2}\w+)* @\w+([-.]\w+)*\.\w+([-.]\w+)*$/i.test(input.value);
+    }
+    </script>
+    <div class="forgot" id="loginForgotBlock"><a id="loginForgotLink" href="https://www.mql5.com/en/auth_forgotten?return=popup">Forgot your login/password?</a></div>
+    <input type="submit" class="button button_yellow qa-submit" id="loginSubmit" value="Log in" title="Enter">
+</form></div>
+
+  <div class="auth-social" id="authSocialBlock">
+    <ul class="auth-social-list" id="socialList">
+      <li><a onclick="window.fpush({name: 'MQL5+Popup+Login+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/en/auth_oauth2?provider=Google&amp;amp;return=popup" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Log in With Google</a></li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script id="popupSection" type="application/json">{"section": "Articles"}</script>
+<script id="popupTranslate" data-type="translate" type="application/json">
+{
+  "popup":
+  {
+  "EmailTitle" : "The password has been sent to {0}",
+  "EmailDescription" : "Log in using the obtained password and the login specified during the registration",
+  "SubmitButtonText" : "Activate account",
+  "RegistrationTip" : "If you have not received the password email, check the spam folder or &lt;a href={0}&gt;repeat the registration&lt;/a&gt;"
+  }
+}
+</script>
+
+    
+
+    
+
+
+    </article>
+  </div>
+
+
+
+<div aria-hidden="true" class="footer  desktop" id="footer">
+  <ul class="links  links_desktop">
+      <li id="navFooterCommunity">
+        <nav>
+          <ul>
+            <li><a href="https://web.metatrader.app/terminal?mode=demo&amp;lang=en" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Footer+Trading">Online trading / WebTerminal</a></li>
+            <li><a href="/en/code" data-fz-event="MQL5+Footer+CodeBase">Free technical indicators and robots</a></li>
+            <li><a href="/en/articles" data-fz-event="MQL5+Footer+Articles">Articles about programming and trading</a></li>
+            <li><a href="/en/job" data-fz-event="MQL5+Footer+Job">Order trading robots on the Freelance</a></li>
+            <li><a href="/en/market" data-fz-event="MQL5+Footer+Market">Market of Expert Advisors and applications&#x9;</a></li>
+            <li><a href="/en/signals" data-fz-event="MQL5+Footer+Signals">Follow forex signals</a></li>
+            <li><a href="/en/vps" data-fz-event="MQL5+Footer+VPS">Low latency forex VPS</a></li>
+            <li><a href="/en/forum" data-fz-event="MQL5+Footer+Forum">Traders forum</a></li>
+            <li><a href="/en/blogs" data-fz-event="MQL5+Footer+Blogs">Trading blogs</a></li>
+            <li><a rel="nofollow" href="/en/charts" data-fz-event="MQL5+Footer+Charts">Charts</a></li>
+            <li><a href="/en/widgets" data-fz-event="MQL5+Footer+Widgets">Free widgets</a></li>
+          </ul>
+        </nav>
+      </li>
+      <li id="navFooterMt5">
+        <nav>
+          <ul>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> Trading Platform</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/releasenotes" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> latest updates</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/news" data-fz-event="MQL5+Footer+MetaTrader+5">News, implementations and technology</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> User Manual</a></li>
+            <li><a href="/en/docs" data-fz-event="MQL5+Footer+Docs">MQL5 language of trading strategies</a></li>
+            <li><a rel="nofollow noopener" href="https://cloud.mql5.com" data-fz-event="MQL5+Footer+Cloud">MQL5 Cloud Network</a></li>
+            <li><a rel="noopener" href="https://forge.mql5.io/?lang=en" data-fz-event="MQL5+Footer+Forge" target="_blank">MQL5 Algo Forge</a></li>
+              <li><a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Footer">Download <span class="nobr">MetaTrader 5</span></a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help/start_advanced/installation" data-fz-event="MQL5+Footer+MetaTrader+5">Install Platform</a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help/start_advanced/deinstallation" data-fz-event="MQL5+Footer+MetaTrader+5">Uninstall Platform</a></li>
+          </ul>
+        </nav>
+
+      </li>
+    <li id="navFooterWebsite">
+        <nav>
+          <ul>
+            <li><a rel="nofollow" href="/en/about" data-fz-event="MQL5+Footer+About">About</a></li>
+              <li><a href="/en/wall" data-fz-event="MQL5+Footer+Wall">Timeline</a></li>
+            <li><a rel="nofollow" href="/en/about/terms" data-fz-event="MQL5+Footer+About">Terms and Conditions</a></li>
+            <li><a rel="nofollow" href="/en/about/autopayments" data-fz-event="MQL5+Footer+About">Recurring Payment Agreement</a></li>
+            <li><a rel="nofollow" href="/en/about/agencyagreement" data-fz-event="MQL5+Footer+About">Agency Agreement – Offer</a></li>
+            <li><a rel="nofollow" href="/en/about/privacy" data-fz-event="MQL5+Footer+About">Privacy and Data Protection Policy</a></li>
+            <li><a rel="nofollow" href="/en/about/cookies" data-fz-event="MQL5+Footer+About">Cookies Policy</a></li>
+            <li>
+                <a rel="nofollow" href="/en/contact" data-fz-event="MQL5+Footer+Contacts">Contacts and requests</a>
+            </li>
+          </ul>
+        </nav>
+    </li>
+
+      <li>
+        <div class="footer__products">
+          <div class="footer__product">
+            <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com" class="footer__product-name">MetaTrader 5</a>
+            <div class="footer__product-links">
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon windows" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for Windows</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/MetaTrader5.pkg.zip?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon macos" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for MacOS</div></a>
+            <a rel="nofollow noopener" href="https://www.mql5.com/en/articles/625?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon linux" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for Linux</div></a>
+            <a rel="nofollow noopener" href="https://web.metatrader.app/terminal?mode=demo&amp;lang=en" class="icon web"><div  class="footer__product-link-hint footer__product-link-hint-short">Open MetaTrader 5 WebTerminal</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/ios?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=en" class="icon ios" data-fz-event="MetaTrader+5+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/jhZn8Ed1I1d.png)">Scan to install from App Store</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=en" class="icon android" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/kiF2Io6W-9d.png)">Scan to install from Google Play</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon huawei" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ZRt&#x2B;zI1l&#x2B;8O.png)">Scan to install from Huawei AppGallery</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon ark" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/L0Q9oag&#x2B;3eE.png)">Scan to get Android APK file</div></a>
+            </div>
+          </div>
+          <div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com/en/news/2270" class="footer__product-name">MQL5 Channels</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon ios" data-fz-event="MQL5+Channels+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/bZVfOJnYpcO.png)">Scan to install from App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon android" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/32MJFgw7BVs.png)">Scan to install from Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Su&#x2B;fe4n374e.png)">Scan to install from Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mql5channels/mql5channels.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/G6Mg4NfCPzO.png)">Scan to get Android APK file</div></a>
+              </div>
+            </div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.tradays.com/en/download?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MQL5+Footer+Download+Tradays" class="footer__product-name">Economic Calendar</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon ios" data-fz-event="Tradays+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CpD&#x2B;mhIw-1E.png)">Scan to install from App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon android" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Bgyx8UcmYap.png)">Scan to install from Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CrS7bbDAdAO.png)">Scan to install from Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/tradays/tradays.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/VZi8YPIb2op.png)">Scan to get Android APK file</div></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__networks">
+          <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow" title="Facebook"><i class="icons-networks icons-networks_fb"></i></a>
+          <a href="https://t.me/mql5dev" target="_blank" rel="nofollow" title="Telegram"><i class="icons-networks icons-networks_tg"></i></a>
+          <a href="https://x.com/mql5com" target="_blank" rel="nofollow" title="X (Twitter)"><i class="icons-networks icons-networks_tw"></i></a>
+          <a href="https://www.youtube.com/@MetaQuotesOfficial" target="_blank" rel="nofollow" title="YouTube"><i class="icons-networks icons-networks_yt"></i></a>
+          <a href="https://www.linkedin.com/company/mql5" target="_blank" rel="nofollow" title="LinkedIn"><i class="icons-networks icons-networks_linkedin"></i></a>
+          <span>Subscribe to algotrading news</span>
+        </div>
+  
+        <div class="footer__other">
+          <div class="footer__not-a-broker">Not a broker, no real trading accounts</div>
+          <div class="copyright">35 Dodekanisou str, Germasogeia, 4043,&nbsp;Limassol,&nbsp;Cyprus</div>
+          <div class="copyright">Copyright 2000-2026, <span class="nobr">MetaQuotes Ltd</span></div>
+        </div>
+      </li>
+  </ul>
+</div>
+
+
+
+<div class="shadow-layer" id="layer"></div>
+    
+
+  <div class="b-fixed-mt" id="bFixedMt" style="display: none;">
+    
+  </div>
+
+
+<script type='text/javascript'>
+		(function (a, e, f, g, b, c, d) { a[b] || (a.FintezaCoreObject = b, a[b] = a[b] || function () { (a[b].q = a[b].q || []).push(arguments) }, a[b].l = 1 * new Date, c = e.createElement(f), d = e.getElementsByTagName(f)[0], c.async = !0, c.defer = !0, c.src = g, d && d.parentNode && d.parentNode.insertBefore(c, d)) })
+      (window, document, "script", "/ff/core.js", "fz");
+		window.fz("register", "website", {
+      id: "sqjxkxkswybhifrohpyooonwgbvsfzmayq",
+			trackLinks: true
+		});
+        mqGlobal.AddOnReady(function () { Mql5Cookie.init('mql5.com', '5095786565998254076'); });
+mqGlobal.AddOnReady(function(){if(!window.Pocket){window.Pocket=new PocketManager();}});mqGlobal.AddOnReady(function(){if(!window.translateManager){window.translateManager=new Translate(undefined,'Error: failed to translate. Please try again later.');}if(document.querySelectorAll){var translateElements=document.querySelectorAll(".translateMenu");if(translateElements){var i=0,count=translateElements.length;for(i;i<count;i++){(function(i){var contentid=dataset(translateElements[i],"contentid"),sourcelang=dataset(translateElements[i],"sourcelang"),targetlang=dataset(translateElements[i],"targetlang"),moduleid=parseInt(dataset(translateElements[i],"moduleid")),typeid=parseInt(dataset(translateElements[i],"typeid")),entityid=parseInt(dataset(translateElements[i],"entityid"));Core.AddHandler(translateElements[i],"mouseover",function(){return translateManager.SetMenu(this,contentid,sourcelang,targetlang,moduleid,typeid,entityid);});})(i);}}}});window.fz("show","wdausxxqrpvhekbwjrjlhqjghyhesrqqau");window.mqGlobal.AddOnLoad(function(){window.fpush('MQL5+Article+Open');Articles.CheckOnScrollDown();});mqGlobal.AddOnReady(function(){window.PopupRegisterquickRegistration=new QuickRegistration('PopupRegister','Popup+Register','Articles');});function validate_username(input){var reg=/^([a-z0-9]){1}([\-._a-z0-9]){1,30}([\-_a-z0-9]){1}$/i,value=input.value,result=true;if(reg.test(value)){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Login',unit:'section',value:'Articles'});}return result;}function validate_email(input){var reg=/^\w+([-+.'']{1,2}\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/i,value=input.value,result=true,length_value=value.length;if(reg.test(value)&&length_value>=1&&length_value<=40){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Email',unit:'section',value:'Articles'});}return result;};mqGlobal.AddOnReady(function(){var username=$('PopupRegisterusername'),email=$('PopupRegisteremail');if(username)username.value='';if(email)email.value='';});mqGlobal.AddOnReady(function(){window.quickLogin=new QuickLogin('Popup+Login','Articles');});mqGlobal.AddOnLoad(function(){window.showLoginRegisterPopupAtEnd();});mqGlobal.AddOnLoad(function(){window.tooltipUserInfo.init();});mqGlobal.AddOnReady(function(){{window.initHeaderSearch('','https://www.mql5.com/en/search');}});</script><script type="text/javascript">mqGlobal.AddOnReady(function(){window.initSuggestions("headerSearchKeyword","en","https://search.mql5.com/api/query","https://www.mql5.com/en/users_search/suggestion");});window.fz("show","vgckrufggwxdtfscpyalmenexmvhljduja");mqGlobal.AddOnReady(function(){window.floatVerticalPanelNode=FloatVerticalPanel('This website uses cookies. Learn more about our <a href="/en/about/cookies">Cookies Policy</a>.','cookie_accept');});							if (typeof Attach !== "undefined")
+			Attach.setAcceptFilter(".zip, .txt, .log, .mqh, .ex5, .mq5, .mq4, .mqproj, .ex4, .mt5, .set, .tpl, .cl, .py, .sqlite, .csv, .ini, .ipynb, .onnx, .gif, .png, .jpg, .jpeg, .mp4, .webm");
+	</script>
+
+<script type="application/ld&#x2B;json">
+		[
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"url": "https://www.mql5.com",
+				"logo": "https://c.mql5.com/i/community/logo_mql5-2.png",
+				"sameAs": [
+					"https://www.facebook.com/mql5.community",
+					"https://www.x.com/mql5com",
+					"https://www.youtube.com/user/MetaQuotesOfficial"
+				 ]
+			}
+		
+, 
+{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"Forum","description":"Discussions of trading strategies and algorithmic trading. MQL5.community  the largest forex forum","url":"https://www.mql5.com/en/forum","children":[]},{"@type":"SiteNavigationElement","position":2,"name":"Market","description":"MetaTrader Market - a Market of trading robots, indicators, trading books and magazines","url":"https://www.mql5.com/en/market","children":[]},{"@type":"SiteNavigationElement","position":3,"name":"Signals","description":"Social trading, copy trading and account monitoring with MetaTrader - Trading Signals on MQL5.com","url":"https://www.mql5.com/en/signals","children":[]},{"@type":"SiteNavigationElement","position":4,"name":"Freelance","description":"Order trading robots, technical indicators and algorithmic trading applications. Forex jobs. Freelance on MQL5.com. Hire MetaTrader experts and specialists","url":"https://www.mql5.com/en/job","children":[]},{"@type":"SiteNavigationElement","position":5,"name":"Quotes","description":"","url":"https://www.mql5.com/en/quotes/overview","children":[]},{"@type":"SiteNavigationElement","position":6,"name":"MetaTrader","description":"","url":"https://www.metatrader.com","children":[]},{"@type":"SiteNavigationElement","position":7,"name":"WebTerminal","description":"WebTerminal for the MetaTrader trading platform. Online forex trading.","url":"https://web.metatrader.app/terminal?mode=demo","children":[]},{"@type":"SiteNavigationElement","position":8,"name":"Calendar","description":"","url":"https://www.mql5.com/en/economic-calendar","children":[]},{"@type":"SiteNavigationElement","position":9,"name":"VPS","description":"","url":"https://www.mql5.com/en/vps","children":[]},{"@type":"SiteNavigationElement","position":10,"name":"Articles","description":"","url":"https://www.mql5.com/en/articles","children":[]},{"@type":"SiteNavigationElement","position":11,"name":"CodeBase","description":"Download trading robots, technical indicators and scripts with source code - MQL5 Code Base for MetaTrader 5","url":"https://www.mql5.com/en/code","children":[]},{"@type":"SiteNavigationElement","position":12,"name":"Algo Forge","description":"","url":"https://forge.mql5.io","children":[]},{"@type":"SiteNavigationElement","position":13,"name":"Documentation","description":"MetaQuotes Language 5 (MQL5) Reference - Documentation on MQL5.com","url":"https://www.mql5.com/en/docs","children":[]}]}		
+,
+{"@context":"https://schema.org","@type":"TechArticle","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.mql5.com/en/articles/20323"},"headline":"Automating Trading Strategies in MQL5 (Part 41): Candle Range Theory (CRT)  Accumulation, Manipulation, Distr","image":["https://c.mql5.com/2/181/Screenshot_2025-11-17_140256.png","https://c.mql5.com/2/181/Screenshot_2025-11-17_141002.png","https://c.mql5.com/2/181/Screenshot_2025-11-17_141749.png","https://c.mql5.com/2/181/Screenshot_2025-11-17_142307.png","https://c.mql5.com/2/181/C_MQL5_WINGDINGS.png","https://c.mql5.com/2/181/Screenshot_2025-11-17_145133.png","https://c.mql5.com/2/181/Screenshot_2025-11-17_150347.png","https://c.mql5.com/2/181/Screenshot_2025-11-17_151727.png","https://c.mql5.com/2/181/Screenshot_2025-11-17_154934.png","https://c.mql5.com/2/181/Screenshot_2025-11-17_154945.png"],"datePublished":"2025-11-21T09:49:01+00:00Z","dateModified":"2025-11-21T09:53:33+00:00Z","author":{"@type":"Person","name":"Allan Munene Mutiiria","url":"https://www.mql5.com/en/users/29210372"},"editor":{"@type":"Organization","name":"MetaQuotes","url":"https://www.mql5.com/en/users/metaquotes","address":{"@type":"PostalAddress","addressCountry":"CY"}},"publisher":{"@type":"Organization","name":"MQL5 Community","url":"https://www.mql5.com","logo":{"@type":"ImageObject","url":"https://c.mql5.com/i/community/logo_mql5-2.png"}},"description":"In this article, we develop a Candle Range Theory (CRT) trading system in MQL5 that identifies accumulation ranges on a specified timeframe, detects breaches with manipulation depth filtering, and confirms reversals for entry trades in the distribution phase. The system supports dynamic or static stop-loss and take-profit calculations based on risk-reward ratios, optional trailing stops, and limits on positions per direction for controlled risk management."}
+,
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":"https://www.mql5.com/en/articles","name":"Articles"},{"@type":"ListItem","position":2,"item":"https://www.mql5.com/en/articles/mt5","name":"MetaTrader 5"},{"@type":"ListItem","position":3,"item":"https://www.mql5.com/en/articles/mt5/trading","name":"Trading"}]}
+
+		]
+	</script>
+</body>
+</html>

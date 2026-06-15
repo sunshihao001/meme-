@@ -1,0 +1,1080 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+
+  <meta name="robots" content="max-snippet:250,max-image-preview:large">
+  <meta name="description" content="In Part 38, we build a production-grade MT5 monitoring panel that converts raw ticks into actionable signals. The EA buffers tick data to compute tick-level VWAP, a short-window imbalance (flow) metric, and ATR-based position sizing. It then visualizes spread, ATR, and flow with low-flicker bars. The system calculates a suggested lot size and a 1R stop, and issues configurable alerts for tight spreads, strong flow, and edge conditions. Auto-trading is intentionally disabled; the focus remains on robust signal generation and a clean user experience.">
+  <meta property="og:url" content="https://www.mql5.com/en/articles/19290">
+  <meta property="og:title" content="Price Action Analysis Toolkit Development (Part 38): Tick Buffer VWAP and Short-Window Imbalance Engine">
+  <meta property="og:description" content="In Part 38, we build a production-grade MT5 monitoring panel that converts raw ticks into actionable signals. The EA buffers tick data to compute tick-level VWAP, a short-window imbalance (flow) metric, and ATR-based position sizing. It then visualizes spread, ATR, and flow with low-flicker bars. The system calculates a suggested lot size and a 1R stop, and issues configurable alerts for tight spreads, strong flow, and edge conditions. Auto-trading is intentionally disabled; the focus remains on robust signal generation and a clean user experience.">
+      <meta property="og:image" content="https://c.mql5.com/2/166/19290-price-action-analysis-toolkit-development-part-38-tick-buffer_1200x628.jpg">
+      <meta property="og:image:secure_url" content="https://c.mql5.com/2/166/19290-price-action-analysis-toolkit-development-part-38-tick-buffer_1200x628.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2025-09-02T11:03:24.0000000Z">
+  <meta property="article:author" content="https://www.mql5.com/en/users/lynnchris">
+  <meta property="article:section" content="MetaTrader 5">
+  <meta property="article:tag" content="Examples">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@mql5com">
+  <meta name="twitter:image" content="https://c.mql5.com/2/166/19290-price-action-analysis-toolkit-development-part-38-tick-buffer_1200x628.jpg">
+  <meta name="theme-color" content="#4a76b8">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-config" content="none">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta property="qc:admins" content="36367170677651456375">
+  <meta property="wb:webmaster" content="073d7690269bcd81">
+  <link rel="shortcut icon" href="https://c.mql5.com/i/favicon4.ico">
+  <link rel="dns-prefetch" href="https://c.mql5.com">
+  <link href="https://c.mql5.com/styles/core.444bc25de4c9131a69fedfe5ac42a082.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/all.266d64b83529847f568747dd160d42b0.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/articles.bc4209e4de0b5296041832431b46f3dd.css" type="text/css" rel="stylesheet" media="all">
+  <link href="/en/articles/rss" rel="alternate" type="application/rss+xml" title="Articles on the development and application of MetaTrader 5 trading robots and technical indicators">
+  <link rel="canonical" href="https://www.mql5.com/en/articles/19290">
+  <link rel="alternate" hreflang="en" href="https://www.mql5.com/en/articles/19290">
+  <link rel="alternate" hreflang="ru" href="https://www.mql5.com/ru/articles/19290">
+  <link rel="alternate" hreflang="de" href="https://www.mql5.com/de/articles/19290">
+  <link rel="alternate" hreflang="ja" href="https://www.mql5.com/ja/articles/19290">
+  <title>Price Action Analysis Toolkit Development (Part 38): Tick Buffer VWAP and Short-Window Imbalance Engine - MQL5 Articles</title>
+
+
+
+<script type="text/javascript">
+  !function(){window.mqGlobal={};var t=!1,n=!1,e=[],o=[],i=[];function d(t){var n;for(n=0;n<t.length;n+=1)t[n]()}function c(){t||(t=!0,d(e),d(o),o=[],e=[])}function a(){c(),n||(n=!0,d(i),i=[])}if(mqGlobal.AddOnReady=function(n,i){t?n(document):i?e.push(n):o.push(n)},mqGlobal.AddOnLoad=function(t){n?t(document):i.push(t)},mqGlobal.AddOnActiveWindowChange=function(t){this._onvisibility||(this._onvisibility=[]),this._onvisibility[this._onvisibility.length]=t},document.addEventListener)document.addEventListener("DOMContentLoaded",c,!1),window.addEventListener("load",a,!1);else if(document.attachEvent&&(document.attachEvent("onreadystatechange",(function(){switch(document.readyState){case"interactive":c();break;case"complete":a()}})),window.attachEvent("onload",a),document.documentElement.doScroll&&window==window.top)){!function n(){if(!t&&document.body)try{document.documentElement.doScroll("left"),c()}catch(t){setTimeout(n,0)}}()}}();
+  mqGlobal.CookieDomain = ".mql5.com";
+  mqGlobal.Language = 'en';
+  mqGlobal.IsMobile = false;
+  mqGlobal.ClearRteStorage = function (e) { if (window.GStorage || (window.GStorage = globalStorage()), window.GStorage.supported) try { var o = e; window.GStorage.getItem("rte_autosave_uid", function (e, t) { t == o && (window.GStorage.removeItem("rte_autosave_text"), window.GStorage.removeItem("rte_autosave_date"), window.GStorage.removeItem("rte_autosave_uid")) }) } catch (e) { } };
+</script>
+  
+
+    <script src="https://c.mql5.com/js/all.c09fd283bed20d28a52c95cd70a12a27.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/vendor.1be6e9a4a90b28525f93c4c69a5058a1.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/articles.cd4c73c476b2781eecdf04f5583514b5.js" type="text/javascript" defer="defer"></script>
+
+
+</head>
+
+<body id="cover" class="cover">
+
+
+  <nav class="head">
+    <a href="https://www.mql5.com" class="head__logo" title="MQL5 - Language of trade strategies built-in the MetaTrader 5 client terminal"></a>
+      <div class="head__content">
+        <div class="main-menu" id="mainmenu">
+          
+                    <ul class="main-menu__top-level" id="menuTopLevel">
+                    <li><a href="/en/forum" data-fz-event="MQL5+Menu+Forum">Forum</a></li>
+                    <li><a href="/en/market" data-fz-event="MQL5+Menu+Market">Market</a></li>
+                    <li><a href="/en/signals" data-fz-event="MQL5+Menu+Signals">Signals</a></li>
+                    <li><a href="/en/job" data-fz-event="MQL5+Menu+Job">Freelance</a></li>
+                    <li><a href="/en/vps" data-fz-event="MQL5+Menu+VPS">VPS</a></li>
+                    <li><a href="/en/quotes/overview" data-fz-event="MQL5+Menu+Overview">Quotes</a></li>
+                    <li><a href="https://www.metatrader.com" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+MetaTrader">MetaTrader</a></li>
+                  </ul><ul class="main-menu__second-level" id="menuSecondLevel">
+                    <li class="main-menu__selected"><a href="/en/articles" data-fz-event="MQL5+Menu+Articles"><img src="https://c.mql5.com/i/menu/icon-articles4.svg" alt="" width="16" height="16"/>Articles</a></li>
+                    <li><a href="/en/code" data-fz-event="MQL5+Menu+CodeBase"><img src="https://c.mql5.com/i/menu/icon-code4.svg" alt="" width="16" height="16"/>CodeBase</a></li>
+                    <li><a href="https://forge.mql5.io/?lang=en" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+AlgoForge"><img src="https://c.mql5.com/i/menu/icon-algoforge4.svg" alt="" width="16" height="16"/>Algo Forge</a></li>
+                    <li><a href="/en/docs" data-fz-event="MQL5+Menu+Docs"><img src="https://c.mql5.com/i/menu/icon-docs4.svg" alt="" width="16" height="16"/>Documentation</a></li>
+                    <li><a href="/en/book" data-fz-event="MQL5+Menu+Book"><img src="https://c.mql5.com/i/menu/icon-book4.svg" alt="" width="16" height="16"/>AlgoBook</a></li>
+                    <li><a href="/en/neurobook" data-fz-event="MQL5+Menu+Neurobook"><img src="https://c.mql5.com/i/menu/icon-neurobook4.svg" alt="" width="16" height="16"/>NeuroBook</a></li>
+                    <li><a href="/en/economic-calendar" data-fz-event="MQL5+Menu+Economic+Calendar"><img src="https://c.mql5.com/i/menu/icon-economic-calendar4.svg" alt="" width="16" height="16"/>Calendar</a></li>
+                    <li><a href="https://web.metatrader.app/terminal?mode=demo&lang=en" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Menu+Trading"><img src="https://c.mql5.com/i/menu/icon-trading4.svg" alt="" width="16" height="16"/>WebTerminal</a></li>
+                    <li class="main-menu__mobile"><a href="/en/about">About</a></li>
+                    <li class="main-menu__second-tools"><a rel="noopener" href="/en/vps" title="Reliable trader hosting for uninterrupted operation of robots and instant copying of trades" class="button-mt" data-vars-fz="Start+VPS+Trial+Submenu"><img width="18" height="18" src="https://c.mql5.com/i/sidebar/vpstrial2.svg" alt="" loading="lazy">Start VPS Trial</a></li>
+                    </ul>
+        </div>
+          <div class="main-menu__active">
+            <a id="mainMenuSelected" href="#">
+              <span class="main-menu__primary">Articles</span><span class="main-menu__secondary">Sections</span>
+            </a>
+          </div>
+<form action="https://www.mql5.com/en/search" onsubmit="return false;" autocomplete="off" id="headerSearchForm" class="header-search" method="post">
+<button type="button" id="headerSearchButton" title="Search" class="header-search__button"></button><div class="header-search__input"><input name="keyword" type="text" enterkeyhint="search" title="Enter search text" placeholder="Search" id="headerSearchKeyword"/><label for="headerSearchKeyword" class="header-search__placeholder">Type <span>/</span> to search:  @user, $symbol, ...</label><button id="headerSearchSubmit" class="header-search__submit"></button></div><button type="button" id="headerSearchClean" title="Close" class="header-search__clean"></button></form>        <input class="blurHandler" id="mainMenuBlurHandler" type="checkbox">
+      </div>
+      <div class="head__toolbar" id="headerToolbar">
+          <div class="container loginRegister">
+            <nav>
+              <ul id="loginRegisterButtons"><li><a class="login" title="Please sign in. OpenID supported" href="https://www.mql5.com/en/auth_login" rel="nofollow" data-fz-event="MQL5+Menu+Siginin">Log in</a></li><li><a class="registration en" title="Please register" href="https://www.mql5.com/en/auth_register" rel="nofollow" data-fz-event="MQL5+Menu+Register" onclick="window.fpush('MQL5+Button+Click');">Create an account</a></li></ul>
+            </nav>
+          </div>
+        <div class="toggle-button" id="sidebarToggleButton">
+          <i></i>
+        </div>
+
+        <div class="group-menu" id="groupMenu">
+
+
+          <div class="container lang-menu-container">
+            <div id="langMenuContainer" class="lang-menu">
+              <input class="blurHandler" id="langmenuBlurHandler" type="checkbox">
+              <nav>
+                <ul class="lang-menu__list" id="langmenu">
+                  <li class="lang-menu__list-item lang-menu__list-item_selected"><a href="/en/articles" aria-label="English (English)"><i class="icons-languages icons-languages_en"></i><span>English</span></a></li>
+<li class="lang-menu__list-item"><a href="/ru/articles" aria-label="Русский (Russian)"><i class="icons-languages icons-languages_ru"></i><span>Русский</span></a></li>
+<li class="lang-menu__list-item"><a href="/zh/articles" aria-label="中文 (Chinese)"><i class="icons-languages icons-languages_zh"></i><span>中文</span></a></li>
+<li class="lang-menu__list-item"><a href="/es/articles" aria-label="Español (Spanish)"><i class="icons-languages icons-languages_es"></i><span>Español</span></a></li>
+<li class="lang-menu__list-item"><a href="/pt/articles" aria-label="Português (Portuguese)"><i class="icons-languages icons-languages_pt"></i><span>Português</span></a></li>
+<li class="lang-menu__list-item"><a href="/ja/articles" aria-label="日本語 (Japanese)"><i class="icons-languages icons-languages_ja"></i><span>日本語</span></a></li>
+<li class="lang-menu__list-item"><a href="/de/articles" aria-label="Deutsch (German)"><i class="icons-languages icons-languages_de"></i><span>Deutsch</span></a></li>
+<li class="lang-menu__list-item"><a href="/ko/articles" aria-label="한국어 (Korean)"><i class="icons-languages icons-languages_ko"></i><span>한국어</span></a></li>
+<li class="lang-menu__list-item"><a href="/fr/articles" aria-label="Français (French)"><i class="icons-languages icons-languages_fr"></i><span>Français</span></a></li>
+<li class="lang-menu__list-item"><a href="/it/articles" aria-label="Italiano (Italian)"><i class="icons-languages icons-languages_it"></i><span>Italiano</span></a></li>
+<li class="lang-menu__list-item"><a href="/tr/articles" aria-label="Türkçe (Turkish)"><i class="icons-languages icons-languages_tr"></i><span>Türkçe</span></a></li>
+
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+  </nav>
+
+
+
+  <div id="left-sidebar-selector" class="left-sidebar__selector left-sidebar__selector_padding">
+    <div class="left-sidebar__title">
+MetaTrader 5 /     Examples
+    </div>
+    <i class="icons-ux icons-ux_arrow-down-black"></i>
+  </div>
+  <div class="articles-container block-with-sidebar">
+    <aside class="left-sidebar left-sidebar_270" id="left-sidebar">
+      
+  <ul class="tree-menu-ul"><li class="tree-menu__item tree-menu__item_selected"><a class="tree-menu__link" href="/en/articles/examples"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples.svg" alt="" loading="lazy"/>Examples</a><ul class="tree-menu__list tree-menu__list_nested"><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/examples_indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_indicators.svg" alt="" loading="lazy"/>Indicators</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/examples_experts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_experts.svg" alt="" loading="lazy"/>Experts</a></li></ul></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/strategy_tester"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/strategy_tester.svg" alt="" loading="lazy"/>Tester</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/trading"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading.svg" alt="" loading="lazy"/>Trading</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/trading_systems"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading_systems.svg" alt="" loading="lazy"/>Trading systems</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/integration"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/integration.svg" alt="" loading="lazy"/>Integration</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/indicator.svg" alt="" loading="lazy"/>Indicators</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/expert_advisors"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/expert.svg" alt="" loading="lazy"/>Expert Advisors</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/statistics"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/statistics.svg" alt="" loading="lazy"/>Statistics and analysis</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/machine_learning"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/machine_learning.svg" alt="" loading="lazy"/>Machine learning</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/interviews"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/interviews.svg" alt="" loading="lazy"/>Interviews</a></li></ul>
+  
+
+    <div class="hints-panel">
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_like"></i>
+        <div class="hints-panel__content">
+          Do you like the article?<br>
+          Share it with others —<br>post a <a href="https://www.mql5.com/en/articles/19290" target="_blank">link</a> to it!
+        </div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_tw-square icons-hints_24px"></i><div class="hints-panel__content">
+Find us on <a href="https://x.com/mql5com" target="_blank" rel="nofollow">Twitter</a>!<br> Join our fan page</div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_mt-5"></i>
+        <div class="hints-panel__content">
+          Use new possibilities of <a href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Article" rel="nofollow sponsored noopener noreferrer">MetaTrader 5</a>
+        </div>
+      </div>
+    </div>
+<div id='vgckrufggwxdtfscpyalmenexmvhljduja' class="roeid8y6hsc3ntv1l gg88d3drb"></div>      <div class="similar-author-articles ui">
+        <h4 class="similar-author-articles__title">Similar articles</h4>
+        <ul class="similar-author-articles__list">
+            <li>
+              <a href="/en/articles/22691" data-fz-event="MQL5+Article+Similar+Article">Step-by-Step Implementation of a Local Stop Loss System in MQL5</a>
+            </li>
+            <li>
+              <a href="/en/articles/22563" data-fz-event="MQL5+Article+Similar+Article">How to Detect and Normalize Chart Objects in MQL5 (Part 2): Collecting and Structuring Data from Complex Analytical Objects</a>
+            </li>
+            <li>
+              <a href="/en/articles/17608" data-fz-event="MQL5+Article+Similar+Article">Developing a Multi-Currency Expert Advisor (Part 28): Adding a Position Closing Manager</a>
+            </li>
+            <li>
+              <a href="/en/articles/18111" data-fz-event="MQL5+Article+Similar+Article">Implementing a Breakeven Mechanism in MQL5 (Part 2): ATR- and RRR-Based Breakeven</a>
+            </li>
+            <li>
+              <a href="/en/articles/22666" data-fz-event="MQL5+Article+Similar+Article">Interactive Supply and Demand Zone Manager in MQL5: From Manual to Automated Lifecycle</a>
+            </li>
+        </ul>
+      </div>
+    <div class="freelance-hint">
+      <img src="https://c.mql5.com/i/articles/icon_freelance.svg" width="24" height="24" loading="lazy" />
+      <div class="freelance-hint__text">
+        Use the ideas from this article<br>to order your own robot<br>on Freelance
+      </div>
+        <a target="_blank" class="button button_blue-gray-border" title="Go to Freelance" href="/en/job/new" data-fz-event="MQL5+Article+New+Job">Go to Freelance</a>
+    </div>
+
+    </aside>
+    <article class="content-with-sidebar articles-content splashed">
+      
+
+
+  <header class="article-header article-header_light" style="background-color: rgb(13,26,54)">
+    <section class="article-tools-panel">
+        <div class="article-tools-panel__item">
+          <span class="popup framed client flags">
+            <a class="dropdown" href="javascript:void(false);">
+              <span class="icons-languages icons-languages_en"></span><i></i>
+            </a>
+            <span class="popup">
+              <span class="tip">
+                <span></span>
+              </span>
+              <span class="items">
+                    <a href="/ru/articles/19290">Русский</a>
+                    <a href="/de/articles/19290">Deutsch</a>
+                    <a href="/ja/articles/19290">日本語</a>
+              </span>
+            </span>
+          </span>
+        </div>
+        
+      <div class="article-tools-panel__item">
+        <a href="#pocket" title="Pocket allows you to insert a complete content description to the appropriate comment" onclick="return Pocket.Add(this,'en',2,1,19290);" class="article-tools-panel__rounded">
+          <i class="article-pocket-icon"></i>
+        </a>
+      </div>
+      <div class="article-tools-panel__item">
+        <a href="/en/articles/19290?print=" target="_blank" class="article-tools-panel__rounded" rel="nofollow" title="Printer friendly version">
+          <i class="article-print-icon"></i>
+        </a>
+      </div>
+
+    </section>
+    <section class="article-header__image-box">
+        <img class="article-header__image-preview" loading="lazy" width="32" height="16" alt="preview" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAsICAoIBwsKCQoNDAsNERwSEQ8PESIZGhQcKSQrKigkJyctMkA3LTA9MCcnOEw5PUNFSElIKzZPVU5GVEBHSEX/2wBDAQwNDREPESESEiFFLicuRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUX/wAARCAAQACADASIAAhEBAxEB/8QAGAAAAgMAAAAAAAAAAAAAAAAAAgMBBAf/xAAeEAABBAIDAQAAAAAAAAAAAAABAAIDERIhEzFxBP/EABUBAQEAAAAAAAAAAAAAAAAAAAQD/8QAGREBAQEAAwAAAAAAAAAAAAAAAQACAxEx/9oADAMBAAIRAxEAPwDOoxGO22EbuC9M36kMn4&#x2B;gD6hf9GRsgJGPYrlWZKQQa0qjo7KMy2oyCtpGRx46L//Z">
+      <div class="article-header__gradient" style="background: linear-gradient(90deg, rgba(13,26,54, 1) 0%, rgba(13,26,54, 0.72) 8.31%, rgba(13,26,54, 0) 17.1%), linear-gradient(270deg, rgba(13,26,54, 1) 0%, rgba(13,26,54, 0.72) 8.06%, rgba(13,26,54, 0) 16.59%), linear-gradient(0deg, rgba(13,26,54, 1) 8.26%, rgba(13,26,54, 0.8) 65%, rgba(13,26,54, 0) 100%);"></div>
+        <picture>
+          <source srcset="https://c.mql5.com/2/166/19290-price-action-analysis-toolkit-development-part-38-tick-buffer_600x314.jpg, https://c.mql5.com/2/166/19290-price-action-analysis-toolkit-development-part-38-tick-buffer_1200x628.jpg 2x" media="(min-width:700px)">
+          <img class="article-header__image" loading="lazy" width="600" height="314" srcset="https://c.mql5.com/2/166/19290-price-action-analysis-toolkit-development-part-38-tick-buffer_300x157.jpg, https://c.mql5.com/2/166/19290-price-action-analysis-toolkit-development-part-38-tick-buffer_600x314.jpg 2x" src="https://c.mql5.com/2/166/19290-price-action-analysis-toolkit-development-part-38-tick-buffer_600x314.jpg" alt="Price Action Analysis Toolkit Development (Part 38): Tick Buffer VWAP and Short-Window Imbalance Engine" onerror="this.style.display='none';">
+        </picture>
+    </section>
+    <section class="article-header__content">
+      <h1>Price Action Analysis Toolkit Development (Part 38): Tick Buffer VWAP and Short-Window Imbalance Engine</h1>
+      <div class="article-header__info">
+        <a href="/en/articles/mt5">MetaTrader 5</a>
+          &mdash;
+          <a href="/en/articles/mt5/examples">Examples</a>
+        | <time datetime="2025-09-02T11:03Z" title="11:03" datetime-type="datetime">2 September 2025, 11:03</time>
+      </div>
+      <div class="article-header__indicators">
+        <span title="Views">
+          <img src="https://c.mql5.com/i/icons.svg#views-white-usage" width="20" height="20" alt="" />
+          8 992
+        </span>
+        
+          <a title="Comments" href="/en/forum/494486">
+            <img src="https://c.mql5.com/i/icons.svg#comments-white-usage" width="20" height="20" alt="" />
+            4
+          </a>
+      </div>
+      <div class="article-header__author">
+          <div class="article-header__avatar">
+            <img src="https://c.mql5.com/avatar/2025/10/68fd3661-daee.png" srcset="https://c.mql5.com/avatar/2025/10/68fd3661-daee_big.png 2x" data-user-login="Lynnchris" title="Christian Benjamin" alt="Christian Benjamin" loading="lazy" width="60" height="60">
+          </div>
+<a class="author" href="/en/users/lynnchris" data-user-login="Lynnchris">Christian Benjamin</a>      </div>
+    </section>
+  </header>
+
+    <div class="content">
+      <div class="inner formatted-content">
+        <h3 id="para1">Contents</h3> <ul> <li><a href="/en/articles/19290#para2">Introduction</a></li> <li><a href="/en/articles/19290#para3">In-Depth Overview of the Key Features of the Tool</a></li> <li><a href="/en/articles/19290#para4">Implementation into MQL5</a></li> <li><a href="/en/articles/19290#para5">Outcomes</a></li> <li><a href="/en/articles/19290#para6">Conclusion</a></li> </ul> <h3 id="para2"><br/><br/>Introduction</h3> <p>Most traders quickly learn that price charts don’t tell the whole story. What really moves the market is hidden just beneath the surface—in the order book, where bids and asks reveal who is waiting to buy, who is ready to sell, and where liquidity is stacked. Professional traders use this information every day to pinpoint supply and demand zones, detect imbalances, and anticipate short-term price shifts with remarkable precision.</p> <p>Retail traders, however, rarely see this picture. Many platforms don’t provide direct access to the order book at all, while others limit it to delayed or incomplete data, often behind an extra paywall. On common retail platforms like <i>MetaTrader</i> 5, transparency depends entirely on the broker, and most traders are left navigating markets without the microstructural insights that professionals take for granted.</p> <p>The <i><u>Slippage Tool</u></i> was built to address this gap. While it doesn’t attempt to replicate a full order book or raw tape, it reconstructs the most actionable insights traders usually extract from market depth—using only tick data that every broker provides. It calculates VWAP (Volume Weighted Average Price) to highlight where activity is clustering, measures short-term order imbalances to capture directional pressure, and aggregates tick volumes to paint a clearer view of recent participation. These metrics are then paired with spread and ATR context to help traders recognize when conditions favor their directional bias.</p> <p>Displayed directly on the chart with alerts and trade markers, the tool gives retail traders a practical proxy for order flow—making it possible to observe liquidity shifts, identify imbalances, and time entries more effectively, even without access to a professional market book.</p> <p>The diagram below illustrates this in action. Notice the bearish move from point <b>E</b> to<b> F</b>. The decline is not a straight drop; the market swings, creating temporary highs and lows while sweeping liquidity. A trader entering a sell at point<b> C</b> may be right about direction, but with poor risk management or an oversized lot, the retracement toward <b>D</b> could stop them out. The Slippage Tool reframes this by suggesting a countermove: entering a buy at <b>C</b> and closing at <b>D</b>, turning a potential loss into a managed opportunity. In the same way, when the price rises from <b>A</b>, the tool highlights <b>B</b> as a favorable sell zone, helping traders trade with the swings rather than being shaken out by them.</p> <p style="text-align:center;"> <img width="746" height="596" src="https://c.mql5.com/2/165/SLIPP1__1.png" loading="lazy" title="SLIPPAGE" alt="SLIPPAGE" style="vertical-align:middle;"/></p> <p>Trading will always involve volatility, reversals, and liquidity traps. The key difference is whether these movements take traders out of the market or become opportunities to manage risk and execution more effectively. The <i><u>Slippage Tool</u></i> doesn’t eliminate uncertainty, but it brings a layer of structural clarity to the retail trader’s chart, narrowing the gap between retail platforms and professional trading infrastructure.</p> <p>The subsequent sections will detail the operational mechanics of the tool, elucidate the significance of each core metric, and demonstrate how these features can be employed to improve trading decisions. Whether you are a discretionary trader seeking more precise entries or an algorithmic developer exploring new signal sources, the <u><i>Slippage Tool</i></u> offers a streamlined, lightweight solution to one of retail trading’s most persistent limitations: limited access to reliable market depth data.</p> <p><br/></p> <h3 id="para3">In-Depth Overview of the Key Features of the Tool</h3> <p style="text-align:left;">The <i>Slippage Tool</i> is an MetaTrader 5 on-chart system that reconstructs order-flow signals from the live tick stream (<i>VWAP, tick/volume imbalance, spread and ATR context</i>), surfaces tradable edges via alerts and markers, and optionally factors an expected slippage allowance into risk/lot sizing, serving as a practical proxy for market-book insight when DOM is unavailable.</p> <p style="text-align:left;">Below are the mathematical calculations and detailed explanations of the key features of this system.</p> <p style="text-align:left;"><u>1. VWAP (<i>Volume-Weighted Average Price</i>)</u></p> <p style="text-align:left;">In a <a href="/en/articles/16984" target="_blank">prior discussion</a>, I provided an in-depth analysis of <a href="/en/articles/16984" target="_blank"><i>VWAP (Volume Weighted Average Price)</i></a>. VWAP is a sophisticated benchmark that combines both price and volume data to produce a weighted average price over a specified time frame. Unlike a simple arithmetic average—which treats each price point equally—VWAP assigns greater significance to price levels where higher trading volume has occurred. This approach ensures that the VWAP accurately reflects the price levels at which the majority of trading activity took place, effectively capturing the true market consensus during the period.</p> <p style="text-align:left;">By integrating volume into its calculation, VWAP offers a more meaningful measure of the market’s “<i>fair value</i>,” as it accounts for the intensity of trading at different price levels. Traders and institutional participants often use VWAP to assess market conditions, identify potential entry and exit points, and gauge the overall direction of the market relative to this benchmark. Its dynamic nature allows it to serve as a reliable reference point for evaluating intraday price movements and liquidity conditions, making it an essential tool in both execution strategies and broader market analysis.</p> <p style="text-align:center;"> <img width="228" height="59" src="https://c.mql5.com/2/165/VWAP.png" loading="lazy" title="Formula for VWAP" alt="Formula for VWAP" style="vertical-align:middle;"/></p> <p>Where:</p>𝑃(i) =&nbsp; price of the i-th tick<br/> <p>𝑉(i) = tick volume of the i-th tick </p> <p>When the price trades above VWAP, it indicates that the market is trading at a premium relative to its average, signifying bullish sentiment. Conversely, if the price trades below VWAP, it suggests a discount, reflecting bearish tendencies. Traders frequently utilize VWAP as a dynamic support or resistance level, anchoring their decisions to this benchmark.&nbsp;</p> <p style="text-align:center;"> <img width="615" height="397" src="https://c.mql5.com/2/165/vwap_chart.png" loading="lazy" title="VWAP CHART" alt="VWAP CHART" style="vertical-align:middle;"/></p> <p>Given that not all brokers offer comprehensive market book data, this tool reconstructs a VWAP line derived solely from incoming tick data. This approach enables traders to access insights comparable to those gained from order book “fair value zones,” providing a valuable proxy for market equilibrium and aiding in informed decision-making.</p> <p style="text-align:left;"><u>2. Imbalance</u></p> <p style="text-align:left;">Imbalance gauges whether aggressive buyers or sellers are prevailing in trading activity. In a traditional order book, this is typically assessed by comparing the volume of resting orders on the bid versus the ask. However, when direct order book data is unavailable, the tool infers market imbalance indirectly by analyzing tick behavior, providing an alternative means to gauge directional pressure and market sentiment.</p> <p style="text-align:center;"> <img width="425" height="55" src="https://c.mql5.com/2/165/Imbalance.png" loading="lazy" title="Imbalance formula" alt="Imbalance formula" style="vertical-align:middle;"/></p> <p>Where:</p> <p>BuyVolume = sum of tick volumes where the price moved upward<br/>SellVolume = sum of tick volumes where the price moved downward</p> <p>A <i><u>positive imbalance indicates buying pressure</u></i>, reflecting dominance by more aggressive buyers, while a <i>negative <u>imbalance signifies selling pressure</u></i>, dominated by more aggressive sellers.&nbsp;</p> <p style="text-align:center;"> <img width="650" height="374" src="https://c.mql5.com/2/165/Imbalance_chart.png" loading="lazy" title="Imbalance chart" alt="Imbalance chart" style="vertical-align:middle;"/></p> <p>The tool monitors price movements on a tick-by-tick basis. Each upward movement (uptick) is counted as buying activity, whereas each downward movement (downtick) is associated with selling. This continuous, real-time calculation provides an ongoing measure of which side currently exerts greater influence on the market, offering valuable insight into short-term directional dynamics.</p> <p><u>3. Spread</u></p> <p>The spread is one of the most fundamental and essential measures of market microstructure. It represents the cost of immediacy, indicating how much traders must "pay" to execute an instant market order. This metric provides critical insight into liquidity conditions and the overall efficiency of the market, reflecting the transaction costs associated with rapid execution.</p> <p style="text-align:center;"> <img width="216" height="22" src="https://c.mql5.com/2/165/spread.png" loading="lazy" alt style="vertical-align:middle;"/></p> <p>A <i>narrow spread typically indicates liquid and efficient market conditions, facilitating smoother and more cost-effective trading</i>. Conversely, a <i>widespread suggests reduced liquidity</i>, <i>higher transaction costs, and may sometimes signal market stress or uncertainty.</i></p> <p style="text-align:center;"> <img width="670" height="374" src="https://c.mql5.com/2/165/Spread_chart.png" loading="lazy" title="Spread Chart" alt="Spread Chart" style="vertical-align:middle;"/></p> <p>The tool continuously monitors the spread in real time. Its signals can be filtered against predefined spread thresholds, helping traders avoid entries during periods when transaction costs are unusually elevated. This approach simulates the behavior of order book observers who refrain from trading when market depth is thin, thereby promoting more favorable execution conditions.</p> <p><u>4. Flow</u></p> <p>Flow functions as a short-term sentiment indicator, capturing whether recent ticks are predominantly bullish or bearish within a specified rolling window. It serves as a real-time pulse check on order flow pressure, providing traders with immediate insight into prevailing market momentum.</p> <p style="text-align:center;"> <img width="306" height="59" src="https://c.mql5.com/2/165/flow.png" loading="lazy" title="flow formula" alt="flow formula" style="vertical-align:middle;"/></p> <ul> <li>Where:&nbsp;</li> </ul> <p></p> <p style="text-align:center;"> <img width="696" height="72" src="https://c.mql5.com/2/165/CodeCogsEqn.png" loading="lazy" alt style="vertical-align:middle;"/></p> <p>Flow <i>greater than zero indicates that the majority of volume is associated with upward price movements, signifying buy pressure</i>. Conversely, <i>a flow less than zero suggests that most volume corresponds to downward price movements, reflecting sell pressure</i>.</p> <p>By aggregating signed volumes in real time, the tool constructs a dynamic picture of short-term order flow pressure. This approach closely mirrors how a trader interprets shifting imbalances within a market book ladder, providing valuable insight into immediate market sentiment and directional bias.</p> <p style="text-align:center;"> <img width="674" height="374" src="https://c.mql5.com/2/165/Flow_chart.png" loading="lazy" title="Flow chart" alt="Flow chart" style="vertical-align:middle;"/></p> <p>Collectively, these four features (<i>VWAP, Imbalance, Spread, and Flow</i>)—capture the essential insights of a market order book. They accomplish this by deriving key market dynamics solely from raw tick data, thereby providing valuable microstructure information even on brokers that do not offer full order book support.</p> <p><br/></p> <h3 id="para4">Implementation Into MQL5</h3> <p>In this section, I will provide a step-by-step guide on how to create the Slippage Tool using the MQL5 programming language.</p> <p><u>File header, includes and forward declarations.</u></p> <p>At the top of the file the script sets metadata (<i><span style="background-color:rgb(216, 232, 194);">#property</span></i>) and includes <i><span style="background-color:rgb(255, 246, 200);">Trade.mqh</span></i>, then declares the signatures of VWAP and Flow so they can be used before their definitions. The header serves three practical purposes: it documents authorship/version for later maintenance, it enables the compiler’s strict mode which enforces safer modern <i>MQL5</i> semantics, and it declares dependencies so the EA can call trade routines if/when automated entries are added. The forward declarations are a small stylistic convenience — they let you place the human-friendly high-level functions anywhere in the file without worrying about textual ordering. From a maintenance perspective, this top block is the roadmap users expect: it tells what external capabilities (<i>indicator handles, trading helpers</i>) are available and prepares the user to find the main metrics implemented later. </p> <pre class="code"><span class="comment">// File metadata and includes</span>
+<span class="preprocessor"><span style="background-color:rgb(216, 232, 194);">#property</span> </span><span class="macro">copyright</span> <span class="string">"Copyright 2025, MetaQuotes Ltd."</span>
+<span class="preprocessor">#property </span><span class="macro">link</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"https://www.mql5.com/en/users/lynnchris"</span>
+<span class="preprocessor">#property </span><span class="macro">version</span>&nbsp;&nbsp; <span class="string">"1.0"</span>
+<span class="preprocessor">#property </span><span class="macro">strict</span>
+
+<span class="preprocessor">#include </span>&lt;<span style="background-color:rgb(255, 246, 200);">Trade\Trade.mqh</span>&gt;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// CTrade utility for possible auto-trade usage</span></pre> <p><u>Enums and input parameters (<i>configuration surface</i>).</u></p> <p>The <i>enum</i> definitions and the long list of input variables form the tool’s public API: these are the knobs a trader uses to tune behavior without changing code. The enumerations offer readable names for UI options (<i>corners for the panel, alert modes</i>). The inputs expose the critical signal parameters — VWAP window in minutes, imbalance window in seconds, spread-to-ATR fraction for “cheap” spread detection, flow threshold and hysteresis for alerts, risk percentage and ATR multiplier for stops, and many <i>UI/layout</i> options. Exposing these as input values is an important design choice: it makes the EA versatile across instruments and trading styles. </p> <p>In a production article explain each input’s recommended range and trade-off: for example, longer VWAP windows yield stability but lose short-term responsiveness; a larger <i><span style="background-color:rgb(222, 188, 133);">InpImbWindowSec</span></i> smooths flow but blunts microstructure signals. Also highlight that sensible defaults are provided, but users should be guided to tune them for tick rate and market microstructure of each instrument. </p> <pre class="code"><span class="comment">// Enums (UI choices) and user-exposed inputs (tuning knobs)</span>
+<span class="keyword">enum</span> eCorner { COR_LT=<span class="number">0</span>, COR_LB=<span class="number">1</span>, COR_RT=<span class="number">2</span>, COR_RB=<span class="number">3</span> };
+<span class="keyword">enum</span> eAlertMode { AM_SINGLE=<span class="number">0</span>, AM_ROLLING_CLEAR=<span class="number">1</span>, AM_POOL_REUSE=<span class="number">2</span> };
+
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;InpVWAPminutes&nbsp;&nbsp;&nbsp;&nbsp; = <span class="number">1440</span>;&nbsp;&nbsp; <span class="comment">// VWAP window in minutes (rolling)</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;<span style="background-color:rgb(222, 188, 133);">InpImbWindowSec</span>&nbsp;&nbsp;&nbsp;&nbsp;= <span class="number">30</span>;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Imbalance/flow window in seconds</span>
+<span class="keyword">input</span> <span class="keyword">double</span> InpCheapSpreadFrac = <span class="number">0.50</span>;&nbsp;&nbsp; <span class="comment">// Spread &lt; ATR * this fraction =&gt; "cheap"</span>
+<span class="keyword">input</span> <span class="keyword">double</span> InpFlowTh&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = <span class="number">0.30</span>;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// flow threshold for alerts</span>
+<span class="keyword">input</span> <span class="keyword">double</span> InpFlowHystFactor = <span class="number">0.80</span>;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// hysteresis factor for flow reset</span>
+<span class="keyword">input</span> <span class="keyword">double</span> InpRiskPct&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="number">1.0</span>;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// risk per trade as % of balance</span>
+<span class="keyword">input</span> <span class="keyword">double</span> InpStopATRmult&nbsp;&nbsp;&nbsp;&nbsp;= <span class="number">1.2</span>;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// stop = ATR * this multiplier</span>
+<span class="keyword">input</span> <span class="keyword">uint</span>&nbsp;&nbsp; InpRingSize&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = <span class="number">20000</span>;&nbsp;&nbsp; <span class="comment">// tick ring buffer size</span>
+<span class="keyword">input</span> <span class="keyword">uint</span>&nbsp;&nbsp; InpTimerSec&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = <span class="number">2</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// UI refresh / aggregation cadence</span>
+</pre> <p><u>Global state and naming conventions.</u></p> <p>The global variables initialize the operational state: symbol settings, market parameters (<i>g_point, g_tickVal</i>), the ATR indicator handle, a <i>CTrade</i> object, and a set of arrays that implement a circular tick buffer. The code uses a <i>g_ prefix</i>&nbsp;for chart bject names; this <i>namespacing</i> is crucial for safe object cleanup — it ensures the EA only manipulates its own labels and won’t accidentally remove other indicators’ drawings. </p> <p>The ring-buffer arrays (<i>g_time, g_bid, g_ask, g_last, g_vol</i>) plus indices <i>g_head, g_used, g_size</i> are the backbone of all aggregated calculations; storing ticks locally prevents repeated calls to platform APIs, improves determinism, and allows time-windowed aggregation. The <i>globals</i> also hold previous values for change-detection to reduce UI thrash. In articles emphasize that global state must be carefully managed in MQL5 because the terminal runs a single thread and memory leaks from indicator handles or orphaned objects are common gotchas. </p> <pre class="code"><span class="comment">// Globals: symbol settings, ring-buffer arrays and indices</span>
+<span class="keyword">string</span>&nbsp;&nbsp;&nbsp;&nbsp;g_sym=<span class="string">""</span>;
+<span class="keyword">double</span>&nbsp;&nbsp;&nbsp;&nbsp;g_point=<span class="number">0.0</span>, g_tickVal=<span class="number">0.0</span>, g_tickSize=<span class="number">0.0</span>;
+<span class="keyword">double</span>&nbsp;&nbsp;&nbsp;&nbsp;g_volMin=<span class="number">0</span>, g_volMax=<span class="number">0</span>, g_volStep=<span class="number">0</span>;
+<span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; g_atrHandle = <span class="macro">INVALID_HANDLE</span>;
+<span class="predefines">MqlTick</span>&nbsp;&nbsp; g_latestTick;
+<span class="keyword">datetime</span>&nbsp;&nbsp;g_time[];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// ring buffer timestamps</span>
+<span class="keyword">double</span>&nbsp;&nbsp;&nbsp;&nbsp;g_bid[], g_ask[], g_last[], g_vol[]; <span class="comment">// ring buffer data</span>
+<span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; g_head = -<span class="number">1</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// index of most recent slot</span>
+<span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; g_used = <span class="number">0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// number of filled slots</span>
+<span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; g_size = <span class="number">0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// capacity (InpRingSize)</span></pre> <p><u>Small helpers (<i>SafeDiv, ARGB, RR</i>).</u></p>A few tiny helper functions improve correctness and readability. <i>SafeDiv</i> is a defensive wrapper that avoids divide-by-zero errors — an important pattern when dealing with live data that can contain zeros or uninitialized values. <i>ARGB </i>composes an alpha-blended color integer for the panel backgrounds; choosing an alpha routine centralizes color math and keeps UI code concise. RR computes a risk/reward ratio in a single expression while guarding a zero denominator. These helpers are short but essential: they keep the main logic focused on trading semantics rather than repeated plumbing and protect against runtime exceptions which are hard to debug in live trading. <pre class="code"><span class="comment">// Defensive helpers used across the codebase</span>
+<span class="keyword">double</span> SafeDiv(<span class="keyword">double</span> a, <span class="keyword">double</span> b) { <span class="keyword">return</span> (b == <span class="number">0.0</span> ? <span class="number">0.0</span> : a/b); }
+
+<span class="keyword">uint</span> ARGB(<span class="keyword">color</span> c, <span class="keyword">int</span> a)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// produce ARGB color integer</span>
+{
+&nbsp;&nbsp;<span class="keyword">if</span>(a&lt;<span class="number">0</span>) a=<span class="number">0</span>; <span class="keyword">if</span>(a&gt;<span class="number">255</span>) a=<span class="number">255</span>;
+&nbsp;&nbsp;<span class="keyword">return</span> ((<span class="keyword">uint</span>)a&lt;&lt;<span class="number">24</span>) | (c &amp; <span class="number">0x00FFFFFF</span>);
+}
+
+<span class="keyword">double</span> RR(<span class="keyword">double</span> entry,<span class="keyword">double</span> stop,<span class="keyword">double</span> tp)&nbsp;&nbsp;<span class="comment">// simple R/R guard</span>
+{
+&nbsp;&nbsp;<span class="keyword">return</span> (entry - stop != <span class="number">0.0</span> ? (tp - entry) / (entry - stop) : <span class="number">0.0</span>);
+}</pre> <p><u>Ring buffer initialization and append (<i>BufInit / BufAdd</i>).</u></p>The ring-buffer design is deliberate: <i>BufInit</i> enforces a minimum capacity and resizes arrays, while <i>BufAdd</i> writes the latest tick into the next slot and wraps around using modulus arithmetic. This yields <i>O(1)</i> insertion time and a compact fixed-memory footprint. Practically, this pattern is chosen over unbounded pushes (like <i>ArrayResize</i> on every tick) to avoid memory churn on high-frequency instruments. <i>BufAdd</i> also normalizes volume using <i>volume_real</i> when present and falls back to volume or 1.0, because many retail feeds either omit realistic volumes or represent them differently. A larger InpRingSize preserves more history for long VWAP windows but consumes more memory. This trade-off affects responsiveness and RAM usage. <pre class="code"><span class="comment">// Initialize ring buffer with minimum capacity</span>
+<span class="keyword">void</span> BufInit(<span class="keyword">int</span> n)
+{
+&nbsp;&nbsp;<span class="keyword">if</span>(n &lt; <span class="number">128</span>) n = <span class="number">128</span>;
+&nbsp;&nbsp;g_size = n;
+&nbsp;&nbsp;<span class="functions">ArrayResize</span>(g_time, n);
+&nbsp;&nbsp;<span class="functions">ArrayResize</span>(g_bid,&nbsp;&nbsp;n);
+&nbsp;&nbsp;<span class="functions">ArrayResize</span>(g_ask,&nbsp;&nbsp;n);
+&nbsp;&nbsp;<span class="functions">ArrayResize</span>(g_last, n);
+&nbsp;&nbsp;<span class="functions">ArrayResize</span>(g_vol,&nbsp;&nbsp;n);
+&nbsp;&nbsp;g_head = -<span class="number">1</span>;
+&nbsp;&nbsp;g_used = <span class="number">0</span>;
+}
+
+<span class="comment">// Append a tick into the circular buffer (O(1) insertion)</span>
+<span class="keyword">void</span> BufAdd(<span class="keyword">const</span> <span class="predefines">MqlTick</span> &amp;q)
+{
+&nbsp;&nbsp;<span class="keyword">if</span>(g_size &lt;= <span class="number">0</span>) <span class="keyword">return</span>;
+&nbsp;&nbsp;g_head = (g_head + <span class="number">1</span>) % g_size;
+&nbsp;&nbsp;g_time[g_head] = q.time;
+&nbsp;&nbsp;g_bid[g_head]&nbsp;&nbsp;= q.bid;
+&nbsp;&nbsp;g_ask[g_head]&nbsp;&nbsp;= q.ask;
+&nbsp;&nbsp;g_last[g_head] = q.last;
+&nbsp;&nbsp;<span class="keyword">double</span> vol = (q.volume_real &gt; <span class="number">0</span> ? q.volume_real : q.volume);
+&nbsp;&nbsp;g_vol[g_head] = (vol &gt; <span class="number">0</span> ? vol : <span class="number">1.0</span>); <span class="comment">// safe fallback</span>
+&nbsp;&nbsp;<span class="keyword">if</span>(g_used &lt; g_size) g_used++;
+}</pre> <p><u>Price accessor (Mid function).</u></p>The Mid function returns the best available price for a stored tick: preferring the last (<i>last trade</i>) if present and otherwise using the midpoint of bid and ask. This layered approach is pragmatic: trade prints are the most direct evidence of executed price, but some tick updates only contain quotes, so midpoint approximates fair value. Returning 0 for unusable slots signals callers to skip those entries. Mind preference of last vs midpoint influences sensitivity: a last-centric VWAP or flow will react only when trades occur, whereas using midpoints increases density but may introduce quote noise. <pre class="code"><span class="comment">// Prefer last trade price; fallback to midpoint if last absent</span>
+<span class="keyword">double</span> Mid(<span class="keyword">int</span> idx)
+{
+&nbsp;&nbsp;<span class="keyword">if</span>(idx &lt; <span class="number">0</span> || idx &gt;= g_size) <span class="keyword">return</span> <span class="number">0.0</span>;
+&nbsp;&nbsp;<span class="keyword">if</span>(g_last[idx] &gt; <span class="number">0.0</span>) <span class="keyword">return</span> g_last[idx];
+&nbsp;&nbsp;<span class="keyword">if</span>(g_bid[idx] &gt; <span class="number">0.0</span> &amp;&amp; g_ask[idx] &gt; <span class="number">0.0</span>) <span class="keyword">return</span> <span class="number">0.5</span> * (g_bid[idx] + g_ask[idx]);
+&nbsp;&nbsp;<span class="keyword">return</span> <span class="number">0.0</span>;
+}</pre> <p><u>Spread and ATR accessors.</u></p><i> SpreadPips</i> and ATR encapsulate two orthogonal measures: immediate transaction cost and market volatility. <i>SpreadPips</i> calls <i>SymbolInfoTick</i> and divides ask - bid by <i>g_point</i> to express spread in pips (or points), which makes comparisons with ATR straightforward. <i>ATR</i>() reads the most recent ATR value using <i>CopyBuffer</i> on an <i>iATR</i> handle, while <i>ATR_Avg</i> computes a short rolling mean. This separation is important: ATR is treated as a volatility baseline used for stop sizing and the “<i>tight spread</i>” test (<i>spread &lt; ATR * fraction</i>). It is important to consider the computational cost: <i>CopyBuffer</i> does I/O and should be used sparingly; also clarify that ATR is calculated on a timeframe determined by <i>InpTF</i>, so picking <i>InpTF</i> affects ATR and therefore both stops and cheapness decisions. <pre class="code"><span class="comment">// Spread in pips (points normalized by g_point)</span>
+<span class="keyword">double</span> SpreadPips()
+{
+&nbsp;&nbsp;<span class="predefines">MqlTick</span> t;
+&nbsp;&nbsp;<span class="keyword">if</span>(!<span class="functions">SymbolInfoTick</span>(g_sym, t) || g_point == <span class="number">0.0</span>) <span class="keyword">return</span> <span class="number">0.0</span>;
+&nbsp;&nbsp;<span class="keyword">return</span> (t.ask - t.bid) / g_point;
+}
+
+<span class="comment">// Latest ATR (indicator handle must be created beforehand)</span>
+<span class="keyword">double</span> ATR()
+{
+&nbsp;&nbsp;<span class="keyword">if</span>(g_atrHandle == <span class="macro">INVALID_HANDLE</span>) <span class="keyword">return</span> <span class="number">0.0</span>;
+&nbsp;&nbsp;<span class="keyword">double</span> buf[];
+&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">CopyBuffer</span>(g_atrHandle, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, buf) == <span class="number">1</span>) <span class="keyword">return</span> buf[<span class="number">0</span>];
+&nbsp;&nbsp;<span class="keyword">return</span> <span class="number">0.0</span>;
+}
+
+<span class="comment">// Average ATR across 'bars' (caps at 200 to limit work)</span>
+<span class="keyword">double</span> ATR_Avg(<span class="keyword">int</span> bars)
+{
+&nbsp;&nbsp;<span class="keyword">if</span>(g_atrHandle == <span class="macro">INVALID_HANDLE</span> || bars &lt;= <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0.0</span>;
+&nbsp;&nbsp;<span class="keyword">int</span> cap = <span class="functions">MathMin</span>(bars, <span class="number">200</span>);
+&nbsp;&nbsp;<span class="keyword">double</span> buf[];
+&nbsp;&nbsp;<span class="keyword">int</span> copied = <span class="functions">CopyBuffer</span>(g_atrHandle, <span class="number">0</span>, <span class="number">0</span>, cap, buf);
+&nbsp;&nbsp;<span class="keyword">if</span>(copied &lt;= <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0.0</span>;
+&nbsp;&nbsp;<span class="keyword">double</span> s = <span class="number">0.0</span>;
+&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;copied; i++) s += buf[i];
+&nbsp;&nbsp;<span class="keyword">return</span> s / copied;
+}</pre> <p><u>The aggregator (Acc) — the core data collector.</u></p> <p>Acc is the single, central aggregation routine that the VWAP and Flow functions call. Given a since timestamp, it walks backwards through the ring buffer from the newest tick and accumulates price*volume (for VWAP numerator), total volume (VWAP denominator), and — optionally when <i>flowNeeded</i> is true — counts of upticks and downticks. The loop stops when it encounters a tick older than since, making the function window aware. Implementation subtleties matter: <i>prev</i> is initialized to DBL_MAX to skip the first comparison; ticks with invalid prices are skipped; the index wraps around when it reaches the start. </p> <p>The function intentionally counts up and <i>dn</i> as occurrences (tick-count) rather than summing signed volumes — this is a design choice driven by simplicity and robustness on feeds lacking reliable volume. It is important to clearly state that: <i>Acc </i>enables both volume-weighted VWAP and tick-based flow, but the chosen flow metric here counts events not volumes — that difference has practical consequences for signal behavior. </p> <pre class="code"><span class="comment">// Accumulate price*volume and volume; optionally compute up/dn tick counts</span>
+<span class="keyword">void</span> Acc(<span class="keyword">datetime</span> since, <span class="keyword">double</span> &amp;pxVol, <span class="keyword">double</span> &amp;vol, <span class="keyword">int</span> &amp;up, <span class="keyword">int</span> &amp;dn, <span class="keyword">bool</span> flowNeeded)
+{
+&nbsp;&nbsp;pxVol = <span class="number">0.0</span>; vol = <span class="number">0.0</span>; up = <span class="number">0</span>; dn = <span class="number">0</span>;
+&nbsp;&nbsp;<span class="keyword">if</span>(g_used == <span class="number">0</span>) <span class="keyword">return</span>;
+
+&nbsp;&nbsp;<span class="keyword">int</span> idx = g_head;
+&nbsp;&nbsp;<span class="keyword">double</span> prev = <span class="macro">DBL_MAX</span>;
+
+&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; g_used; ++i)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(g_time[idx] &lt; since) <span class="keyword">break</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> p = Mid(idx);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(p &lt;= <span class="number">0.0</span>) { idx--; <span class="keyword">if</span>(idx &lt; <span class="number">0</span>) idx = g_size - <span class="number">1</span>; <span class="keyword">continue</span>; }
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> w = (g_vol[idx] &gt; <span class="number">0.0</span> ? g_vol[idx] : <span class="number">1.0</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;pxVol += p * w;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// VWAP numerator</span>
+&nbsp;&nbsp;&nbsp;&nbsp;vol&nbsp;&nbsp; += w;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// VWAP denominator</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(flowNeeded &amp;&amp; prev != <span class="macro">DBL_MAX</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(p &gt; prev) up++;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span> <span class="keyword">if</span>(p &lt; prev) dn++;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;prev = p;
+&nbsp;&nbsp;&nbsp;&nbsp;idx--;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(idx &lt; <span class="number">0</span>) idx = g_size - <span class="number">1</span>;
+&nbsp;&nbsp;}
+}</pre> <p><u>VWAP implementation (VWAP function).</u></p>The <i>VWAP </i>function converts the general-purpose Acc into the familiar formula. It computes since from <i>TimeCurrent</i>() minus the configured minutes, passes that to Acc to obtain <i>px</i> and v, and returns <i>px</i> / v. The function returns zero when no volume is present, preventing <i>NaNs</i>. From a conceptual standpoint VWAP in this tool is a rolling, time-windowed VWAP (not session VWAP by default), which gives you control over responsiveness via <i>InpVWAPminutes</i>. VWAP is typically used in two ways: a long-window VWAP as a fair-value anchor and short-window VWAPs for intraday microstructure — and show how to modify since to compute session-based VWAP if desired. <pre class="code"><span class="comment">// Rolling VWAP over last 'minutes' minutes</span>
+<span class="keyword">double</span> VWAP(<span class="keyword">int</span> minutes)
+{
+&nbsp;&nbsp;<span class="keyword">if</span>(minutes &lt;= <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0.0</span>;
+&nbsp;&nbsp;<span class="keyword">datetime</span> since = <span class="functions">TimeCurrent</span>() - (<span class="keyword">datetime</span>)minutes * <span class="number">60</span>;
+&nbsp;&nbsp;<span class="keyword">double</span> px = <span class="number">0.0</span>, v = <span class="number">0.0</span>;
+&nbsp;&nbsp;<span class="keyword">int</span> u, d;
+&nbsp;&nbsp;Acc(since, px, v, u, d, <span class="macro">false</span>);
+&nbsp;&nbsp;<span class="keyword">return</span> (v &gt; <span class="number">0.0</span> ? px / v : <span class="number">0.0</span>);
+}</pre> <p><u>Flow implementation (Flow function).</u></p> <p>Flow uses Acc with <i>flowNeeded=true</i> to get uptick and downtick counts and returns (<i>up - dn</i>) / (<i>up + dn</i>), a normalized tick-count imbalance in [-1,1]. This simple ratio provides an immediate sense of directional activity: values near +1 indicate almost all ticks were upticks in the window, suggesting aggressive buying by ticks, while -1 indicates selling bias. </p> <p>The explicit choice of tick-count rather than volume-weighted signed volume merits strong emphasis: counting ticks gives equal weight to all price moves and is robust to abnormal single large trades; volume-weighted flow instead measures the mass behind moves and can be more informative when true trade sizes are reliable. Both approaches are valid; the example below demonstrates the implementation currently used.</p> <pre class="code"><span class="comment">// Tick-count based flow (implemented in base tool)</span>
+<span class="keyword">double</span> Flow(<span class="keyword">int</span> sec)
+{
+&nbsp;&nbsp;<span class="keyword">if</span>(sec &lt;= <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0.0</span>;
+&nbsp;&nbsp;<span class="keyword">datetime</span> since = <span class="functions">TimeCurrent</span>() - sec;
+&nbsp;&nbsp;<span class="keyword">double</span> px = <span class="number">0.0</span>, v = <span class="number">0.0</span>;
+&nbsp;&nbsp;<span class="keyword">int</span> up = <span class="number">0</span>, dn = <span class="number">0</span>;
+&nbsp;&nbsp;Acc(since, px, v, up, dn, <span class="macro">true</span>);
+&nbsp;&nbsp;<span class="keyword">int</span> tot = up + dn;
+&nbsp;&nbsp;<span class="keyword">return</span> (tot ? <span class="keyword">double</span>(up - dn) / tot : <span class="number">0.0</span>);&nbsp;&nbsp;<span class="comment">// normalized [-1,1]</span>
+}
+
+<span class="comment">// Alternative: volume-weighted flow (replace Acc's tick-count mode)</span>
+<span class="comment">// *Requires modifying Acc to accumulate signedVol and totalVol*</span>
+<span class="keyword">double</span> VolumeWeightedFlow(<span class="keyword">int</span> sec)
+{
+&nbsp;&nbsp;<span class="keyword">if</span>(sec &lt;= <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0.0</span>;
+&nbsp;&nbsp;<span class="keyword">datetime</span> since = <span class="functions">TimeCurrent</span>() - sec;
+&nbsp;&nbsp;<span class="keyword">int</span> idx = g_head;
+&nbsp;&nbsp;<span class="keyword">double</span> signedVol = <span class="number">0.0</span>, totalVol = <span class="number">0.0</span>;
+&nbsp;&nbsp;<span class="keyword">double</span> prev = <span class="macro">DBL_MAX</span>;
+
+&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; g_used; ++i)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(g_time[idx] &lt; since) <span class="keyword">break</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> p = Mid(idx);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(p &lt;= <span class="number">0.0</span>) { idx--; <span class="keyword">if</span>(idx &lt; <span class="number">0</span>) idx = g_size - <span class="number">1</span>; <span class="keyword">continue</span>; }
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> w = (g_vol[idx] &gt; <span class="number">0.0</span> ? g_vol[idx] : <span class="number">1.0</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(prev != <span class="macro">DBL_MAX</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(p &gt; prev) signedVol += w;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span> <span class="keyword">if</span>(p &lt; prev) signedVol -= w;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;totalVol += w;
+&nbsp;&nbsp;&nbsp;&nbsp;prev = p;
+&nbsp;&nbsp;&nbsp;&nbsp;idx--; <span class="keyword">if</span>(idx &lt; <span class="number">0</span>) idx = g_size - <span class="number">1</span>;
+&nbsp;&nbsp;}
+&nbsp;&nbsp;<span class="keyword">return</span> (totalVol ? signedVol / totalVol : <span class="number">0.0</span>); <span class="comment">// normalized to [-1,1]</span>
+}
+</pre> <p><u>Object, panel and label helpers (<i>EnsureObj, SetLabelIfChanged, SetRectIfChanged</i>).</u></p>The UI helpers abstract repetitive object creation and property updates, and they smartly avoid unnecessary <i>ObjectSet</i>* calls by comparing current values before changing them. This reduces flicker and CPU usage because the terminal API calls to create or set object properties are not free. <i>EnsureObj</i> centralizes object creation semantics, and <i>SetLabelIfChanged</i> and <i>SetRectIfChanged</i> standardize property updates for labels and rectangle backgrounds. From a software-engineering perspective, this is good practice — isolate platform quirks and keep the main logic crisp. In documentation, point out that these helpers also consistently set objects as not selectable, preventing accidental chart manipulation and making the panel behave as a dashboard rather than interactive chart elements. <pre class="code"><span class="comment">// Create object if missing</span>
+<span class="keyword">void</span> EnsureObj(<span class="keyword">string</span> name, <span class="macro">ENUM_OBJECT</span> type)
+{
+&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">ObjectFind</span>(<span class="number">0</span>, name) == -<span class="number">1</span>)
+&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">ObjectCreate</span>(<span class="number">0</span>, name, type, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);
+}
+
+<span class="comment">// Update label text &amp; position only if changed (reduces redraws)</span>
+<span class="keyword">void</span> SetLabelIfChanged(<span class="keyword">string</span> name, <span class="keyword">int</span> corner, <span class="keyword">int</span> xdist, <span class="keyword">int</span> ydist,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">string</span> text, <span class="keyword">int</span> fontsize, <span class="keyword">color</span> col, <span class="keyword">string</span> font)
+{
+&nbsp;&nbsp;EnsureObj(name, <span class="macro">OBJ_LABEL</span>);
+&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">ObjectGetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_CORNER</span>) != corner) <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_CORNER</span>,corner);
+&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">ObjectGetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_XDISTANCE</span>) != xdist) <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_XDISTANCE</span>,xdist);
+&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">ObjectGetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_YDISTANCE</span>) != ydist) <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_YDISTANCE</span>,ydist);
+&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">ObjectGetString</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_TEXT</span>) != text) <span class="functions">ObjectSetString</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_TEXT</span>,text);
+&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">ObjectGetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_FONTSIZE</span>) != fontsize) <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_FONTSIZE</span>,fontsize);
+&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">ObjectGetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_COLOR</span>) != (<span class="keyword">int</span>)col) <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_COLOR</span>,col);
+&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">ObjectGetString</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_FONT</span>) != font) <span class="functions">ObjectSetString</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_FONT</span>,font);
+&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, name, <span class="macro">OBJPROP_SELECTABLE</span>, <span class="macro">false</span>);
+}
+
+<span class="comment">// Update rectangle only when a property changed</span>
+<span class="keyword">void</span> SetRectIfChanged(<span class="keyword">string</span> name,<span class="keyword">int</span> corner,<span class="keyword">int</span> xdist,<span class="keyword">int</span> ydist,<span class="keyword">int</span> xsize,<span class="keyword">int</span> ysize,<span class="keyword">uint</span> bgARGB)
+{
+&nbsp;&nbsp;EnsureObj(name, <span class="macro">OBJ_RECTANGLE_LABEL</span>);
+&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">ObjectGetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_CORNER</span>) != corner) <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_CORNER</span>,corner);
+&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">ObjectGetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_XDISTANCE</span>) != xdist) <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_XDISTANCE</span>,xdist);
+&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">ObjectGetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_YDISTANCE</span>) != ydist) <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_YDISTANCE</span>,ydist);
+&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">ObjectGetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_XSIZE</span>) != xsize) <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_XSIZE</span>,xsize);
+&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">ObjectGetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_YSIZE</span>) != ysize) <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_YSIZE</span>,ysize);
+&nbsp;&nbsp;<span class="keyword">if</span>((<span class="keyword">uint</span>)<span class="functions">ObjectGetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_BGCOLOR</span>) != bgARGB) <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_BGCOLOR</span>,bgARGB);
+&nbsp;&nbsp;<span class="keyword">if</span>((<span class="keyword">uint</span>)<span class="functions">ObjectGetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_COLOR</span>) != bgARGB) <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_COLOR</span>,bgARGB);
+&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="number">0</span>,name,<span class="macro">OBJPROP_SELECTABLE</span>,<span class="macro">false</span>);
+}</pre> <p><u>Panel creation and layout (<i>CreatePanelObjects and UpdatePanelObjects</i>).</u></p> <p><i> CreatePanelObjects </i>instantiates the set of labels and rectangles that form the info panel; <i>UpdatePanelObjects</i> is a layout engine that calculates text widths, bar sizes, and positions, then updates properties to visually reflect the latest metrics. It uses a character-width constant to estimate label widths, computes available space for bars, and draws proportional foreground bars for spread, ATR, and flow. </p> <p>The code chooses a compact visual vocabulary — a header, summary lines, three horizontal bars, and a footer timestamp — so traders get essential signals at a glance. The panel layout corresponds to the following metrics: link each UI element to its underlying variable (<i>spPips&nbsp;- spread bar, flow - flow bar</i>) and explain the design trade-offs: precomputed approximate text widths avoid complex font metrics calls but may slightly misalign in rare fonts; the chosen alpha-blending helps the UI be readable without obscuring the chart. </p> <pre class="code"><span class="comment">// Minimal set of dashboard objects used by UpdatePanelObjects</span>
+<span class="keyword">void</span> CreatePanelObjects()
+{
+&nbsp;&nbsp;EnsureObj(<span class="string">"ESGP_bg"</span>, <span class="macro">OBJ_RECTANGLE_LABEL</span>);
+&nbsp;&nbsp;EnsureObj(<span class="string">"ESGP_hdr"</span>, <span class="macro">OBJ_LABEL</span>);
+&nbsp;&nbsp;EnsureObj(<span class="string">"ESGP_lbl"</span>, <span class="macro">OBJ_LABEL</span>);
+&nbsp;&nbsp;EnsureObj(<span class="string">"ESGP_vwap"</span>, <span class="macro">OBJ_LABEL</span>);
+&nbsp;&nbsp;EnsureObj(<span class="string">"ESGP_spbar"</span>, <span class="macro">OBJ_RECTANGLE_LABEL</span>);
+&nbsp;&nbsp;EnsureObj(<span class="string">"ESGP_spbar_fg"</span>, <span class="macro">OBJ_RECTANGLE_LABEL</span>);
+&nbsp;&nbsp;EnsureObj(<span class="string">"ESGP_flow_lbl"</span>, <span class="macro">OBJ_LABEL</span>);
+&nbsp;&nbsp;<span class="comment">// Make them non-selectable by default</span>
+&nbsp;&nbsp;<span class="keyword">string</span> objs[] = {<span class="string">"ESGP_bg"</span>,<span class="string">"ESGP_hdr"</span>,<span class="string">"ESGP_lbl"</span>,<span class="string">"ESGP_vwap"</span>,<span class="string">"ESGP_spbar"</span>,<span class="string">"ESGP_spbar_fg"</span>,<span class="string">"ESGP_flow_lbl"</span>};
+&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="functions">ArraySize</span>(objs);i++) <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>,objs[i],<span class="macro">OBJPROP_SELECTABLE</span>,<span class="macro">false</span>);
+}
+</pre> <p><u>Alert management and visual markers.</u></p>The alert subsystem supports three modes: single replacement, rolling clear (timestamp-based unique names), and a pooled circular set of markers. Alerts are optionally drawn only when the cheap spread test is satisfied and the flow crosses configured thresholds, incorporating hysteresis to avoid flapping. The code stores a timestamp in <i>OBJPROP_TOOLTIP</i> for each marker and <i>AutoClearOldAlerts</i> deletes stale markers older than <i>InpAlertMaxAgeSec</i>. This is an elegant, low-dependency approach to on-chart journaling: it avoids the need for external storage while giving traders a visible audit trail of signal events. These design choices improve practical usability for traders: having persistent markers simplifies review and <i>backtesting</i> by visual comparison, while hysteresis reduces noise and false retriggers. <pre class="code"><span class="comment">// Draw a simple buy/sell alert label in the panel corner</span>
+<span class="keyword">void</span> DrawAlertMarker(<span class="keyword">bool</span> isBuy)
+{
+&nbsp;&nbsp;<span class="keyword">string</span> nm = (isBuy ? <span class="string">"ESGP_alert_buy"</span> : <span class="string">"ESGP_alert_sell"</span>);
+&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">ObjectFind</span>(<span class="number">0</span>, nm) != -<span class="number">1</span>) <span class="functions">ObjectDelete</span>(<span class="number">0</span>, nm);
+&nbsp;&nbsp;<span class="functions">ObjectCreate</span>(<span class="number">0</span>, nm, <span class="macro">OBJ_LABEL</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);
+&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, nm, <span class="macro">OBJPROP_CORNER</span>, COR_LT);
+&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, nm, <span class="macro">OBJPROP_XDISTANCE</span>, <span class="number">8</span>);
+&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, nm, <span class="macro">OBJPROP_YDISTANCE</span>, isBuy ? <span class="number">60</span> : <span class="number">80</span>);
+&nbsp;&nbsp;<span class="functions">ObjectSetString</span>(<span class="number">0</span>, nm, <span class="macro">OBJPROP_TEXT</span>, isBuy ? <span class="string">"▲ BUY"</span> : <span class="string">"▼ SELL"</span>);
+&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, nm, <span class="macro">OBJPROP_FONTSIZE</span>, <span class="number">12</span>);
+&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, nm, <span class="macro">OBJPROP_COLOR</span>, isBuy ? <span class="macro">clrLime</span> : <span class="macro">clrRed</span>);
+&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, nm, <span class="macro">OBJPROP_SELECTABLE</span>, <span class="macro">false</span>);
+&nbsp;&nbsp;<span class="functions">ObjectSetString</span>(<span class="number">0</span>, nm, <span class="macro">OBJPROP_TOOLTIP</span>, <span class="functions">IntegerToString</span>((<span class="keyword">int</span>)<span class="functions">TimeCurrent</span>())); <span class="comment">// store timestamp</span>
+}</pre> <p><u><i>OnInit</i> and <i>OnDeinit</i> lifecycle management.</u></p><i> OnInit</i> performs all necessary startup tasks: symbol selection, optional chart timeframe change, fetch of symbol parameters (<i>SYMBOL_POINT, SYMBOL_VOLUME_STEP, etc.</i>), creation of the ATR indicator with <i>iATR</i>, ring-buffer initialization, panel object creation, and timer setup with <i>EventSetTimer</i>. Each step checks for errors (<i>e.g., invalid ATR handle</i>) and returns <i>INIT_FAILED </i>when critical initialization fails — an important safety pattern.&nbsp; <pre class="code"><span class="keyword">int</span> <span class="functions">OnInit</span>()
+{
+&nbsp;&nbsp;g_sym = (<span class="predefines">_Symbol</span>);
+&nbsp;&nbsp;<span class="keyword">if</span>(!<span class="functions">SymbolSelect</span>(g_sym, <span class="macro">true</span>)) <span class="keyword">return</span> <span class="macro">INIT_FAILED</span>;
+&nbsp;&nbsp;g_point&nbsp;&nbsp; = <span class="functions">SymbolInfoDouble</span>(g_sym, <span class="macro">SYMBOL_POINT</span>);
+&nbsp;&nbsp;g_tickVal = <span class="functions">SymbolInfoDouble</span>(g_sym, <span class="macro">SYMBOL_TRADE_TICK_VALUE</span>);
+&nbsp;&nbsp;g_tickSize= <span class="functions">SymbolInfoDouble</span>(g_sym, <span class="macro">SYMBOL_TRADE_TICK_SIZE</span>);
+&nbsp;&nbsp;g_volMin&nbsp;&nbsp;= <span class="functions">SymbolInfoDouble</span>(g_sym, <span class="macro">SYMBOL_VOLUME_MIN</span>);
+&nbsp;&nbsp;g_volMax&nbsp;&nbsp;= <span class="functions">SymbolInfoDouble</span>(g_sym, <span class="macro">SYMBOL_VOLUME_MAX</span>);
+&nbsp;&nbsp;g_volStep = <span class="functions">SymbolInfoDouble</span>(g_sym, <span class="macro">SYMBOL_VOLUME_STEP</span>);
+
+&nbsp;&nbsp;<span class="comment">// create ATR handle for InpTF and InpATRperiod (example uses default TF &amp; period)</span>
+&nbsp;&nbsp;g_atrHandle = <span class="indicators">iATR</span>(g_sym, <span class="macro">PERIOD_M1</span>, <span class="number">14</span>);
+&nbsp;&nbsp;<span class="keyword">if</span>(g_atrHandle == <span class="macro">INVALID_HANDLE</span>) <span class="keyword">return</span> <span class="macro">INIT_FAILED</span>;
+
+&nbsp;&nbsp;BufInit((<span class="keyword">int</span>)InpRingSize);
+&nbsp;&nbsp;CreatePanelObjects();
+&nbsp;&nbsp;<span class="functions">EventSetTimer</span>((<span class="keyword">int</span>)InpTimerSec);
+&nbsp;&nbsp;<span class="keyword">return</span> <span class="macro">INIT_SUCCEEDED</span>;
+}
+</pre> <p><i>OnDeinit</i> cleans up: it kills the timer, removes panel and alert objects, and releases indicator handles. Failing to release indicator handles or leaving timers active can produce hidden memory/handle leaks in the terminal and unexpected behavior when the EA is reattached.</p> <pre class="code"><span class="keyword">void</span> <span class="functions">OnDeinit</span>(<span class="keyword">const</span> <span class="keyword">int</span> reason)
+{
+&nbsp;&nbsp;<span class="functions">EventKillTimer</span>();
+&nbsp;&nbsp;<span class="comment">// remove panel objects (prefix "ESGP_")</span>
+&nbsp;&nbsp;<span class="keyword">int</span> total = <span class="functions">ObjectsTotal</span>(<span class="number">0</span>);
+&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> i=total-<span class="number">1</span>; i&gt;=<span class="number">0</span>; --i)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span> nm = <span class="functions">ObjectName</span>(<span class="number">0</span>, i);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">StringFind</span>(nm, <span class="string">"ESGP_"</span>, <span class="number">0</span>) == <span class="number">0</span>) <span class="functions">ObjectDelete</span>(<span class="number">0</span>, nm);
+&nbsp;&nbsp;}
+&nbsp;&nbsp;<span class="keyword">if</span>(g_atrHandle != <span class="macro">INVALID_HANDLE</span>) { <span class="functions">IndicatorRelease</span>(g_atrHandle); g_atrHandle = <span class="macro">INVALID_HANDLE</span>; }
+}
+</pre> <p><u>OnTick ingestion strategy.</u></p><i> OnTick </i>is intentionally light: it reads the latest tick with <i>SymbolInfoTick</i> and appends it to the ring buffer via <i>BufAdd</i>. Heavy processing is deferred to <i>OnTimer</i>. This is an important architectural choice: some instruments generate hundreds or thousands of ticks per second, and doing expensive UI updates or indicator reads inside <i>OnTick</i> can saturate the main thread and slow the terminal. By decoupling ingestion and processing, the EA remains responsive and deterministic. This architecture also simplifies testing because: <i>OnTimer</i> runs at a controlled cadence, so measured behavior is easier to reproduce. <pre class="code"><span class="keyword">void</span> <span class="functions">OnTick</span>()
+{
+&nbsp;&nbsp;<span class="predefines">MqlTick</span> q;
+&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">SymbolInfoTick</span>(g_sym, q))
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;g_latestTick = q;&nbsp;&nbsp;<span class="comment">// store latest tick</span>
+&nbsp;&nbsp;&nbsp;&nbsp;BufAdd(q);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// append into ring buffer (fast)</span>
+&nbsp;&nbsp;}
+}</pre> <p><u><i>OnTimer</i> main loop — calculations, decisioning, UI and alerts.</u></p> <p><i><span style="background-color:rgb(255, 242, 153);"> OnTimer</span></i> is the orchestrator: it ensures the buffer is up to date, enforces a refresh cadence, computes spread and ATR in pips, applies the “cheap spread” test, calls VWAP and Flow, computes position-sizing and risk parameters, decides whether to refresh the panel (via change thresholds), and evaluates alert logic. The risk sizing routine computes a stop based on ATR and <i><span style="background-color:rgb(179, 146, 93);">InpStopATRmult</span></i>, converts stop distance to ticks and cash per lot, and derives a lot size that caps account risk according to <i>InpRiskPct</i>, rounding to the broker’s <i>g_volStep</i> and clamping between min and max allowed volumes. The alert decision requires both a cheap spread and a flow exceeding threshold, with hysteresis via <i>InpFlowHystFactor</i> to prevent rapid toggling. Present this paragraph in your article as the “decision engine” explanation — it demonstrates how cost filtering (spread vs ATR), directional confirmation (flow), and money-management (risk/lot computation) combine to form a practical trading signal.&nbsp;</p> <p>It is vital to state explicitly that Flow in the current implementation is tick-count-based: it measures frequency of upticks vs downticks, not the total volume behind those moves. This choice makes the metric robust on feeds that lack reliable per-tick volume but also means the metric can be skewed by many small ticks versus a single large trade. VWAP is implemented as a time-windowed rolling VWAP (minutes-based), not session VWAP, which affects interpretation: rolling VWAP is reactive, session VWAP provides an intraday benchmark. </p> <p>Spread is normalized to pips using <i>g_point</i>, while ATR is read in points and converted to pips so that comparisons are consistent. Both the implemented formulas and alternative versions can be considered. You can also switch to a volume-weighted flow (modify Acc to accumulate signed volumes and divide by total volume).</p> <pre class="code"><span class="keyword">void</span> <span style="background-color:rgb(255, 242, 153);"><span class="functions">OnTimer</span>()</span>
+{
+&nbsp;&nbsp;<span class="comment">// 1) ensure buffer has latest tick (sometimes needed)</span>
+&nbsp;&nbsp;<span class="predefines">MqlTick</span> t; <span class="keyword">if</span>(<span class="functions">SymbolInfoTick</span>(g_sym, t)) { <span class="keyword">if</span>(g_used == <span class="number">0</span> || g_time[g_head] != t.time) BufAdd(t); }
+
+&nbsp;&nbsp;<span class="comment">// 2) compute metrics</span>
+&nbsp;&nbsp;<span class="keyword">double</span> spPips = SpreadPips();
+&nbsp;&nbsp;<span class="keyword">double</span> atrPts = ATR();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// ATR in price units (points)</span>
+&nbsp;&nbsp;<span class="keyword">double</span> atrPips = (atrPts &gt; <span class="number">0</span> &amp;&amp; g_point &gt; <span class="number">0</span>) ? atrPts / g_point : <span class="number">0.0</span>;
+&nbsp;&nbsp;<span class="keyword">bool</span> cheap = (atrPts &gt; <span class="number">0</span> &amp;&amp; spPips &lt; atrPips * InpCheapSpreadFrac);
+&nbsp;&nbsp;<span class="keyword">double</span> vwap = VWAP(InpVWAPminutes);
+&nbsp;&nbsp;<span class="keyword">double</span> flow = Flow(<span style="background-color:rgb(232, 183, 215);">InpImbWindowSec</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// tick-count flow</span>
+
+&nbsp;&nbsp;<span class="comment">// 3) Example risk sizing (conservative)</span>
+&nbsp;&nbsp;<span class="keyword">double</span> bal = <span class="functions">AccountInfoDouble</span>(<span class="macro">ACCOUNT_BALANCE</span>);
+&nbsp;&nbsp;<span class="keyword">double</span> bid = <span class="functions">SymbolInfoDouble</span>(g_sym, <span class="macro">SYMBOL_BID</span>);
+&nbsp;&nbsp;<span class="keyword">double</span> stop = bid - <span style="background-color:rgb(179, 146, 93);">InpStopATRmult </span>* atrPts;
+&nbsp;&nbsp;<span class="keyword">double</span> riskPx = bid - stop;
+&nbsp;&nbsp;<span class="keyword">double</span> ticks = (g_tickSize &gt; <span class="number">0</span> ? riskPx / g_tickSize : <span class="number">0.0</span>);
+&nbsp;&nbsp;<span class="keyword">double</span> cashPerLot = ticks * g_tickVal;
+&nbsp;&nbsp;<span class="keyword">double</span> maxLoss = bal * InpRiskPct / <span class="number">100.0</span>;
+&nbsp;&nbsp;<span class="keyword">double</span> rawLot = (cashPerLot &gt; <span class="number">0.0</span> ? maxLoss / cashPerLot : <span class="number">0.0</span>);
+&nbsp;&nbsp;<span class="keyword">double</span> lot = (g_volStep &gt; <span class="number">0.0</span> ? <span class="functions">MathFloor</span>(rawLot / g_volStep) * g_volStep : <span class="number">0.0</span>);
+
+&nbsp;&nbsp;<span class="comment">// 4) Alerting with hysteresis</span>
+&nbsp;&nbsp;<span class="keyword">double</span> resetThresh = InpFlowTh * InpFlowHystFactor;
+&nbsp;&nbsp;<span class="keyword">static</span> <span class="keyword">bool</span> buyF=<span class="macro">false</span>, sellF=<span class="macro">false</span>;
+&nbsp;&nbsp;<span class="keyword">if</span>(cheap)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(flow &gt;= InpFlowTh &amp;&amp; !buyF) { <span class="functions">Alert</span>(<span class="string">"BUY edge: cheap spread + buy flow"</span>); buyF = <span class="macro">true</span>; sellF = <span class="macro">false</span>; DrawAlertMarker(<span class="macro">true</span>); }
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span> <span class="keyword">if</span>(flow &lt; resetThresh) buyF = <span class="macro">false</span>;
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(flow &lt;= -InpFlowTh &amp;&amp; !sellF) { <span class="functions">Alert</span>(<span class="string">"SELL edge: cheap spread + sell flow"</span>); sellF = <span class="macro">true</span>; buyF = <span class="macro">false</span>; DrawAlertMarker(<span class="macro">false</span>); }
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span> <span class="keyword">if</span>(flow &gt; -resetThresh) sellF = <span class="macro">false</span>;
+&nbsp;&nbsp;}
+}</pre> <p>Finally, stress testing considerations: strategy tester tick granularity may not reflect live feed behavior, so tick-replay or historical tick data is needed to validate tick-based logic. Logging should be judicious (avoid Print flooding on active instruments) and profiling for CPU usage is recommended when <i>InpTimerSec</i> is small. Recommended parameter presets (e.g., <i>InpVWAPminutes</i> of 60–240 for intraday use, <i><span style="background-color:rgb(232, 183, 215);">InpImbWindowSec</span></i> of 10–60 for microstructure detection, <i>InpCheapSpreadFrac</i> 0.3–0.7 depending on instrument). A staged tuning approach is recommended: begin with conservative thresholds, verify signals with visual markers first, and only enable auto-trading after rigorous forward testing. Suggest improvements such as providing an option to use session-based VWAP, making flow volume-weighted, adding EMA smoothing for flow to reduce whipsaw, and offering recording of tick history for reproducible offline analysis.</p> <h3 id="para5"><br/><br/>Outcomes</h3> <p>After developing the EA, the next step was deployment for testing, which can be conducted either on a demo account or through <i>backtesting</i>. I will share a series of images captured during the testing process on the MetaTrader 5 terminal to illustrate the system's performance and behavior.</p> <p>In the diagram below, the panel displays a previously issued BUY alert (<i>green header /BUY marker</i>). However, the current short-window flow is slightly negative, with Imbalance approximately <i>-10.3%</i> and Flow at <i>-0.10</i>.</p> <p>The spread of <i>71.0 pips</i> is relatively small compared to the prevailing volatility, which the system considers "<i>cheap</i>" (the spread cheapness condition is met). Given the ATR is quite large at <i>469.4 pips</i>, protective stops calculated based on ATR produce wide stop and take-profit distances—approximately <i>563.3 pips</i> for the stop and<i> 1,126.6 pips</i> for the <i>TP2R</i>, resulting in a risk/reward ratio of <i>2.00</i>.</p> <p>Overall, the EA’s cost filter (<i>indicating a cheap spread</i>) is satisfied. However, the directional confirmation via flow is slightly bearish at this moment, so the system does not generate a new buy trigger despite the existing buy marker from the earlier signal.</p> <p style="text-align:center;"> <img width="735" height="619" src="https://c.mql5.com/2/165/slip2_t26.PNG" loading="lazy" alt style="vertical-align:middle;"/></p> <p style="text-align:left;">Following the initial buy signal, the market moved in favor of the trade over time. The corresponding diagram illustrates this positive movement. Currently, a new sell signal has been indicated, reflecting the evolving market conditions.</p> <p style="text-align:center;"> <img width="746" height="629" src="https://c.mql5.com/2/165/slip5.PNG" loading="lazy" alt style="vertical-align:middle;"/></p> <p>Subsequently, the market reversed downward, confirming the validity of the signal. Please see the illustration below for visual confirmation of this movement.</p> <p style="text-align:center;"> <img width="743" height="627" src="https://c.mql5.com/2/165/slip6.PNG" loading="lazy" alt style="vertical-align:middle;"/></p> <p>Each and every signal is accompanied by an alert notification and is logged in the MetaTrader 5 Experts tab for comprehensive tracking and record-keeping.</p> <p style="text-align:center;"> <img width="740" height="250" src="https://c.mql5.com/2/165/alert.PNG" loading="lazy" alt style="vertical-align:middle;"/></p> <p><br/></p> <h3>Conclusion<br/></h3> <p>The Slippage Tool was developed to address a practical and common challenge faced by retail traders: limited access to reliable market book data while still needing order-flow signals to identify higher-probability entry points. Rather than attempting to replace a comprehensive depth ladder, this system extracts the most actionable microstructure insights from the available tick stream. It utilizes a rolling VWAP as a fair-value anchor, a short-window imbalance and flow metric to highlight directional pressure, and spread plus ATR context to ensure signals are both tradable and risk-aware. Coupled with on-chart visualization, alerts, and automated position sizing logic, the tool transforms raw tick data into decision-ready information in real time. </p> <p>What differentiates the Slippage Tool is its pragmatic focus on robustness and user-friendliness. Features such as a ring buffer and lightweight OnTick ingestion help maintain terminal performance on high-tick instruments; defensive helpers and change detection prevent unnecessary redraws; and alerts include hysteresis and configurable marker modes to minimize noise and false signals. The integrated risk-sizing logic links signal generation to actual money management, evaluating each potential trade against ATR-based stops and account risk, thereby promoting disciplined sizing over reckless position-taking. </p> <p>It is important to acknowledge the tool’s limitations. It serves as a proxy for order-book information, not a direct DOM feed: flow is derived from tick counts (or optionally volume-weighted), and VWAP is reconstructed from prints and midpoints. Consequently, signals should be validated within the context of charts, multiple timeframes, and replayed tick data. Parameters such as VWAP window, imbalance window, spread fraction, and flow thresholds should be tuned to suit each instrument’s tick rate and volatility; there is no universal configuration. </p> <p>For practitioners seeking to implement the system confidently, a staged approach is recommended: (1) visually validate signals using the panel and markers in replay or demo mode, (2) conservatively tune thresholds and verify performance in forward testing, and (3) only then consider automating entries with robust stop and timeout rules, along with comprehensive logging. Future enhancements may include a selectable session VWAP mode, optional volume-weighted flow calculation, EMA smoothing to reduce whipsaws, and an exportable event log to facilitate reproducible analysis. </p> <h3></h3> <p>See my other <a href="/en/users/lynnchris/publications" target="_blank">articles</a>.</p>
+      </div>
+<div id="cb_19290" class="attachBlock">
+  <strong>Attached files</strong> |
+  <div class="grouped-attachments-help">
+    <a title="Download all attachments in the single ZIP archive" href="/en/articles/download/19290.zip">
+      <i class="attach-icon attach-icon_zip"></i>Download ZIP
+    </a>
+  </div>
+    <div class="attachItem">
+      <a title="Download Slippage.mq5" href="/en/articles/download/19290/Slippage.mq5"><i class="attach-icon attach-icon_mq5"></i>Slippage.mq5</a>
+      <span class="attachSize">(62.32 KB)</span>
+    </div>
+</div>
+    </div>
+
+  <div class="copyright">
+    <p><strong>Warning:</strong> All rights to these materials are reserved by MetaQuotes Ltd. Copying or reprinting of these materials in whole or in part is prohibited.</p>
+      <p>This article was written by a user of the site and reflects their personal views. MetaQuotes Ltd is not responsible for the accuracy of the information presented, nor for any consequences resulting from the use of the solutions, strategies or recommendations described.</p>
+  </div>
+
+
+
+    <div class="article__author-with-articles">
+      
+
+
+<div class="article-footer__author">
+  <div class="article-footer__author-avatar">
+    <img id="avatar" src="https://c.mql5.com/avatar/2025/10/68fd3661-daee_big.png" title="Christian Benjamin" alt="Christian Benjamin" loading="lazy" width="164" height="164">
+  </div>
+  <div class="article-footer__author-content">
+    <div class="article-footer__author-name">
+      <a href="/en/users/lynnchris" title="Christian Benjamin">Christian Benjamin</a>
+    </div>
+    <div class="article-footer__author-info">
+      <ul>
+          <li>
+            <i title="Works" class="icons-profile icons-profile_suitcase"></i>
+Developer, Trader and Pastor
+at            Out For Christ Ministries International
+          </li>
+          <li>
+            <i title="Lives" class="icons-profile icons-profile_geo"></i>
+            <a target="_blank" rel="nofollow" title="Lives" href="https://www.mql5.com/go?https://maps.google.com/?z=4&q=Zimbabwe">Zimbabwe</a>
+          </li>
+        <li>
+          <i title="Rating" class="icons-profile icons-profile_statistics"></i>
+          <a title="Rating" href="/en/users/lynnchris/achievements">19977</a>
+        </li>
+      </ul>
+    </div>
+    <div class="article-footer__author-contacts">
+          <li title="Facebook"><a class="icons-networks icons-networks_fb-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://www.facebook.com/christian benjamin"></a></li>
+
+    </div>
+    <div class="article-footer__author-bio">Excellence and integrity define my approach to every project. The same standard is maintained regardless of compensation structure, guided by the conviction that God’s reward surpasses what man can offer. This principle shapes every tool I develop.</div>
+  </div>
+</div>
+
+      <div class="other-author-articles ui">
+        <h4 class="other-author-articles__title">Other articles by this author</h4>
+        <ul class="other-author-articles__list">
+          <li><a href="/en/articles/22833" data-fz-event="MQL5+Article+From+Author+Article">Engineering Trading Discipline into Code (Part 7): Automating Equity Protection Through Governance Logic</a></li>
+          <li><a href="/en/articles/22796" data-fz-event="MQL5+Article+From+Author+Article">Price Action Analysis Toolkit Development (Part 71): Weekend Gap Structure Mapping in MQL5</a></li>
+          <li><a href="/en/articles/22607" data-fz-event="MQL5+Article+From+Author+Article">Price Action Analysis Toolkit Development (Part 70): Turning Flag Pattern Signals into Automated Trade Execution</a></li>
+          <li><a href="/en/articles/22560" data-fz-event="MQL5+Article+From+Author+Article">Engineering Trading Discipline into Code (Part 6): Building a Unified Discipline Framework in MQL5</a></li>
+          <li><a href="/en/articles/22503" data-fz-event="MQL5+Article+From+Author+Article">Price Action Analysis Toolkit Development (Part 69): Flag Pattern Detection in MQL5</a></li>
+          <li><a href="/en/articles/21995" data-fz-event="MQL5+Article+From+Author+Article">Engineering Trading Discipline into Code (Part 5): Account-Level Risk Enforcement in MQL5</a></li>
+          <li><a href="/en/articles/22110" data-fz-event="MQL5+Article+From+Author+Article">Price Action Analysis Toolkit Development (Part 68): Price-Attached RSI Panel in MQL5</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+  <div class="article__last-comments" id="articleAdditional">
+    
+
+<div class="comments-preview">
+    <div class="title">
+      <span></span><b>
+         Last comments |
+ <a href="/en/forum/494486">Go to discussion</a>
+      </b>
+        (4)
+    </div>
+    <div>
+        
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/avatar_na2.png" srcset="https://c.mql5.com/avatar/avatar_na2_big.png 2x" alt="Jerry Gouw" title="Jerry Gouw" data-user-login="jerrygouw1" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/jerrygouw1" data-user-login="jerrygouw1">Jerry Gouw</a></b>
+              |
+              <span class="comment__date">6 Sep 2025 at 08:55</span>
+              <a id="comment_57972212"></a>
+              
+            </div>
+            <div class="content" id="content57972212">
+              sir, <p><span>why is there no panel?</span></p>
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2025/10/68fd3661-daee.png" srcset="https://c.mql5.com/avatar/2025/10/68fd3661-daee_big.png 2x" alt="Christian Benjamin" title="Christian Benjamin" data-user-login="Lynnchris" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/lynnchris" data-user-login="Lynnchris">Christian Benjamin</a></b>
+              |
+              <span class="comment__date">6 Sep 2025 at 20:26</span>
+              <a id="comment_57974885"></a>
+              
+            </div>
+            <div class="content" id="content57974885">
+              <div class="fquote"><strong><span style="color:#42639C;">Jerry Gouw <a href="/en/forum/494486#comment_57972212">#</a></span>:</strong><br/> sir, <p><span>why is there no panel?</span></p> </div>Hello, the panel should appear once you have compiled the code and attached it to the chart. Where exactly are you missing it? Alternatively, you may be attaching it to a currency pair with a closed market over the weekend.
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2026/3/69b14bc7-0aa6.jpg" srcset="https://c.mql5.com/avatar/2026/3/69b14bc7-0aa6_big.jpg 2x" alt="Israr Hussain Shah" title="Israr Hussain Shah" data-user-login="SearchMixed" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/searchmixed" data-user-login="SearchMixed">Israr Hussain Shah</a></b>
+              |
+              <span class="comment__date">8 Sep 2025 at 06:24</span>
+              <a id="comment_57980828"></a>
+              
+            </div>
+            <div class="content" id="content57980828">
+              Reduce the panel dashboard size and make it more professional by adding strength cloums then this flow <a href="https://www.mql5.com/en/docs/constants/indicatorconstants/lines" title="MQL5 documentation: Indicators Lines" class="linkator"><span class="mark">indicator lines</span></a> meter&nbsp;
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2025/10/68fd3661-daee.png" srcset="https://c.mql5.com/avatar/2025/10/68fd3661-daee_big.png 2x" alt="Christian Benjamin" title="Christian Benjamin" data-user-login="Lynnchris" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/lynnchris" data-user-login="Lynnchris">Christian Benjamin</a></b>
+              |
+              <span class="comment__date">8 Sep 2025 at 06:30</span>
+              <a id="comment_57980848"></a>
+              
+            </div>
+            <div class="content" id="content57980848">
+              <div class="fquote"><strong><span style="color:#42639C;">Israr Hussain Shah <a href="/en/forum/494486#comment_57980828">#</a></span>:</strong><br/> Reduce the panel dashboard size and make it more professional by adding strength cloums then this flow <a href="https://www.mql5.com/en/docs/constants/indicatorconstants/lines" target="_blank" title="MQL5 documentation: Indicators Lines" class="linkator"><span class="mark">indicator lines</span></a> meter&nbsp; </div>Thank you&nbsp;
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+  </div>
+
+
+    <div class="articles-bottom-list" id="articleAdditional">
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Trend strength and direction indicator on 3D bars" src="https://c.mql5.com/2/108/16719_logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/16719" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Trend strength and direction indicator on 3D bars</a>
+                <div class="articles-bottom-list__desc">We will consider a new approach to market trend analysis based on three-dimensional visualization and tensor analysis of the market microstructure.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Black Hole Algorithm (BHA)" src="https://c.mql5.com/2/107/Black_Hole_Algorithm_LOGO.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/16655" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Black Hole Algorithm (BHA)</a>
+                <div class="articles-bottom-list__desc">The Black Hole Algorithm (BHA) uses the principles of black hole gravity to optimize solutions. In this article, we will look at how BHA attracts the best solutions while avoiding local extremes, and why this algorithm has become a powerful tool for solving complex problems. Learn how simple ideas can lead to impressive results in the world of optimization.</div>
+              </div>
+          </div>
+        </div>
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Building a Professional Trading System with Heikin Ashi (Part 1): Developing a custom indicator" src="https://c.mql5.com/2/165/19260-building-a-professional-trading-logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/19260" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Building a Professional Trading System with Heikin Ashi (Part 1): Developing a custom indicator</a>
+                <div class="articles-bottom-list__desc">This article is the first installment in a two-part series designed to impart practical skills and best practices for writing custom indicators in MQL5. Using Heikin Ashi as a working example, the article explores the theory behind Heikin Ashi charts, explains how Heikin Ashi candlesticks are calculated, and demonstrates their application in technical analysis. The centerpiece is a step-by-step guide to developing a fully functional Heikin Ashi indicator from scratch, with clear explanations to help readers understand what to code and why. This foundational knowledge sets the stage for Part Two, where we will build an expert advisor that trades based on Heikin Ashi logic.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Developing a Replay System (Part 78): New Chart Trade (V)" src="https://c.mql5.com/2/105/Desenvolvendo_um_sistema_de_Replay_Parte_77___LOGO.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/12492" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Developing a Replay System (Part 78): New Chart Trade (V)</a>
+                <div class="articles-bottom-list__desc">In this article, we will look at how to implement part of the receiver code. Here we will implement an Expert Advisor to test and learn how the protocol interaction works. The content presented here is intended solely for educational purposes. Under no circumstances should the application be viewed for any purpose other than to learn and master the concepts presented.</div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+<div class="clear-fix"></div>
+
+<div id='wdausxxqrpvhekbwjrjlhqjghyhesrqqau' class="r6irig5txiuua4k0m r6irig5txiuua4k0m_articles-view gg88d3drb"></div>
+    
+
+<div class="hidden" id="popupRegisterLogin">
+  <div class="register-login-popup">
+    <div class="register-login-popup__header">
+      <img src="https://c.mql5.com/i/registerlandings/logo-2.png" srcset="https://c.mql5.com/i/registerlandings/logo-2_2x.png 2x" alt="MQL5 - Language of trade strategies built-in the MetaTrader 5 client terminal" loading="lazy" width="74" height="24" />
+    </div>
+    <div class="register-login-popup__content">
+      <div class="register-login-popup__desc">
+        <div class="register-login-popup__title">You are missing trading opportunities:</div>
+        <ul>
+<li>Free trading apps</li>
+<li>Over 8,000 signals for copying</li>
+<li>Economic news for exploring financial markets</li>
+</ul>
+      </div>
+      <div class="register-login-popup__forms ui">
+        <div class="register-login-popup__tabs" id="registerLoginPopupTabs">
+          <span data-id="register" id="registerLoginPopupTab_register" class="register-login-popup__tab register-login-popup__tab_active">Registration</span>
+          <span data-id="login" id="registerLoginPopupTab_login" class="register-login-popup__tab">Log in</span>
+        </div>
+        <div id="registerLoginPopupTabContent_register">
+          <div class="ui auth-form__content">
+    
+  <script type='text/javascript'>/*<![CDATA[*/ if (!window.V) var V = []; /*]]>*/</script>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/en/auth_register_short" id="PopupRegisterquickRegisterForm" onsubmit="PopupRegisterquickRegistration.OnSubmit(this,&#39;en&#39;);if(Validate(this)) Ajax.form(this,{onready:PopupRegisterquickRegistration.OnSuccessPopup,onerror:PopupRegisterquickRegistration.OnError,onbeginrequest:PopupRegisterquickRegistration.DisableInputs,onendrequest:PopupRegisterquickRegistration.EnableInputs});return(false);" enctype = "multipart/form-data"><input type="hidden" name="__signature" value="21eda600c7ec2fa407edf3e43e48cd66"/>
+    <div class="auth-form__inputs">
+      <input type="hidden" value="0" name="IsValidate" id="PopupRegisterIsValidate" />
+
+      <!--[if lt IE 10]><div class="note">Login:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input type="text" id="PopupRegisterusername" name="username" class="input" maxlength="32" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.CheckUserName();}" onkeyup="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.ValidateUserName(this, 'Enter a valid login');}" placeholder="Login" title="May contain Latin letters, digits, dots, dashes,underscore characters. Cannot start or end with a dot. The allowed length is 3 to 32 characters." onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisterusername'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisterusername',10,'You may use Latin characters, numbers, underscores and periods.',validate_username]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisterusername">latin characters without spaces</label>
+      </div>
+      <!--[if lt IE 10]><div class="note">Your email:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input class="input" type="email" id="PopupRegisteremail" name="email" placeholder="Your email" title="Please enter the email (it may not exceed 256 characters). For example: john@example.com" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnChange(this);}" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisteremail'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisteremail',10,'Enter a valid email address',validate_email]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisteremail">a password will be sent to this email</label>
+      </div>
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Register" />
+    </div>
+    <span id="PopupRegisterquickRegisterSubmit">
+      <input type="submit" value="Register" id="PopupRegisterquickRegisterButton"  title="Sign up and receive an email with your password" class="button button_yellow"  />
+    </span>
+    <span id="PopupRegisterquickRegisterErrorMessage" class="quick-register-error-message field-validation-error" style="text-align: center; margin-top: 16px; display: none;">
+      An error occurred
+    </span>
+</form>
+    
+</div>
+<div class="auth-social">
+  <ul class="auth-social-list" id="socialList">
+    <li><a onclick="window.fpush({name: 'MQL5+Popup+Register+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/en/auth_oauth2?provider=Google&amp;amp;return=popup&amp;amp;reg=1" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Log in With Google</a></li>
+  </ul>
+</div>
+<div class="auth-block-agree">
+  <p>
+    You agree to <a target="_blank" href="/en/about/privacy">website policy</a> and <a target="_blank" href="/en/about/terms">terms of use</a>
+  </p>
+</div>
+
+
+        </div>
+        <div id="registerLoginPopupTabContent_login" class="hidden">
+            <div class="auth-form__text">
+    If you do not have an account, please <a href="https://www.mql5.com/en/auth_register" rel="nofollow" style="vertical-align: top">register</a>
+  </div>
+<div class="ui auth-form__content auth-form__content_login" id="loginFormWrapper">
+    
+  <div id="needCookies" class="need-cookies hidden">
+    <div class="danger-box">
+      <p>Allow the use of cookies to log in to the MQL5.com website.</p>
+<p>Please enable the necessary setting in your browser, otherwise you will not be able to log in.</p>
+    </div>
+  </div>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/en/auth_login" id="loginForm" onsubmit="if(window.quickLogin){return window.quickLogin.onSubmit(this);}var result = Validate(this); if(result) { preventDoubleSubmit(this); } return result;"><input id="RedirectAfterLoginUrl" name="RedirectAfterLoginUrl" type="hidden" value="" /><input id="RegistrationUrl" name="RegistrationUrl" type="hidden" value="" /><input data-val="true" data-val-required="The ShowOpenId field is required." id="ShowOpenId" name="ShowOpenId" type="hidden" value="True" /><input id="TrackingSection" name="TrackingSection" type="hidden" value="Articles" />    <input name="ViewType" type="hidden" value="5" />
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Login" />
+    <!--[if lt IE 10]><div class="note">Your login:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <input class="input qa-login" id="Login" name="Login" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Login" title="Your login" type="text" value="" />
+      <script type='text/javascript' id='validate_Login'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Login',1,'Enter login specified when signing up']);});mqGlobal.AddOnReady(function() {V.push(['Login',10,'Email cannot be used. Enter your login please',validateLogin]);}); /*]]>*/</script>
+    </div>
+    <!--[if lt IE 10]><div class="note">Password:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <div class="input-with-show">
+        <input autocomplete="off" class="input qa-password" id="Password" name="Password" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Password" title="Enter the password please" type="password" />
+        <span class="input-with-show__icon" title="Show password" onclick="if(window.quickLogin){window.quickLogin.showPass(this, 'Show password', 'Hide password');}"></span>
+      </div>
+      <script type='text/javascript' id='validate_Password'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Password',1,'Please enter the password']);}); /*]]>*/</script>
+    </div>
+    <script type="text/javascript">
+    function validateLogin(input) {
+      console.log('validate login ' + input.value);
+      return !/^\w+([-+.'']{1,2}\w+)* @\w+([-.]\w+)*\.\w+([-.]\w+)*$/i.test(input.value);
+    }
+    </script>
+    <div class="forgot" id="loginForgotBlock"><a id="loginForgotLink" href="https://www.mql5.com/en/auth_forgotten?return=popup">Forgot your login/password?</a></div>
+    <input type="submit" class="button button_yellow qa-submit" id="loginSubmit" value="Log in" title="Enter">
+</form></div>
+
+  <div class="auth-social" id="authSocialBlock">
+    <ul class="auth-social-list" id="socialList">
+      <li><a onclick="window.fpush({name: 'MQL5+Popup+Login+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/en/auth_oauth2?provider=Google&amp;amp;return=popup" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Log in With Google</a></li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script id="popupSection" type="application/json">{"section": "Articles"}</script>
+<script id="popupTranslate" data-type="translate" type="application/json">
+{
+  "popup":
+  {
+  "EmailTitle" : "The password has been sent to {0}",
+  "EmailDescription" : "Log in using the obtained password and the login specified during the registration",
+  "SubmitButtonText" : "Activate account",
+  "RegistrationTip" : "If you have not received the password email, check the spam folder or &lt;a href={0}&gt;repeat the registration&lt;/a&gt;"
+  }
+}
+</script>
+
+    
+
+    
+
+
+    </article>
+  </div>
+
+
+
+<div aria-hidden="true" class="footer  desktop" id="footer">
+  <ul class="links  links_desktop">
+      <li id="navFooterCommunity">
+        <nav>
+          <ul>
+            <li><a href="https://web.metatrader.app/terminal?mode=demo&amp;lang=en" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Footer+Trading">Online trading / WebTerminal</a></li>
+            <li><a href="/en/code" data-fz-event="MQL5+Footer+CodeBase">Free technical indicators and robots</a></li>
+            <li><a href="/en/articles" data-fz-event="MQL5+Footer+Articles">Articles about programming and trading</a></li>
+            <li><a href="/en/job" data-fz-event="MQL5+Footer+Job">Order trading robots on the Freelance</a></li>
+            <li><a href="/en/market" data-fz-event="MQL5+Footer+Market">Market of Expert Advisors and applications&#x9;</a></li>
+            <li><a href="/en/signals" data-fz-event="MQL5+Footer+Signals">Follow forex signals</a></li>
+            <li><a href="/en/vps" data-fz-event="MQL5+Footer+VPS">Low latency forex VPS</a></li>
+            <li><a href="/en/forum" data-fz-event="MQL5+Footer+Forum">Traders forum</a></li>
+            <li><a href="/en/blogs" data-fz-event="MQL5+Footer+Blogs">Trading blogs</a></li>
+            <li><a rel="nofollow" href="/en/charts" data-fz-event="MQL5+Footer+Charts">Charts</a></li>
+            <li><a href="/en/widgets" data-fz-event="MQL5+Footer+Widgets">Free widgets</a></li>
+          </ul>
+        </nav>
+      </li>
+      <li id="navFooterMt5">
+        <nav>
+          <ul>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> Trading Platform</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/releasenotes" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> latest updates</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/news" data-fz-event="MQL5+Footer+MetaTrader+5">News, implementations and technology</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> User Manual</a></li>
+            <li><a href="/en/docs" data-fz-event="MQL5+Footer+Docs">MQL5 language of trading strategies</a></li>
+            <li><a rel="nofollow noopener" href="https://cloud.mql5.com" data-fz-event="MQL5+Footer+Cloud">MQL5 Cloud Network</a></li>
+            <li><a rel="noopener" href="https://forge.mql5.io/?lang=en" data-fz-event="MQL5+Footer+Forge" target="_blank">MQL5 Algo Forge</a></li>
+              <li><a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Footer">Download <span class="nobr">MetaTrader 5</span></a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help/start_advanced/installation" data-fz-event="MQL5+Footer+MetaTrader+5">Install Platform</a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help/start_advanced/deinstallation" data-fz-event="MQL5+Footer+MetaTrader+5">Uninstall Platform</a></li>
+          </ul>
+        </nav>
+
+      </li>
+    <li id="navFooterWebsite">
+        <nav>
+          <ul>
+            <li><a rel="nofollow" href="/en/about" data-fz-event="MQL5+Footer+About">About</a></li>
+              <li><a href="/en/wall" data-fz-event="MQL5+Footer+Wall">Timeline</a></li>
+            <li><a rel="nofollow" href="/en/about/terms" data-fz-event="MQL5+Footer+About">Terms and Conditions</a></li>
+            <li><a rel="nofollow" href="/en/about/autopayments" data-fz-event="MQL5+Footer+About">Recurring Payment Agreement</a></li>
+            <li><a rel="nofollow" href="/en/about/agencyagreement" data-fz-event="MQL5+Footer+About">Agency Agreement – Offer</a></li>
+            <li><a rel="nofollow" href="/en/about/privacy" data-fz-event="MQL5+Footer+About">Privacy and Data Protection Policy</a></li>
+            <li><a rel="nofollow" href="/en/about/cookies" data-fz-event="MQL5+Footer+About">Cookies Policy</a></li>
+            <li>
+                <a rel="nofollow" href="/en/contact" data-fz-event="MQL5+Footer+Contacts">Contacts and requests</a>
+            </li>
+          </ul>
+        </nav>
+    </li>
+
+      <li>
+        <div class="footer__products">
+          <div class="footer__product">
+            <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com" class="footer__product-name">MetaTrader 5</a>
+            <div class="footer__product-links">
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon windows" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for Windows</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/MetaTrader5.pkg.zip?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon macos" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for MacOS</div></a>
+            <a rel="nofollow noopener" href="https://www.mql5.com/en/articles/625?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon linux" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for Linux</div></a>
+            <a rel="nofollow noopener" href="https://web.metatrader.app/terminal?mode=demo&amp;lang=en" class="icon web"><div  class="footer__product-link-hint footer__product-link-hint-short">Open MetaTrader 5 WebTerminal</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/ios?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=en" class="icon ios" data-fz-event="MetaTrader+5+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/jhZn8Ed1I1d.png)">Scan to install from App Store</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=en" class="icon android" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/kiF2Io6W-9d.png)">Scan to install from Google Play</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon huawei" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ZRt&#x2B;zI1l&#x2B;8O.png)">Scan to install from Huawei AppGallery</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon ark" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/L0Q9oag&#x2B;3eE.png)">Scan to get Android APK file</div></a>
+            </div>
+          </div>
+          <div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com/en/news/2270" class="footer__product-name">MQL5 Channels</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon ios" data-fz-event="MQL5+Channels+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/bZVfOJnYpcO.png)">Scan to install from App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon android" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/32MJFgw7BVs.png)">Scan to install from Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Su&#x2B;fe4n374e.png)">Scan to install from Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mql5channels/mql5channels.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/G6Mg4NfCPzO.png)">Scan to get Android APK file</div></a>
+              </div>
+            </div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.tradays.com/en/download?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MQL5+Footer+Download+Tradays" class="footer__product-name">Economic Calendar</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon ios" data-fz-event="Tradays+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CpD&#x2B;mhIw-1E.png)">Scan to install from App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon android" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Bgyx8UcmYap.png)">Scan to install from Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CrS7bbDAdAO.png)">Scan to install from Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/tradays/tradays.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/VZi8YPIb2op.png)">Scan to get Android APK file</div></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__networks">
+          <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow" title="Facebook"><i class="icons-networks icons-networks_fb"></i></a>
+          <a href="https://t.me/mql5dev" target="_blank" rel="nofollow" title="Telegram"><i class="icons-networks icons-networks_tg"></i></a>
+          <a href="https://x.com/mql5com" target="_blank" rel="nofollow" title="X (Twitter)"><i class="icons-networks icons-networks_tw"></i></a>
+          <a href="https://www.youtube.com/@MetaQuotesOfficial" target="_blank" rel="nofollow" title="YouTube"><i class="icons-networks icons-networks_yt"></i></a>
+          <a href="https://www.linkedin.com/company/mql5" target="_blank" rel="nofollow" title="LinkedIn"><i class="icons-networks icons-networks_linkedin"></i></a>
+          <span>Subscribe to algotrading news</span>
+        </div>
+  
+        <div class="footer__other">
+          <div class="footer__not-a-broker">Not a broker, no real trading accounts</div>
+          <div class="copyright">35 Dodekanisou str, Germasogeia, 4043,&nbsp;Limassol,&nbsp;Cyprus</div>
+          <div class="copyright">Copyright 2000-2026, <span class="nobr">MetaQuotes Ltd</span></div>
+        </div>
+      </li>
+  </ul>
+</div>
+
+
+
+<div class="shadow-layer" id="layer"></div>
+    
+
+  <div class="b-fixed-mt" id="bFixedMt" style="display: none;">
+    
+  </div>
+
+
+<script type='text/javascript'>
+		(function (a, e, f, g, b, c, d) { a[b] || (a.FintezaCoreObject = b, a[b] = a[b] || function () { (a[b].q = a[b].q || []).push(arguments) }, a[b].l = 1 * new Date, c = e.createElement(f), d = e.getElementsByTagName(f)[0], c.async = !0, c.defer = !0, c.src = g, d && d.parentNode && d.parentNode.insertBefore(c, d)) })
+      (window, document, "script", "/ff/core.js", "fz");
+		window.fz("register", "website", {
+      id: "sqjxkxkswybhifrohpyooonwgbvsfzmayq",
+			trackLinks: true
+		});
+        mqGlobal.AddOnReady(function () { Mql5Cookie.init('mql5.com', '5096002796126771679'); });
+mqGlobal.AddOnReady(function(){if(!window.Pocket){window.Pocket=new PocketManager();}});mqGlobal.AddOnReady(function(){if(!window.translateManager){window.translateManager=new Translate(undefined,'Error: failed to translate. Please try again later.');}if(document.querySelectorAll){var translateElements=document.querySelectorAll(".translateMenu");if(translateElements){var i=0,count=translateElements.length;for(i;i<count;i++){(function(i){var contentid=dataset(translateElements[i],"contentid"),sourcelang=dataset(translateElements[i],"sourcelang"),targetlang=dataset(translateElements[i],"targetlang"),moduleid=parseInt(dataset(translateElements[i],"moduleid")),typeid=parseInt(dataset(translateElements[i],"typeid")),entityid=parseInt(dataset(translateElements[i],"entityid"));Core.AddHandler(translateElements[i],"mouseover",function(){return translateManager.SetMenu(this,contentid,sourcelang,targetlang,moduleid,typeid,entityid);});})(i);}}}});window.fz("show","wdausxxqrpvhekbwjrjlhqjghyhesrqqau");window.mqGlobal.AddOnLoad(function(){window.fpush('MQL5+Article+Open');Articles.CheckOnScrollDown();});mqGlobal.AddOnReady(function(){window.PopupRegisterquickRegistration=new QuickRegistration('PopupRegister','Popup+Register','Articles');});function validate_username(input){var reg=/^([a-z0-9]){1}([\-._a-z0-9]){1,30}([\-_a-z0-9]){1}$/i,value=input.value,result=true;if(reg.test(value)){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Login',unit:'section',value:'Articles'});}return result;}function validate_email(input){var reg=/^\w+([-+.'']{1,2}\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/i,value=input.value,result=true,length_value=value.length;if(reg.test(value)&&length_value>=1&&length_value<=40){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Email',unit:'section',value:'Articles'});}return result;};mqGlobal.AddOnReady(function(){var username=$('PopupRegisterusername'),email=$('PopupRegisteremail');if(username)username.value='';if(email)email.value='';});mqGlobal.AddOnReady(function(){window.quickLogin=new QuickLogin('Popup+Login','Articles');});mqGlobal.AddOnLoad(function(){window.showLoginRegisterPopupAtEnd();});mqGlobal.AddOnLoad(function(){window.tooltipUserInfo.init();});mqGlobal.AddOnReady(function(){{window.initHeaderSearch('','https://www.mql5.com/en/search');}});</script><script type="text/javascript">mqGlobal.AddOnReady(function(){window.initSuggestions("headerSearchKeyword","en","https://search.mql5.com/api/query","https://www.mql5.com/en/users_search/suggestion");});window.fz("show","vgckrufggwxdtfscpyalmenexmvhljduja");mqGlobal.AddOnReady(function(){window.floatVerticalPanelNode=FloatVerticalPanel('This website uses cookies. Learn more about our <a href="/en/about/cookies">Cookies Policy</a>.','cookie_accept');});							if (typeof Attach !== "undefined")
+			Attach.setAcceptFilter(".zip, .txt, .log, .mqh, .ex5, .mq5, .mq4, .mqproj, .ex4, .mt5, .set, .tpl, .cl, .py, .sqlite, .csv, .ini, .ipynb, .onnx, .gif, .png, .jpg, .jpeg, .mp4, .webm");
+	</script>
+
+<script type="application/ld&#x2B;json">
+		[
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"url": "https://www.mql5.com",
+				"logo": "https://c.mql5.com/i/community/logo_mql5-2.png",
+				"sameAs": [
+					"https://www.facebook.com/mql5.community",
+					"https://www.x.com/mql5com",
+					"https://www.youtube.com/user/MetaQuotesOfficial"
+				 ]
+			}
+		
+, 
+{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"Forum","description":"Discussions of trading strategies and algorithmic trading. MQL5.community  the largest forex forum","url":"https://www.mql5.com/en/forum","children":[]},{"@type":"SiteNavigationElement","position":2,"name":"Market","description":"MetaTrader Market - a Market of trading robots, indicators, trading books and magazines","url":"https://www.mql5.com/en/market","children":[]},{"@type":"SiteNavigationElement","position":3,"name":"Signals","description":"Social trading, copy trading and account monitoring with MetaTrader - Trading Signals on MQL5.com","url":"https://www.mql5.com/en/signals","children":[]},{"@type":"SiteNavigationElement","position":4,"name":"Freelance","description":"Order trading robots, technical indicators and algorithmic trading applications. Forex jobs. Freelance on MQL5.com. Hire MetaTrader experts and specialists","url":"https://www.mql5.com/en/job","children":[]},{"@type":"SiteNavigationElement","position":5,"name":"Quotes","description":"","url":"https://www.mql5.com/en/quotes/overview","children":[]},{"@type":"SiteNavigationElement","position":6,"name":"MetaTrader","description":"","url":"https://www.metatrader.com","children":[]},{"@type":"SiteNavigationElement","position":7,"name":"WebTerminal","description":"WebTerminal for the MetaTrader trading platform. Online forex trading.","url":"https://web.metatrader.app/terminal?mode=demo","children":[]},{"@type":"SiteNavigationElement","position":8,"name":"Calendar","description":"","url":"https://www.mql5.com/en/economic-calendar","children":[]},{"@type":"SiteNavigationElement","position":9,"name":"VPS","description":"","url":"https://www.mql5.com/en/vps","children":[]},{"@type":"SiteNavigationElement","position":10,"name":"Articles","description":"","url":"https://www.mql5.com/en/articles","children":[]},{"@type":"SiteNavigationElement","position":11,"name":"CodeBase","description":"Download trading robots, technical indicators and scripts with source code - MQL5 Code Base for MetaTrader 5","url":"https://www.mql5.com/en/code","children":[]},{"@type":"SiteNavigationElement","position":12,"name":"Algo Forge","description":"","url":"https://forge.mql5.io","children":[]},{"@type":"SiteNavigationElement","position":13,"name":"Documentation","description":"MetaQuotes Language 5 (MQL5) Reference - Documentation on MQL5.com","url":"https://www.mql5.com/en/docs","children":[]}]}		
+,
+{"@context":"https://schema.org","@type":"TechArticle","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.mql5.com/en/articles/19290"},"headline":"Price Action Analysis Toolkit Development (Part 38): Tick Buffer VWAP and Short-Window Imbalance Engine","image":["https://c.mql5.com/2/165/SLIPP1__1.png","https://c.mql5.com/2/165/VWAP.png","https://c.mql5.com/2/165/vwap_chart.png","https://c.mql5.com/2/165/Imbalance.png","https://c.mql5.com/2/165/Imbalance_chart.png","https://c.mql5.com/2/165/spread.png","https://c.mql5.com/2/165/Spread_chart.png","https://c.mql5.com/2/165/flow.png","https://c.mql5.com/2/165/CodeCogsEqn.png","https://c.mql5.com/2/165/Flow_chart.png","https://c.mql5.com/2/165/slip2_t26.PNG","https://c.mql5.com/2/165/slip5.PNG","https://c.mql5.com/2/165/slip6.PNG","https://c.mql5.com/2/165/alert.PNG"],"datePublished":"2025-09-02T11:03:24+00:00Z","dateModified":"2025-12-11T06:55:25+00:00Z","author":{"@type":"Person","name":"Christian Benjamin","url":"https://www.mql5.com/en/users/lynnchris"},"editor":{"@type":"Organization","name":"MetaQuotes","url":"https://www.mql5.com/en/users/metaquotes","address":{"@type":"PostalAddress","addressCountry":"CY"}},"publisher":{"@type":"Organization","name":"MQL5 Community","url":"https://www.mql5.com","logo":{"@type":"ImageObject","url":"https://c.mql5.com/i/community/logo_mql5-2.png"}},"description":"In Part 38, we build a production-grade MT5 monitoring panel that converts raw ticks into actionable signals. The EA buffers tick data to compute tick-level VWAP, a short-window imbalance (flow) metric, and ATR-based position sizing. It then visualizes spread, ATR, and flow with low-flicker bars. The system calculates a suggested lot size and a 1R stop, and issues configurable alerts for tight spreads, strong flow, and edge conditions. Auto-trading is intentionally disabled; the focus remains on robust signal generation and a clean user experience."}
+,
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":"https://www.mql5.com/en/articles","name":"Articles"},{"@type":"ListItem","position":2,"item":"https://www.mql5.com/en/articles/mt5","name":"MetaTrader 5"},{"@type":"ListItem","position":3,"item":"https://www.mql5.com/en/articles/mt5/examples","name":"Examples"}]}
+
+		]
+	</script>
+</body>
+</html>

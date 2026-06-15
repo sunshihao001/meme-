@@ -1,0 +1,1074 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+
+  <meta name="robots" content="max-snippet:250,max-image-preview:large">
+  <meta name="description" content="В настоящей статье мы рассмотрим основанный на данных подход к обнаружению и проверке нестандартных уровней коррекции Фибоначчи, которые могут учитываться рынками. Мы представляем полный рабочий процесс, адаптированный для реализации на MQL5, начиная со сбора данных и определения баров или колебаний и заканчивая кластеризацией, проверкой статистических гипотез, бэктестингом и интеграцией в инструмент Фибоначчи на MetaTrader 5. Цель состоит в том, чтобы создать воспроизводимый конвейер, преобразующий отдельные наблюдения в статистически обоснованные торговые сигналы.">
+  <meta property="og:url" content="https://www.mql5.com/ru/articles/19780">
+  <meta property="og:title" content="От новичка до эксперта: Раскрываем скрытые уровни коррекции Фибоначчи">
+  <meta property="og:description" content="В настоящей статье мы рассмотрим основанный на данных подход к обнаружению и проверке нестандартных уровней коррекции Фибоначчи, которые могут учитываться рынками. Мы представляем полный рабочий процесс, адаптированный для реализации на MQL5, начиная со сбора данных и определения баров или колебаний и заканчивая кластеризацией, проверкой статистических гипотез, бэктестингом и интеграцией в инструмент Фибоначчи на MetaTrader 5. Цель состоит в том, чтобы создать воспроизводимый конвейер, преобразующий отдельные наблюдения в статистически обоснованные торговые сигналы.">
+      <meta property="og:image" content="https://c.mql5.com/2/173/19780-from-novice-to-expert-demystifying-hidden-fibonacci-retracement_1200x628.jpg">
+      <meta property="og:image:secure_url" content="https://c.mql5.com/2/173/19780-from-novice-to-expert-demystifying-hidden-fibonacci-retracement_1200x628.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2025-11-05T13:49:12.0000000Z">
+  <meta property="article:author" content="https://www.mql5.com/ru/users/billionaire2024">
+  <meta property="article:section" content="MetaTrader 5">
+  <meta property="article:tag" content="Торговые системы">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@mql5com">
+  <meta name="twitter:image" content="https://c.mql5.com/2/173/19780-from-novice-to-expert-demystifying-hidden-fibonacci-retracement_1200x628.jpg">
+  <meta name="theme-color" content="#4a76b8">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-config" content="none">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta property="qc:admins" content="36367170677651456375">
+  <meta property="wb:webmaster" content="073d7690269bcd81">
+  <link rel="shortcut icon" href="https://c.mql5.com/i/favicon4.ico">
+  <link rel="dns-prefetch" href="https://c.mql5.com">
+  <link href="https://c.mql5.com/styles/core.444bc25de4c9131a69fedfe5ac42a082.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/all.266d64b83529847f568747dd160d42b0.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/articles.bc4209e4de0b5296041832431b46f3dd.css" type="text/css" rel="stylesheet" media="all">
+  <link href="/ru/articles/rss" rel="alternate" type="application/rss+xml" title="Статьи по разработке и использованию торговых роботов и технических индикаторов для MetaTrader 5">
+  <link rel="canonical" href="https://www.mql5.com/ru/articles/19780">
+  <link rel="alternate" hreflang="en" href="https://www.mql5.com/en/articles/19780">
+  <link rel="alternate" hreflang="ru" href="https://www.mql5.com/ru/articles/19780">
+  <link rel="alternate" hreflang="de" href="https://www.mql5.com/de/articles/19780">
+  <link rel="alternate" hreflang="ja" href="https://www.mql5.com/ja/articles/19780">
+  <title>От новичка до эксперта: Раскрываем скрытые уровни коррекции Фибоначчи - Статьи по MQL5</title>
+
+
+
+<script type="text/javascript">
+  !function(){window.mqGlobal={};var t=!1,n=!1,e=[],o=[],i=[];function d(t){var n;for(n=0;n<t.length;n+=1)t[n]()}function c(){t||(t=!0,d(e),d(o),o=[],e=[])}function a(){c(),n||(n=!0,d(i),i=[])}if(mqGlobal.AddOnReady=function(n,i){t?n(document):i?e.push(n):o.push(n)},mqGlobal.AddOnLoad=function(t){n?t(document):i.push(t)},mqGlobal.AddOnActiveWindowChange=function(t){this._onvisibility||(this._onvisibility=[]),this._onvisibility[this._onvisibility.length]=t},document.addEventListener)document.addEventListener("DOMContentLoaded",c,!1),window.addEventListener("load",a,!1);else if(document.attachEvent&&(document.attachEvent("onreadystatechange",(function(){switch(document.readyState){case"interactive":c();break;case"complete":a()}})),window.attachEvent("onload",a),document.documentElement.doScroll&&window==window.top)){!function n(){if(!t&&document.body)try{document.documentElement.doScroll("left"),c()}catch(t){setTimeout(n,0)}}()}}();
+  mqGlobal.CookieDomain = ".mql5.com";
+  mqGlobal.Language = 'ru';
+  mqGlobal.IsMobile = false;
+  mqGlobal.ClearRteStorage = function (e) { if (window.GStorage || (window.GStorage = globalStorage()), window.GStorage.supported) try { var o = e; window.GStorage.getItem("rte_autosave_uid", function (e, t) { t == o && (window.GStorage.removeItem("rte_autosave_text"), window.GStorage.removeItem("rte_autosave_date"), window.GStorage.removeItem("rte_autosave_uid")) }) } catch (e) { } };
+</script>
+  
+
+    <script src="https://c.mql5.com/js/all.c09fd283bed20d28a52c95cd70a12a27.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/vendor.1be6e9a4a90b28525f93c4c69a5058a1.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/articles.cd4c73c476b2781eecdf04f5583514b5.js" type="text/javascript" defer="defer"></script>
+
+
+</head>
+
+<body id="cover" class="cover">
+
+
+  <nav class="head">
+    <a href="https://www.mql5.com/ru" class="head__logo" title="MQL5 - Язык торговых стратегий для клиентского терминала MetaTrader 5"></a>
+      <div class="head__content">
+        <div class="main-menu" id="mainmenu">
+          
+                    <ul class="main-menu__top-level" id="menuTopLevel">
+                    <li><a href="/ru/forum" data-fz-event="MQL5+Menu+Forum">Форум</a></li>
+                    <li><a href="/ru/market" data-fz-event="MQL5+Menu+Market">Маркет</a></li>
+                    <li><a href="/ru/signals" data-fz-event="MQL5+Menu+Signals">Сигналы</a></li>
+                    <li><a href="/ru/job" data-fz-event="MQL5+Menu+Job">Фриланс</a></li>
+                    <li><a href="/ru/vps" data-fz-event="MQL5+Menu+VPS">VPS</a></li>
+                    <li><a href="/ru/quotes/overview" data-fz-event="MQL5+Menu+Overview">Котировки</a></li>
+                    <li><a href="https://www.metatrader.com/ru" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+MetaTrader">MetaTrader</a></li>
+                  </ul><ul class="main-menu__second-level" id="menuSecondLevel">
+                    <li class="main-menu__selected"><a href="/ru/articles" data-fz-event="MQL5+Menu+Articles"><img src="https://c.mql5.com/i/menu/icon-articles4.svg" alt="" width="16" height="16"/>Статьи</a></li>
+                    <li><a href="/ru/code" data-fz-event="MQL5+Menu+CodeBase"><img src="https://c.mql5.com/i/menu/icon-code4.svg" alt="" width="16" height="16"/>CodeBase</a></li>
+                    <li><a href="https://forge.mql5.io/?lang=ru-RU" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+AlgoForge"><img src="https://c.mql5.com/i/menu/icon-algoforge4.svg" alt="" width="16" height="16"/>Algo Forge</a></li>
+                    <li><a href="/ru/docs" data-fz-event="MQL5+Menu+Docs"><img src="https://c.mql5.com/i/menu/icon-docs4.svg" alt="" width="16" height="16"/>Документация</a></li>
+                    <li><a href="/ru/book" data-fz-event="MQL5+Menu+Book"><img src="https://c.mql5.com/i/menu/icon-book4.svg" alt="" width="16" height="16"/>Учебник по алготрейдингу</a></li>
+                    <li><a href="/ru/neurobook" data-fz-event="MQL5+Menu+Neurobook"><img src="https://c.mql5.com/i/menu/icon-neurobook4.svg" alt="" width="16" height="16"/>Учебник по нейросетям</a></li>
+                    <li><a href="/ru/economic-calendar" data-fz-event="MQL5+Menu+Economic+Calendar"><img src="https://c.mql5.com/i/menu/icon-economic-calendar4.svg" alt="" width="16" height="16"/>Календарь</a></li>
+                    <li><a href="https://web.metatrader.app/terminal?mode=demo&lang=ru" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Menu+Trading"><img src="https://c.mql5.com/i/menu/icon-trading4.svg" alt="" width="16" height="16"/>Вебтерминал</a></li>
+                    <li class="main-menu__mobile"><a href="/ru/about">О проекте</a></li>
+                    <li class="main-menu__second-tools"><a rel="noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" title="Загрузите последнюю версию торговой платформы бесплатно" class="button-mt" data-vars-fz="MetaTrader+5+Desktop+Download+Submenu"><img width="18" height="18" src="https://c.mql5.com/i/sidebar/download.svg" alt="" loading="lazy">Скачать MetaTrader 5</a></li>
+                    </ul>
+        </div>
+          <div class="main-menu__active">
+            <a id="mainMenuSelected" href="#">
+              <span class="main-menu__primary">Статьи</span><span class="main-menu__secondary">Разделы</span>
+            </a>
+          </div>
+<form action="https://www.mql5.com/ru/search" onsubmit="return false;" autocomplete="off" id="headerSearchForm" class="header-search" method="post">
+<button type="button" id="headerSearchButton" title="Поиск" class="header-search__button"></button><div class="header-search__input"><input name="keyword" type="text" enterkeyhint="search" title="Введите текст для поиска" placeholder="Поиск" id="headerSearchKeyword"/><label for="headerSearchKeyword" class="header-search__placeholder">Нажмите <span>/</span> для поиска: @user, $symbol, ...</label><button id="headerSearchSubmit" class="header-search__submit"></button></div><button type="button" id="headerSearchClean" title="Закрыть" class="header-search__clean"></button></form>        <input class="blurHandler" id="mainMenuBlurHandler" type="checkbox">
+      </div>
+      <div class="head__toolbar" id="headerToolbar">
+          <div class="container loginRegister">
+            <nav>
+              <ul id="loginRegisterButtons"><li><a class="login" title="Авторизуйтесь. Поддерживается OpenID-авторизация" href="https://www.mql5.com/ru/auth_login" rel="nofollow" data-fz-event="MQL5+Menu+Siginin">Вход</a></li><li><a class="registration ru" title="Зарегистрируйтесь" href="https://www.mql5.com/ru/auth_register" rel="nofollow" data-fz-event="MQL5+Menu+Register" onclick="window.fpush('MQL5+Button+Click');">Создать аккаунт</a></li></ul>
+            </nav>
+          </div>
+        <div class="toggle-button" id="sidebarToggleButton">
+          <i></i>
+        </div>
+
+        <div class="group-menu" id="groupMenu">
+
+
+          <div class="container lang-menu-container">
+            <div id="langMenuContainer" class="lang-menu">
+              <input class="blurHandler" id="langmenuBlurHandler" type="checkbox">
+              <nav>
+                <ul class="lang-menu__list" id="langmenu">
+                  <li class="lang-menu__list-item"><a href="/en/articles" aria-label="English (English)"><i class="icons-languages icons-languages_en"></i><span>English</span></a></li>
+<li class="lang-menu__list-item lang-menu__list-item_selected"><a href="/ru/articles" aria-label="Русский (Russian)"><i class="icons-languages icons-languages_ru"></i><span>Русский</span></a></li>
+<li class="lang-menu__list-item"><a href="/zh/articles" aria-label="中文 (Chinese)"><i class="icons-languages icons-languages_zh"></i><span>中文</span></a></li>
+<li class="lang-menu__list-item"><a href="/es/articles" aria-label="Español (Spanish)"><i class="icons-languages icons-languages_es"></i><span>Español</span></a></li>
+<li class="lang-menu__list-item"><a href="/pt/articles" aria-label="Português (Portuguese)"><i class="icons-languages icons-languages_pt"></i><span>Português</span></a></li>
+<li class="lang-menu__list-item"><a href="/ja/articles" aria-label="日本語 (Japanese)"><i class="icons-languages icons-languages_ja"></i><span>日本語</span></a></li>
+<li class="lang-menu__list-item"><a href="/de/articles" aria-label="Deutsch (German)"><i class="icons-languages icons-languages_de"></i><span>Deutsch</span></a></li>
+<li class="lang-menu__list-item"><a href="/ko/articles" aria-label="한국어 (Korean)"><i class="icons-languages icons-languages_ko"></i><span>한국어</span></a></li>
+<li class="lang-menu__list-item"><a href="/fr/articles" aria-label="Français (French)"><i class="icons-languages icons-languages_fr"></i><span>Français</span></a></li>
+<li class="lang-menu__list-item"><a href="/it/articles" aria-label="Italiano (Italian)"><i class="icons-languages icons-languages_it"></i><span>Italiano</span></a></li>
+<li class="lang-menu__list-item"><a href="/tr/articles" aria-label="Türkçe (Turkish)"><i class="icons-languages icons-languages_tr"></i><span>Türkçe</span></a></li>
+
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+  </nav>
+
+
+
+  <div id="left-sidebar-selector" class="left-sidebar__selector left-sidebar__selector_padding">
+    <div class="left-sidebar__title">
+MetaTrader 5 /     Торговые системы
+    </div>
+    <i class="icons-ux icons-ux_arrow-down-black"></i>
+  </div>
+  <div class="articles-container block-with-sidebar">
+    <aside class="left-sidebar left-sidebar_270" id="left-sidebar">
+      
+  <ul class="tree-menu-ul"><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/examples"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples.svg" alt="" loading="lazy"/>Примеры</a><ul class="tree-menu__list tree-menu__list_nested"><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/examples_indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_indicators.svg" alt="" loading="lazy"/>Индикаторы</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/examples_experts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_experts.svg" alt="" loading="lazy"/>Эксперты</a></li></ul></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/strategy_tester"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/strategy_tester.svg" alt="" loading="lazy"/>Тестер</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/trading"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading.svg" alt="" loading="lazy"/>Трейдинг</a></li><li class="tree-menu__item tree-menu__item_selected"><a class="tree-menu__link" href="/ru/articles/trading_systems"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading_systems.svg" alt="" loading="lazy"/>Торговые системы</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/integration"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/integration.svg" alt="" loading="lazy"/>Интеграция</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/indicator.svg" alt="" loading="lazy"/>Индикаторы</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/expert_advisors"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/expert.svg" alt="" loading="lazy"/>Эксперты</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/statistics"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/statistics.svg" alt="" loading="lazy"/>Статистика и анализ</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/machine_learning"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/machine_learning.svg" alt="" loading="lazy"/>Машинное обучение</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/interviews"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/interviews.svg" alt="" loading="lazy"/>Интервью</a></li></ul>
+  
+
+    <div class="hints-panel">
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_like"></i>
+        <div class="hints-panel__content">
+          Понравилась статья?<br>
+          Поставьте <a href="https://www.mql5.com/ru/articles/19780" target="_blank">ссылку</a> на нее —<br>пусть другие почитают
+        </div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_tw-square icons-hints_24px"></i><div class="hints-panel__content">
+Ищи нас в <a href="https://x.com/mql5com" target="_blank" rel="nofollow">Twitter</a>!<br> Ставь лайки и следи за новостями</div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_mt-5"></i>
+        <div class="hints-panel__content">
+          Используй новые возможности <a href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Article" rel="nofollow sponsored noopener noreferrer">MetaTrader 5</a>
+        </div>
+      </div>
+    </div>
+<div id='vgckrufggwxdtfscpyalmenexmvhljduja' class="roeid8y6hsc3ntv1l gg88d3drb"></div>      <div class="similar-author-articles ui">
+        <h4 class="similar-author-articles__title">Похожие статьи</h4>
+        <ul class="similar-author-articles__list">
+            <li>
+              <a href="/ru/articles/21318" data-fz-event="MQL5+Article+Similar+Article">Торговые инструменты MQL5 (Часть 23): Трёхмерные графики с управляемой камерой и поддержкой DirectX для анализа распределений</a>
+            </li>
+            <li>
+              <a href="/ru/articles/21096" data-fz-event="MQL5+Article+Similar+Article">Автоматизация торговых стратегий с помощью MQL5 (Часть 47): Торговая система Nick Rypock Trailing Reverse (NRTR) с поддержкой хеджирования</a>
+            </li>
+            <li>
+              <a href="/ru/articles/22816" data-fz-event="MQL5+Article+Similar+Article">TradeMux как Quant Backbone: Подключение институциональных Python-пайплайнов к разным терминалам и брокерам</a>
+            </li>
+            <li>
+              <a href="/ru/articles/21443" data-fz-event="MQL5+Article+Similar+Article">Разработка инструментария для анализа Price Action (Часть 62): Создание адаптивной системы обнаружения параллельных каналов и пробоев на языке MQL5</a>
+            </li>
+            <li>
+              <a href="/ru/articles/13110" data-fz-event="MQL5+Article+Similar+Article">Моделирование рынка: Первые шаги на SQL в MQL5 (IV)</a>
+            </li>
+        </ul>
+      </div>
+    <div class="freelance-hint">
+      <img src="https://c.mql5.com/i/articles/icon_freelance.svg" width="24" height="24" loading="lazy" />
+      <div class="freelance-hint__text">
+        Используйте идеи из этой статьи,<br>чтобы заказать собственного робота<br>на бирже фрилансеров
+      </div>
+        <a target="_blank" class="button button_blue-gray-border" title="Перейти на биржу" href="/ru/job/new" data-fz-event="MQL5+Article+New+Job">Перейти на биржу</a>
+    </div>
+
+    </aside>
+    <article class="content-with-sidebar articles-content splashed">
+      
+
+
+  <header class="article-header article-header_light" style="background-color: rgb(11,17,36)">
+    <section class="article-tools-panel">
+        <div class="article-tools-panel__item">
+          <span class="popup framed client flags">
+            <a class="dropdown" href="javascript:void(false);">
+              <span class="icons-languages icons-languages_ru"></span><i></i>
+            </a>
+            <span class="popup">
+              <span class="tip">
+                <span></span>
+              </span>
+              <span class="items">
+                    <a href="/en/articles/19780">English</a>
+                    <a href="/de/articles/19780">Deutsch</a>
+                    <a href="/ja/articles/19780">日本語</a>
+              </span>
+            </span>
+          </span>
+        </div>
+        
+      <div class="article-tools-panel__item">
+        <a href="#pocket" title="Через Карман вы можете вставить полное описание этого содержимого в редактор сообщений" onclick="return Pocket.Add(this,'ru',2,1,19780);" class="article-tools-panel__rounded">
+          <i class="article-pocket-icon"></i>
+        </a>
+      </div>
+      <div class="article-tools-panel__item">
+        <a href="/ru/articles/19780?print=" target="_blank" class="article-tools-panel__rounded" rel="nofollow" title="Версия для печати">
+          <i class="article-print-icon"></i>
+        </a>
+      </div>
+
+    </section>
+    <section class="article-header__image-box">
+        <img class="article-header__image-preview" loading="lazy" width="32" height="16" alt="preview" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAsICAoIBwsKCQoNDAsNERwSEQ8PESIZGhQcKSQrKigkJyctMkA3LTA9MCcnOEw5PUNFSElIKzZPVU5GVEBHSEX/2wBDAQwNDREPESESEiFFLicuRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUX/wAARCAAQACADASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAECAwf/xAAbEAEAAwEAAwAAAAAAAAAAAAABAAIRIRJBcf/EABYBAQEBAAAAAAAAAAAAAAAAAAACA//EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AOYNK&#x2B;lYF2phyRrCboaF87msltr0jGud3fsT4rzYH//Z">
+      <div class="article-header__gradient" style="background: linear-gradient(90deg, rgba(11,17,36, 1) 0%, rgba(11,17,36, 0.72) 8.31%, rgba(11,17,36, 0) 17.1%), linear-gradient(270deg, rgba(11,17,36, 1) 0%, rgba(11,17,36, 0.72) 8.06%, rgba(11,17,36, 0) 16.59%), linear-gradient(0deg, rgba(11,17,36, 1) 8.26%, rgba(11,17,36, 0.8) 65%, rgba(11,17,36, 0) 100%);"></div>
+        <picture>
+          <source srcset="https://c.mql5.com/2/173/19780-from-novice-to-expert-demystifying-hidden-fibonacci-retracement_600x314.jpg, https://c.mql5.com/2/173/19780-from-novice-to-expert-demystifying-hidden-fibonacci-retracement_1200x628.jpg 2x" media="(min-width:700px)">
+          <img class="article-header__image" loading="lazy" width="600" height="314" srcset="https://c.mql5.com/2/173/19780-from-novice-to-expert-demystifying-hidden-fibonacci-retracement_300x157.jpg, https://c.mql5.com/2/173/19780-from-novice-to-expert-demystifying-hidden-fibonacci-retracement_600x314.jpg 2x" src="https://c.mql5.com/2/173/19780-from-novice-to-expert-demystifying-hidden-fibonacci-retracement_600x314.jpg" alt="От новичка до эксперта: Раскрываем скрытые уровни коррекции Фибоначчи" onerror="this.style.display='none';">
+        </picture>
+    </section>
+    <section class="article-header__content">
+      <h1>От новичка до эксперта: Раскрываем скрытые уровни коррекции Фибоначчи</h1>
+      <div class="article-header__info">
+        <a href="/ru/articles/mt5">MetaTrader 5</a>
+          &mdash;
+          <a href="/ru/articles/mt5/trading_systems">Торговые системы</a>
+        | <time datetime="2025-11-05T13:49Z" title="13:49" datetime-type="datetime">5 ноября 2025, 13:49</time>
+      </div>
+      <div class="article-header__indicators">
+        <span title="Просмотры">
+          <img src="https://c.mql5.com/i/icons.svg#views-white-usage" width="20" height="20" alt="" />
+          1 095
+        </span>
+        
+          <a title="Комментарии" href="/ru/forum/499422">
+            <img src="https://c.mql5.com/i/icons.svg#comments-white-usage" width="20" height="20" alt="" />
+            0
+          </a>
+      </div>
+      <div class="article-header__author">
+          <div class="article-header__avatar">
+            <img src="https://c.mql5.com/avatar/2025/3/67df27c6-2936.png" srcset="https://c.mql5.com/avatar/2025/3/67df27c6-2936_big.png 2x" data-user-login="Billionaire2024" title="Clemence Benjamin" alt="Clemence Benjamin" loading="lazy" width="60" height="60">
+          </div>
+<a class="author" href="/ru/users/billionaire2024" data-user-login="Billionaire2024">Clemence Benjamin</a>      </div>
+    </section>
+  </header>
+
+    <div class="content">
+      <div class="inner formatted-content">
+        <h3>Содержание:</h3> <p></p> <ol> <li><a href="/ru/articles/19780#para1">Введение</a></li> <li><a href="/ru/articles/19780#para2">Стратегия реализации</a></li> <li><a href="/ru/articles/19780#para3">Тестирование и результаты</a></li> <li><a href="/ru/articles/19780#para4">Заключение</a></li> <li><a href="/ru/articles/19780#para5">Вложения</a></li> </ol> <p></p> <p><br/></p> <h3 id="para1">Введение</h3> <p>Уровни коррекции Фибоначчи широко используются, но иногда цена реагирует на промежуточные или повторяющиеся нестандартные соотношения. Наш вопрос заключается в том, можем ли мы использовать основанные на данных систематические методы для выявления таких уровней, проверки того, встречаются ли они чаще одного раза, и, если они надежны, добавить их в качестве первоклассных уровней в наши торговые инструменты и стратегии?</p> <p>&nbsp;<u>Почему традиционные уровни Фибоначчи могут быть неполными</u></p> <p>Классические соотношения Фибоначчи, такие как 23.6%, 38.2%, 50%, 61.8%, и 78,6%, получены из последовательности Фибоначчи и золотого сечения. Несмотря на широкое признание, трейдеры часто замечают, что рынки иногда учитывают промежуточные или альтернативные уровни коррекции, не включенные в этот традиционный набор. Это говорит о том, что стандартная структура может не в полной мере отражать поведение рынка.</p> <p><u>Наблюдения за скрытой реакцией рынка</u></p> <p>Как ни странно, цена часто останавливается, разворачивается или ускоряется вблизи уровней от 50% до 61,8% или около других нестандартных точек. Давайте рассмотрим, как назвать эти “скрытые” уровни Фибоначчи. Трудность заключается в том, что такие наблюдения являются субъективными, основанными на визуальном изучении графиков, и могут не совпадать по инструментам или таймфреймам.</p> <p><u>Противоречие между неподтвержденными данными и статистическими доказательствами</u></p> <p>Визуальное распознавание паттернов склонно к предвзятости подтверждения: мы помним случаи, когда цена реагировала на предполагаемом уровне, но забываем о промахах. Без систематического тестирования эти скрытые уровни остаются спекулятивными. Тем не менее, неофициальные данные дают нам отправную точку для структурированной проверки этих идей и придания большей точности теории, на которую опираются трейдеры. Задача состоит в том, чтобы отличить подлинные структурные тенденции от произвольности и шума.</p> <p style="text-align:center;"> <img width="675" height="717" src="https://c.mql5.com/2/173/Hidden_Fibonacci_Levels1.png" loading="lazy" title="Unknown Levels of retracement" alt="Unknown Levels of retracement" style="vertical-align:middle;"/></p> <p style="text-align:center;"><span class="small">Рисунок 1.&nbsp; Демонстрация нестандартных уровней коррекции Фибоначчи</span></p> <p>На рисунке 1 (выше) показан скриншот из MetaTrader 5, показывающий EURUSD на таймфрейме M15. Колебание A–B измерено с помощью инструмента Фибоначчи; стандартные уровни коррекции выделены синим цветом и помечены метками. Цена не остановилась именно на этих классических соотношениях — вместо этого вы можете наблюдать отчетливую ценовую активность в промежуточных точках между отмеченными уровнями (38,2 и 50). Я выделил эти промежуточные реакции красными пунктирными линиями и пометил их знаком “?”, чтобы указать, что это неизвестные, потенциально значимые уровни.</p> <p>Эти промежуточные реакции - именно то, на что направлено наше исследование. Хотя мы могли бы вычислить и нарисовать точные значения коррекции программно, ручная проверка ненадежна, поскольку встроенный инструмент Фибоначчи отображает только стандартные соотношения. Для этого требуется двухэтапный процесс: во-первых, собрать и статистически отфильтровать большой набор нормализованных наблюдений за коррекцией, чтобы определить, какие промежуточные диапазоны неоднократно учитываются; во-вторых, реализовать алгоритм, который откалибрует и отобразит эти подтвержденные уровни с помощью инструмента Фибоначчи на MetaTrader 5 (с указанием степени достоверности).</p> <h3 id="para2"><br/></h3> <h3 id="para2">Стратегия реализации</h3> <p><u>Методы определения диапазона баров и колебаний</u></p> <p>В этом проекте максимумы и минимумы каждого бара рассматриваются как простой “колебательный” диапазон. Применяем фильтр минимального диапазона (например, множитель ATR), чтобы подавить шум и сосредоточиться на значимых движениях. Этот прокси-сервер с диапазоном баров намеренно облегчен: он прост в реализации, быстро обрабатывает большие истории и предоставляет детерминированный набор данных по одному наблюдению на закрытый бар, который идеально подходит для статистического анализа.</p> <p>На будущих этапах мы внедрим более совершенный многоступенчатый детектор колебаний, позволяющий фиксировать более длительные или конструктивно значимые колебания. Нынешний выбор — начать с диапазонов баров — сделан осознанно: это сводит к минимуму затраты на разработку, позволяя нам быстро собирать большие выборки, проверять наши статистические методы и затем повторять их. Целесообразность такого подхода основывается на практическом наблюдении за рынком: японские свечи часто повторяют часть предыдущего движения, создавая измеримые пики в нормализованном распределении отката. Смотрите рисунок 2, на котором представлено поведения коррекции внутри бара, которое служит мотивацией для этого метода.</p> <p style="text-align:center;"> <img width="404" height="433" src="https://c.mql5.com/2/173/crr.png" loading="lazy" title="CandleRangeRetracement" alt="CandleRangeRetracement" style="vertical-align:middle;"/></p> <p style="text-align:center;"><span class="small">Рисунок 2. Откат по диапазону и барам японских свечей</span></p> <p>&nbsp;<u>Сбор и подготовка данных</u></p> <p>Первым шагом является сбор исторических данных OHLCV по нескольким инструментам (например, EURUSD, GBPUSD, S&amp;P500, XAUUSD) и таймфреймам (M15, H1, H4, D1). Достаточно обширная выборка — в идеале данные за три—пять лет - позволяет получить представление о различных рыночных режимах, от этапов формирования тенденций до консолидации. Перед использованием данные также необходимо очистить, отфильтровав пропущенные бары, аномальные всплески и пробелы, которые могут повлиять на результаты анализа. Эта основа гарантирует, что набор данных об откате отражает реальную структуру рынка, а не случайные аномалии.</p> <p>Основываясь на этой чистой базе, каждый закрытый бар рассматривается как автономный диапазон колебаний. Максимум и минимум определяют контрольные границы, и уже следующий бар проверяется на глубину отката. Для подавления шума исключаются диапазоны, меньшие порогового значения, установленного на основе ATR. Затем процент коррекции нормализуется по шкале от 0 до 100 и регистрируется вместе с такими метаданными, как символ, таймфрейм, направление, временная метка и объем. Важно отметить, что не все последовательности допустимы: сборщик отклоняет недопустимые случаи, когда тестовый бар открывается за пределы заданного диапазона или закрывается против направления контрольного бара. Логика развернутого окна сворачивает последовательные внутренние бары или флаги, охватывая паттерны и разрывы, гарантируя, что они не будут ошибочно приняты за обычные коррекции. Применяя эти проверки и собирая метаданные, результирующий набор данных становится чистым и воспроизводимым — готовым также для статистического исследования классических соотношений Фибоначчи.</p> <p><b>Разработка скрипта сбора данных</b></p> <p>На следующих этапах мы подготовим наш скрипт сбора данных на MQL5 и будем использовать его для генерации CSV-файла данных с восстановлением. Затем этот файл будет проанализирован в <a href="/go?link=https://jupyter.org/" title="https://jupyter.org/" rel="nofollow" target="_blank">Jupyter Notebook</a> для изучения паттернов и извлечения информации.</p> <p><u>Инициализация — устанавливаем элементы управления и помощники</u></p> <p>Вверху мы объявляем все параметры, которые управляют поведением: количество проверяемых баров, настройки ATR, ограничения в направлении вперёд и выходные флаги. При запуске скрипт считывает эти входные данные и подготавливает два небольших помощника (форматтер и средство преобразования таймфреймов в строки), чтобы остальной код оставался аккуратным. Затем скрипт создает имя выходного файла, которое включает символ и таймфрейм, и открывает CSV-файл для записи. Если файл не удается открыть, он останавливается и сообщает об ошибке — так что мы всегда знаем, начался ли запуск фактически.</p> <pre class="code"><span class="comment">//--- input parameters</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BarsToProcess&nbsp;&nbsp;&nbsp;&nbsp; = <span class="number">20000</span>;&nbsp;&nbsp; <span class="comment">// how many candidate reference bars to process</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;StartShift&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="number">1</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// skip most recent N bars</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ATR_Period&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="number">14</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// ATR period</span>
+<span class="keyword">input</span> <span class="keyword">double</span>&nbsp;&nbsp; ATR_Multiplier&nbsp;&nbsp;&nbsp;&nbsp;= <span class="number">0.3</span>;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// min ATR filter</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MaxLookahead&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="number">3</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// extended-window lookahead</span>
+<span class="keyword">input</span> <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp; UsePerfectSetup&nbsp;&nbsp; = <span class="macro">true</span>;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// require perfect setups</span>
+<span class="keyword">input</span> <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp; OutputOnlySameDir = <span class="macro">false</span>;&nbsp;&nbsp; <span class="comment">// require same-dir support</span>
+<span class="keyword">input</span> <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp; IncludeInvalidRows= <span class="macro">false</span>;&nbsp;&nbsp; <span class="comment">// output invalids</span>
+<span class="keyword">input</span> <span class="keyword">string</span>&nbsp;&nbsp; OutFilePrefix&nbsp;&nbsp;&nbsp;&nbsp; = <span class="string">"CandleRangeData"</span>; <span class="comment">// file prefix</span>
+
+<span class="comment">//--- output file</span>
+<span class="keyword">string</span> OutFileName = <span class="functions">StringFormat</span>(<span class="string">"%s_%s_%s.csv"</span>, OutFilePrefix, <span class="predefines">_Symbol</span>, PeriodToString(<span class="predefines">_Period</span>));
+<span class="keyword">int</span> fh = <span class="functions">FileOpen</span>(OutFileName, <span class="macro">FILE_WRITE</span>|<span class="macro">FILE_CSV</span>|<span class="macro">FILE_ANSI</span>);
+<span class="keyword">if</span>(fh == <span class="macro">INVALID_HANDLE</span>) {
+&nbsp;&nbsp; <span class="functions">PrintFormat</span>(<span class="string">"Error opening file %s"</span>, OutFileName);
+&nbsp;&nbsp; <span class="keyword">return</span>;
+}
+</pre> <p><u>Базовый уровень волатильности — создаем хэндл ATR, чтобы скрипт мог фильтровать шум.</u></p> <p>Перед сканированием баров создаем хэндл индикатора ATR. Для каждого потенциального эталонного бара скрипт будет считывать значение ATR на этом баре; значение ATR служит критерием волатильности. Если диапазон бара меньше, чем ATR * ATR_Multiplier, скрипт рассматривает этот бар как шум и пропускает его.&nbsp;Удаление небольших диапазонов предотвращает появление ложных входов при откатах на небольших случайных барах. Это повышает качество сигнала.</p> <pre class="code"><span class="comment">//--- prepare ATR handle</span>
+<span class="keyword">int</span> atr_handle = <span class="indicators">iATR</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, ATR_Period);
+<span class="keyword">if</span>(atr_handle == <span class="macro">INVALID_HANDLE</span>) {
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"ATR handle invalid"</span>);
+&nbsp;&nbsp; <span class="functions">FileClose</span>(fh);
+&nbsp;&nbsp; <span class="keyword">return</span>;
+}
+</pre> <p><u>Основной цикл сканирования — скрипт просматривает историю</u></p> <p>Скрипт выполняет перебор закрытых баров в обратном направлении от <i><span style="background-color:rgb(255, 242, 153);">StartShift</span></i> до доступной истории или до тех пор, пока не запишет ряды <i>BarsToProcess</i>. Для каждой итерации (для каждого потенциального контрольного бара) скрипт считывает значения максимума, минимума, открытия и закрытия контрольного бара, вычисляет диапазон и немедленно применяет параметр ATR. Если столбец проходит, скрипт переходит к анализу тестовых баров, которые следуют за ссылкой. Этот цикл является механизмом, который превращает необработанную историю в возможные события коррекции. Таким образом, мы сокращаем количество неудачных случаев на ранних стадиях, чтобы улучшить последующую статистику.</p> <pre class="code"><span class="keyword">int</span> bars = <span class="functions">iBars</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>);
+<span class="keyword">double</span> atr_buf[];
+
+<span class="keyword">for</span>(<span class="keyword">int</span> r = <span style="background-color:rgb(255, 242, 153);">StartShift</span>; r &lt;= bars - <span class="number">1</span>; r++) {
+&nbsp;&nbsp; <span class="keyword">double</span> RefTop&nbsp;&nbsp; = <span class="functions">iHigh</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,r);
+&nbsp;&nbsp; <span class="keyword">double</span> RefBot&nbsp;&nbsp; = <span class="functions">iLow</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,r);
+&nbsp;&nbsp; <span class="keyword">double</span> RefOpen&nbsp;&nbsp;= <span class="functions">iOpen</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,r);
+&nbsp;&nbsp; <span class="keyword">double</span> RefClose = <span class="functions">iClose</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,r);
+&nbsp;&nbsp; <span class="keyword">double</span> Range&nbsp;&nbsp;&nbsp;&nbsp;= RefTop - RefBot;
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">// ATR filter</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(<span class="functions">CopyBuffer</span>(atr_handle,<span class="number">0</span>,r,<span class="number">1</span>,atr_buf) &lt;= <span class="number">0</span>) <span class="keyword">continue</span>;
+&nbsp;&nbsp; <span class="keyword">if</span>(Range &lt; atr_buf[<span class="number">0</span>] * ATR_Multiplier) <span class="keyword">continue</span>;
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">// process this reference...</span>
+}</pre> <p><u>Определяем исходное направление — обозначаем колебание как бычье/медвежье/нейтральное</u></p> <p>Для контрольного бара проверяем, закрылся ли он выше, чем открылся (бычий), ниже, чем открылся (медвежий), или равным (нейтральный). Это направление определяет, какой экстремум на тестовом баре представляет собой откат (бычий ориентир ищет минимумы, медвежий - максимумы). Нормализация процента возврата зависит от того, была ли ссылка увеличена или уменьшена.</p> <pre class="code"><span class="keyword">string</span> RefDir;
+<span class="keyword">if</span>(RefClose &gt; RefOpen)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RefDir = <span class="string">"Bull"</span>;
+<span class="keyword">else</span> <span class="keyword">if</span>(RefClose &lt; RefOpen) RefDir = <span class="string">"Bear"</span>;
+<span class="keyword">else</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RefDir = <span class="string">"Neutral"</span>;
+</pre> <p><u>Первоначальная проверка тестового бара и идеальной настройки - сначала проверяем простые и понятные случаи</u></p> <p>Скрипт считывает непосредственно следующий бар (тестовый бар) после эталонного; именно на этом баре обычно происходит откат. Если мы включили фильтр “perfect setup” (“идеальная настройка”), скрипт проверяет два условия в стиле трейдера: тестовый бар должен открываться внутри контрольного диапазона, а его закрытие не должно быть против контрольного направления (например, для бычьего ориентира тестовый бар не должен закрываться медвежьим). Если тестовый бар не работает и нам не нужны диагностические ряды, скрипт пропускает запись чего-либо для этой ссылки.</p> <pre class="code"><span class="keyword">int</span> testIndex&nbsp;&nbsp; = r - <span class="number">1</span>;
+<span class="keyword">double</span> testOpen = <span class="functions">iOpen</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,testIndex);
+<span class="keyword">double</span> testClose= <span class="functions">iClose</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,testIndex);
+
+<span class="keyword">bool</span> ValidSetup = <span class="macro">true</span>;
+<span class="keyword">if</span>(UsePerfectSetup) {
+&nbsp;&nbsp; <span class="keyword">if</span>(testOpen &lt; RefBot || testOpen &gt; RefTop) ValidSetup = <span class="macro">false</span>;
+&nbsp;&nbsp; <span class="keyword">if</span>(RefDir==<span class="string">"Bull"</span> &amp;&amp; testClose &lt; testOpen) ValidSetup = <span class="macro">false</span>;
+&nbsp;&nbsp; <span class="keyword">if</span>(RefDir==<span class="string">"Bear"</span> &amp;&amp; testClose &gt; testOpen) ValidSetup = <span class="macro">false</span>;
+}
+
+<span class="keyword">if</span>(!ValidSetup &amp;&amp; !IncludeInvalidRows) <span class="keyword">continue</span>;</pre> <p><u>Обработка развернутых окон - мы позволяем скрипту фиксировать реалистичные откаты на несколько баров</u></p> <p>Когда эта функция включена, скрипт просматривает данные еще дальше назад (на настраиваемое количество баров), чтобы свернуть короткие последовательности, которые в совокупности создают истинный экстремум коррекции. При сканировании баров, находящихся впереди, он выполняет три действия:</p> <ol> <li>Обнаруживает пробелы — если бар открывается за пределами контрольного диапазона, скрипт помечает пробел и записывает его размер.</li> <li>Сворачивает внутри баров — если несколько небольших последовательных баров полностью находятся внутри контрольного диапазона, скрипт обновляет экстремум (Ext) до наихудшего минимума (для бычьего рынка) или наихудшего максимума (для медвежьего рынка) на этих барах и увеличивает <span style="background-color:rgb(255, 242, 153);">InsideCount.</span></li> <li>Обнаруживает поглощающие бары — если более поздний бар полностью поглощает ссылку, скрипт классифицирует ее как Engulf и устанавливает флаг <span style="background-color:rgb(177, 210, 143);">HighMomentum</span>.</li> </ol> <p></p> <p>Это сворачивание гарантирует, что наблюдение представляет собой завершенный эпизод восстановления, а не преждевременное частичное касание.</p> <pre class="code"><span class="keyword">double</span> Ext = (RefDir==<span class="string">"Bull"</span>) ? testLow : testHigh;
+<span class="keyword">string</span> SeqType = <span class="string">"Single"</span>;
+<span class="keyword">bool</span> <span style="background-color:rgb(177, 210, 143);">HighMomentum</span> = <span class="macro">false</span>;
+<span class="keyword">int</span> <span style="background-color:rgb(255, 242, 153);">InsideCount </span>= <span class="number">0</span>;
+
+<span class="keyword">for</span>(<span class="keyword">int</span> k=<span class="number">1</span>; k&lt;=MaxLookahead; k++) {
+&nbsp;&nbsp; <span class="keyword">int</span> idx = r - k;
+&nbsp;&nbsp; <span class="keyword">if</span>(idx &lt; <span class="number">0</span>) <span class="keyword">break</span>;
+&nbsp;&nbsp; <span class="keyword">double</span> kOpen = <span class="functions">iOpen</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,idx);
+&nbsp;&nbsp; <span class="keyword">double</span> kHigh = <span class="functions">iHigh</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,idx);
+&nbsp;&nbsp; <span class="keyword">double</span> kLow&nbsp;&nbsp;= <span class="functions">iLow</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,idx);
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="keyword">if</span>(kOpen &gt; RefTop || kOpen &lt; RefBot) { SeqType=<span class="string">"Gap"</span>; <span class="keyword">break</span>; }
+&nbsp;&nbsp; <span class="keyword">if</span>(kHigh &lt;= RefTop &amp;&amp; kLow &gt;= RefBot) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(RefDir==<span class="string">"Bull"</span>) Ext = <span class="functions">MathMin</span>(Ext,kLow);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(RefDir==<span class="string">"Bear"</span>) Ext = <span class="functions">MathMax</span>(Ext,kHigh);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InsideCount++;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">continue</span>;
+&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">if</span>(kHigh &gt;= RefTop &amp;&amp; kLow &lt;= RefBot) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SeqType=<span class="string">"Engulf"</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HighMomentum=<span class="macro">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">break</span>;
+&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="comment">// if retrace detected, stop</span>
+&nbsp;&nbsp; <span class="keyword">break</span>;
+}
+</pre> <p><u>Вычисление процента отката — скрипт нормализует результат для анализа</u></p> <p>Используя последний зарегистрированный экстремум (Ext), скрипт вычисляет RetracePct по шкале от 0 до 100:</p> <ul> <li>Для бычьей отметки: RetracePct = (RefTop - Ext) / диапазон * 100</li> <li>Для медвежьей отметки: RetracePct = (Ext - RefBot) / диапазон * 100</li> </ul> <p></p> <p>Затем отмечает событие:</p> <ul> <li>NoRetrace при отрицательном значении (цена отклонилась в сторону),</li> <li>Коррекция при значении от 0 до 100,</li> <li>Разворачивание, если цена превысит 100 (цена вышла за пределы контрольной отметки).</li> </ul> <p></p> <pre class="code">double Rpct = EMPTY_VALUE;
+string <span>Type</span> = <span class="string">"Undefined"</span>;
+
+<span class="keyword">if</span>(RefDir==<span class="string">"Bull"</span>) Rpct = (RefTop - Ext) / Range * <span class="number">100.0</span>;
+<span class="keyword">if</span>(RefDir==<span class="string">"Bear"</span>) Rpct = (Ext - RefBot) / Range * <span class="number">100.0</span>;
+
+<span class="keyword">if</span>(Rpct &lt; <span class="number">0</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>Type</span>=<span class="string">"NoRetrace"</span>;
+<span class="keyword">else</span> <span class="keyword">if</span>(Rpct&lt;=<span class="number">100</span>) <span>Type</span>=<span class="string">"Retracement"</span>;
+<span class="keyword">else</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>Type</span>=<span class="string">"Extension"</span>;</pre> <p><u>Практическая диагностика — вычисление доступного для торговли расстояния и близости к классическим уровням Фибоначчи</u></p> <p>Мы рассчитываем RetracePips, абсолютное количество пипсов, которое представляет собой откат, чтобы можно было отбросить тривиальные, неторгуемые касания (например, меньшие, чем спред). Мы также вычисляем, какой классический уровень Фибоначчи находится ближе всего и на каком расстоянии (NearestFibPct, NearestFibDistPct). Наконец, устанавливаем SameDirSupport, проверяя, закрылся ли представительный бар (последний бар в свернутой последовательности) в том же направлении, что и контрольная отметка.</p> <pre class="code"><span class="keyword">double</span> RetracePips = (RefDir==<span class="string">"Bull"</span>) ? (RefTop-Ext)/<span class="predefines">_Point</span> : (Ext-RefBot)/<span class="predefines">_Point</span>;
+
+<span class="comment">// Same-dir support</span>
+<span class="keyword">bool</span> SameDirSupport = (RefDir==<span class="string">"Bull"</span>) ? (testClose &gt;= testOpen) : (testClose &lt;= testOpen);
+
+<span class="comment">// Nearest Fibonacci comparison</span>
+<span class="keyword">double</span> fibLevels[] = {<span class="number">0</span>,<span class="number">23.6</span>,<span class="number">38.2</span>,<span class="number">50.0</span>,<span class="number">61.8</span>,<span class="number">78.6</span>,<span class="number">100.0</span>};
+<span class="keyword">double</span> nearest = fibLevels[<span class="number">0</span>];
+<span class="keyword">double</span> minDist = <span class="functions">fabs</span>(Rpct - fibLevels[<span class="number">0</span>]);
+<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;<span class="functions">ArraySize</span>(fibLevels);i++) {
+&nbsp;&nbsp; <span class="keyword">double</span> d = <span class="functions">fabs</span>(Rpct - fibLevels[i]);
+&nbsp;&nbsp; <span class="keyword">if</span>(d &lt; minDist) { minDist = d; nearest = fibLevels[i]; }
+}
+</pre> <p><u>Правила вывода</u></p> <p>Основываясь на флагах (OutputOnlySameDir, IncludeInvalidRows), скрипт либо пропускает, либо записывает ряд. Если записывает, ряд содержит все метаданные (время, символ, RefTop/RefBot, Ext, RetracePips, RetracePct, SeqType, SameDirSupport, ближайшее совпадение по fib, объем и спред). Файл является детерминированным: один и тот же символ, таймфрейм и параметры всегда создают один и тот же CSV-файл.</p> <pre class="code"><span class="keyword">if</span>(OutputOnlySameDir &amp;&amp; !SameDirSupport) <span class="keyword">continue</span>;
+
+<span class="functions">FileWrite</span>(fh,
+&nbsp;&nbsp; <span class="predefines">_Symbol</span>,
+&nbsp;&nbsp; PeriodToString(<span class="predefines">_Period</span>),
+&nbsp;&nbsp; <span class="functions">TimeToString</span>(<span class="functions">iTime</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,r),<span class="macro">TIME_DATE</span>|<span class="macro">TIME_SECONDS</span>),
+&nbsp;&nbsp; RefTop, RefBot, Range, RefDir,
+&nbsp;&nbsp; Ext, RetracePips, Rpct, Type,
+&nbsp;&nbsp; SeqType, HighMomentum, InsideCount,
+&nbsp;&nbsp; SameDirSupport, nearest, minDist
+);</pre> <p><u>Очистка и отчетность — мы завершаем запуск и сообщаем команде, что произошло</u></p> <p>После завершения цикла скрипт освобождает хэндл ATR, закрывает файл и выводит краткую сводку с указанием того, сколько рядов было записано и сколько недопустимых кандидатов было пропущено. Эта мгновенная обратная связь определяет наши дальнейшие действия (например, увеличение количества баров, ослабление фильтров или изменение множителя ATR).</p> <pre class="code"><span class="functions">IndicatorRelease</span>(atr_handle);
+<span class="functions">FileClose</span>(fh);
+<span class="functions">PrintFormat</span>(<span class="string">"CandleRangeData_v2: finished. Wrote %d rows to %s"</span>, written, OutFileName);
+</pre> <p></p> <p><b>Статистический анализ и визуализация данных коррекции Фибоначчи с помощью Python в Jupyter Notebook</b></p> <p>Чтобы продвинуть наши исследования, мы будем использовать Python для уточнения данных и создания статистических отчетов. Для этой цели я выбрал <a href="/go?link=https://jupyter.org/" title="https://jupyter.org/" rel="nofollow" target="_blank">Jupyter Notebook</a>, поскольку он обеспечивает улучшенный рабочий процесс для Python и поддерживает тот тип результатов, к которому мы стремимся.</p> <p><a href="/go?link=https://jupyter.org/" title="https://jupyter.org/" rel="nofollow" target="_blank">Jupyter Notebook</a> это интерактивная веб-среда, предназначенная для научных вычислений, анализа данных и визуализации. Он позволяет коду, визуальным выводам и документации сосуществовать в одном рабочем пространстве, что делает его особенно эффективным для решения задач, связанных с исследованиями. В нашем случае эта среда обеспечивает гибкость для экспериментов с данными о восстановлении, тестирования статистических методов и мгновенной визуализации результатов, таких как гистограммы и графики плотности. В отличие от статического скрипта, который должен выполняться от начала до конца, Jupyter позволяет нам выполнять небольшие ячейки независимо — ценное преимущество при корректировке вычислений или повторном выполнении определенных шагов без перезапуска всего процесса. Этот интерактивный рабочий процесс хорошо вписывается в итеративный и исследовательский характер интеллектуального анализа финансовых данных.</p> <p>В следующем разделе описываются шаги по настройке Jupyter Notebook в Windows.</p> <p>Чтобы запустить приведенные ниже ячейки, используйте Jupyter (Notebook или Lab) в Windows. Этими шагами являются:</p>1. Установить Python 3.10+ с ресурса python.org (выбрать “Add Python to PATH”).<br/>2. Открыть командную строку (PowerShell или CMD) и создать виртуальную среду (необязательно, но рекомендуется):<br/> <p></p> <pre class="code">python -m venv venv
+venv\Scripts\activate</pre> <p></p>3. Установить Jupyter и необходимые библиотеки: <p></p> <pre class="code">pip install jupyter pandas numpy matplotlib scipy scikit-learn</pre> <p>4. Запустить Jupyter:</p> <p>Если вы хотите работать в определенной папке, используйте команду cd, чтобы изменить каталог. Например, чтобы перейти к папке, в которую экспортируется файл CSV, как правило, C:\Users\YourComputerName\MQL5\Files, необходимо ввести:</p> <pre class="code">cd <span>C:\Users\YourComputerName\TerminalDataFolder\MQL5\Files</span></pre> <p>После этого вы можете запустить его с помощью</p> <pre class="code">jupyter notebook</pre> <p>Библиотеки и их назначение</p> <ul> <li>pandas — загружает таблицу CSV (ряды/столбцы) и управляет ею.</li> <li>numpy —числовые массивы и вспомогательная математика.</li> <li>matplotlib — построение гистограмм и KDE.</li> <li>scipy—статистические функции и KDE.</li> <li>scikit-learn (sklearn)—Модель гауссовских смесей для 1-мерной кластеризации.&nbsp;</li> </ul> <p><u>Ячейка 1—Настройка среды Python</u></p> <p>В начале работы над нашим блокнотом подготавливаем среду, импортируя библиотеки Python, которые будут использоваться для нашего анализа. Каждая библиотека играет специализированную роль в обработке данных, экспортируемых из скрипта MQL5.</p> <p></p> <ul> <li>Pandas (pd) используется для обработки структурированных данных. Она позволяет загружать CSV-файл, содержащий записи о восстановлении, манипулировать рядами и столбцами и легко вычислять статистику.</li> <li>Numpy (np) предоставляет математические инструменты и численные операции, такие как массивы и линейная алгебра, которые лежат в основе многих наших статистических вычислений.</li> <li>Matplotlib.pyplot (plt) - это основа для построения графиков, таких как гистограммы и графики плотности, которые помогут нам визуализировать поведение отката.</li> <li>Seaborn (sns) использует matplotlib для создания более элегантных и простых в оформлении графиков, что делает статистические паттерны более понятными.</li> <li>Scipy.stats (статистика) использует передовые статистические методы, такие как ядерная оценка плотности (KDE), проверка гипотез и распределение вероятностей.</li> <li>Sklearn.mixture.GaussianMixture взят из библиотеки машинного обучения scikit-learn и позволяет использовать модели гауссовских смесей. Это полезно при кластеризации уровней коррекции, чтобы определить, где могут быть сосредоточены скрытые уровни, подобные уровням Фибоначчи.</li> </ul> <p></p> <p>Запуская эту ячейку, мы эффективно загружаем все инструменты, необходимые для нашей работы.</p> <pre class="code"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+<span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+<span class="keyword">import</span> seaborn <span class="keyword">as</span> sns
+<span class="keyword">from</span> scipy <span class="keyword">import</span> stats
+<span class="keyword">from</span> sklearn.mixture <span class="keyword">import</span> GaussianMixture</pre> <p><u>Ячейка 2 —Загружает CSV и создаёт логический столбец ValidSetup_bool</u></p> <p>На этом этапе в записной книжке скрипт начинает с загрузки набора данных о восстановлении, экспортированного из MQL5. CSV-файл считывается в DataFrame pandas, и программа немедленно выводит количество загруженных рядов и доступных столбцов. Это важная контрольная точка, поскольку она подтверждает корректность пути к файлу и наличие ожидаемых полей, таких как RetracementPct, Type или ValidSetup. Чтобы помочь нам визуализировать структуру, скрипт также отображает первые несколько рядов, чтобы можно было быстро проверить, соответствуют ли данные тому, что мы ожидаем от нашего экспорта в MetaTrader.</p> <p>Как только набор данных окажется в памяти, следующая задача - решить, какие ряды являются допустимыми для дальнейшего анализа. Проблема в том, что не всем расчетам коррекции с помощью скрипта MQL5 следует доверять: некоторые из них могут быть неполными или помечены как недопустимые настройки. Поскольку в наборах данных могут использоваться несколько иные имена столбцов для проверки достоверности (например, ValidSetup, Valid или validsetup), скрипт выполняет поиск по нескольким распространенным вариантам. Если таковой найден, он стандартизирует результаты в новый логический столбец с именем ValidSetup_bool. Такие значения, как “True”, “1” или “Yes”, интерпретируются как допустимые. Если столбец validity вообще не найден, скрипт по умолчанию обрабатывает все ряды как допустимые, гарантируя, что у нас все еще есть данные для работы. Наконец, создается отфильтрованный набор данных с именем df_valid, содержащий только допустимые ряды, и выводится краткая статистика, показывающая, сколько всего рядов было загружено в сравнении с тем, сколько из них прошло фильтр допустимости.</p> <pre class="code"><span class="comment"># Robust Cell 2: load CSV and create a boolean ValidSetup_bool column</span>
+<span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+<span class="keyword">from</span> IPython.display <span class="keyword">import</span> display
+
+csv_file = <span class="string">"CandleRangeData_NZDUSD_H4.csv"</span>&nbsp;&nbsp; <span class="comment"># &lt;- set your filename here</span>
+df = pd.read_csv(csv_file, sep=<span class="literal">None</span>, engine=<span class="string">"python"</span>)
+<span class="built_in">print</span>(<span class="string">"Loaded rows:"</span>, <span class="built_in">len</span>(df))
+<span class="built_in">print</span>(<span class="string">"Columns found:"</span>, <span class="built_in">list</span>(df.columns))
+
+<span class="comment"># Show first 5 rows</span>
+display(df.head())
+
+<span class="comment"># Try to detect a 'valid setup' column (several common name variants)</span>
+candidates = [<span class="string">"ValidSetup"</span>, <span class="string">"validsetup"</span>, <span class="string">"Valid_Setup"</span>, <span class="string">"Valid"</span>, <span class="string">"valid"</span>, 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"ValidSetup_bool"</span>, <span class="string">"Valid_Setup_bool"</span>]
+found = <span class="literal">None</span>
+<span class="keyword">for</span> c <span class="keyword">in</span> candidates:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> c <span class="keyword">in</span> df.columns:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;found = c
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">break</span>
+
+<span class="comment"># Case-insensitive detection if exact not found</span>
+<span class="keyword">if</span> found <span class="keyword">is</span> <span class="literal">None</span>:
+&nbsp;&nbsp;&nbsp;&nbsp;lower_map = {col.lower(): col <span class="keyword">for</span> col <span class="keyword">in</span> df.columns}
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span> c <span class="keyword">in</span> candidates:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> c.lower() <span class="keyword">in</span> lower_map:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;found = lower_map[c.lower()]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">break</span>
+
+<span class="comment"># Create boolean column 'ValidSetup_bool' using detected column or fallback</span>
+<span class="keyword">if</span> found <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="built_in">print</span>(<span class="string">"Using column for validity:"</span>, found)
+&nbsp;&nbsp;&nbsp;&nbsp;series = df[found].astype(<span class="built_in">str</span>).<span class="built_in">str</span>.strip().<span class="built_in">str</span>.lower()
+&nbsp;&nbsp;&nbsp;&nbsp;df[<span class="string">"ValidSetup_bool"</span>] = series.isin([<span class="string">"true"</span>, <span class="string">"1"</span>, <span class="string">"yes"</span>, <span class="string">"y"</span>, <span class="string">"t"</span>])
+<span class="keyword">else</span>:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="built_in">print</span>(<span class="string">"No ValidSetup-like column found. Creating ValidSetup_bool=True for all rows (no filtering)."</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;df[<span class="string">"ValidSetup_bool"</span>] = <span class="literal">True</span>
+
+<span class="comment"># Quick stats</span>
+total = <span class="built_in">len</span>(df)
+valid_count = df[<span class="string">"ValidSetup_bool"</span>].<span class="built_in">sum</span>()
+<span class="built_in">print</span>(<span class="string">f"Total rows = <span class="subst">{total}</span>, ValidSetup_bool True = <span class="subst">{valid_count}</span>"</span>)
+
+<span class="comment"># Create df_valid for downstream cells (the rest of notebook expects df_valid)</span>
+df_valid = df[df[<span class="string">"ValidSetup_bool"</span>] == <span class="literal">True</span>].copy()
+<span class="built_in">print</span>(<span class="string">"df_valid rows:"</span>, <span class="built_in">len</span>(df_valid))
+
+<span class="comment"># Display preview</span>
+display(df_valid.head())
+</pre> <p><u>Ячейка 3 — Вычисление значений отката на основе схемы сборщика</u></p> <p>Теперь, когда в ячейке 2 подготовлен достоверный набор данных, блокнот фокусируется на обеспечении постоянного доступа к значениям коррекции для анализа. В экспортированном наборе данных MetaTrader некоторые из этих полей, возможно, уже вычислены, в то время как другие необходимо вывести из исходных уровней цен. Этот шаг гармонизирует процесс расчета коррекции.</p> <p>Первое действие - убедиться, что столбец Range (диапазон) является числовым. Этот столбец, экспортированный из сборщика MQL5, представляет собой общий размер контрольного бара (разницу между его верхом и низом). Преобразование его в значение с плавающей точкой гарантирует, что последующие математические операции будут выполняться так, как ожидалось.</p> <p>Далее скрипт проверяет, содержит ли экспорт MetaTrader столбец RetracementPct. Если это значение присутствует, оно интерпретируется как процентное значение коррекции (например, 50 означает 50%) и преобразуется в нормализованную дробь от 0 до 1 путем деления на 100. Такой подход обеспечивает согласованность вычислений и повторное использование предварительно вычисленных значений, когда они доступны. Если такой столбец не найден, скрипт возвращается к вычислению коррекции вручную по формуле:</p> <p style="text-align:center;"> <img width="271" height="68" src="https://c.mql5.com/2/173/chrome_tReU5S1VDY.png" loading="lazy" title="calculating Retracement" alt="calculating Retracement" style="vertical-align:middle;"/></p> <p>Здесь Ext представляет собой экстремальный уровень коррекции, достигнутый перед закрытием бара, а RefBot - нижнюю границу контрольного бара. Деление расстояния между Ext и RefBot на общее значение Range дает пропорциональную коррекцию.</p> <p>Поскольку уровни коррекции всегда должны находиться в диапазоне от 0% до 100%, скрипт применяет операцию clip, чтобы поместить все значения в интервал [0,1]. Это защищает от аномалий, вызванных неточностями в данных или сбоями в вычислениях.</p> <p>Наконец, в качестве шага проверки блокнот выводит первые несколько строк ключевых столбцов — RefTop, RefBot, Ext, Range и Retracement — чтобы подтвердить, что вычисленные или импортированные значения коррекции выглядят разумно. Этот предварительный просмотр убеждает нас в том, что конвейер производит последовательные нормализованные показатели коррекции, готовые для последующего статистического анализа.</p> <pre class="code"><span class="comment"># Cell 3: Compute retracement values based on the collector's schema</span>
+
+<span class="comment"># In our MT5 output:</span>
+<span class="comment"># - RefTop = top of the reference bar</span>
+<span class="comment"># - RefBot = bottom of the reference bar</span>
+<span class="comment"># - Ext&nbsp;&nbsp;&nbsp;&nbsp;= the extreme retracement reached before close</span>
+<span class="comment"># - RetracementPct = retracement % already computed in MT5</span>
+
+<span class="comment"># 1. Use the collector's "Range" directly</span>
+df_valid[<span class="string">"Range"</span>] = df_valid[<span class="string">"Range"</span>].astype(<span class="built_in">float</span>)
+
+<span class="comment"># 2. Use the already provided retracement percentage (if available)</span>
+<span class="keyword">if</span> <span class="string">"RetracementPct"</span> <span class="keyword">in</span> df_valid.columns:
+&nbsp;&nbsp;&nbsp;&nbsp;df_valid[<span class="string">"Retracement"</span>] = df_valid[<span class="string">"RetracementPct"</span>].astype(<span class="built_in">float</span>) / <span class="number">100.0</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="built_in">print</span>(<span class="string">"Using MT5-calculated RetracementPct column."</span>)
+<span class="keyword">else</span>:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># fallback: compute from RefTop/RefBot and Ext</span>
+&nbsp;&nbsp;&nbsp;&nbsp;df_valid[<span class="string">"Retracement"</span>] = (df_valid[<span class="string">"Ext"</span>].astype(<span class="built_in">float</span>) - df_valid[<span class="string">"RefBot"</span>].astype(<span class="built_in">float</span>)) / df_valid[<span class="string">"Range"</span>]
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="built_in">print</span>(<span class="string">"No RetracementPct column found — computed from RefTop/RefBot/Ext."</span>)
+
+<span class="comment"># 3. Clip between 0 and 1 (0%–100%)</span>
+df_valid[<span class="string">"Retracement"</span>] = df_valid[<span class="string">"Retracement"</span>].clip(<span class="number">0</span>, <span class="number">1</span>)
+
+<span class="comment"># Quick check</span>
+<span class="built_in">print</span>(<span class="string">"Preview of retracement values:"</span>)
+display(df_valid[[<span class="string">"RefTop"</span>,<span class="string">"RefBot"</span>,<span class="string">"Ext"</span>,<span class="string">"Range"</span>,<span class="string">"Retracement"</span>]].head())</pre> <p style="text-align:center;"> <img width="447" height="241" src="https://c.mql5.com/2/173/chrome_jnWB0Vkuwj.png" loading="lazy" alt style="vertical-align:middle;"/></p> <p style="text-align:center;"><span class="small">Рисунок 3. Таблица рассчитываемых значений</span></p> <p><u>Ячейка 4 — Визуальное распределение значений коррекции</u></p> <p>Теперь, когда значения коррекции были проверены и стандартизированы, эта ячейка берет на себя задачу визуализации их распределения. Но перед построением графика скрипт добавляет дополнительную защиту: он гарантирует наличие столбца коррекции Retracement, который можно использовать, независимо от того, какие столбцы были включены в экспорт MetaTrader.</p> <p>Логика начинается с проверки того, присутствует ли уже Retracement. Если нет, то она пытается её сконструировать. Сначала ищет RetracementPct, основанный на процентах показатель коррекции, экспортируемый MetaTrader 5, и преобразует его в нормализованную шкалу от 0 до 1. Если этот столбец недоступен, скрипт возвращается к пользовательскому вычислению с использованием RefTop, RefBot, Ext и RefDir. Включение RefDir (направление контрольного бара) делает этот расчет надежным, поскольку коррекции должны интерпретироваться по-разному для бычьих и медвежьих контрльных баров:</p> <ul> <li>Для бычьего бара откат измеряется от RefTop вниз до крайнего значения.</li> <li>Для медвежьего бара он измеряется от RefBot вверх до крайнего значения.</li> </ul> <p></p> <p>Если ни один из требуемых столбцов недоступен, код выдает четкое сообщение об ошибке, описывающее, какие поля отсутствуют.</p> <p>Как только значения коррекции собраны, они обрезаются, чтобы оставаться в пределах допустимого интервала [0,1], а записи NaN удаляются. Если после очистки не остается допустимых значений, скрипт останавливается с ошибкой, чтобы избежать построения вводящих в заблуждение графиков. В противном случае для прозрачности выводится число полезных наблюдений.</p> <p>&nbsp;Если доступна библиотека Seaborn, скрипт использует sns.histplot для создания гистограммы, на которую для наглядности накладывается плавная кривая KDE. Если он не установлен, запускается резервный вариант с использованием чистого Matplotlib: гистограмма плюс вычисленная вручную ядерная оценка плотности (через scipy.stats.gaussian_kde). Это гарантирует, что график будет выглядеть безупречно даже в минимальных средах.</p> <p>Итоговая диаграмма четко отмечена названиями осей и ограничена диапазоном 0-1 по оси X. Она показывает общее распределение коэффициентов отката по всем допустимым настройкам, давая непосредственное представление о том, как часто происходят мелкие, средние или глубокие откаты. При желании рисунок можно сохранить в формате PNG конкретно для использования в документации или презентации.</p> <pre class="code"><span class="comment"># Plotting cell 4 (robust): ensures 'Retracement' exists and draws a 750px-wide plot</span>
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+<span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+
+<span class="comment"># --- Build 'Retracement' column if needed ---</span>
+<span class="keyword">if</span> <span class="string">"Retracement"</span> <span class="keyword">not</span> <span class="keyword">in</span> df_valid.columns:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> <span class="string">"RetracementPct"</span> <span class="keyword">in</span> df_valid.columns:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># MT5 already computed it as percent (0-100)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;df_valid[<span class="string">"Retracement"</span>] = pd.to_numeric(df_valid[<span class="string">"RetracementPct"</span>], errors=<span class="string">"coerce"</span>) / <span class="number">100.0</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="built_in">print</span>(<span class="string">"Using existing RetracementPct -&gt; created Retracement (0-1)."</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># try to compute from RefTop/RefBot/Ext with direction awareness</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required = {<span class="string">"RefTop"</span>,<span class="string">"RefBot"</span>,<span class="string">"Ext"</span>,<span class="string">"RefDir"</span>}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> required.issubset(<span class="built_in">set</span>(df_valid.columns)):
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">def</span> compute_r(row):
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rng = <span class="built_in">float</span>(row[<span class="string">"RefTop"</span>]) - <span class="built_in">float</span>(row[<span class="string">"RefBot"</span>])
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> rng == <span class="number">0</span>: 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> np.nan
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> <span class="built_in">str</span>(row[<span class="string">"RefDir"</span>]).strip().lower().startswith(<span class="string">"b"</span>) :&nbsp;&nbsp;<span class="comment"># Bull</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> (<span class="built_in">float</span>(row[<span class="string">"RefTop"</span>]) - <span class="built_in">float</span>(row[<span class="string">"Ext"</span>])) / rng
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">elif</span> <span class="built_in">str</span>(row[<span class="string">"RefDir"</span>]).strip().lower().startswith(<span class="string">"be"</span>): <span class="comment"># Bear</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> (<span class="built_in">float</span>(row[<span class="string">"Ext"</span>]) - <span class="built_in">float</span>(row[<span class="string">"RefBot"</span>])) / rng
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> np.nan
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">except</span> Exception:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> np.nan
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;df_valid[<span class="string">"Retracement"</span>] = df_valid.apply(compute_r, axis=<span class="number">1</span>).astype(<span class="built_in">float</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="built_in">print</span>(<span class="string">"Computed Retracement from RefTop/RefBot/Ext/RefDir."</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">raise</span> KeyError(<span class="string">"No 'Retracement' or 'RetracementPct' column, and required columns for computation are missing. "</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="string">"Found columns: "</span> + <span class="string">", "</span>.join(df_valid.columns))
+
+<span class="comment"># Clip to 0..1</span>
+df_valid[<span class="string">"Retracement"</span>] = df_valid[<span class="string">"Retracement"</span>].clip(lower=<span class="number">0.0</span>, upper=<span class="number">1.0</span>)
+
+<span class="comment"># Drop NaNs</span>
+vals = df_valid[<span class="string">"Retracement"</span>].dropna().values
+<span class="keyword">if</span> <span class="built_in">len</span>(vals) == <span class="number">0</span>:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">raise</span> ValueError(<span class="string">"No valid retracement values to plot after preprocessing."</span>)
+
+<span class="built_in">print</span>(<span class="string">f"Plotting <span class="subst">{len(vals)}</span> retracement observations (0..1 scale)."</span>)
+
+<span class="comment"># --- Plot size: target ~750 px width ---</span>
+<span class="comment"># Use figsize such that width_inches * dpi = 750. We'll choose dpi=100, width=7.5in.</span>
+fig_w, fig_h = <span class="number">7.5</span>, <span class="number">4.0</span>
+fig, ax = plt.subplots(figsize=(fig_w, fig_h), dpi=<span class="number">100</span>)
+
+<span class="comment"># Prefer seaborn if available for nice KDE overlay, otherwise fallback</span>
+<span class="keyword">try</span>:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">import</span> seaborn <span class="keyword">as</span> sns
+&nbsp;&nbsp;&nbsp;&nbsp;sns.histplot(vals, bins=<span class="number">50</span>, stat=<span class="string">"density"</span>, kde=<span class="literal">True</span>, ax=ax)
+<span class="keyword">except</span> Exception:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># fallback to matplotlib</span>
+&nbsp;&nbsp;&nbsp;&nbsp;ax.hist(vals, bins=<span class="number">50</span>, density=<span class="literal">True</span>, alpha=<span class="number">0.6</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># manual KDE overlay</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">from</span> scipy.stats <span class="keyword">import</span> gaussian_kde
+&nbsp;&nbsp;&nbsp;&nbsp;kde = gaussian_kde(vals)
+&nbsp;&nbsp;&nbsp;&nbsp;xgrid = np.linspace(<span class="number">0</span>,<span class="number">1</span>,<span class="number">500</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;ax.plot(xgrid, kde(xgrid), linewidth=<span class="number">2</span>)
+
+ax.set_title(<span class="string">"Retracement Ratio Distribution"</span>)
+ax.set_xlabel(<span class="string">"Retracement (0 = 0%, 1 = 100%)"</span>)
+ax.set_ylabel(<span class="string">"Density"</span>)
+ax.set_xlim(<span class="number">0</span>,<span class="number">1</span>)
+plt.tight_layout()
+
+<span class="comment"># Optionally save a sized PNG (uncomment to save)</span>
+<span class="comment"># plt.savefig("retracement_distribution_750px.png", dpi=100)</span>
+
+plt.show()
+</pre> <p style="text-align:center;"> <img width="750" height="392" src="https://c.mql5.com/2/173/rrd.png" loading="lazy" alt style="vertical-align:middle;"/></p> <p style="text-align:center;"><span class="small">Рисунок 4. Распределение коэффициента коррекции</span></p> <p><u>Ячейка 5—Ядерная оценка плотности (KDE)</u></p> <p>На этом этапе мы выходим за рамки простой визуализации и проводим более продвинутый статистический анализ: Ядерная оценка плотности (KDE) в сочетании с определением пиков. Этот подход помогает выявить общие уровни коррекции — “скрытые” зоны, где цена часто имеет тенденцию к остановке или развороту — путем анализа формы распределения, а не просто необработанных показателей на гистограмме.</p> <p>Сценарий начинается с проверки того, что столбец коррекции Retracement доступен в нормализованном виде (0-1). Если он отсутствует, скрипт восстанавливает его либо из поля RetracementPct, либо, при необходимости, из RefTop, RefBot, Ext и RefDir, используя ту же бычью/ медвежью логику, что и ранее. После приведения значений к допустимому диапазону [0,1] и удаления значений NAN он проверяет наличие как минимум 10 допустимых точек отката. Эта мера предосторожности предотвращает зашумленные или бессмысленные оценки KDE, когда набор данных слишком мал.</p> <p>Затем KDE вычисляется по тонкой сетке из 1001 точки, охватывающей от 0 до 1. Это высокое разрешение позволяет кривой плотности отображать тонкую структуру данных, такую как множественные локальные максимумы. Чтобы определить эти максимумы, скрипт нормализует кривую плотности и применяет scipy.signal.find_peaks, настроенные таким образом, чтобы игнорировать незначительные колебания, требуя минимального выступа и расстояния между ними. Результирующие пиковые индексы соответствуют уровням коррекции, где функция плотности локально наиболее сильна — фактически это “предпочтительные” уровни коррекции, скрытые в данных.</p> <p>Для наглядности кривая KDE нанесена на график с затенением под ней, а каждый обнаруженный пик выделен красной точкой и помечен процентом коррекции (например, 38,20%). В отличие от предыдущей ячейки для построения графика, в этой ячейке нет фиксированной ширины в пикселях, поэтому размер рисунка гибко адаптируется к различным условиям. Метки, диапазоны осей и сетка включены для того, чтобы сделать график понятным и интерпретируемым.</p> <p>Наконец, скрипт выводит список обнаруженных уровней коррекции в процентах вместе с их относительными значениями заметности, предоставляя как визуальную, так и числовую сводку о том, где могут находиться самые сильные скрытые уровни коррекции. Такое сочетание KDE и обнаружения пиков преобразует необработанные наблюдения за коррекцией в полезную статистическую информацию.</p> <pre class="code"><span class="comment"># Cell 5: KDE + peak detection (robust, flexible sizing)</span>
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+<span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+<span class="keyword">from</span> scipy <span class="keyword">import</span> stats
+<span class="keyword">from</span> scipy.signal <span class="keyword">import</span> find_peaks
+
+<span class="comment"># --- ensure Retracement column exists (0..1 scale) ---</span>
+<span class="keyword">if</span> <span class="string">"Retracement"</span> <span class="keyword">not</span> <span class="keyword">in</span> df_valid.columns:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> <span class="string">"RetracementPct"</span> <span class="keyword">in</span> df_valid.columns:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;df_valid[<span class="string">"Retracement"</span>] = pd.to_numeric(df_valid[<span class="string">"RetracementPct"</span>], errors=<span class="string">"coerce"</span>) / <span class="number">100.0</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required = {<span class="string">"RefTop"</span>,<span class="string">"RefBot"</span>,<span class="string">"Ext"</span>,<span class="string">"RefDir"</span>}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> required.issubset(<span class="built_in">set</span>(df_valid.columns)):
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">def</span> compute_r(row):
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rng = <span class="built_in">float</span>(row[<span class="string">"RefTop"</span>]) - <span class="built_in">float</span>(row[<span class="string">"RefBot"</span>])
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> rng == <span class="number">0</span>:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> np.nan
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rd = <span class="built_in">str</span>(row[<span class="string">"RefDir"</span>]).strip().lower()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> rd.startswith(<span class="string">"b"</span>):&nbsp;&nbsp;<span class="comment"># Bull</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> (<span class="built_in">float</span>(row[<span class="string">"RefTop"</span>]) - <span class="built_in">float</span>(row[<span class="string">"Ext"</span>])) / rng
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">elif</span> rd.startswith(<span class="string">"be"</span>) <span class="keyword">or</span> rd.startswith(<span class="string">"bear"</span>):&nbsp;&nbsp;<span class="comment"># Bear</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> (<span class="built_in">float</span>(row[<span class="string">"Ext"</span>]) - <span class="built_in">float</span>(row[<span class="string">"RefBot"</span>])) / rng
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> np.nan
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">except</span> Exception:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> np.nan
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;df_valid[<span class="string">"Retracement"</span>] = df_valid.apply(compute_r, axis=<span class="number">1</span>).astype(<span class="built_in">float</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">raise</span> KeyError(<span class="string">"Cannot build 'Retracement' — missing required columns. Found: "</span> + <span class="string">", "</span>.join(df_valid.columns))
+
+<span class="comment"># Clip and drop NaNs</span>
+df_valid[<span class="string">"Retracement"</span>] = df_valid[<span class="string">"Retracement"</span>].clip(<span class="number">0</span>,<span class="number">1</span>)
+vals = df_valid[<span class="string">"Retracement"</span>].dropna().values
+n = <span class="built_in">len</span>(vals)
+<span class="keyword">if</span> n &lt; <span class="number">10</span>:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">raise</span> ValueError(<span class="string">f"Too few retracement observations to compute KDE/peaks reliably (n=<span class="subst">{n}</span>)."</span>)
+
+<span class="comment"># --- KDE on a fine grid ---</span>
+grid = np.linspace(<span class="number">0</span>, <span class="number">1</span>, <span class="number">1001</span>)&nbsp;&nbsp; <span class="comment"># 0.001 (0.1%) resolution</span>
+kde = stats.gaussian_kde(vals)
+dens = kde(grid)
+
+<span class="comment"># --- peak detection on normalized density ---</span>
+dens_norm = dens / dens.<span class="built_in">max</span>()
+peaks_idx, props = find_peaks(dens_norm, prominence=<span class="number">0.02</span>, distance=<span class="number">8</span>)&nbsp;&nbsp;<span class="comment"># tweak params as needed</span>
+peak_levels = grid[peaks_idx]
+peak_heights = dens[peaks_idx]
+
+<span class="comment"># --- Plot (flexible sizing, no fixed pixel restriction) ---</span>
+fig, ax = plt.subplots(figsize=(<span class="number">8</span>, <span class="number">4</span>))&nbsp;&nbsp;<span class="comment"># default flexible size</span>
+ax.plot(grid, dens, label=<span class="string">"KDE"</span>, linewidth=<span class="number">2</span>)
+ax.fill_between(grid, dens, alpha=<span class="number">0.2</span>)
+
+<span class="comment"># annotate peaks</span>
+<span class="keyword">for</span> lvl, h <span class="keyword">in</span> <span class="built_in">zip</span>(peak_levels, peak_heights):
+&nbsp;&nbsp;&nbsp;&nbsp;ax.plot(lvl, h, <span class="string">"o"</span>, color=<span class="string">"red"</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;ax.text(lvl, h, <span class="string">f" <span class="subst">{lvl*<span class="number">100</span>:<span class="number">.2</span>f}</span>%"</span>, va=<span class="string">"bottom"</span>, ha=<span class="string">"left"</span>, fontsize=<span class="number">9</span>)
+
+ax.set_title(<span class="string">"Kernel Density of Retracement Ratios"</span>)
+ax.set_xlabel(<span class="string">"Retracement (0 = 0%, 1 = 100%)"</span>)
+ax.set_ylabel(<span class="string">"Density"</span>)
+ax.set_xlim(<span class="number">0</span>,<span class="number">1</span>)
+ax.grid(<span class="literal">True</span>, linestyle=<span class="string">"--"</span>, alpha=<span class="number">0.5</span>)
+plt.tight_layout()
+plt.show()
+
+<span class="comment"># --- print candidate levels ---</span>
+<span class="built_in">print</span>(<span class="string">"Candidate Hidden Retracement Levels (%):"</span>)
+<span class="built_in">print</span>(np.<span class="built_in">round</span>(peak_levels*<span class="number">100</span>, <span class="number">2</span>))
+<span class="built_in">print</span>(<span class="string">"Peak prominences (relative):"</span>, np.<span class="built_in">round</span>(props[<span class="string">"prominences"</span>], <span class="number">4</span>) <span class="keyword">if</span> <span class="string">"prominences"</span> <span class="keyword">in</span> props <span class="keyword">else</span> <span class="string">"n/a"</span>)
+</pre> <p style="text-align:center;"> <img width="750" height="378" src="https://c.mql5.com/2/173/kde.png" loading="lazy" title="KDE" alt="KDE" style="vertical-align:middle;"/></p> <p style="text-align:center;"><span class="small">Рисунок5. Коэффициент плотности ядра коррекции</span></p> <h3 id="para3"><br/><br/>Тестирование и результаты<br/></h3> <p>Все ячейки в Jupyter notebook давали визуальные результаты, которые можно было интерпретировать статистически. Под каждой ячейкой мы представили как код, так и соответствующие ему выходные данные, которые иллюстрируют одно из ключевых преимуществ работы в Jupyter — возможность легко сочетать вычисления и визуализацию.</p> <p>После выполнения заключительной выходной ячейки, предназначенной для сохранения найденных скрытых значений, мы обнаружили, что для таймфрейма H4 на паре NZDUSD обнаружены только два значимых уровня. Хотя это дало полезную информацию о структуре данных, проверка гипотезы не оправдала наших ожиданий.</p> <pre class="code">Detected peaks at (pct): [<span class="number">29.7</span> <span class="number">58.3</span>]
+Bootstrap <span class="number">200</span>/<span class="number">1000.</span>..
+Bootstrap <span class="number">400</span>/<span class="number">1000.</span>..
+Bootstrap <span class="number">600</span>/<span class="number">1000.</span>..
+Bootstrap <span class="number">800</span>/<span class="number">1000.</span>..
+Bootstrap <span class="number">1000</span>/<span class="number">1000.</span>..
+Bootstrap done <span class="keyword">in</span> <span class="number">4.5</span>s
+
+Peak testing results (window ±<span class="number">0.40</span>%):
+Level <span class="number">29.700</span>%&nbsp;&nbsp;mass=<span class="number">9.909890e-03</span>&nbsp;&nbsp;p=<span class="number">0.4960</span>&nbsp;&nbsp; significant=<span class="literal">False</span>
+Level <span class="number">58.300</span>%&nbsp;&nbsp;mass=<span class="number">9.729858e-03</span>&nbsp;&nbsp;p=<span class="number">0.4960</span>&nbsp;&nbsp; significant=<span class="literal">False</span>
+
+Accepted (FDR&lt;<span class="number">0.05</span>) candidate levels (pct): []</pre> <p>Алгоритм обнаружил два потенциальных пика в распределении данных, расположенных на уровнях 29,7% и 58,3%. Эти пики представляют собой точки, в которых алгоритм изначально наблюдал локальную концентрацию данных, что указывает на потенциальную скрытую структуру или повторяющиеся паттерны.</p> <p>Чтобы оценить, были ли эти пики статистически значимыми или просто случайными колебаниями, модель провела бутстрэп-тест с 1000 повторными выборками. Процесс начальной загрузки бутстрэп оценивал, как часто подобные пики будут появляться в случайно перемешанных версиях данных, что давало оценку статистической значимости.</p> <p>Для обоих обнаруженных уровней:</p> <ul> <li>Уровень 29,7% → масса = 0,0099, p = 0,4960 → Незначимо</li> <li>Уровень 58,3% → масса = 0,0097, p = 0,4960 → Незначимо</li> </ul> <p></p> <p>P-значения (≈0,50) указывают на то, что эти пики наблюдались в рандомизированных выборках бутстрэп так же часто, как и в реальных данных, что означает, что они статистически неотличимы от шума. Поскольку ни один пик не преодолел порог коэффициента ложных открытий (FDR), равный 0,05, алгоритм пришел к выводу, что в наборе данных для выбранного таймфрейма (H4 по NZDUSD) не было существенных скрытых уровней.</p> <p>&nbsp;<u>Стратегии тестирования на истории с обнаруженными уровнями</u></p> <p>В MetaTrader 5 я поэкспериментировал, добавив два пользовательских уровня коррекции к стандартному набору Фибоначчи: 29,7% и 58,3%. Согласно нашему анализу в Jupyter, оба уровня дали результаты массы = 0,0099, p = 0,4960 и массы = 0,0097, p = 0,4960 соответственно, которые не были статистически значимыми. Однако, судя по графикам, один из этих уровней, по-видимому, в прошлом соблюдался ценовым действием. Это говорит о том, что, хотя статистический тест не подтвердил значимость, все же, возможно, существует практическая значимость, заслуживающая изучения.</p> <p>В настоящее время эти уровни были добавлены вручную, но в будущем может потребоваться программная интеграция таких значений в MetaTrader 5 для автоматического тестирования на нескольких парах и таймфреймах. Смотрите рисунок 6 с иллюстрацией.</p> <p style="text-align:center;"> <img width="660" height="506" src="https://c.mql5.com/2/173/ShareX_yN3mJO0BR2.gif" loading="lazy" title="Adding calculated levels to the Fibonacci tool." alt="Adding calculated levels to the Fibonacci tool." style="vertical-align:middle;"/></p> <p style="text-align:center;"><span class="small">Рисунок 6. Добавлены новые уровни</span></p> <p><br/></p> <h3 id="para4">Заключение</h3> <p>Этот проект был продиктован амбициями и любопытством — от основанных на графиках наблюдений за движением цены в рамках коррекции Фибоначчи до выявления нарушений в том, как цена взаимодействует с известными уровнями, и даже вопроса о том, могут ли существовать скрытые уровни между традиционными точками коррекции. Чтобы изучить эти идеи, мы объединили MQL5 для автоматизированного сбора данных с Python в интерактивной веб-среде Jupyter, которая обеспечила мощные инструменты для анализа данных, визуализации и многоязычной интеграции.</p> <p>Несмотря на то, что мы успешно добились предварительных результатов, возникли некоторые проблемы. Наш набор данных был ограничен, и ручное применение рассчитанных значений коррекции к графикам было многообещающим, но не соответствовало нашим первоначальным гипотезам. Это говорит о том, что как наш процесс сбора данных, так и методы обнаружения колебаний/отката могут нуждаться в доработке. Расширение анализа с целью охвата нескольких валютных пар и таймфреймов, а также перестройка алгоритмов обнаружения, вероятно, повысили бы точность и надежность.</p> <p>Несмотря на эти минусы заложенный нами фундамент очень ценен. Он демонстрирует, как MQL5 и Python могут быть объединены для количественных исследований в области торговли, и служит практической начальной точкой для начинающих, которые хотят объединить автоматизацию торговой платформы с наукой о данных. Хотя первоначальные результаты не полностью оправдали наши ожидания, графики по-прежнему открывают интересные возможности, заслуживающие дальнейшего изучения. Благодаря более надежному тестированию и усовершенствованным методам это направление исследований все еще может дать представление о скрытой динамике коррекции.</p> <p>В отличие от того, чтобы полагаться на догадки при добавлении пользовательских уровней коррекции, этот подход использует науку о данных вместе с доступными инструментами на MQL5 для повышения эффективности и структурированности процесса. Ниже приведена таблица с приложенными ресурсами. Вы можете ознакомиться с источниками и поэкспериментировать, чтобы поделиться своими мыслями для дальнейшего обсуждения. До следующей публикации следите за обновлениями.</p> <h3 id="para5"><br/><br/>Вложения<br/></h3> <table cellspacing="0" cellpadding="2" width="100%" class="standart"> <thead> <tr> <th>Название файла</th> <th>Версия&nbsp;</th> <th>Описание</th> </tr> </thead> <tbody> <tr> <td>CandleRangeData.mq5<br/></td> <td>&nbsp;1.0</td> <td>Скрипт на MQL5, который собирает данные о диапазоне свеч и коррекции с графиков MetaTrader 5 и экспортирует их в формат CSV для анализа.</td> </tr> <tr> <td>HiddenFiboLevels.ipynb<br/></td> <td>отсутствует</td> <td>Jupyter Notebook содержит код на Python для загрузки экспортированного CSV-файла, очистки данных, тестирования потенциальных скрытых уровней коррекции Фибоначчи и визуализации результатов.</td> </tr> <tr> <td>CandleRangeData_NZDUSD_H4.csv<br/></td> <td>отсутствует</td> <td>Набор данных образцов, сгенерированный скриптом MQL5 для валютной пары NZDUSD на таймфрейме H4, используется в качестве входных данных для анализа на Python.</td> </tr> </tbody> </table>
+      </div>
+          <p style="text-align: right;">
+            <small>
+              Перевод с английского произведен MetaQuotes Ltd. <br>Оригинальная статья: <a href="/en/articles/19780" target="_blank">https://www.mql5.com/en/articles/19780</a>
+            </small>
+          </p>
+<div id="cb_19780" class="attachBlock">
+  <strong>Прикрепленные файлы</strong> |
+  <div class="grouped-attachments-help">
+    <a title="Загрузить все вложения в одном ZIP-архиве" href="/ru/articles/download/19780.zip">
+      <i class="attach-icon attach-icon_zip"></i>Загрузить ZIP
+    </a>
+  </div>
+    <div class="attachItem">
+      <a title="Скачать CandleRangeData.mq5" href="/ru/articles/download/19780/CandleRangeData.mq5"><i class="attach-icon attach-icon_mq5"></i>CandleRangeData.mq5</a>
+      <span class="attachSize">(13.94 KB)</span>
+    </div>
+    <div class="attachItem">
+      <a title="Скачать HiddenFiboLevels.ipynb" href="/ru/articles/download/19780/HiddenFiboLevels.ipynb"><i class="attach-icon attach-icon_ipynb"></i>HiddenFiboLevels.ipynb</a>
+      <span class="attachSize">(118.61 KB)</span>
+    </div>
+    <div class="attachItem">
+      <a title="Скачать CandleRangeData_NZDUSD_H4.csv" href="/ru/articles/download/19780/CandleRangeData_NZDUSD_H4.csv"><i class="attach-icon attach-icon_csv"></i>CandleRangeData_NZDUSD_H4.csv</a>
+      <span class="attachSize">(80.93 KB)</span>
+    </div>
+</div>
+    </div>
+
+  <div class="copyright">
+    <p><strong>Предупреждение:</strong> все права на данные материалы принадлежат MetaQuotes Ltd. Полная или частичная перепечатка запрещена.</p>
+      <p>Данная статья написана пользователем сайта и отражает его личную точку зрения. Компания MetaQuotes Ltd не несет ответственности за достоверность представленной информации, а также за возможные последствия использования описанных решений, стратегий или рекомендаций.</p>
+  </div>
+
+
+
+    <div class="article__author-with-articles">
+      
+
+
+<div class="article-footer__author">
+  <div class="article-footer__author-avatar">
+    <img id="avatar" src="https://c.mql5.com/avatar/2025/3/67df27c6-2936_big.png" title="Clemence Benjamin" alt="Clemence Benjamin" loading="lazy" width="164" height="164">
+  </div>
+  <div class="article-footer__author-content">
+    <div class="article-footer__author-name">
+      <a href="/ru/users/billionaire2024" title="Clemence Benjamin">Clemence Benjamin</a>
+    </div>
+    <div class="article-footer__author-info">
+      <ul>
+          <li>
+            <i title="Работает" class="icons-profile icons-profile_suitcase"></i>
+Trader, Program Developer, 2D &amp; 3D Animator
+в            <a target="_blank" href="https://www.mql5.com/en/users/billionaire2024/seller" rel="noreferrer noopener nofollow">Benjc Trade Advisor</a>
+          </li>
+          <li>
+            <i title="Живёт" class="icons-profile icons-profile_geo"></i>
+            <a target="_blank" rel="nofollow" title="Живёт" href="https://www.mql5.com/go?https://maps.google.com/?z=4&q=%d0%97%d0%b8%d0%bc%d0%b1%d0%b0%d0%b1%d0%b2%d0%b5">Зимбабве</a>
+          </li>
+        <li>
+          <i title="Рейтинг" class="icons-profile icons-profile_statistics"></i>
+          <a title="Рейтинг" href="/ru/users/billionaire2024/achievements">33979</a>
+        </li>
+      </ul>
+    </div>
+    <div class="article-footer__author-contacts">
+          <li title="Facebook"><a class="icons-networks icons-networks_fb-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://www.facebook.com/profile.php?id=61558493125454"></a></li>
+    <li title="LinkedIn"><a class="icons-networks icons-networks_linkedin-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://www.linkedin.com/in/clemence-benjamin-795050158"></a></li>
+    <li title="X"><a class="icons-networks icons-networks_tw-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://x.com/ClemenceBenjam2"></a></li>
+    <li title="Microsoft Teams"><a class="icons-networks icons-networks_microsoft-teams-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://teams.microsoft.com/l/chat/0/0?users=Clemy.benjc@outlook.com"></a></li>
+    <li title="Сайт"><a target="_blank" rel="noreferrer noopener nofollow" href="https://www.mql5.com/en/users/billionaire2024/seller" class="icons-profile icons-profile_net"></a>
+      <a target="_blank" rel="noreferrer noopener nofollow" href="https://www.mql5.com/en/users/billionaire2024/seller" style="display: inline-block; vertical-align: top; margin-top: -2px;">https://www.mql5.com/en/users/billionaire2024/seller</a></li>
+
+    </div>
+    <div class="article-footer__author-bio">Высоко мотивированный разработчик инструментов для торговли на Форекс. Я создатель контента и вдохновляющий преподаватель, который делает торговую среду комфортной.
+<br>Вам нужна помощь в разработке вашей идеи с нуля? Я здесь, чтобы помочь вам воплотить ее в жизнь по доступной цене. Не стесняйтесь предлагать мне работу по этой ссылке:
+<br><a href="https://www.mql5.com/en/job/new?prefered=billionaire2024" title="https://www.mql5.com/en/job/new?prefered=billionaire2024" target="_blank">https://www.mql5.com/en/job/new?prefered=billionaire2024</a>
+<br>Присоединяйтесь к нашему лучшему брокеру :
+<br><a href="/go?link=https://track.deriv.com/_r6xDODPy3Ly2vdm9PpHVCmNd7ZgqdRLk/1/" title="https://track.deriv.com/_r6xDODPy3Ly2vdm9PpHVCmNd7ZgqdRLk/1/" rel="nofollow" target="_blank">https://track.deriv.com/_r6xDODPy3Ly2vdm9PpHVCmNd7ZgqdRLk/1/</a>
+<br>Наши каналы на YouTube для преподавателей продуктов:
+</div>
+  </div>
+</div>
+
+      <div class="other-author-articles ui">
+        <h4 class="other-author-articles__title">Другие статьи автора</h4>
+        <ul class="other-author-articles__list">
+          <li><a href="/ru/articles/21189" data-fz-event="MQL5+Article+From+Author+Article">Преодоление проблем доступности в торговых инструментах на MQL5 (Часть I): Как добавить контекстные голосовые оповещения в индикаторы MQL5</a></li>
+          <li><a href="/ru/articles/21129" data-fz-event="MQL5+Article+From+Author+Article">От новичка до эксперта: Разработка стратегии торговли по зонам ликвидности</a></li>
+          <li><a href="/ru/articles/20986" data-fz-event="MQL5+Article+From+Author+Article">От новичка до эксперта: Создание индикатора для определения зон ликвидности</a></li>
+          <li><a href="/ru/articles/20904" data-fz-event="MQL5+Article+From+Author+Article">От новичка до эксперта: Подтверждение зон спроса и предложения через статистические данные</a></li>
+          <li><a href="/ru/articles/20658" data-fz-event="MQL5+Article+From+Author+Article">От новичка до эксперта: Сигналы с высокой вероятностью</a></li>
+          <li><a href="/ru/articles/20645" data-fz-event="MQL5+Article+From+Author+Article">От новичка до эксперта: Ориентирование в непредсказуемой стихии рынка</a></li>
+          <li><a href="/ru/articles/20587" data-fz-event="MQL5+Article+From+Author+Article">От новичка до эксперта: Алгоритмическая дисциплина трейдера — советник Risk Enforcer вместо эмоций</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+  <div class="article__last-comments" id="articleAdditional">
+    
+
+<div class="comments-preview">
+    <div class="title">
+      <span></span><b>
+ <a href="/ru/forum/499422">Перейти к обсуждению на форуме трейдеров</a>
+      </b>
+    </div>
+    <div>
+        
+    </div>
+</div>
+
+  </div>
+
+
+    <div class="articles-bottom-list" id="articleAdditional">
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Нейросети в трейдинге: Агрегация движения по времени (Основные компоненты)" src="https://c.mql5.com/2/179/20208-neyroseti-v-treydinge-agregaciya-logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/ru/articles/20208" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Нейросети в трейдинге: Агрегация движения по времени (Основные компоненты)</a>
+                <div class="articles-bottom-list__desc">В этой статье теория встречается с практикой. Мы реализуем ключевые модули фреймворка TMA — MPE и MPA. Здесь данные обретают смысл, а кросс-внимание превращается в инструмент точного анализа рыночной динамики. Минимум избыточных операций, максимум эффективности — шаг к интеллектуальному трейдингу нового поколения.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Выборочные методы MCMC: Алгоритм выборки по уровням (Slice sampling)" src="https://c.mql5.com/2/179/20163-viborochnie-metodi-mcmc-algoritm-logo__1.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/ru/articles/20163" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Выборочные методы MCMC: Алгоритм выборки по уровням (Slice sampling)</a>
+                <div class="articles-bottom-list__desc">В этой статье исследуется метод выборки по уровням (slice sampling) — адаптивный алгоритм MCMC, который самостоятельно регулирует параметры сэмплирования. Его эффективность продемонстрирована на моделях байесовской линейной и логистической регрессии, а результаты сравниваются с классическими частотными методами.</div>
+              </div>
+          </div>
+        </div>
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Команда ИИ-агентов с ротацией по прибыли: Эволюция живой торговой системы в MQL5" src="https://c.mql5.com/2/179/20071-komanda-ii-agentov-s-rotaciey-logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/ru/articles/20071" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Команда ИИ-агентов с ротацией по прибыли: Эволюция живой торговой системы в MQL5</a>
+                <div class="articles-bottom-list__desc">Управление финансами как экосистема: семь ИИ-трейдеров с разными характерами и стратегиями вместо одного алгоритма. Они конкурируют за капитал, учатся на ошибках и принимают решения коллективно. Статья раскрывает принципы работы системы Modern RL Trader, где код обладает сознанием и эмоциями, создавая живой, эволюционирующий торговый разум.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Нейросети в трейдинге: Агрегация движения по времени (TMA)" src="https://c.mql5.com/2/179/20189-neyroseti-v-treydinge-agregaciya-logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/ru/articles/20189" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Нейросети в трейдинге: Агрегация движения по времени (TMA)</a>
+                <div class="articles-bottom-list__desc">Фреймворк TMA открывает новый взгляд на рыночную динамику, позволяя моделям улавливать не только состояние рынка, но и само течение времени. Его способность извлекать закономерности из непрерывного потока данных делает анализ глубже и точнее, чем при классических подходах. А рекуррентная адаптация превращает этот метод в практичный инструмент для работы с реальными котировками.</div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+<div class="clear-fix"></div>
+
+<div id='wdausxxqrpvhekbwjrjlhqjghyhesrqqau' class="r6irig5txiuua4k0m r6irig5txiuua4k0m_articles-view gg88d3drb"></div>
+    
+
+<div class="hidden" id="popupRegisterLogin">
+  <div class="register-login-popup">
+    <div class="register-login-popup__header">
+      <img src="https://c.mql5.com/i/registerlandings/logo-2.png" srcset="https://c.mql5.com/i/registerlandings/logo-2_2x.png 2x" alt="MQL5 - Язык торговых стратегий для клиентского терминала MetaTrader 5" loading="lazy" width="74" height="24" />
+    </div>
+    <div class="register-login-popup__content">
+      <div class="register-login-popup__desc">
+        <div class="register-login-popup__title">Вы упускаете торговые возможности:</div>
+        <ul>
+<li>Бесплатные приложения для трейдинга</li>
+<li>8 000+ сигналов для копирования</li>
+<li>Экономические новости для анализа финансовых рынков</li>
+</ul>
+      </div>
+      <div class="register-login-popup__forms ui">
+        <div class="register-login-popup__tabs" id="registerLoginPopupTabs">
+          <span data-id="register" id="registerLoginPopupTab_register" class="register-login-popup__tab register-login-popup__tab_active">Регистрация</span>
+          <span data-id="login" id="registerLoginPopupTab_login" class="register-login-popup__tab">Вход</span>
+        </div>
+        <div id="registerLoginPopupTabContent_register">
+          <div class="ui auth-form__content">
+    
+  <script type='text/javascript'>/*<![CDATA[*/ if (!window.V) var V = []; /*]]>*/</script>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/ru/auth_register_short" id="PopupRegisterquickRegisterForm" onsubmit="PopupRegisterquickRegistration.OnSubmit(this,&#39;ru&#39;);if(Validate(this)) Ajax.form(this,{onready:PopupRegisterquickRegistration.OnSuccessPopup,onerror:PopupRegisterquickRegistration.OnError,onbeginrequest:PopupRegisterquickRegistration.DisableInputs,onendrequest:PopupRegisterquickRegistration.EnableInputs});return(false);" enctype = "multipart/form-data"><input type="hidden" name="__signature" value="8aaf40ac3c7332c6a8a4a2ad55e31467"/>
+    <div class="auth-form__inputs">
+      <input type="hidden" value="0" name="IsValidate" id="PopupRegisterIsValidate" />
+
+      <!--[if lt IE 10]><div class="note">Придумайте логин:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input type="text" id="PopupRegisterusername" name="username" class="input" maxlength="32" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.CheckUserName();}" onkeyup="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.ValidateUserName(this, 'Укажите корректный логин');}" placeholder="Придумайте логин" title="Может содержать латинские буквы, цифры, точки, тире, символы подчеркивания. Не может начинаться и заканчиваться точкой. Длина: 3-32 символов." onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisterusername'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisterusername',10,'Используйте латинские буквы, допускаются цифры, символы подчеркивания и точки.',validate_username]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisterusername">латиницей и без пробелов</label>
+      </div>
+      <!--[if lt IE 10]><div class="note">Ваш email:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input class="input" type="email" id="PopupRegisteremail" name="email" placeholder="Ваш email" title="Введите email (не более 256 символов). Например: ivan@example.com" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnChange(this);}" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisteremail'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisteremail',10,'Укажите корректный email',validate_email]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisteremail">пароль придет на email</label>
+      </div>
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Register" />
+    </div>
+    <span id="PopupRegisterquickRegisterSubmit">
+      <input type="submit" value="Зарегистрироваться" id="PopupRegisterquickRegisterButton"  title="Зарегистрируйтесь и получите пароль на ваш email" class="button button_yellow"  />
+    </span>
+    <span id="PopupRegisterquickRegisterErrorMessage" class="quick-register-error-message field-validation-error" style="text-align: center; margin-top: 16px; display: none;">
+      Произошла ошибка
+    </span>
+</form>
+    
+</div>
+<div class="auth-social">
+  <ul class="auth-social-list" id="socialList">
+    <li><a onclick="window.fpush({name: 'MQL5+Popup+Register+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/ru/auth_oauth2?provider=Google&amp;amp;return=popup&amp;amp;reg=1" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Войти через Google</a></li>
+  </ul>
+</div>
+<div class="auth-block-agree">
+  <p>
+    Вы принимаете <a target="_blank" href="/ru/about/privacy">политику сайта</a> и <a target="_blank" href="/ru/about/terms">условия использования</a>
+  </p>
+</div>
+
+
+        </div>
+        <div id="registerLoginPopupTabContent_login" class="hidden">
+            <div class="auth-form__text">
+    Если у вас нет учетной записи, <a href="https://www.mql5.com/ru/auth_register" rel="nofollow" style="vertical-align: top">зарегистрируйтесь</a>
+  </div>
+<div class="ui auth-form__content auth-form__content_login" id="loginFormWrapper">
+    
+  <div id="needCookies" class="need-cookies hidden">
+    <div class="danger-box">
+      <p>Для авторизации и пользования сайтом MQL5.com необходимо разрешить использование файлов Сookie.</p>
+<p>Пожалуйста, включите в вашем браузере данную настройку, иначе вы не сможете авторизоваться.</p>
+    </div>
+  </div>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/ru/auth_login" id="loginForm" onsubmit="if(window.quickLogin){return window.quickLogin.onSubmit(this);}var result = Validate(this); if(result) { preventDoubleSubmit(this); } return result;"><input id="RedirectAfterLoginUrl" name="RedirectAfterLoginUrl" type="hidden" value="" /><input id="RegistrationUrl" name="RegistrationUrl" type="hidden" value="" /><input data-val="true" data-val-required="The ShowOpenId field is required." id="ShowOpenId" name="ShowOpenId" type="hidden" value="True" /><input id="TrackingSection" name="TrackingSection" type="hidden" value="Articles" />    <input name="ViewType" type="hidden" value="5" />
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Login" />
+    <!--[if lt IE 10]><div class="note">Ваш логин:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <input class="input qa-login" id="Login" name="Login" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Логин" title="Ваш логин" type="text" value="" />
+      <script type='text/javascript' id='validate_Login'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Login',1,'Введите логин, указанный при регистрации']);});mqGlobal.AddOnReady(function() {V.push(['Login',10,'Email нельзя использовать, введите свой логин, пожалуйста',validateLogin]);}); /*]]>*/</script>
+    </div>
+    <!--[if lt IE 10]><div class="note">Пароль:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <div class="input-with-show">
+        <input autocomplete="off" class="input qa-password" id="Password" name="Password" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Пароль" title="Введите пароль" type="password" />
+        <span class="input-with-show__icon" title="Показать пароль" onclick="if(window.quickLogin){window.quickLogin.showPass(this, 'Показать пароль', 'Скрыть пароль');}"></span>
+      </div>
+      <script type='text/javascript' id='validate_Password'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Password',1,'Введите пароль']);}); /*]]>*/</script>
+    </div>
+    <script type="text/javascript">
+    function validateLogin(input) {
+      console.log('validate login ' + input.value);
+      return !/^\w+([-+.'']{1,2}\w+)* @\w+([-.]\w+)*\.\w+([-.]\w+)*$/i.test(input.value);
+    }
+    </script>
+    <div class="forgot" id="loginForgotBlock"><a id="loginForgotLink" href="https://www.mql5.com/ru/auth_forgotten?return=popup">Забыли логин/пароль?</a></div>
+    <input type="submit" class="button button_yellow qa-submit" id="loginSubmit" value="Вход" title="Войти">
+</form></div>
+
+  <div class="auth-social" id="authSocialBlock">
+    <ul class="auth-social-list" id="socialList">
+      <li><a onclick="window.fpush({name: 'MQL5+Popup+Login+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/ru/auth_oauth2?provider=Google&amp;amp;return=popup" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Войти через Google</a></li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script id="popupSection" type="application/json">{"section": "Articles"}</script>
+<script id="popupTranslate" data-type="translate" type="application/json">
+{
+  "popup":
+  {
+  "EmailTitle" : "Пароль отправлен на {0}",
+  "EmailDescription" : "Войдите, используя полученный пароль и логин, указанный при регистрации",
+  "SubmitButtonText" : "Активировать аккаунт",
+  "RegistrationTip" : "Если вы не получили письмо с паролем, проверьте папку спам или &lt;a href={0}&gt;повторите регистрацию&lt;/a&gt;"
+  }
+}
+</script>
+
+    
+
+    
+
+
+    </article>
+  </div>
+
+
+
+<div aria-hidden="true" class="footer  desktop" id="footer">
+  <ul class="links  links_desktop">
+      <li id="navFooterCommunity">
+        <nav>
+          <ul>
+            <li><a href="https://web.metatrader.app/terminal?mode=demo&amp;lang=ru" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Footer+Trading">Онлайн трейдинг / Вебтерминал</a></li>
+            <li><a href="/ru/code" data-fz-event="MQL5+Footer+CodeBase">Бесплатные индикаторы и советники</a></li>
+            <li><a href="/ru/articles" data-fz-event="MQL5+Footer+Articles">Статьи о программировании и трейдинге</a></li>
+            <li><a href="/ru/job" data-fz-event="MQL5+Footer+Job">Заказать торговый советник и индикатор</a></li>
+            <li><a href="/ru/market" data-fz-event="MQL5+Footer+Market">Купить торговый робот и индикатор</a></li>
+            <li><a href="/ru/signals" data-fz-event="MQL5+Footer+Signals">Торговые сигналы форекс</a></li>
+            <li><a href="/ru/vps" data-fz-event="MQL5+Footer+VPS">Forex VPS для торговли</a></li>
+            <li><a href="/ru/forum" data-fz-event="MQL5+Footer+Forum">Форум трейдеров</a></li>
+            <li><a href="/ru/blogs" data-fz-event="MQL5+Footer+Blogs">Блоги трейдеров</a></li>
+            <li><a rel="nofollow" href="/ru/charts" data-fz-event="MQL5+Footer+Charts">Графики</a></li>
+            <li><a href="/ru/widgets" data-fz-event="MQL5+Footer+Widgets">Бесплатные виджеты</a></li>
+          </ul>
+        </nav>
+      </li>
+      <li id="navFooterMt5">
+        <nav>
+          <ul>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com" data-fz-event="MQL5+Footer+MetaTrader+5">Торговая платформа <span class="nobr">MetaTrader 5</span></a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/releasenotes" data-fz-event="MQL5+Footer+MetaTrader+5">Последние обновления <span class="nobr">MetaTrader 5</span></a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/news" data-fz-event="MQL5+Footer+MetaTrader+5">Новости, внедрения и технологии</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/terminal/help" data-fz-event="MQL5+Footer+MetaTrader+5">Руководство пользователя <span class="nobr">MetaTrader 5</span></a></li>
+            <li><a href="/ru/docs" data-fz-event="MQL5+Footer+Docs">Язык торговых стратегий MQL5</a></li>
+            <li><a rel="nofollow noopener" href="https://cloud.mql5.com" data-fz-event="MQL5+Footer+Cloud">MQL5 Cloud Network</a></li>
+            <li><a rel="noopener" href="https://forge.mql5.io/?lang=ru-RU" data-fz-event="MQL5+Footer+Forge" target="_blank">MQL5 Algo Forge</a></li>
+              <li><a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Footer">Скачать <span class="nobr">MetaTrader 5</span></a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/terminal/help/start_advanced/installation" data-fz-event="MQL5+Footer+MetaTrader+5">Установка платформы</a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/terminal/help/start_advanced/deinstallation" data-fz-event="MQL5+Footer+MetaTrader+5">Удаление программы</a></li>
+          </ul>
+        </nav>
+
+      </li>
+    <li id="navFooterWebsite">
+        <nav>
+          <ul>
+            <li><a rel="nofollow" href="/ru/about" data-fz-event="MQL5+Footer+About">О проекте</a></li>
+              <li><a href="/ru/wall" data-fz-event="MQL5+Footer+Wall">Хроника сайта</a></li>
+            <li><a rel="nofollow" href="/ru/about/terms" data-fz-event="MQL5+Footer+About">Условия использования</a></li>
+            <li><a rel="nofollow" href="/ru/about/autopayments" data-fz-event="MQL5+Footer+About">Соглашение о рекуррентных платежах</a></li>
+            <li><a rel="nofollow" href="/ru/about/agencyagreement" data-fz-event="MQL5+Footer+About">Агентский договор-оферта</a></li>
+            <li><a rel="nofollow" href="/ru/about/privacy" data-fz-event="MQL5+Footer+About">Политика конфиденциальности и защиты данных</a></li>
+            <li><a rel="nofollow" href="/ru/about/cookies" data-fz-event="MQL5+Footer+About">Политика в отношении cookie-файлов</a></li>
+            <li>
+                <a rel="nofollow" href="/ru/contact" data-fz-event="MQL5+Footer+Contacts">Контакты и обращения</a>
+            </li>
+          </ul>
+        </nav>
+    </li>
+
+      <li>
+        <div class="footer__products">
+          <div class="footer__product">
+            <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com" class="footer__product-name">MetaTrader 5</a>
+            <div class="footer__product-links">
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon windows" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Скачать MetaTrader 5 для Windows</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/MetaTrader5.pkg.zip?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon macos" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Скачать MetaTrader 5 для MacOS</div></a>
+            <a rel="nofollow noopener" href="https://www.mql5.com/ru/articles/625?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon linux" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Скачать MetaTrader 5 для Linux</div></a>
+            <a rel="nofollow noopener" href="https://web.metatrader.app/terminal?mode=demo&amp;lang=ru" class="icon web"><div  class="footer__product-link-hint footer__product-link-hint-short">Открыть MetaTrader 5 WebTerminal</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/ios?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=ru" class="icon ios" data-fz-event="MetaTrader+5+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/RXd-JJC1I1d.png)">Отсканируйте для установки из App Store</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=ru" class="icon android" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/TrE06p2W-9d.png)">Отсканируйте для установки из Google Play</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon huawei" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ZRt&#x2B;zI1l&#x2B;8O.png)">Отсканируйте для установки из Huawei AppGallery</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon ark" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/L0Q9oag&#x2B;3eE.png)">Отсканируйте для получения файла APK для Android</div></a>
+            </div>
+          </div>
+          <div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com/en/news/2270" class="footer__product-name">MQL5 Channels</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon ios" data-fz-event="MQL5+Channels+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Nz0etpAYpcO.png)">Отсканируйте для установки из App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon android" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/8re&#x2B;UwV7BVs.png)">Отсканируйте для установки из Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Su&#x2B;fe4n374e.png)">Отсканируйте для установки из Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mql5channels/mql5channels.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/G6Mg4NfCPzO.png)">Отсканируйте для получения файла APK для Android</div></a>
+              </div>
+            </div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.tradays.com/ru/download?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MQL5+Footer+Download+Tradays" class="footer__product-name">Economic Calendar</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon ios" data-fz-event="Tradays+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/e0xuSVTw-1E.png)">Отсканируйте для установки из App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon android" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/YuEbj-vmYap.png)">Отсканируйте для установки из Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CrS7bbDAdAO.png)">Отсканируйте для установки из Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/tradays/tradays.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/VZi8YPIb2op.png)">Отсканируйте для получения файла APK для Android</div></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__networks">
+          <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow" title="Facebook"><i class="icons-networks icons-networks_fb"></i></a>
+          <a href="https://t.me/mql5ru" target="_blank" rel="nofollow" title="Telegram"><i class="icons-networks icons-networks_tg"></i></a>
+          <a href="https://x.com/mql5com" target="_blank" rel="nofollow" title="X (Twitter)"><i class="icons-networks icons-networks_tw"></i></a>
+          <a href="https://www.youtube.com/@MetaQuotesOfficial" target="_blank" rel="nofollow" title="YouTube"><i class="icons-networks icons-networks_yt"></i></a>
+          <a href="https://www.linkedin.com/company/mql5" target="_blank" rel="nofollow" title="LinkedIn"><i class="icons-networks icons-networks_linkedin"></i></a>
+          <span>Подпишитесь на новости алготрейдинга</span>
+        </div>
+  
+        <div class="footer__other">
+          <div class="footer__not-a-broker">Не является брокером, нет реальных торговых счетов</div>
+          <div class="copyright">35 Dodekanisou str, Germasogeia, 4043,&nbsp;Limassol,&nbsp;Cyprus</div>
+          <div class="copyright">Copyright 2000-2026, <span class="nobr">MetaQuotes Ltd</span></div>
+        </div>
+      </li>
+  </ul>
+</div>
+
+
+
+<div class="shadow-layer" id="layer"></div>
+    
+
+  <div class="b-fixed-mt" id="bFixedMt" style="display: none;">
+    
+  </div>
+
+
+<script type='text/javascript'>
+		(function (a, e, f, g, b, c, d) { a[b] || (a.FintezaCoreObject = b, a[b] = a[b] || function () { (a[b].q = a[b].q || []).push(arguments) }, a[b].l = 1 * new Date, c = e.createElement(f), d = e.getElementsByTagName(f)[0], c.async = !0, c.defer = !0, c.src = g, d && d.parentNode && d.parentNode.insertBefore(c, d)) })
+      (window, document, "script", "/ff/core.js", "fz");
+		window.fz("register", "website", {
+      id: "sqjxkxkswybhifrohpyooonwgbvsfzmayq",
+			trackLinks: true
+		});
+        mqGlobal.AddOnReady(function () { Mql5Cookie.init('mql5.com', '5089795619196267175'); });
+mqGlobal.AddOnReady(function(){if(!window.Pocket){window.Pocket=new PocketManager();}});mqGlobal.AddOnReady(function(){if(!window.translateManager){window.translateManager=new Translate(undefined,'Ошибка: не удалось выполнить перевод. Пожалуйста, повторите попытку позже.');}if(document.querySelectorAll){var translateElements=document.querySelectorAll(".translateMenu");if(translateElements){var i=0,count=translateElements.length;for(i;i<count;i++){(function(i){var contentid=dataset(translateElements[i],"contentid"),sourcelang=dataset(translateElements[i],"sourcelang"),targetlang=dataset(translateElements[i],"targetlang"),moduleid=parseInt(dataset(translateElements[i],"moduleid")),typeid=parseInt(dataset(translateElements[i],"typeid")),entityid=parseInt(dataset(translateElements[i],"entityid"));Core.AddHandler(translateElements[i],"mouseover",function(){return translateManager.SetMenu(this,contentid,sourcelang,targetlang,moduleid,typeid,entityid);});})(i);}}}});window.fz("show","wdausxxqrpvhekbwjrjlhqjghyhesrqqau");window.mqGlobal.AddOnLoad(function(){window.fpush('MQL5+Article+Open');Articles.CheckOnScrollDown();});mqGlobal.AddOnReady(function(){window.PopupRegisterquickRegistration=new QuickRegistration('PopupRegister','Popup+Register','Articles');});function validate_username(input){var reg=/^([a-z0-9]){1}([\-._a-z0-9]){1,30}([\-_a-z0-9]){1}$/i,value=input.value,result=true;if(reg.test(value)){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Login',unit:'section',value:'Articles'});}return result;}function validate_email(input){var reg=/^\w+([-+.'']{1,2}\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/i,value=input.value,result=true,length_value=value.length;if(reg.test(value)&&length_value>=1&&length_value<=40){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Email',unit:'section',value:'Articles'});}return result;};mqGlobal.AddOnReady(function(){var username=$('PopupRegisterusername'),email=$('PopupRegisteremail');if(username)username.value='';if(email)email.value='';});mqGlobal.AddOnReady(function(){window.quickLogin=new QuickLogin('Popup+Login','Articles');});mqGlobal.AddOnLoad(function(){window.showLoginRegisterPopupAtEnd();});mqGlobal.AddOnLoad(function(){window.tooltipUserInfo.init();});mqGlobal.AddOnReady(function(){{window.initHeaderSearch('','https://www.mql5.com/ru/search');}});</script><script type="text/javascript">mqGlobal.AddOnReady(function(){window.initSuggestions("headerSearchKeyword","ru","https://search.mql5.com/api/query","https://www.mql5.com/ru/users_search/suggestion");});window.fz("show","vgckrufggwxdtfscpyalmenexmvhljduja");mqGlobal.AddOnReady(function(){window.floatVerticalPanelNode=FloatVerticalPanel('Сайт использует cookie-файлы. Узнайте больше о нашей <a href="/ru/about/cookies">политике по использованию cookie-файлов</a>.','cookie_accept');});							if (typeof Attach !== "undefined")
+			Attach.setAcceptFilter(".zip, .txt, .log, .mqh, .ex5, .mq5, .mq4, .mqproj, .ex4, .mt5, .set, .tpl, .cl, .py, .sqlite, .csv, .ini, .ipynb, .onnx, .gif, .png, .jpg, .jpeg, .mp4, .webm");
+	</script>
+
+<script type="application/ld&#x2B;json">
+		[
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"url": "https://www.mql5.com",
+				"logo": "https://c.mql5.com/i/community/logo_mql5-2.png",
+				"sameAs": [
+					"https://www.facebook.com/mql5.community",
+					"https://www.x.com/mql5com",
+					"https://www.youtube.com/user/MetaQuotesOfficial"
+				 ]
+			}
+		
+, 
+{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"Форум","description":"Обсуждение торговых стратегий и автоматического трейдинга. MQL5.community  крупнейший форум по форексу","url":"https://www.mql5.com/ru/forum","children":[]},{"@type":"SiteNavigationElement","position":2,"name":"Маркет","description":"MetaTrader Market - магазин торговых роботов, индикаторов, книг и журналов по трейдингу.","url":"https://www.mql5.com/ru/market","children":[]},{"@type":"SiteNavigationElement","position":3,"name":"Сигналы","description":"Социальный трейдинг, копирование сделок и мониторинг счетов в MetaTrader - Торговые сигналы на MQL5.com","url":"https://www.mql5.com/ru/signals","children":[]},{"@type":"SiteNavigationElement","position":4,"name":"Фриланс","description":"Заказать торговых роботов, технические индикаторы и программы для автоматического трейдинга. Работа на форексе. Фриланс-сервис на MQL5.com. Нанять на работу специалистов и экспертов по MetaTrader","url":"https://www.mql5.com/ru/job","children":[]},{"@type":"SiteNavigationElement","position":5,"name":"Котировки","description":"","url":"https://www.mql5.com/ru/quotes/overview","children":[]},{"@type":"SiteNavigationElement","position":6,"name":"MetaTrader","description":"","url":"https://www.metatrader.com","children":[]},{"@type":"SiteNavigationElement","position":7,"name":"Вебтерминал","description":"Вебтерминал для торговой плафтормы MetaTrader. Торгуйте на форекс рынке.","url":"https://web.metatrader.app/terminal?mode=demo","children":[]},{"@type":"SiteNavigationElement","position":8,"name":"Календарь","description":"","url":"https://www.mql5.com/ru/economic-calendar","children":[]},{"@type":"SiteNavigationElement","position":9,"name":"VPS","description":"","url":"https://www.mql5.com/ru/vps","children":[]},{"@type":"SiteNavigationElement","position":10,"name":"Статьи","description":"","url":"https://www.mql5.com/ru/articles","children":[]},{"@type":"SiteNavigationElement","position":11,"name":"CodeBase","description":"Скачать торговые роботы, технические индикаторы, скрипты в исходном коде - Библиотека кодов на MQL5 для MetaTrader 5","url":"https://www.mql5.com/ru/code","children":[]},{"@type":"SiteNavigationElement","position":12,"name":"Algo Forge","description":"","url":"https://forge.mql5.io","children":[]},{"@type":"SiteNavigationElement","position":13,"name":"Документация","description":"Справочник MetaQuotes Language 5 (MQL5) - Документация на MQL5.com","url":"https://www.mql5.com/ru/docs","children":[]}]}		
+,
+{"@context":"https://schema.org","@type":"TechArticle","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.mql5.com/ru/articles/19780"},"headline":"От новичка до эксперта: Раскрываем скрытые уровни коррекции Фибоначчи","image":["https://c.mql5.com/2/173/Hidden_Fibonacci_Levels1.png","https://c.mql5.com/2/173/crr.png","https://c.mql5.com/2/173/chrome_tReU5S1VDY.png","https://c.mql5.com/2/173/chrome_jnWB0Vkuwj.png","https://c.mql5.com/2/173/rrd.png","https://c.mql5.com/2/173/kde.png","https://c.mql5.com/2/173/ShareX_yN3mJO0BR2.gif"],"datePublished":"2025-11-05T13:49:12+00:00Z","dateModified":"2025-11-05T13:48:29+00:00Z","author":{"@type":"Person","name":"Clemence Benjamin","url":"https://www.mql5.com/ru/users/billionaire2024"},"editor":{"@type":"Organization","name":"MetaQuotes","url":"https://www.mql5.com/ru/users/metaquotes","address":{"@type":"PostalAddress","addressCountry":"CY"}},"publisher":{"@type":"Organization","name":"MQL5 Community","url":"https://www.mql5.com","logo":{"@type":"ImageObject","url":"https://c.mql5.com/i/community/logo_mql5-2.png"}},"description":"В настоящей статье мы рассмотрим основанный на данных подход к обнаружению и проверке нестандартных уровней коррекции Фибоначчи, которые могут учитываться рынками. Мы представляем полный рабочий процесс, адаптированный для реализации на MQL5, начиная со сбора данных и определения баров или колебаний и заканчивая кластеризацией, проверкой статистических гипотез, бэктестингом и интеграцией в инструмент Фибоначчи на MetaTrader 5. Цель состоит в том, чтобы создать воспроизводимый конвейер, преобразующий отдельные наблюдения в статистически обоснованные торговые сигналы."}
+,
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":"https://www.mql5.com/ru/articles","name":"Статьи"},{"@type":"ListItem","position":2,"item":"https://www.mql5.com/ru/articles/mt5","name":"MetaTrader 5"},{"@type":"ListItem","position":3,"item":"https://www.mql5.com/ru/articles/mt5/trading_systems","name":"Торговые системы"}]}
+
+		]
+	</script>
+</body>
+</html>

@@ -1,0 +1,932 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+
+  <meta name="robots" content="max-snippet:250,max-image-preview:large">
+  <meta name="description" content="Протяженность зон ликвидности и величина диапазона пробоя являются ключевыми переменными, существенно влияющими на вероятность повторного тестирования. В этом обсуждении мы описываем полный процесс разработки индикатора, который включает в себя эти коэффициенты.">
+  <meta property="og:url" content="https://www.mql5.com/ru/articles/20986">
+  <meta property="og:title" content="От новичка до эксперта: Создание индикатора для определения зон ликвидности">
+  <meta property="og:description" content="Протяженность зон ликвидности и величина диапазона пробоя являются ключевыми переменными, существенно влияющими на вероятность повторного тестирования. В этом обсуждении мы описываем полный процесс разработки индикатора, который включает в себя эти коэффициенты.">
+      <meta property="og:image" content="https://c.mql5.com/2/192/20986-from-novice-to-expert-creating-a-liquidity-zone-indicator_1200x628.jpg">
+      <meta property="og:image:secure_url" content="https://c.mql5.com/2/192/20986-from-novice-to-expert-creating-a-liquidity-zone-indicator_1200x628.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-02-20T08:44:31.0000000Z">
+  <meta property="article:author" content="https://www.mql5.com/ru/users/billionaire2024">
+  <meta property="article:section" content="MetaTrader 5">
+  <meta property="article:tag" content="Примеры">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@mql5com">
+  <meta name="twitter:image" content="https://c.mql5.com/2/192/20986-from-novice-to-expert-creating-a-liquidity-zone-indicator_1200x628.jpg">
+  <meta name="theme-color" content="#4a76b8">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-config" content="none">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta property="qc:admins" content="36367170677651456375">
+  <meta property="wb:webmaster" content="073d7690269bcd81">
+  <link rel="shortcut icon" href="https://c.mql5.com/i/favicon4.ico">
+  <link rel="dns-prefetch" href="https://c.mql5.com">
+  <link href="https://c.mql5.com/styles/core.444bc25de4c9131a69fedfe5ac42a082.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/all.266d64b83529847f568747dd160d42b0.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/articles.bc4209e4de0b5296041832431b46f3dd.css" type="text/css" rel="stylesheet" media="all">
+  <link href="/ru/articles/rss" rel="alternate" type="application/rss+xml" title="Статьи по разработке и использованию торговых роботов и технических индикаторов для MetaTrader 5">
+  <link rel="canonical" href="https://www.mql5.com/ru/articles/20986">
+  <link rel="alternate" hreflang="en" href="https://www.mql5.com/en/articles/20986">
+  <link rel="alternate" hreflang="ru" href="https://www.mql5.com/ru/articles/20986">
+  <link rel="alternate" hreflang="de" href="https://www.mql5.com/de/articles/20986">
+  <link rel="alternate" hreflang="ja" href="https://www.mql5.com/ja/articles/20986">
+  <title>От новичка до эксперта: Создание индикатора для определения зон ликвидности - Статьи по MQL5</title>
+
+
+
+<script type="text/javascript">
+  !function(){window.mqGlobal={};var t=!1,n=!1,e=[],o=[],i=[];function d(t){var n;for(n=0;n<t.length;n+=1)t[n]()}function c(){t||(t=!0,d(e),d(o),o=[],e=[])}function a(){c(),n||(n=!0,d(i),i=[])}if(mqGlobal.AddOnReady=function(n,i){t?n(document):i?e.push(n):o.push(n)},mqGlobal.AddOnLoad=function(t){n?t(document):i.push(t)},mqGlobal.AddOnActiveWindowChange=function(t){this._onvisibility||(this._onvisibility=[]),this._onvisibility[this._onvisibility.length]=t},document.addEventListener)document.addEventListener("DOMContentLoaded",c,!1),window.addEventListener("load",a,!1);else if(document.attachEvent&&(document.attachEvent("onreadystatechange",(function(){switch(document.readyState){case"interactive":c();break;case"complete":a()}})),window.attachEvent("onload",a),document.documentElement.doScroll&&window==window.top)){!function n(){if(!t&&document.body)try{document.documentElement.doScroll("left"),c()}catch(t){setTimeout(n,0)}}()}}();
+  mqGlobal.CookieDomain = ".mql5.com";
+  mqGlobal.Language = 'ru';
+  mqGlobal.IsMobile = false;
+  mqGlobal.ClearRteStorage = function (e) { if (window.GStorage || (window.GStorage = globalStorage()), window.GStorage.supported) try { var o = e; window.GStorage.getItem("rte_autosave_uid", function (e, t) { t == o && (window.GStorage.removeItem("rte_autosave_text"), window.GStorage.removeItem("rte_autosave_date"), window.GStorage.removeItem("rte_autosave_uid")) }) } catch (e) { } };
+</script>
+  
+
+    <script src="https://c.mql5.com/js/all.c09fd283bed20d28a52c95cd70a12a27.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/vendor.1be6e9a4a90b28525f93c4c69a5058a1.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/articles.cd4c73c476b2781eecdf04f5583514b5.js" type="text/javascript" defer="defer"></script>
+
+
+</head>
+
+<body id="cover" class="cover">
+
+
+  <nav class="head">
+    <a href="https://www.mql5.com/ru" class="head__logo" title="MQL5 - Язык торговых стратегий для клиентского терминала MetaTrader 5"></a>
+      <div class="head__content">
+        <div class="main-menu" id="mainmenu">
+          
+                    <ul class="main-menu__top-level" id="menuTopLevel">
+                    <li><a href="/ru/forum" data-fz-event="MQL5+Menu+Forum">Форум</a></li>
+                    <li><a href="/ru/market" data-fz-event="MQL5+Menu+Market">Маркет</a></li>
+                    <li><a href="/ru/signals" data-fz-event="MQL5+Menu+Signals">Сигналы</a></li>
+                    <li><a href="/ru/job" data-fz-event="MQL5+Menu+Job">Фриланс</a></li>
+                    <li><a href="/ru/vps" data-fz-event="MQL5+Menu+VPS">VPS</a></li>
+                    <li><a href="/ru/quotes/overview" data-fz-event="MQL5+Menu+Overview">Котировки</a></li>
+                    <li><a href="https://www.metatrader.com/ru" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+MetaTrader">MetaTrader</a></li>
+                  </ul><ul class="main-menu__second-level" id="menuSecondLevel">
+                    <li class="main-menu__selected"><a href="/ru/articles" data-fz-event="MQL5+Menu+Articles"><img src="https://c.mql5.com/i/menu/icon-articles4.svg" alt="" width="16" height="16"/>Статьи</a></li>
+                    <li><a href="/ru/code" data-fz-event="MQL5+Menu+CodeBase"><img src="https://c.mql5.com/i/menu/icon-code4.svg" alt="" width="16" height="16"/>CodeBase</a></li>
+                    <li><a href="https://forge.mql5.io/?lang=ru-RU" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+AlgoForge"><img src="https://c.mql5.com/i/menu/icon-algoforge4.svg" alt="" width="16" height="16"/>Algo Forge</a></li>
+                    <li><a href="/ru/docs" data-fz-event="MQL5+Menu+Docs"><img src="https://c.mql5.com/i/menu/icon-docs4.svg" alt="" width="16" height="16"/>Документация</a></li>
+                    <li><a href="/ru/book" data-fz-event="MQL5+Menu+Book"><img src="https://c.mql5.com/i/menu/icon-book4.svg" alt="" width="16" height="16"/>Учебник по алготрейдингу</a></li>
+                    <li><a href="/ru/neurobook" data-fz-event="MQL5+Menu+Neurobook"><img src="https://c.mql5.com/i/menu/icon-neurobook4.svg" alt="" width="16" height="16"/>Учебник по нейросетям</a></li>
+                    <li><a href="/ru/economic-calendar" data-fz-event="MQL5+Menu+Economic+Calendar"><img src="https://c.mql5.com/i/menu/icon-economic-calendar4.svg" alt="" width="16" height="16"/>Календарь</a></li>
+                    <li><a href="https://web.metatrader.app/terminal?mode=demo&lang=ru" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Menu+Trading"><img src="https://c.mql5.com/i/menu/icon-trading4.svg" alt="" width="16" height="16"/>Вебтерминал</a></li>
+                    <li class="main-menu__mobile"><a href="/ru/about">О проекте</a></li>
+                    <li class="main-menu__second-tools"><a rel="noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" title="Загрузите последнюю версию торговой платформы бесплатно" class="button-mt" data-vars-fz="MetaTrader+5+Desktop+Download+Submenu"><img width="18" height="18" src="https://c.mql5.com/i/sidebar/download.svg" alt="" loading="lazy">Скачать MetaTrader 5</a></li>
+                    </ul>
+        </div>
+          <div class="main-menu__active">
+            <a id="mainMenuSelected" href="#">
+              <span class="main-menu__primary">Статьи</span><span class="main-menu__secondary">Разделы</span>
+            </a>
+          </div>
+<form action="https://www.mql5.com/ru/search" onsubmit="return false;" autocomplete="off" id="headerSearchForm" class="header-search" method="post">
+<button type="button" id="headerSearchButton" title="Поиск" class="header-search__button"></button><div class="header-search__input"><input name="keyword" type="text" enterkeyhint="search" title="Введите текст для поиска" placeholder="Поиск" id="headerSearchKeyword"/><label for="headerSearchKeyword" class="header-search__placeholder">Нажмите <span>/</span> для поиска: @user, $symbol, ...</label><button id="headerSearchSubmit" class="header-search__submit"></button></div><button type="button" id="headerSearchClean" title="Закрыть" class="header-search__clean"></button></form>        <input class="blurHandler" id="mainMenuBlurHandler" type="checkbox">
+      </div>
+      <div class="head__toolbar" id="headerToolbar">
+          <div class="container loginRegister">
+            <nav>
+              <ul id="loginRegisterButtons"><li><a class="login" title="Авторизуйтесь. Поддерживается OpenID-авторизация" href="https://www.mql5.com/ru/auth_login" rel="nofollow" data-fz-event="MQL5+Menu+Siginin">Вход</a></li><li><a class="registration ru" title="Зарегистрируйтесь" href="https://www.mql5.com/ru/auth_register" rel="nofollow" data-fz-event="MQL5+Menu+Register" onclick="window.fpush('MQL5+Button+Click');">Создать аккаунт</a></li></ul>
+            </nav>
+          </div>
+        <div class="toggle-button" id="sidebarToggleButton">
+          <i></i>
+        </div>
+
+        <div class="group-menu" id="groupMenu">
+
+
+          <div class="container lang-menu-container">
+            <div id="langMenuContainer" class="lang-menu">
+              <input class="blurHandler" id="langmenuBlurHandler" type="checkbox">
+              <nav>
+                <ul class="lang-menu__list" id="langmenu">
+                  <li class="lang-menu__list-item"><a href="/en/articles" aria-label="English (English)"><i class="icons-languages icons-languages_en"></i><span>English</span></a></li>
+<li class="lang-menu__list-item lang-menu__list-item_selected"><a href="/ru/articles" aria-label="Русский (Russian)"><i class="icons-languages icons-languages_ru"></i><span>Русский</span></a></li>
+<li class="lang-menu__list-item"><a href="/zh/articles" aria-label="中文 (Chinese)"><i class="icons-languages icons-languages_zh"></i><span>中文</span></a></li>
+<li class="lang-menu__list-item"><a href="/es/articles" aria-label="Español (Spanish)"><i class="icons-languages icons-languages_es"></i><span>Español</span></a></li>
+<li class="lang-menu__list-item"><a href="/pt/articles" aria-label="Português (Portuguese)"><i class="icons-languages icons-languages_pt"></i><span>Português</span></a></li>
+<li class="lang-menu__list-item"><a href="/ja/articles" aria-label="日本語 (Japanese)"><i class="icons-languages icons-languages_ja"></i><span>日本語</span></a></li>
+<li class="lang-menu__list-item"><a href="/de/articles" aria-label="Deutsch (German)"><i class="icons-languages icons-languages_de"></i><span>Deutsch</span></a></li>
+<li class="lang-menu__list-item"><a href="/ko/articles" aria-label="한국어 (Korean)"><i class="icons-languages icons-languages_ko"></i><span>한국어</span></a></li>
+<li class="lang-menu__list-item"><a href="/fr/articles" aria-label="Français (French)"><i class="icons-languages icons-languages_fr"></i><span>Français</span></a></li>
+<li class="lang-menu__list-item"><a href="/it/articles" aria-label="Italiano (Italian)"><i class="icons-languages icons-languages_it"></i><span>Italiano</span></a></li>
+<li class="lang-menu__list-item"><a href="/tr/articles" aria-label="Türkçe (Turkish)"><i class="icons-languages icons-languages_tr"></i><span>Türkçe</span></a></li>
+
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+  </nav>
+
+
+
+  <div id="left-sidebar-selector" class="left-sidebar__selector left-sidebar__selector_padding">
+    <div class="left-sidebar__title">
+MetaTrader 5 /     Примеры
+    </div>
+    <i class="icons-ux icons-ux_arrow-down-black"></i>
+  </div>
+  <div class="articles-container block-with-sidebar">
+    <aside class="left-sidebar left-sidebar_270" id="left-sidebar">
+      
+  <ul class="tree-menu-ul"><li class="tree-menu__item tree-menu__item_selected"><a class="tree-menu__link" href="/ru/articles/examples"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples.svg" alt="" loading="lazy"/>Примеры</a><ul class="tree-menu__list tree-menu__list_nested"><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/examples_indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_indicators.svg" alt="" loading="lazy"/>Индикаторы</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/examples_experts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_experts.svg" alt="" loading="lazy"/>Эксперты</a></li></ul></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/strategy_tester"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/strategy_tester.svg" alt="" loading="lazy"/>Тестер</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/trading"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading.svg" alt="" loading="lazy"/>Трейдинг</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/trading_systems"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading_systems.svg" alt="" loading="lazy"/>Торговые системы</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/integration"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/integration.svg" alt="" loading="lazy"/>Интеграция</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/indicator.svg" alt="" loading="lazy"/>Индикаторы</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/expert_advisors"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/expert.svg" alt="" loading="lazy"/>Эксперты</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/statistics"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/statistics.svg" alt="" loading="lazy"/>Статистика и анализ</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/machine_learning"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/machine_learning.svg" alt="" loading="lazy"/>Машинное обучение</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/interviews"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/interviews.svg" alt="" loading="lazy"/>Интервью</a></li></ul>
+  
+
+    <div class="hints-panel">
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_like"></i>
+        <div class="hints-panel__content">
+          Понравилась статья?<br>
+          Поставьте <a href="https://www.mql5.com/ru/articles/20986" target="_blank">ссылку</a> на нее —<br>пусть другие почитают
+        </div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_tw-square icons-hints_24px"></i><div class="hints-panel__content">
+Ищи нас в <a href="https://x.com/mql5com" target="_blank" rel="nofollow">Twitter</a>!<br> Ставь лайки и следи за новостями</div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_mt-5"></i>
+        <div class="hints-panel__content">
+          Используй новые возможности <a href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Article" rel="nofollow sponsored noopener noreferrer">MetaTrader 5</a>
+        </div>
+      </div>
+    </div>
+<div id='vgckrufggwxdtfscpyalmenexmvhljduja' class="roeid8y6hsc3ntv1l gg88d3drb"></div>      <div class="similar-author-articles ui">
+        <h4 class="similar-author-articles__title">Похожие статьи</h4>
+        <ul class="similar-author-articles__list">
+            <li>
+              <a href="/ru/articles/16050" data-fz-event="MQL5+Article+Similar+Article">От начального до среднего уровня: События в объектах (II)</a>
+            </li>
+            <li>
+              <a href="/ru/articles/16035" data-fz-event="MQL5+Article+Similar+Article">От начального до среднего уровня: События в объектах (I)</a>
+            </li>
+            <li>
+              <a href="/ru/articles/19422" data-fz-event="MQL5+Article+Similar+Article">Разрабатываем пользовательский индикатор рыночных настроений</a>
+            </li>
+            <li>
+              <a href="/ru/articles/21443" data-fz-event="MQL5+Article+Similar+Article">Разработка инструментария для анализа Price Action (Часть 62): Создание адаптивной системы обнаружения параллельных каналов и пробоев на языке MQL5</a>
+            </li>
+            <li>
+              <a href="/ru/articles/16340" data-fz-event="MQL5+Article+Similar+Article">Повышение эффективности торговли с использованием Smart Money Concepts (SMC): OB, BOS и FVG</a>
+            </li>
+        </ul>
+      </div>
+    <div class="freelance-hint">
+      <img src="https://c.mql5.com/i/articles/icon_freelance.svg" width="24" height="24" loading="lazy" />
+      <div class="freelance-hint__text">
+        Используйте идеи из этой статьи,<br>чтобы заказать собственного робота<br>на бирже фрилансеров
+      </div>
+        <a target="_blank" class="button button_blue-gray-border" title="Перейти на биржу" href="/ru/job/new" data-fz-event="MQL5+Article+New+Job">Перейти на биржу</a>
+    </div>
+
+    </aside>
+    <article class="content-with-sidebar articles-content splashed">
+      
+
+
+  <header class="article-header article-header_light" style="background-color: rgb(38,38,36)">
+    <section class="article-tools-panel">
+        <div class="article-tools-panel__item">
+          <span class="popup framed client flags">
+            <a class="dropdown" href="javascript:void(false);">
+              <span class="icons-languages icons-languages_ru"></span><i></i>
+            </a>
+            <span class="popup">
+              <span class="tip">
+                <span></span>
+              </span>
+              <span class="items">
+                    <a href="/en/articles/20986">English</a>
+                    <a href="/de/articles/20986">Deutsch</a>
+                    <a href="/ja/articles/20986">日本語</a>
+              </span>
+            </span>
+          </span>
+        </div>
+        
+      <div class="article-tools-panel__item">
+        <a href="#pocket" title="Через Карман вы можете вставить полное описание этого содержимого в редактор сообщений" onclick="return Pocket.Add(this,'ru',2,1,20986);" class="article-tools-panel__rounded">
+          <i class="article-pocket-icon"></i>
+        </a>
+      </div>
+      <div class="article-tools-panel__item">
+        <a href="/ru/articles/20986?print=" target="_blank" class="article-tools-panel__rounded" rel="nofollow" title="Версия для печати">
+          <i class="article-print-icon"></i>
+        </a>
+      </div>
+
+    </section>
+    <section class="article-header__image-box">
+        <img class="article-header__image-preview" loading="lazy" width="32" height="16" alt="preview" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAsICAoIBwsKCQoNDAsNERwSEQ8PESIZGhQcKSQrKigkJyctMkA3LTA9MCcnOEw5PUNFSElIKzZPVU5GVEBHSEX/2wBDAQwNDREPESESEiFFLicuRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUX/wAARCAAQACADASIAAhEBAxEB/8QAGAAAAgMAAAAAAAAAAAAAAAAABAUCAwf/xAAeEAACAgICAwAAAAAAAAAAAAABAgADETEEEiFBcf/EABYBAQEBAAAAAAAAAAAAAAAAAAACA//EABcRAQEBAQAAAAAAAAAAAAAAAAEAESH/2gAMAwEAAhEDEQA/AM/NCpjEIrXqoKjEXrYRvz9kxyWXUO0osxLYB7ECCWWZbcGa8tsys2H1FpzMv//Z">
+      <div class="article-header__gradient" style="background: linear-gradient(90deg, rgba(38,38,36, 1) 0%, rgba(38,38,36, 0.72) 8.31%, rgba(38,38,36, 0) 17.1%), linear-gradient(270deg, rgba(38,38,36, 1) 0%, rgba(38,38,36, 0.72) 8.06%, rgba(38,38,36, 0) 16.59%), linear-gradient(0deg, rgba(38,38,36, 1) 8.26%, rgba(38,38,36, 0.8) 65%, rgba(38,38,36, 0) 100%);"></div>
+        <picture>
+          <source srcset="https://c.mql5.com/2/192/20986-from-novice-to-expert-creating-a-liquidity-zone-indicator_600x314.jpg, https://c.mql5.com/2/192/20986-from-novice-to-expert-creating-a-liquidity-zone-indicator_1200x628.jpg 2x" media="(min-width:700px)">
+          <img class="article-header__image" loading="lazy" width="600" height="314" srcset="https://c.mql5.com/2/192/20986-from-novice-to-expert-creating-a-liquidity-zone-indicator_300x157.jpg, https://c.mql5.com/2/192/20986-from-novice-to-expert-creating-a-liquidity-zone-indicator_600x314.jpg 2x" src="https://c.mql5.com/2/192/20986-from-novice-to-expert-creating-a-liquidity-zone-indicator_600x314.jpg" alt="От новичка до эксперта: Создание индикатора для определения зон ликвидности" onerror="this.style.display='none';">
+        </picture>
+    </section>
+    <section class="article-header__content">
+      <h1>От новичка до эксперта: Создание индикатора для определения зон ликвидности</h1>
+      <div class="article-header__info">
+        <a href="/ru/articles/mt5">MetaTrader 5</a>
+          &mdash;
+          <a href="/ru/articles/mt5/examples">Примеры</a>
+        | <time datetime="2026-02-20T08:44Z" title="08:44" datetime-type="datetime">20 февраля 2026, 08:44</time>
+      </div>
+      <div class="article-header__indicators">
+        <span title="Просмотры">
+          <img src="https://c.mql5.com/i/icons.svg#views-white-usage" width="20" height="20" alt="" />
+          971
+        </span>
+        
+          <a title="Комментарии" href="/ru/forum/505631">
+            <img src="https://c.mql5.com/i/icons.svg#comments-white-usage" width="20" height="20" alt="" />
+            13
+          </a>
+      </div>
+      <div class="article-header__author">
+          <div class="article-header__avatar">
+            <img src="https://c.mql5.com/avatar/2025/3/67df27c6-2936.png" srcset="https://c.mql5.com/avatar/2025/3/67df27c6-2936_big.png 2x" data-user-login="Billionaire2024" title="Clemence Benjamin" alt="Clemence Benjamin" loading="lazy" width="60" height="60">
+          </div>
+<a class="author" href="/ru/users/billionaire2024" data-user-login="Billionaire2024">Clemence Benjamin</a>      </div>
+    </section>
+  </header>
+
+    <div class="content">
+      <div class="inner formatted-content">
+        <h3 id="para0">Содержание:</h3> <p></p> <ol> <li><a href="/ru/articles/20986#para1">Введение</a></li> <li><a href="/ru/articles/20986#para2">Обзор концепции</a></li> <li><a href="/ru/articles/20986#para3">Реализация</a></li> <li><a href="/ru/articles/20986#para4">Тестирование</a></li> <li><a href="/ru/articles/20986#para5">Заключение</a></li> <li><a href="/ru/articles/20986#para6">Основные уроки</a></li> <li><a href="/ru/articles/20986#para7">Вложения</a></li> </ol> <p></p> <h3 id="para1"><br/></h3> <h3 id="para1">Введение<br/></h3> <p>В нашей <a href="/ru/articles/20904" target="_blank">предыдущей статье</a> мы предприняли глубокое исследовательское путешествие, чтобы выявить потенциальные соотношения между зонами ликвидности и их последующими диапазонами пробоя. Статистически наиболее последовательным концептуальным соотношением, которое было получено, было 1:3 (глубина зоны ликвидности к диапазону пробоя/импульса). </p> <p>Теперь, когда мы определили это ключевое значение, очевиден следующий логический шаг: превратить информацию в практическое преимущество. Трейдеры во всем мире хотят знать, как именно это соотношение 1:3 становится практически полезным? Ответ кроется в разработке стратегии. </p> <p>Сегодня мы сконцентрируем наше обсуждение на создании пользовательского индикатора, который воплотит эти соотношения в жизнь, преобразуя теоретические наблюдения в практические сигналы в режиме реального времени на ваших графиках. Прежде чем перейти к этапу реализации, ниже я сначала рассмотрю основную концепцию, чтобы убедиться, что она полностью соответствует требованиям.</p> <h3 id="para2"><br/></h3> <h3 id="para2">Обзор концепции</h3> <p>Зоны ликвидности представляют собой периоды консолидации рынка — четкие диапазоны, в которых цена колеблется между двумя четко определенными уровнями с течением времени. Для наглядности давайте использовать цену A и цену B в качестве концептуальных опорных точек для границ основы, а не фиксированных или абсолютных уровней цен. При типичной бычьей настройке Цена A представляет собой минимум основы, в то время как Цена B отмечает максимум основы; цена колеблется между этими двумя уровнями на этапе консолидации. В медвежьих сценариях эта структура просто зеркально отражается (с Ценой A в качестве максимума и Ценой B в качестве минимума основы). Несмотря на то, что во время этих пауз рынок выглядит сбалансированным, институциональные участники активно накапливают или распределяют позиции, при этом ликвидность намеренно формируется вокруг экстремумов диапазона. </p> <p>В конце концов, цена выходит из этого равновесия в результате импульсивного пробоя. В бычьих условиях этот пробой происходит выше Цены B (максимум основы), в то время как в медвежьих условиях он происходит ниже Цены A (минимум основы). Пробой устанавливает новый контрольный уровень, который мы обозначаем как Цена C — максимум, образованный импульсивным ростом в бычьих случаях, или минимум, образованный импульсивной распродажей в медвежьих случаях. Эти движения редко бывают случайными; обычно они вызваны поглощением оставшейся ликвидности, включая ордера стоп-лосс, размещенные за пределами диапазона, ордера пробоя от розничных участников и заблокированные позиции на неправильной стороне консолидации. </p> <p>В условиях высокой вероятности - будь то сценарии продолжения после снятия ликвидности или сценарии разворота после более глубоких манипуляций — цена не может просто бесконечно расти после пробоя. Вместо этого она часто возвращается к первоначальной зоне ликвидности, определяемой диапазоном A–B. Такое поведение отражает основные рыночные механизмы: импульсивное движение приводит к смещению и неэффективности, ликвидность собирается на одной стороне диапазона, и цена откатывается назад, чтобы восстановить равновесие на рынке, смягчить неэффективность или привлечь дополнительную ликвидность для следующей фазы направленного движения.&nbsp;На иллюстрации ниже (рис. 1) концепция представлена графически.</p> <p style="text-align:center;"> <img width="484" height="319" src="https://c.mql5.com/2/191/Untitled_Diagram_drawio.png" loading="lazy" alt style="vertical-align:middle;"/></p> <p></p> <p style="text-align:center;"><span class="small">Рис. 1. Концептуальное представление спроса на ликвидность</span></p> <p></p> <p>В наших предыдущих исследованиях это поведение оценивалось скорее количественно, чем визуально. При повторяющихся высококачественных сетапах на нескольких инструментах и таймфреймах мы измерили взаимосвязь между глубиной зоны ликвидности (расстоянием между Ценами A и B) и величиной импульсивного пробоя (от границы диапазона до Цены C). Из полученных данных последовательно выводилась повторяющаяся пропорциональная зависимость, чаще всего приближающаяся к соотношению 1:3 (глубина зоны ликвидности к величине пробоя/импульса), которая формирует статистическую основу для модели, реализованной и протестированной в данном исследовании.&nbsp; </p> <p>Это наблюдаемое соотношение служит практическим примером того, как институциональное управление ликвидностью часто приводит к асимметричному росту после этапов консолидации. Во многих случаях на реальном рынке более узкие зоны ликвидности (например, диапазоны в 20-40 пипсов на младших таймфреймах) предшествуют значительно более крупным движениям смещения (часто на 60-120 пипсов и более), когда сторона пробоя примерно в три раза (или более) превышает предыдущую глубину диапазона перед значимым откатом или повторным тестированием. Такие паттерны тесно согласуются с общепринятыми Концепциями умных денег (SMC) и наблюдениями по стратегии трейдинга Inner Circle Trader (ICT), согласно которым снятия ликвидности приводят к сильным импульсивным продолжениям или разворотам за счет сбора сгруппированных ордеров и стимулирования последующей фазы движения. </p> <p>Тем не менее, эта пропорциональная взаимосвязь не является универсальной константой для всех валютных пар, рыночных условий, таймфреймов или режимов волатильности. Например, пары с высоким трендом во время крупных новостных событий могут демонстрировать рост, близкий к 1:4 или 1:5, в то время как неустойчивые или колеблющиеся сессии (такие как азиатская консолидация на индексах) часто дают меньшие мультипликаторы (например, 1:1.5–1:2.5). Различия в классах активов - форекс по сравнению с индексами, криптовалютой или сырьевыми товарами — еще больше увеличивают вариативность из—за различных пулов ликвидности, динамики участников и характеристик среднего истинного диапазона.</p> <p>Таким образом, выявленная нами статистическая тенденция представляет собой скорее вероятностный ориентир, чем жесткое правило. Такая неотъемлемая изменчивость подчеркивает важность адаптивности: включив в индикатор настраиваемый входной параметр (например, RatioMultiplier), трейдеры могут эмпирически протестировать и точно настроить пороговое значение, чтобы оно наилучшим образом соответствовало конкретным инструментам, таймфреймам или стилю торговли. Значение "3×" может быть оптимальным для пары XAUUSD M15, в то время как значение "2,5×" подходит для пары GBPJPY M15, или "4×" лучше подходит в периоды высокой волатильности, такие как выпуски NFP. </p> <p>В конечном счете, реальная выгода этого исследования заключается не в точном определении неизменной константы, а в демонстрации того, что существует измеримая, повторяющаяся взаимосвязь между размером спроектированных зон ликвидности и последующим импульсом пробоя. До применения этого количественного подхода такие зоны часто оценивались субъективно с помощью визуальных сигналов, таких как "плотность" диапазона или кластеры теней. Количественно оценивая эту переменную, мы выявляем объективное преимущество — выявляем установки, при которых рынок исторически обеспечивал асимметричный потенциал прибыли после резкого снятия ликвидности. Это понимание служит основным обоснованием для разработанного здесь индикатора: преобразование повторяющейся институциональной модели поведения в настраиваемый инструмент в режиме реального времени, позволяющий трейдерам более систематично ориентироваться на интеллектуальный денежный поток.</p> <p>Наиболее логичным выводом из нашего анализа было приблизительное соотношение 1:3 — импульсная сторона пробоя часто примерно в три раза (или более) превышает глубину предыдущей зоны ликвидности. Это представлено не как жесткое универсальное правило, а как ориентир с высокой вероятностью, который тесно согласуется с устоявшимися Концепциями умных денег (SMC) и рыночными моделями Inner Circle Trader (ICT). На практике более мелкие, четко очерченные зоны консолидации часто предшествуют более крупным, более взрывоопасным перемещениям после того, как остатки ликвидности сняты и структура рынка меняется. </p> <p>Теперь, когда эта динамика четко определена — зона ликвидности → импульсивный пробой (часто ~ 1:3) → повторное тестирование с высокой вероятностью, - у нас есть надежная, воспроизводимая структура, которая отражает институциональный цикл манипуляций, смещения и коррекции в основе ценового движения, обусловленного ликвидностью. </p> <p>Данная концепция служит основой для следующего этапа проекта: преобразования теоретических знаний в практический, наглядный торговый инструмент. Разрабатываемый нами пользовательский индикатор предназначен для следующих целей: </p> <p></p> <ul> <li>Автоматически обнаруживать и выделять зоны с допустимой ликвидностью на основе объективных критериев консолидации.&nbsp;&nbsp;</li> <li>Измерять и отслеживать глубину каждой выявленной зоны.&nbsp;&nbsp;</li> <li>Распознавать потенциальные пробои и вычислять формирующийся импульсный диапазон в режиме реального времени.&nbsp;&nbsp;</li> <li>Визуализировать наблюдаемое соотношение 1:3 (с полной гибкостью пользовательской настройки соотношения) непосредственно на графике.&nbsp;&nbsp;</li> <li>Выделять и, при необходимости, оповещать о потенциальных зонах повторного тестирования, когда цена возвращается к исходным границам ликвидности после пробоя, соответствующего критериям.</li> </ul> <p></p> <p>Кодируя эту логику в MQL5, мы переходим от концептуального наблюдения к исполняемой модели, интегрированной в график. В результате получается объективный инструмент, который снижает субъективность, отфильтровывает шум и позволяет трейдерам лучше согласовывать входы с потоком институциональных ордеров, что в конечном итоге улучшает тайминг, соотношение риска и прибыли и общую уверенность в установках как продолжения, так и разворотов.</p> <p>В следующем разделе перейдем к практической реализации, подробно описывая логику MQL5, ключевые переменные, правила определения зон, условия проверки пробоя и методы визуализации, необходимые для воплощения этой рыночной модели в жизнь на графике.</p> <h3 id="para3"><br/></h3> <h3 id="para3">Реализация</h3> <p><u>Объявление индикаторов и вводные данные</u></p> <p><u></u>В верхней части индикатора определяем область применения, назначение и возможность настройки инструмента. Индикатор предназначен для работы непосредственно в окне графика и предоставляет целенаправленный набор входных данных, управляющих как логикой, так и визуализацией. Такие параметры, как LookbackBars и <span style="background-color:rgb(240, 134, 130);"><span style="background-color:rgb(177, 210, 143);">RatioMultiplier</span></span>, определяют, насколько далеко алгоритм будет искать действительные основы ликвидности и насколько сильным должно быть импульсивное движение относительно своей основы. Визуальные вводные данные, включая цвета, непрозрачность, стили буфера и длину расширения, позволяют трейдеру адаптировать презентацию без изменения базовой логики. Такое разделение обеспечивает стабильность аналитической модели и гибкость визуальных предпочтений.</p> <pre class="code"><span class="preprocessor">#property </span><span class="macro">indicator_chart_window</span>
+<span class="preprocessor">#property </span><span class="macro">indicator_buffers</span> <span class="number">8</span>
+<span class="preprocessor">#property </span><span class="macro">indicator_plots</span>&nbsp;&nbsp; <span class="number">4</span>
+
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LookbackBars&nbsp;&nbsp;&nbsp;&nbsp; = <span class="number">500</span>;
+<span class="keyword">input</span> <span class="keyword">double</span>&nbsp;&nbsp; <span style="background-color:rgb(177, 210, 143);">RatioMultiplier&nbsp;&nbsp;</span>= <span class="number">3.0</span>;
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ZoneExtendBars&nbsp;&nbsp; = <span class="number">50</span>;
+
+<span class="keyword">input</span> <span class="keyword">color</span>&nbsp;&nbsp;&nbsp;&nbsp;DemandColor&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="macro">clrLimeGreen</span>;
+<span class="keyword">input</span> <span class="keyword">color</span>&nbsp;&nbsp;&nbsp;&nbsp;SupplyColor&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="macro">clrTomato</span>;
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ZoneOpacity&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="number">40</span>;
+</pre> <p><u>Глобальные массивы и буферы индикаторов</u></p> <p>Далее объявляем глобальные массивы для ценовых данных и буферов индикаторов. Вместо того чтобы полагаться исключительно на входящие массивы OnCalculate, мы явно копируем наши собственные массивы OHLC и time и управляем ими. Такой подход дает нам полный контроль над индексацией, обеспечивает согласованность при расширении зон в будущее и позволяет избежать неоднозначности при нанесении баров на объекты. Восемь буферов индикаторов выполняют различные функции: сохраняют границы зон, сигнализируют о наличии зон и сохраняют информацию о времени для управления жизненным циклом. Такая структура позволяет индикатору функционировать как визуально, так и программно, если он впоследствии будет использоваться советником или другим индикатором.</p> <pre class="code"><span class="keyword">double</span> OpenArr[], HighArr[], LowArr[], CloseArr[];
+<span class="keyword">datetime</span> TimeArr[];
+
+<span class="comment">// Buffers</span>
+<span class="keyword">double</span> DemandHigh[], DemandLow[], SupplyHigh[], SupplyLow[];
+<span class="keyword">double</span> ZoneSignal[], ZoneStartTime[], ZoneEndTime[], ZoneType[];
+</pre> <p><u>Логика инициализации (OnInit)</u></p> <p>В процессе инициализации мы нормализуем значения точек для корректной обработки как стандартных, так и дробных инструментов ценообразования. Затем настраиваем метаданные индикатора, привязываем буферы и явно инициализируем все буферы значением EMPTY_VALUE, чтобы предотвратить отрисовку артефактов. Каждый график настраивается независимо, что позволяет визуально различать зоны спроса и предложения, используя при этом общий стиль визуализации. Наконец, все ранее нанесенные зоны очищаются, чтобы гарантировать, что график запускается в чистом, детерминированном состоянии. Это гарантирует, что каждая загрузка индикатора отражает только текущие расчеты.</p> <pre class="code"><span class="keyword">int</span> <span class="functions">OnInit</span>()
+{
+&nbsp;&nbsp; <span class="functions">IndicatorSetString</span>(<span class="macro">INDICATOR_SHORTNAME</span>, <span class="string">"Liquidity Zone 1:3 Model"</span>);
+
+&nbsp;&nbsp; <span class="functions">SetIndexBuffer</span>(<span class="number">0</span>, DemandHigh, <span class="macro">INDICATOR_DATA</span>);
+&nbsp;&nbsp; <span class="functions">SetIndexBuffer</span>(<span class="number">1</span>, DemandLow,&nbsp;&nbsp;<span class="macro">INDICATOR_DATA</span>);
+&nbsp;&nbsp; <span class="functions">SetIndexBuffer</span>(<span class="number">2</span>, SupplyHigh, <span class="macro">INDICATOR_DATA</span>);
+&nbsp;&nbsp; <span class="functions">SetIndexBuffer</span>(<span class="number">3</span>, SupplyLow,&nbsp;&nbsp;<span class="macro">INDICATOR_DATA</span>);
+
+&nbsp;&nbsp; <span class="functions">SetIndexBuffer</span>(<span class="number">4</span>, ZoneSignal,&nbsp;&nbsp;&nbsp;&nbsp;<span class="macro">INDICATOR_CALCULATIONS</span>);
+&nbsp;&nbsp; <span class="functions">SetIndexBuffer</span>(<span class="number">5</span>, ZoneStartTime, <span class="macro">INDICATOR_CALCULATIONS</span>);
+&nbsp;&nbsp; <span class="functions">SetIndexBuffer</span>(<span class="number">6</span>, ZoneEndTime,&nbsp;&nbsp; <span class="macro">INDICATOR_CALCULATIONS</span>);
+&nbsp;&nbsp; <span class="functions">SetIndexBuffer</span>(<span class="number">7</span>, ZoneType,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="macro">INDICATOR_CALCULATIONS</span>);
+
+&nbsp;&nbsp; <span class="functions">ArrayInitialize</span>(DemandHigh, <span class="macro">EMPTY_VALUE</span>);
+&nbsp;&nbsp; <span class="functions">ArrayInitialize</span>(SupplyHigh, <span class="macro">EMPTY_VALUE</span>);
+
+&nbsp;&nbsp; DeleteAllZones();
+&nbsp;&nbsp; <span class="keyword">return</span> <span class="macro">INIT_SUCCEEDED</span>;
+}
+</pre> <p><u>Очистка и управление объектами (OnDeinit и DeleteAllZones)</u></p> <p>Надлежащая очистка данных имеет решающее значение для объектно-ориентированных индикаторов. При удалении или пересчете индикатора мы систематически удаляем все объекты графика, созданные этим инструментом, используя строгое соглашение об именовании. Это предотвращает накопление объектов, загромождение графиков и снижение эффективности. Централизация логики удаления в отдельной функции обеспечивает согласованное поведение при повторной инициализации, изменении таймфреймов или ручном удалении.</p> <pre class="code"><span class="keyword">void</span> <span class="functions">OnDeinit</span>(<span class="keyword">const</span> <span class="keyword">int</span> reason)
+{
+&nbsp;&nbsp; DeleteAllZones();
+}
+
+<span class="keyword">void</span> DeleteAllZones()
+{
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="functions">ObjectsTotal</span>(<span class="number">0</span>) - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--)
+&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span> name = <span class="functions">ObjectName</span>(<span class="number">0</span>, i);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">StringFind</span>(name, <span class="string">"LQ_ZONE_"</span>) == <span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">ObjectDelete</span>(<span class="number">0</span>, name);
+&nbsp;&nbsp; }
+}
+</pre> <p><u>Полезные функции: Отображение диапазона свеч и времени</u></p> <p>Чтобы сохранить основную логику читаемой и пригодной для повторного использования, выделяем общие операции во вспомогательные функции. Функция CandleRange() позволяет рассчитать диапазон максимумов и минимумов бара, что повышает наглядность при сравнении базовых и импульсных свечей. Функция GetTimeForBar() обеспечивает точное отображение времени даже при расширении зон за пределы доступных исторических баров. Это особенно важно для проектирования зон в будущем, где еще не существует прямых временных меток.</p> <pre class="code"><span class="keyword">double</span> CandleRange(<span class="keyword">int</span> index)
+{
+&nbsp;&nbsp; <span class="keyword">return</span> HighArr[index] - LowArr[index];
+}
+
+<span class="keyword">datetime</span> GetTimeForBar(<span class="keyword">int</span> index)
+{
+&nbsp;&nbsp; <span class="keyword">if</span>(index &lt; <span class="functions">ArraySize</span>(TimeArr))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> TimeArr[index];
+
+&nbsp;&nbsp; <span class="keyword">int</span> delta = index - <span class="functions">ArraySize</span>(TimeArr) + <span class="number">1</span>;
+&nbsp;&nbsp; <span class="keyword">return</span> TimeArr[<span class="functions">ArraySize</span>(TimeArr) - <span class="number">1</span>] + <span class="functions">PeriodSeconds</span>() * delta;
+}
+</pre> <p><u>Логика рендеринга зоны (DrawZone)</u></p> <p>Функция DrawZone() отвечает за преобразование обнаруженной базы ликвидности в видимый объект графика. Используя временные и ценовые экстремумы базовой свечи, мы строим прямоугольник, который простирается вперед на определенное пользователем количество баров. Функция обрабатывает как исторические сценарии, так и сценарии прямой проекции, применяет соответствующие цвета и степень прозрачности, а также обеспечивает неинтерактивность объектов и их фоновую визуализацию. Это позволяет сохранить информативность зон, не мешая ручному анализу или торговым действиям.</p> <pre class="code"><span class="keyword">void</span> DrawZone(<span class="keyword">string</span> name, <span class="keyword">datetime</span> t1, <span class="keyword">datetime</span> t2, <span class="keyword">double</span> high, <span class="keyword">double</span> low, <span class="keyword">color</span> clr)
+{
+&nbsp;&nbsp; <span class="functions">ObjectCreate</span>(<span class="number">0</span>, name, <span class="macro">OBJ_RECTANGLE</span>, <span class="number">0</span>, t1, high, t2, low);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, name, <span class="macro">OBJPROP_COLOR</span>, clr);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, name, <span class="macro">OBJPROP_BACK</span>, <span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, name, OBJPROP_TRANSPARENCY, ZoneOpacity);
+}
+</pre> <p><u>Буферное заполнение зон (FillZoneBuffers)</u></p> <p>В то время как прямоугольники обеспечивают визуальную четкость, буферы позволяют представлять зоны на основе данных. Эта функция синхронизирует значения буфера со сроком службы прямоугольника, границами зоны заполнения и сигнальными маркерами на всех барах, охватываемых зоной. Сохраняя время начала и окончания в специальных буферах, мы сохраняем полную временную информацию о каждой зоне. Такое двойное представление — объекты для визуализации и буферы для логики — делает индикатор расширяемым и готовым к работе с советником.</p> <pre class="code"><span class="keyword">void</span> FillZoneBuffers(<span class="keyword">int</span> start, <span class="keyword">int</span> end, <span class="keyword">double</span> high, <span class="keyword">double</span> low, <span class="keyword">bool</span> isDemand)
+{
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = start; i &lt;= end; i++)
+&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(isDemand)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DemandHigh[i] = high;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DemandLow[i]&nbsp;&nbsp;= low;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ZoneType[i]&nbsp;&nbsp; = <span class="number">1</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SupplyHigh[i] = high;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SupplyLow[i]&nbsp;&nbsp;= low;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ZoneType[i]&nbsp;&nbsp; = -<span class="number">1</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ZoneSignal[i] = <span class="number">1</span>;
+&nbsp;&nbsp; }
+}
+</pre> <p><u>Обслуживание буферов (ClearOldBuffers)</u></p> <p>Рынки движутся вперед, и зоны в конечном итоге истекают. Эта функция гарантирует, что значения буфера будут очищены по истечении прогнозируемого срока службы зоны. Вместо того чтобы очищать буферы вслепую, мы проверяем срок действия, чтобы избежать преждевременного удаления активных зон. Такой подход обеспечивает чистоту памяти, предотвращает ложные сигналы и гарантирует, что видимыми и доступными остаются только соответствующие структуры.</p> <pre class="code"><span class="keyword">void</span> ClearOldBuffers(<span class="keyword">int</span> index)
+{
+&nbsp;&nbsp; <span class="keyword">if</span>(ZoneEndTime[index] &lt; <span class="functions">TimeCurrent</span>())
+&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DemandHigh[index] = <span class="macro">EMPTY_VALUE</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SupplyHigh[index] = <span class="macro">EMPTY_VALUE</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ZoneSignal[index] = <span class="macro">EMPTY_VALUE</span>;
+&nbsp;&nbsp; }
+}
+</pre> <p><u>Основной цикл расчета (OnCalculate)</u></p> <p>Основой индикатора является OnCalculate. Здесь мы копируем необходимые данные о ценах, применяем индексацию рядов и определяем, сколько баров следует обработать, исходя из установленных пользователем ограничений. Алгоритм сканирует исторические бары в поисках простого, но мощного паттерна: основу консолидации, за которой следует импульсивная свеча в том же направлении, диапазон которой соответствует или превышает заданный порог соотношения. Когда такое условие выполняется, базовая свеча классифицируется как валидная зона ликвидности и передается в процедуры рисования и буферизации. Эта логика напрямую реализует соотношение ликвидности и импульса 1:3, выявленное в нашем исследовании, преобразуя статистическую информацию в действенный сигнал, основанный на графике.</p> <pre class="code"><span class="keyword">int</span> <span class="functions">OnCalculate</span>(<span class="keyword">const</span> <span class="keyword">int</span> rates_total,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">int</span> prev_calculated,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">datetime</span> &amp;time[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">double</span> &amp;open[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">double</span> &amp;high[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">double</span> &amp;low[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">double</span> &amp;close[])
+{
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(time, <span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(high, <span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(low,&nbsp;&nbsp;<span class="macro">true</span>);
+
+&nbsp;&nbsp; <span class="functions">CopyTime</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, <span class="number">0</span>, LookbackBars, TimeArr);
+&nbsp;&nbsp; <span class="functions">CopyHigh</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, <span class="number">0</span>, LookbackBars, HighArr);
+&nbsp;&nbsp; <span class="functions">CopyLow</span> (<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, <span class="number">0</span>, LookbackBars, LowArr);
+
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i = LookbackBars - <span class="number">2</span>; i &gt;= <span class="number">1</span>; i--)
+&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> baseRange&nbsp;&nbsp; = CandleRange(i);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> impulseRange = CandleRange(i - <span class="number">1</span>);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(impulseRange &gt;= baseRange * RatioMultiplier)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">bool</span> bullish = CloseArr[i - <span class="number">1</span>] &gt; OpenArr[i - <span class="number">1</span>];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">string</span> name&nbsp;&nbsp;= <span class="string">"LQ_ZONE_"</span> + <span class="functions">IntegerToString</span>(i);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">datetime</span> t1 = TimeArr[i];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">datetime</span> t2 = GetTimeForBar(i + ZoneExtendBars);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DrawZone(name, t1, t2, HighArr[i], LowArr[i],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bullish ? DemandColor : SupplyColor);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FillZoneBuffers(i, i + ZoneExtendBars, HighArr[i], LowArr[i], bullish);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">return</span> rates_total;
+}</pre> <p><u>Заключительные соображения по реализации</u></p> <p>Такая реализация намеренно отдает предпочтение ясности и структурной дисциплине, а не чрезмерной оптимизации. Каждый раздел логики отражает концептуальный этап рыночной модели: идентификацию, валидацию, проектирование и управление жизненным циклом. Просматривая код таким образом, читатель может ясно увидеть, как институциональное поведение — консолидация, смещение и восстановление — преобразуется в детерминированные правила. Что еще более важно, индикатор остается адаптивным: можно настраивать коэффициенты, добавлять фильтры и улучшать&nbsp;визуализацию без ущерба для основного фреймворка.</p> <p>Теперь, когда логика полностью определена и реализована, следующим шагом является переход от теории и структуры к проверке с помощью тестирования. Использование этого инструмента на графике позволяет наблюдать соотношение между основой и импульсом в соотношении 1:3 в реальных рыночных условиях, для различных инструментов, сессий и режимов волатильности. Применяя индикатор к нескольким парам и таймфреймам, мы можем оценить, насколько стабильно держится соотношение, где оно работает лучше всего, а где рыночный контекст вносит изменения. Этот этап тестирования направлен не на то, чтобы заставить модель соответствовать каждому сценарию, а на сбор практических данных, уточнение пороговых значений и подтверждение того, что статистическая информация преобразуется в повторяемое, релевантное для сделки поведение при воздействии реального ценового движения.</p> <h3 id="para4"><br/></h3> <h3 id="para4">Тестирование</h3> <p>После успешной компиляции без ошибок мы прикрепили индикатор к живому графику для проверки в режиме реального времени. В приведенном ниже скриншоте мы демонстрируем его работу на паре XAUUSD (золото/доллар США), высоколиквидном инструменте, в котором структуры, ориентированные на ликвидность, особенно заметны благодаря институциональному участию.</p> <p style="text-align:center;"> <img width="735" height="444" src="https://c.mql5.com/2/191/terminal64_yhKtlRNXMd.gif" loading="lazy" alt style="vertical-align:middle;"/></p> <p style="text-align:center;"><span class="small">Рис. 2. Тестирование индикатора зоны ликвидности на паре XAUUSDmicro</span></p> <p>Выявленные зоны ликвидности удивительно хорошо соответствовали реальному движению цены:</p> <p></p> <ul> <li>Зоны были точно расположены на предыдущих диапазонах консолидации.</li> <li>Пробои из этих зон неизменно приводили к импульсивным движениям, которые соответствовали (или превышали) соотношению по умолчанию 1:3 (глубина зоны к величине пробоя), подтверждая статистическую основу нашего предыдущего исследования.</li> </ul> <p></p> <p>Наиболее обнадеживающим является то, что настройка соотношения по умолчанию (3.0) на паре XAUUSD работала эффективно, а соответствующие настройки запускали чистые зоны с высокой вероятностью, которые соответствовали наблюдаемому институциональному поведению. Каких-либо немедленных корректировок не потребовалось, что подтвердило то, что модель хорошо адаптируется от исследований к практическому применению на этом символе. </p> <p>Дополнительным примечательным наблюдением является относительная редкость квалифицирующих настроек. Строгие критерии (последовательность бычьих/медвежьих свечей + диапазон пробоя ≥ 3 × базовый диапазон) естественным образом отсеивают маргинальные или шумные консолидации. Такая ограниченность может быть преднамеренным преимуществом для трейдеров, стремящихся сократить чрезмерную торговлю: индикатор высвечивает только структуры, ориентированные на ликвидность с более высокой степенью уверенности, поощряя терпение и выборочные входы в соответствии с более сильными институциональными намерениями.</p> <p>Я пошел еще дальше, протестировав индикатор на высоковолатильных инструментах — в первую очередь на индексе волатильности Volatility Index (75s). При значении RatioMultiplier, полученном в результате исследования, равном 3,0, индикатор подавал очень мало сигналов. Значимое определение зоны стало возможным только после снижения коэффициента до 2,0, хотя цена продолжала придерживаться установленных уровней благодаря четким ценовым реакциям.</p> <p>Я наблюдал аналогичное поведение на паре EURUSD, где было обнаружено только ограниченное количество зон с коэффициентом по умолчанию, пока множитель не был скорректирован в сторону понижения. Эти наблюдения подтверждают важный вывод: хотя соотношение 1:3 обеспечивает статистически достоверную основу, оптимальная эффективность требует адаптивности. Различные инструменты реагируют на различное соотношение импульса к основе в зависимости от присущей им волатильности и структуры рынка.</p> <p>Этот вывод подтверждает решение использовать соотношение в качестве настраиваемых вводных данных. Это позволяет трейдерам и исследователям изменять пороговое значение, изучать альтернативные соотношения и калибровать модель под конкретные инструменты, а не навязывать одно статичное правило. На рисунках 3 и 4 ниже показаны эти сравнительные результаты по различным инструментам.</p> <p style="text-align:center;"> <img width="741" height="445" src="https://c.mql5.com/2/191/terminal64_WARpJKfRw7.gif" loading="lazy" alt style="vertical-align:middle;"/></p> <p style="text-align:center;"><span class="small">Рис. 3. Тестирование на индексах волатильности</span></p> <p style="text-align:center;"> <img width="727" height="443" src="https://c.mql5.com/2/191/terminal64_7sMgF2OBUc.gif" loading="lazy" alt style="vertical-align:middle;"/></p> <p style="text-align:center;"><span class="small">Рис. 4. Тестирование на паре EURUSD</span></p> <h3 id="para5"><br/></h3> <h3 id="para5">Заключение</h3> <p>Мы успешно воплотили концепцию соотношения основы и импульса в функциональный индикатор зоны ликвидности. Результаты подтверждают четкую структурную взаимосвязь между основой консолидации — будь то спрос или предложение — и последующим импульсом к пробою. Хотя в нашем предыдущем исследовании соотношение 1:3 считалось хорошим средним показателем, дальнейшее тестирование показало, что такая пропорция не является универсальной. Оптимальное соотношение варьируется в зависимости от инструментов и рыночных условий, а это означает, что фиксированные настройки могут последовательно работать не во всех сценариях.</p> <p></p> <p>Надеюсь, что эта статья дала вам практическую информацию. Наша будущая работа будет сосредоточена на воплощении этих концепций в полностью автоматизированную торговую систему, дальнейшей проверке идей путем систематического тестирования и исполнения в режиме реального времени. Для ознакомления ниже представлены основные уроки и вспомогательные приложения.</p> <h3 id="para6"><br/></h3> <h3 id="para6">Основной урок</h3> <table cellspacing="0" cellpadding="3" width="100%" class="standart"> <thead> <tr> <th>Основной урок</th> <th>Описание:</th> </tr> </thead> <tbody> <tr> <td data-label="Основной урок">Соотношение зоны ликвидности и импульса пробоя - это измеримый рыночный паттерн.</td> <td data-label="Описание:">Исследования неизменно показывали повторяющуюся взаимосвязь между глубиной зон консолидации/ликвидности и размером последующего импульсивного пробоя, чаще всего примерно 1:3 в среднем по многим высококачественным сетапам.</td> </tr> <tr> <td data-label="Основной урок">Это соотношение является ориентиром с высокой вероятностью, а не универсальной константой.</td> <td data-label="Описание:">Хотя соотношение 1:3 хорошо зарекомендовало себя в качестве начальной точки для нескольких инструментов (например, XAUUSD), оно значительно варьируется в зависимости от пары, класса активов, таймфрейма и рыночных условий и требует корректировки (например, 2.0 для Volatility 75 Index или нестабильных сессий), чтобы охватить действительные, надежные зоны, не упуская возможностей и не добавляя шума.</td> </tr> <tr> <td data-label="Основной урок">Гибкость, обеспечиваемая вводом данных пользователем, является ключом к практическому применению.</td> <td data-label="Описание:">Делая RatioMultiplier настраиваемым, индикатор может быть адаптирован к любому символу или стилю торговли. Трейдеры могут эмпирически тестировать и оптимизировать значение по каждому инструменту, превращая статистические наблюдения в персонализированные, объективные преимущества, которые соответствуют институциональному поведению ликвидности на различных рынках.</td> </tr> <tr> <td data-label="Основной урок">Структура с более старшими таймфреймами повышает надежность зон ликвидности.</td> <td data-label="Описание:">Использование старших таймфреймов для определения основ ликвидности и величин импульсов обеспечивает более четкие структуры и более стабильные соотношения. Эти зоны, как правило, остаются в силе, когда цена позже анализируется на младших таймфреймах, что усиливает нисходящий характер рыночного поведения, обусловленного ликвидностью.</td> </tr> <tr> <td data-label="Основной урок">Количественная оценка преобразует субъективные концепции в воспроизводимую логику.</td> <td data-label="Описание:">Преобразуя визуальные интерпретации спроса и предложения в измеримые правила - базовый диапазон, величину импульса и пороговые значения соотношения, - мы устраняем неоднозначность и обеспечиваем последовательное обнаружение, тестирование на истории, автоматизацию и дальнейшую статистическую обработку.</td> </tr> </tbody> </table> <h3 id="para7">Вложения</h3> <table cellspacing="0" cellpadding="3" width="100%" class="standart"> <thead> <tr> <th>Название исходного файла </th> <th>Описание</th> </tr> </thead> <tbody> <tr> <td data-label="Название исходного файла">Liquidity_Zone_Indicator.mq5</td> <td data-label="Описание">Пользовательский индикатор MetaTrader 5, который определяет и визуализирует зоны ликвидности (спроса и предложения) на основе количественного соотношения между базовой и импульсной величинами. Индикатор определяет основы консолидации, проверяет импульсы пробоев с помощью настраиваемого коэффициента умножения, полученного на основе статистических исследований, проецирует зоны на график вперед и выделяет области повторного тестирования с высокой вероятностью. Разработан таким образом, чтобы его можно было адаптировать к различным инструментам и таймфреймам, с полностью настраиваемыми параметрами для тестирования, калибровки и дальнейшей автоматизации. </td> </tr> </tbody> </table><br/> <p><a href="/ru/articles/20986#para1" target="_blank">К содержанию</a></p>
+      </div>
+          <p style="text-align: right;">
+            <small>
+              Перевод с английского произведен MetaQuotes Ltd. <br>Оригинальная статья: <a href="/en/articles/20986" target="_blank">https://www.mql5.com/en/articles/20986</a>
+            </small>
+          </p>
+<div id="cb_20986" class="attachBlock">
+  <strong>Прикрепленные файлы</strong> |
+  <div class="grouped-attachments-help">
+    <a title="Загрузить все вложения в одном ZIP-архиве" href="/ru/articles/download/20986.zip">
+      <i class="attach-icon attach-icon_zip"></i>Загрузить ZIP
+    </a>
+  </div>
+    <div class="attachItem">
+      <a title="Скачать Liquidity_Zone_Indicator.mq5" href="/ru/articles/download/20986/Liquidity_Zone_Indicator.mq5"><i class="attach-icon attach-icon_mq5"></i>Liquidity_Zone_Indicator.mq5</a>
+      <span class="attachSize">(27.04 KB)</span>
+    </div>
+</div>
+    </div>
+
+  <div class="copyright">
+    <p><strong>Предупреждение:</strong> все права на данные материалы принадлежат MetaQuotes Ltd. Полная или частичная перепечатка запрещена.</p>
+      <p>Данная статья написана пользователем сайта и отражает его личную точку зрения. Компания MetaQuotes Ltd не несет ответственности за достоверность представленной информации, а также за возможные последствия использования описанных решений, стратегий или рекомендаций.</p>
+  </div>
+
+
+
+    <div class="article__author-with-articles">
+      
+
+
+<div class="article-footer__author">
+  <div class="article-footer__author-avatar">
+    <img id="avatar" src="https://c.mql5.com/avatar/2025/3/67df27c6-2936_big.png" title="Clemence Benjamin" alt="Clemence Benjamin" loading="lazy" width="164" height="164">
+  </div>
+  <div class="article-footer__author-content">
+    <div class="article-footer__author-name">
+      <a href="/ru/users/billionaire2024" title="Clemence Benjamin">Clemence Benjamin</a>
+    </div>
+    <div class="article-footer__author-info">
+      <ul>
+          <li>
+            <i title="Работает" class="icons-profile icons-profile_suitcase"></i>
+Trader, Program Developer, 2D &amp; 3D Animator
+в            <a target="_blank" href="https://www.mql5.com/en/users/billionaire2024/seller" rel="noreferrer noopener nofollow">Benjc Trade Advisor</a>
+          </li>
+          <li>
+            <i title="Живёт" class="icons-profile icons-profile_geo"></i>
+            <a target="_blank" rel="nofollow" title="Живёт" href="https://www.mql5.com/go?https://maps.google.com/?z=4&q=%d0%97%d0%b8%d0%bc%d0%b1%d0%b0%d0%b1%d0%b2%d0%b5">Зимбабве</a>
+          </li>
+        <li>
+          <i title="Рейтинг" class="icons-profile icons-profile_statistics"></i>
+          <a title="Рейтинг" href="/ru/users/billionaire2024/achievements">33979</a>
+        </li>
+      </ul>
+    </div>
+    <div class="article-footer__author-contacts">
+          <li title="Facebook"><a class="icons-networks icons-networks_fb-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://www.facebook.com/profile.php?id=61558493125454"></a></li>
+    <li title="LinkedIn"><a class="icons-networks icons-networks_linkedin-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://www.linkedin.com/in/clemence-benjamin-795050158"></a></li>
+    <li title="X"><a class="icons-networks icons-networks_tw-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://x.com/ClemenceBenjam2"></a></li>
+    <li title="Microsoft Teams"><a class="icons-networks icons-networks_microsoft-teams-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://teams.microsoft.com/l/chat/0/0?users=Clemy.benjc@outlook.com"></a></li>
+    <li title="Сайт"><a target="_blank" rel="noreferrer noopener nofollow" href="https://www.mql5.com/en/users/billionaire2024/seller" class="icons-profile icons-profile_net"></a>
+      <a target="_blank" rel="noreferrer noopener nofollow" href="https://www.mql5.com/en/users/billionaire2024/seller" style="display: inline-block; vertical-align: top; margin-top: -2px;">https://www.mql5.com/en/users/billionaire2024/seller</a></li>
+
+    </div>
+    <div class="article-footer__author-bio">Высоко мотивированный разработчик инструментов для торговли на Форекс. Я создатель контента и вдохновляющий преподаватель, который делает торговую среду комфортной.
+<br>Вам нужна помощь в разработке вашей идеи с нуля? Я здесь, чтобы помочь вам воплотить ее в жизнь по доступной цене. Не стесняйтесь предлагать мне работу по этой ссылке:
+<br><a href="https://www.mql5.com/en/job/new?prefered=billionaire2024" title="https://www.mql5.com/en/job/new?prefered=billionaire2024" target="_blank">https://www.mql5.com/en/job/new?prefered=billionaire2024</a>
+<br>Присоединяйтесь к нашему лучшему брокеру :
+<br><a href="/go?link=https://track.deriv.com/_r6xDODPy3Ly2vdm9PpHVCmNd7ZgqdRLk/1/" title="https://track.deriv.com/_r6xDODPy3Ly2vdm9PpHVCmNd7ZgqdRLk/1/" rel="nofollow" target="_blank">https://track.deriv.com/_r6xDODPy3Ly2vdm9PpHVCmNd7ZgqdRLk/1/</a>
+<br>Наши каналы на YouTube для преподавателей продуктов:
+</div>
+  </div>
+</div>
+
+      <div class="other-author-articles ui">
+        <h4 class="other-author-articles__title">Другие статьи автора</h4>
+        <ul class="other-author-articles__list">
+          <li><a href="/ru/articles/21189" data-fz-event="MQL5+Article+From+Author+Article">Преодоление проблем доступности в торговых инструментах на MQL5 (Часть I): Как добавить контекстные голосовые оповещения в индикаторы MQL5</a></li>
+          <li><a href="/ru/articles/21129" data-fz-event="MQL5+Article+From+Author+Article">От новичка до эксперта: Разработка стратегии торговли по зонам ликвидности</a></li>
+          <li><a href="/ru/articles/20904" data-fz-event="MQL5+Article+From+Author+Article">От новичка до эксперта: Подтверждение зон спроса и предложения через статистические данные</a></li>
+          <li><a href="/ru/articles/20658" data-fz-event="MQL5+Article+From+Author+Article">От новичка до эксперта: Сигналы с высокой вероятностью</a></li>
+          <li><a href="/ru/articles/20645" data-fz-event="MQL5+Article+From+Author+Article">От новичка до эксперта: Ориентирование в непредсказуемой стихии рынка</a></li>
+          <li><a href="/ru/articles/20587" data-fz-event="MQL5+Article+From+Author+Article">От новичка до эксперта: Алгоритмическая дисциплина трейдера — советник Risk Enforcer вместо эмоций</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+  <div class="article__last-comments" id="articleAdditional">
+    
+
+<div class="comments-preview">
+    <div class="title">
+      <span></span><b>
+         Последние комментарии |
+ <a href="/ru/forum/505631">Перейти к обсуждению на форуме трейдеров</a>
+      </b>
+        (13)
+    </div>
+    <div>
+        
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2017/7/596E49A6-E7C5.PNG" srcset="https://c.mql5.com/avatar/2017/7/596E49A6-E7C5_big.PNG 2x" alt="Enrique Dangeroux" title="Enrique Dangeroux" data-user-login="EnriqueD" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/ru/users/enriqued" data-user-login="EnriqueD">Enrique Dangeroux</a></b>
+              |
+              <span class="comment__date">20 февр. 2026 в 13:51</span>
+              <a id="comment_59228671"></a>
+              
+            </div>
+            <div class="content" id="content59228671">
+              <div class="fquote"> <strong><span style="color:#42639C;">vladavd <a href="/en/forum/504570#comment_59228368">#</a></span>:</strong><br/> Поэтому важно знать, в каком месте будет всплеск ликвидности, чтобы совершить сделку в необходимом большом объеме, а не действовать наугад и вслепую. Ценовое пространство не является однородным, это пересеченная местность с разной плотностью "поверхности под ногами" в разных местах. </div> <p><strong>Откуда вы знаете?</strong> Каков реальный механизм, с помощью которого крупный участник определяет, где произойдет следующий всплеск ликвидности?</p> <p>Графики - это производное, запаздывающее представление того, что уже произошло в книге заявок. Фактическая информация о том, где сейчас находится ликвидность, содержится в данных 2-го уровня - фактической книге заявок, времени и продажах, а не в свечных формациях.</p> <p></p> <p>Институты, работающие с крупными объемами, имеют прямой доступ к этим реальным данным о микроструктуре. У них есть отношения с прайм-брокерами, они видят реальные потоки, используют системы алгоритмического исполнения, построенные на анализе реального портфеля заказов. График - это карикатурная версия этой информации, причем с задержкой.</p> <p>Таким образом, мы вернулись к исходной точке. Воображаемые уровни на каком-то графике, на который реальные деньги вообще не обращают внимания.</p>
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2023/4/64495cbe-93bf.jpg" srcset="https://c.mql5.com/avatar/2023/4/64495cbe-93bf_big.jpg 2x" alt="vladavd" title="vladavd" data-user-login="vladavd" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/ru/users/vladavd" data-user-login="vladavd">vladavd</a></b>
+              |
+              <span class="comment__date">20 февр. 2026 в 14:38</span>
+              <a id="comment_59229030"></a>
+              
+            </div>
+            <div class="content" id="content59229030">
+              <div class="fquote"> <strong><span style="color:#42639C;">Enrique Dangeroux <a href="/ru/forum/505631#comment_59228671">#</a></span>:</strong><br/> <p><strong>Откуда вы знаете?</strong> Каков реальный механизм, с помощью которого крупный участник определяет, где произойдет следующий всплеск ликвидности?</p> <p>Графики - это производное, запаздывающее представление того, что уже произошло в книге заявок. Фактическая информация о том, где сейчас находится ликвидность, содержится в данных 2-го уровня - фактической книге заявок, времени и продажах, а не в свечных формациях.</p> <p></p> <p>Институты, работающие с крупными объемами, имеют прямой доступ к этим реальным данным о микроструктуре. У них есть отношения с прайм-брокерами, они видят реальные потоки, используют системы алгоритмического исполнения, построенные на анализе реального портфеля заказов. График - это карикатурная версия этой информации, причем с задержкой.</p> <p>Таким образом, мы вернулись к исходной точке. Воображаемые уровни на каком-то графике, на который реальные деньги вообще не обращают внимания.</p> </div> Самый известный пример - стоп ордера за экстремумами цены. Это очевидное место, чтобы поставить свой лимитный ордер именно туда и получить крупный объем на чужих стопах. Есть и другие, менее очевидные места.&nbsp;<br/><br/>График это история, да, но:<br/>1) там все еще остаются позиции, которые дадут реакцию по мере движения цены к ним или от них<br/>2) график сам по себе служит сигналом к дальнейшим действиям и делает это не в прошлом, а прямо сейчас участники рынка дружно смотрят на график цены и принимают решения<br/><br/>Далее, вы теперь сами говорите, что ликвидность где-то находится. То есть это все-таки зона, потому что в другом месте ликвидности недостаточно, верно? И это ценная информация, доступа к которой нет у простых людей, которые сидят дома с ноутбуками и ретейл торговыми терминалами. Более осведомленные участники рынка охотятся за деньгами менее осведомленных. Это именно охота, ведь рынок не создает деньги, а только распределяет их от одних к другим.<br/><br/>Вот теперь мы действительно вернулись к исходной точке, когда вы сами утверждаете тезисы, с которым изначально спорили.<br/><br/>Хотите узнать подробнее о создании ликвидности? Почитайте про Ливермора, который 100 лет назад разгонял акции, чтобы затем продать их на возникшем ажиотаже. Вот это оно и есть, создание ликвидности: провоцирование массы участников покупать там, где надо продавать и наоборот. С тех пор ничего не изменилось. Чтобы что-то продать, нужен кто-то, кто у вас это купит, а чтобы он это сделал по нужной вам цене, нужно убедить его в том, что он совершает выгодную сделку.<br/><br/>Если ваше имя не Джи Пи Морган и у вас нет доступа к описанной вами непубличной информации, то все, что вам остается, это анализировать график и логически обоснованно предполагать то, что за ним кроется.&nbsp;
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2017/7/596E49A6-E7C5.PNG" srcset="https://c.mql5.com/avatar/2017/7/596E49A6-E7C5_big.PNG 2x" alt="Enrique Dangeroux" title="Enrique Dangeroux" data-user-login="EnriqueD" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/ru/users/enriqued" data-user-login="EnriqueD">Enrique Dangeroux</a></b>
+              |
+              <span class="comment__date">20 февр. 2026 в 14:54</span>
+              <a id="comment_59229100"></a>
+              
+            </div>
+            <div class="content" id="content59229100">
+              <div class="fquote"> <strong><span style="color:#42639C;">vladavd <a href="/en/forum/504570#comment_59229031">#</a></span>:</strong><br/> Самый известный пример - стоп-ордера за экстремальными значениями цены. Это очевидное место, где можно поставить свой лимитный ордер именно там и получить большой объем на чужих стопах. Есть и другие, менее очевидные места. <br/><br/> Да, график - это история, но:<br/> 1) там все еще есть позиции, которые будут реагировать на движение цены к ним или от них<br/> 2) сам график служит сигналом для дальнейших действий, и он делает это не в прошлом, а прямо сейчас участники рынка смотрят на график цены и принимают решения<br/><br/> Далее, вы сами сейчас говорите, что ликвидность где-то есть. Значит, это все еще область, потому что в других местах ликвидности недостаточно, верно? И это ценная информация, к которой не имеют доступа обычные люди, сидящие дома с ноутбуками и розничными торговыми терминалами. Более осведомленные участники рынка охотятся за деньгами менее осведомленных. Это именно охота, потому что рынок не создает деньги, а лишь распределяет их от одного к другому.<br/><br/> Теперь мы действительно вернулись к исходной точке, когда вы сами утверждаете тезис, который изначально оспаривали.<br/><br/> Хотите узнать больше о создании ликвидности? Почитайте о Ливерморе, который 100 лет назад раздувал акции, чтобы затем продать их на возникшей шумихе. Именно в этом и заключается создание ликвидности: провоцировать массы участников покупать там, где они должны продавать, и наоборот. С тех пор ничего не изменилось. Чтобы продать что-то, нужно, чтобы кто-то купил это у вас, а чтобы заставить его сделать это по нужной вам цене, нужно убедить его, что он заключает выгодную сделку.<br/><br/> Если только вас не зовут G.P. Morgan и вы не имеете доступа к описанной вами непубличной информации, все, что вам нужно сделать, - это проанализировать график и сделать логическое предположение о том, что за ним стоит. </div> <p>Люди действительно смотрят на одни и те же графики и реагируют на одни и те же уровни, создавая самореализующуюся динамику. Это реально. Но это доказывает нечто гораздо более слабое: это означает, что ценовые уровни могут привлекать активность, потому что участники <em>ожидают</em> этого, а не потому, что крупный игрок спроектировал это или потому, что структурная ликвидность действительно находится там в смысле книги заявок.</p> <p>Опять же, ликвидность на рынке обеспечивают лимитные ордера, а не рыночные. Для того чтобы крупный участник "разместил там лимитный ордер и получил исполнение по чужим стопам", цена сначала должна достичь этого экстремума. Либо рынок доходит до него естественным путем, и в этом случае никто ничего не проектировал, либо кто-то толкает его туда намеренно, что является хрестоматийной манипуляцией и незаконно на регулируемых рынках.</p> <p>Тот факт, что информация о реальной ликвидности существует, но недоступна розничным трейдерам, не делает анализ графиков достойной заменой. Отсутствие лучшего инструмента не оправдывает некачественный. Это все равно что утверждать, что, поскольку вы не можете позволить себе термометр, прикосновение к радиатору - верный способ измерения комнатной температуры.</p> <p>Искоренение самообмана - первый шаг к успеху. Но если вы настаиваете, пусть обманывают себя, меня это никак не касается.</p>
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2026/2/699485d7-8660.jpg" srcset="https://c.mql5.com/avatar/2026/2/699485d7-8660_big.jpg 2x" alt="كاظم العماري" title="كاظم العماري" data-user-login="alkbyk397y" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/ru/users/alkbyk397y" data-user-login="alkbyk397y">كاظم العماري</a></b>
+              |
+              <span class="comment__date">21 февр. 2026 в 05:30</span>
+              <a id="comment_59232221"></a>
+              
+            </div>
+            <div class="content" id="content59232221">
+              هل هناك توضيح لى كيف
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2026/2/699485d7-8660.jpg" srcset="https://c.mql5.com/avatar/2026/2/699485d7-8660_big.jpg 2x" alt="كاظم العماري" title="كاظم العماري" data-user-login="alkbyk397y" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/ru/users/alkbyk397y" data-user-login="alkbyk397y">كاظم العماري</a></b>
+              |
+              <span class="comment__date">21 февр. 2026 в 05:44</span>
+              <a id="comment_59232247"></a>
+              
+            </div>
+            <div class="content" id="content59232247">
+              هل هناك طريقة سهل لفهم السوق
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+  </div>
+
+
+    <div class="articles-bottom-list" id="articleAdditional">
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Осциллятор Parafrac V2: Интеграция Parabolic SAR и среднего истинного диапазона (Average True Range)" src="https://c.mql5.com/2/170/19354-the-parafrac-v2-oscillator-logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/ru/articles/19354" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Осциллятор Parafrac V2: Интеграция Parabolic SAR и среднего истинного диапазона (Average True Range)</a>
+                <div class="articles-bottom-list__desc">Осциллятор Parafrac V2 — передовой инструмент технического анализа, который объединяет индикатор Parabolic SAR (параболический индикатор «остановки и разворота») с индикатором среднего истинного диапазона (Average True Range, ATR), чтобы преодолеть ограничения своего предшественника, который полагался на фракталы и был склонен к тому, что пики сигнала заглушали предыдущие и текущие сигналы. Благодаря использованию показателя волатильности ATR, версия 2 предлагает более плавный и надежный метод обнаружения трендов, разворотов и расхождений, помогая трейдерам уменьшить перегрузку графиков и аналитический паралич.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Знакомство с языком MQL5 (Часть 31): Освоение API и функции WebRequest в языке MQL5 (V)" src="https://c.mql5.com/2/185/20546-introduction-to-mql5-part-31-logo__1.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/ru/articles/20546" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Знакомство с языком MQL5 (Часть 31): Освоение API и функции WebRequest в языке MQL5 (V)</a>
+                <div class="articles-bottom-list__desc">Узнайте, как использовать функцию WebRequest и вызовы внешних API, чтобы получать свежие свечные данные, преобразовывать каждое значение в пригодный тип и аккуратно сохранять информацию в табличном виде. Этот шаг закладывает основу для создания индикатора, который визуализирует данные в свечном формате.</div>
+              </div>
+          </div>
+        </div>
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Машинное обучение и Data Science (Часть 38): Применение трансферного обучения (Transfer Learning) на валютных рынках" src="https://c.mql5.com/2/140/Data_Science_and_ML_lPart_385_AI_Transfer_Learning_in_Forex_Markets___LOGO.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/ru/articles/17886" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Машинное обучение и Data Science (Часть 38): Применение трансферного обучения (Transfer Learning) на валютных рынках</a>
+                <div class="articles-bottom-list__desc">Прорывы в области искусственного интеллекта, о которых пишут в новостях, от ChatGPT до беспилотных автомобилей, создаются не на основе отдельных моделей, а благодаря накопленным знаниям, перенесенным из различных моделей или общих областей. Теперь этот же подход &quot;обучить один раз, применять везде&quot;  можно использовать для трансформации наших моделей ИИ в алгоритмической торговле. В этой статье мы узнаем, как можно использовать полученные с помощью различных инструментов данные для улучшения прогнозов посредством трансферного обучения.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Нейросети в трейдинге: Масштабируемые трансформеры со структурной декомпозицией признаков (Основные компоненты)" src="https://c.mql5.com/2/196/21440-neyroseti-v-treydinge-masshtabiruemie-logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/ru/articles/21440" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Нейросети в трейдинге: Масштабируемые трансформеры со структурной декомпозицией признаков (Основные компоненты)</a>
+                <div class="articles-bottom-list__desc">Продолжаем разработку FAT: декомпозиция признаков по полям, отдельные проекции Query/Key/Value и параметрическое масштабирование внимания. Описаны OpenCL‑кернел многоголового внимания, свёрточный объект CNeuronFieldAwareConv и интеграция в CNeuronMHFAT с контролем памяти и градиентов. Читатель получает готовые компоненты для MQL5‑моделей, устойчивость к шуму и масштабируемость по числу полей и голов.</div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+<div class="clear-fix"></div>
+
+<div id='wdausxxqrpvhekbwjrjlhqjghyhesrqqau' class="r6irig5txiuua4k0m r6irig5txiuua4k0m_articles-view gg88d3drb"></div>
+    
+
+<div class="hidden" id="popupRegisterLogin">
+  <div class="register-login-popup">
+    <div class="register-login-popup__header">
+      <img src="https://c.mql5.com/i/registerlandings/logo-2.png" srcset="https://c.mql5.com/i/registerlandings/logo-2_2x.png 2x" alt="MQL5 - Язык торговых стратегий для клиентского терминала MetaTrader 5" loading="lazy" width="74" height="24" />
+    </div>
+    <div class="register-login-popup__content">
+      <div class="register-login-popup__desc">
+        <div class="register-login-popup__title">Вы упускаете торговые возможности:</div>
+        <ul>
+<li>Бесплатные приложения для трейдинга</li>
+<li>8 000+ сигналов для копирования</li>
+<li>Экономические новости для анализа финансовых рынков</li>
+</ul>
+      </div>
+      <div class="register-login-popup__forms ui">
+        <div class="register-login-popup__tabs" id="registerLoginPopupTabs">
+          <span data-id="register" id="registerLoginPopupTab_register" class="register-login-popup__tab register-login-popup__tab_active">Регистрация</span>
+          <span data-id="login" id="registerLoginPopupTab_login" class="register-login-popup__tab">Вход</span>
+        </div>
+        <div id="registerLoginPopupTabContent_register">
+          <div class="ui auth-form__content">
+    
+  <script type='text/javascript'>/*<![CDATA[*/ if (!window.V) var V = []; /*]]>*/</script>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/ru/auth_register_short" id="PopupRegisterquickRegisterForm" onsubmit="PopupRegisterquickRegistration.OnSubmit(this,&#39;ru&#39;);if(Validate(this)) Ajax.form(this,{onready:PopupRegisterquickRegistration.OnSuccessPopup,onerror:PopupRegisterquickRegistration.OnError,onbeginrequest:PopupRegisterquickRegistration.DisableInputs,onendrequest:PopupRegisterquickRegistration.EnableInputs});return(false);" enctype = "multipart/form-data"><input type="hidden" name="__signature" value="ae701aa007994c406013ef4c0c78e42d"/>
+    <div class="auth-form__inputs">
+      <input type="hidden" value="0" name="IsValidate" id="PopupRegisterIsValidate" />
+
+      <!--[if lt IE 10]><div class="note">Придумайте логин:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input type="text" id="PopupRegisterusername" name="username" class="input" maxlength="32" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.CheckUserName();}" onkeyup="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.ValidateUserName(this, 'Укажите корректный логин');}" placeholder="Придумайте логин" title="Может содержать латинские буквы, цифры, точки, тире, символы подчеркивания. Не может начинаться и заканчиваться точкой. Длина: 3-32 символов." onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisterusername'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisterusername',10,'Используйте латинские буквы, допускаются цифры, символы подчеркивания и точки.',validate_username]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisterusername">латиницей и без пробелов</label>
+      </div>
+      <!--[if lt IE 10]><div class="note">Ваш email:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input class="input" type="email" id="PopupRegisteremail" name="email" placeholder="Ваш email" title="Введите email (не более 256 символов). Например: ivan@example.com" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnChange(this);}" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisteremail'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisteremail',10,'Укажите корректный email',validate_email]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisteremail">пароль придет на email</label>
+      </div>
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Register" />
+    </div>
+    <span id="PopupRegisterquickRegisterSubmit">
+      <input type="submit" value="Зарегистрироваться" id="PopupRegisterquickRegisterButton"  title="Зарегистрируйтесь и получите пароль на ваш email" class="button button_yellow"  />
+    </span>
+    <span id="PopupRegisterquickRegisterErrorMessage" class="quick-register-error-message field-validation-error" style="text-align: center; margin-top: 16px; display: none;">
+      Произошла ошибка
+    </span>
+</form>
+    
+</div>
+<div class="auth-social">
+  <ul class="auth-social-list" id="socialList">
+    <li><a onclick="window.fpush({name: 'MQL5+Popup+Register+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/ru/auth_oauth2?provider=Google&amp;amp;return=popup&amp;amp;reg=1" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Войти через Google</a></li>
+  </ul>
+</div>
+<div class="auth-block-agree">
+  <p>
+    Вы принимаете <a target="_blank" href="/ru/about/privacy">политику сайта</a> и <a target="_blank" href="/ru/about/terms">условия использования</a>
+  </p>
+</div>
+
+
+        </div>
+        <div id="registerLoginPopupTabContent_login" class="hidden">
+            <div class="auth-form__text">
+    Если у вас нет учетной записи, <a href="https://www.mql5.com/ru/auth_register" rel="nofollow" style="vertical-align: top">зарегистрируйтесь</a>
+  </div>
+<div class="ui auth-form__content auth-form__content_login" id="loginFormWrapper">
+    
+  <div id="needCookies" class="need-cookies hidden">
+    <div class="danger-box">
+      <p>Для авторизации и пользования сайтом MQL5.com необходимо разрешить использование файлов Сookie.</p>
+<p>Пожалуйста, включите в вашем браузере данную настройку, иначе вы не сможете авторизоваться.</p>
+    </div>
+  </div>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/ru/auth_login" id="loginForm" onsubmit="if(window.quickLogin){return window.quickLogin.onSubmit(this);}var result = Validate(this); if(result) { preventDoubleSubmit(this); } return result;"><input id="RedirectAfterLoginUrl" name="RedirectAfterLoginUrl" type="hidden" value="" /><input id="RegistrationUrl" name="RegistrationUrl" type="hidden" value="" /><input data-val="true" data-val-required="The ShowOpenId field is required." id="ShowOpenId" name="ShowOpenId" type="hidden" value="True" /><input id="TrackingSection" name="TrackingSection" type="hidden" value="Articles" />    <input name="ViewType" type="hidden" value="5" />
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Login" />
+    <!--[if lt IE 10]><div class="note">Ваш логин:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <input class="input qa-login" id="Login" name="Login" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Логин" title="Ваш логин" type="text" value="" />
+      <script type='text/javascript' id='validate_Login'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Login',1,'Введите логин, указанный при регистрации']);});mqGlobal.AddOnReady(function() {V.push(['Login',10,'Email нельзя использовать, введите свой логин, пожалуйста',validateLogin]);}); /*]]>*/</script>
+    </div>
+    <!--[if lt IE 10]><div class="note">Пароль:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <div class="input-with-show">
+        <input autocomplete="off" class="input qa-password" id="Password" name="Password" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Пароль" title="Введите пароль" type="password" />
+        <span class="input-with-show__icon" title="Показать пароль" onclick="if(window.quickLogin){window.quickLogin.showPass(this, 'Показать пароль', 'Скрыть пароль');}"></span>
+      </div>
+      <script type='text/javascript' id='validate_Password'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Password',1,'Введите пароль']);}); /*]]>*/</script>
+    </div>
+    <script type="text/javascript">
+    function validateLogin(input) {
+      console.log('validate login ' + input.value);
+      return !/^\w+([-+.'']{1,2}\w+)* @\w+([-.]\w+)*\.\w+([-.]\w+)*$/i.test(input.value);
+    }
+    </script>
+    <div class="forgot" id="loginForgotBlock"><a id="loginForgotLink" href="https://www.mql5.com/ru/auth_forgotten?return=popup">Забыли логин/пароль?</a></div>
+    <input type="submit" class="button button_yellow qa-submit" id="loginSubmit" value="Вход" title="Войти">
+</form></div>
+
+  <div class="auth-social" id="authSocialBlock">
+    <ul class="auth-social-list" id="socialList">
+      <li><a onclick="window.fpush({name: 'MQL5+Popup+Login+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/ru/auth_oauth2?provider=Google&amp;amp;return=popup" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Войти через Google</a></li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script id="popupSection" type="application/json">{"section": "Articles"}</script>
+<script id="popupTranslate" data-type="translate" type="application/json">
+{
+  "popup":
+  {
+  "EmailTitle" : "Пароль отправлен на {0}",
+  "EmailDescription" : "Войдите, используя полученный пароль и логин, указанный при регистрации",
+  "SubmitButtonText" : "Активировать аккаунт",
+  "RegistrationTip" : "Если вы не получили письмо с паролем, проверьте папку спам или &lt;a href={0}&gt;повторите регистрацию&lt;/a&gt;"
+  }
+}
+</script>
+
+    
+
+    
+
+
+    </article>
+  </div>
+
+
+
+<div aria-hidden="true" class="footer  desktop" id="footer">
+  <ul class="links  links_desktop">
+      <li id="navFooterCommunity">
+        <nav>
+          <ul>
+            <li><a href="https://web.metatrader.app/terminal?mode=demo&amp;lang=ru" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Footer+Trading">Онлайн трейдинг / Вебтерминал</a></li>
+            <li><a href="/ru/code" data-fz-event="MQL5+Footer+CodeBase">Бесплатные индикаторы и советники</a></li>
+            <li><a href="/ru/articles" data-fz-event="MQL5+Footer+Articles">Статьи о программировании и трейдинге</a></li>
+            <li><a href="/ru/job" data-fz-event="MQL5+Footer+Job">Заказать торговый советник и индикатор</a></li>
+            <li><a href="/ru/market" data-fz-event="MQL5+Footer+Market">Купить торговый робот и индикатор</a></li>
+            <li><a href="/ru/signals" data-fz-event="MQL5+Footer+Signals">Торговые сигналы форекс</a></li>
+            <li><a href="/ru/vps" data-fz-event="MQL5+Footer+VPS">Forex VPS для торговли</a></li>
+            <li><a href="/ru/forum" data-fz-event="MQL5+Footer+Forum">Форум трейдеров</a></li>
+            <li><a href="/ru/blogs" data-fz-event="MQL5+Footer+Blogs">Блоги трейдеров</a></li>
+            <li><a rel="nofollow" href="/ru/charts" data-fz-event="MQL5+Footer+Charts">Графики</a></li>
+            <li><a href="/ru/widgets" data-fz-event="MQL5+Footer+Widgets">Бесплатные виджеты</a></li>
+          </ul>
+        </nav>
+      </li>
+      <li id="navFooterMt5">
+        <nav>
+          <ul>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com" data-fz-event="MQL5+Footer+MetaTrader+5">Торговая платформа <span class="nobr">MetaTrader 5</span></a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/releasenotes" data-fz-event="MQL5+Footer+MetaTrader+5">Последние обновления <span class="nobr">MetaTrader 5</span></a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/news" data-fz-event="MQL5+Footer+MetaTrader+5">Новости, внедрения и технологии</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/terminal/help" data-fz-event="MQL5+Footer+MetaTrader+5">Руководство пользователя <span class="nobr">MetaTrader 5</span></a></li>
+            <li><a href="/ru/docs" data-fz-event="MQL5+Footer+Docs">Язык торговых стратегий MQL5</a></li>
+            <li><a rel="nofollow noopener" href="https://cloud.mql5.com" data-fz-event="MQL5+Footer+Cloud">MQL5 Cloud Network</a></li>
+            <li><a rel="noopener" href="https://forge.mql5.io/?lang=ru-RU" data-fz-event="MQL5+Footer+Forge" target="_blank">MQL5 Algo Forge</a></li>
+              <li><a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Footer">Скачать <span class="nobr">MetaTrader 5</span></a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/terminal/help/start_advanced/installation" data-fz-event="MQL5+Footer+MetaTrader+5">Установка платформы</a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/terminal/help/start_advanced/deinstallation" data-fz-event="MQL5+Footer+MetaTrader+5">Удаление программы</a></li>
+          </ul>
+        </nav>
+
+      </li>
+    <li id="navFooterWebsite">
+        <nav>
+          <ul>
+            <li><a rel="nofollow" href="/ru/about" data-fz-event="MQL5+Footer+About">О проекте</a></li>
+              <li><a href="/ru/wall" data-fz-event="MQL5+Footer+Wall">Хроника сайта</a></li>
+            <li><a rel="nofollow" href="/ru/about/terms" data-fz-event="MQL5+Footer+About">Условия использования</a></li>
+            <li><a rel="nofollow" href="/ru/about/autopayments" data-fz-event="MQL5+Footer+About">Соглашение о рекуррентных платежах</a></li>
+            <li><a rel="nofollow" href="/ru/about/agencyagreement" data-fz-event="MQL5+Footer+About">Агентский договор-оферта</a></li>
+            <li><a rel="nofollow" href="/ru/about/privacy" data-fz-event="MQL5+Footer+About">Политика конфиденциальности и защиты данных</a></li>
+            <li><a rel="nofollow" href="/ru/about/cookies" data-fz-event="MQL5+Footer+About">Политика в отношении cookie-файлов</a></li>
+            <li>
+                <a rel="nofollow" href="/ru/contact" data-fz-event="MQL5+Footer+Contacts">Контакты и обращения</a>
+            </li>
+          </ul>
+        </nav>
+    </li>
+
+      <li>
+        <div class="footer__products">
+          <div class="footer__product">
+            <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com" class="footer__product-name">MetaTrader 5</a>
+            <div class="footer__product-links">
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon windows" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Скачать MetaTrader 5 для Windows</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/MetaTrader5.pkg.zip?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon macos" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Скачать MetaTrader 5 для MacOS</div></a>
+            <a rel="nofollow noopener" href="https://www.mql5.com/ru/articles/625?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon linux" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Скачать MetaTrader 5 для Linux</div></a>
+            <a rel="nofollow noopener" href="https://web.metatrader.app/terminal?mode=demo&amp;lang=ru" class="icon web"><div  class="footer__product-link-hint footer__product-link-hint-short">Открыть MetaTrader 5 WebTerminal</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/ios?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=ru" class="icon ios" data-fz-event="MetaTrader+5+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/RXd-JJC1I1d.png)">Отсканируйте для установки из App Store</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=ru" class="icon android" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/TrE06p2W-9d.png)">Отсканируйте для установки из Google Play</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon huawei" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ZRt&#x2B;zI1l&#x2B;8O.png)">Отсканируйте для установки из Huawei AppGallery</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon ark" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/L0Q9oag&#x2B;3eE.png)">Отсканируйте для получения файла APK для Android</div></a>
+            </div>
+          </div>
+          <div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com/en/news/2270" class="footer__product-name">MQL5 Channels</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon ios" data-fz-event="MQL5+Channels+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Nz0etpAYpcO.png)">Отсканируйте для установки из App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon android" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/8re&#x2B;UwV7BVs.png)">Отсканируйте для установки из Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Su&#x2B;fe4n374e.png)">Отсканируйте для установки из Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mql5channels/mql5channels.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/G6Mg4NfCPzO.png)">Отсканируйте для получения файла APK для Android</div></a>
+              </div>
+            </div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.tradays.com/ru/download?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MQL5+Footer+Download+Tradays" class="footer__product-name">Economic Calendar</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon ios" data-fz-event="Tradays+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/e0xuSVTw-1E.png)">Отсканируйте для установки из App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon android" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/YuEbj-vmYap.png)">Отсканируйте для установки из Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CrS7bbDAdAO.png)">Отсканируйте для установки из Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/tradays/tradays.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/VZi8YPIb2op.png)">Отсканируйте для получения файла APK для Android</div></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__networks">
+          <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow" title="Facebook"><i class="icons-networks icons-networks_fb"></i></a>
+          <a href="https://t.me/mql5ru" target="_blank" rel="nofollow" title="Telegram"><i class="icons-networks icons-networks_tg"></i></a>
+          <a href="https://x.com/mql5com" target="_blank" rel="nofollow" title="X (Twitter)"><i class="icons-networks icons-networks_tw"></i></a>
+          <a href="https://www.youtube.com/@MetaQuotesOfficial" target="_blank" rel="nofollow" title="YouTube"><i class="icons-networks icons-networks_yt"></i></a>
+          <a href="https://www.linkedin.com/company/mql5" target="_blank" rel="nofollow" title="LinkedIn"><i class="icons-networks icons-networks_linkedin"></i></a>
+          <span>Подпишитесь на новости алготрейдинга</span>
+        </div>
+  
+        <div class="footer__other">
+          <div class="footer__not-a-broker">Не является брокером, нет реальных торговых счетов</div>
+          <div class="copyright">35 Dodekanisou str, Germasogeia, 4043,&nbsp;Limassol,&nbsp;Cyprus</div>
+          <div class="copyright">Copyright 2000-2026, <span class="nobr">MetaQuotes Ltd</span></div>
+        </div>
+      </li>
+  </ul>
+</div>
+
+
+
+<div class="shadow-layer" id="layer"></div>
+    
+
+  <div class="b-fixed-mt" id="bFixedMt" style="display: none;">
+    
+  </div>
+
+
+<script type='text/javascript'>
+		(function (a, e, f, g, b, c, d) { a[b] || (a.FintezaCoreObject = b, a[b] = a[b] || function () { (a[b].q = a[b].q || []).push(arguments) }, a[b].l = 1 * new Date, c = e.createElement(f), d = e.getElementsByTagName(f)[0], c.async = !0, c.defer = !0, c.src = g, d && d.parentNode && d.parentNode.insertBefore(c, d)) })
+      (window, document, "script", "/ff/core.js", "fz");
+		window.fz("register", "website", {
+      id: "sqjxkxkswybhifrohpyooonwgbvsfzmayq",
+			trackLinks: true
+		});
+        mqGlobal.AddOnReady(function () { Mql5Cookie.init('mql5.com', '5095598231682324077'); });
+mqGlobal.AddOnReady(function(){if(!window.Pocket){window.Pocket=new PocketManager();}});mqGlobal.AddOnReady(function(){if(!window.translateManager){window.translateManager=new Translate(undefined,'Ошибка: не удалось выполнить перевод. Пожалуйста, повторите попытку позже.');}if(document.querySelectorAll){var translateElements=document.querySelectorAll(".translateMenu");if(translateElements){var i=0,count=translateElements.length;for(i;i<count;i++){(function(i){var contentid=dataset(translateElements[i],"contentid"),sourcelang=dataset(translateElements[i],"sourcelang"),targetlang=dataset(translateElements[i],"targetlang"),moduleid=parseInt(dataset(translateElements[i],"moduleid")),typeid=parseInt(dataset(translateElements[i],"typeid")),entityid=parseInt(dataset(translateElements[i],"entityid"));Core.AddHandler(translateElements[i],"mouseover",function(){return translateManager.SetMenu(this,contentid,sourcelang,targetlang,moduleid,typeid,entityid);});})(i);}}}});window.fz("show","wdausxxqrpvhekbwjrjlhqjghyhesrqqau");window.mqGlobal.AddOnLoad(function(){window.fpush('MQL5+Article+Open');Articles.CheckOnScrollDown();});mqGlobal.AddOnReady(function(){window.PopupRegisterquickRegistration=new QuickRegistration('PopupRegister','Popup+Register','Articles');});function validate_username(input){var reg=/^([a-z0-9]){1}([\-._a-z0-9]){1,30}([\-_a-z0-9]){1}$/i,value=input.value,result=true;if(reg.test(value)){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Login',unit:'section',value:'Articles'});}return result;}function validate_email(input){var reg=/^\w+([-+.'']{1,2}\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/i,value=input.value,result=true,length_value=value.length;if(reg.test(value)&&length_value>=1&&length_value<=40){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Email',unit:'section',value:'Articles'});}return result;};mqGlobal.AddOnReady(function(){var username=$('PopupRegisterusername'),email=$('PopupRegisteremail');if(username)username.value='';if(email)email.value='';});mqGlobal.AddOnReady(function(){window.quickLogin=new QuickLogin('Popup+Login','Articles');});mqGlobal.AddOnLoad(function(){window.showLoginRegisterPopupAtEnd();});mqGlobal.AddOnLoad(function(){window.tooltipUserInfo.init();});mqGlobal.AddOnReady(function(){{window.initHeaderSearch('','https://www.mql5.com/ru/search');}});</script><script type="text/javascript">mqGlobal.AddOnReady(function(){window.initSuggestions("headerSearchKeyword","ru","https://search.mql5.com/api/query","https://www.mql5.com/ru/users_search/suggestion");});window.fz("show","vgckrufggwxdtfscpyalmenexmvhljduja");mqGlobal.AddOnReady(function(){window.floatVerticalPanelNode=FloatVerticalPanel('Сайт использует cookie-файлы. Узнайте больше о нашей <a href="/ru/about/cookies">политике по использованию cookie-файлов</a>.','cookie_accept');});							if (typeof Attach !== "undefined")
+			Attach.setAcceptFilter(".zip, .txt, .log, .mqh, .ex5, .mq5, .mq4, .mqproj, .ex4, .mt5, .set, .tpl, .cl, .py, .sqlite, .csv, .ini, .ipynb, .onnx, .gif, .png, .jpg, .jpeg, .mp4, .webm");
+	</script>
+
+<script type="application/ld&#x2B;json">
+		[
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"url": "https://www.mql5.com",
+				"logo": "https://c.mql5.com/i/community/logo_mql5-2.png",
+				"sameAs": [
+					"https://www.facebook.com/mql5.community",
+					"https://www.x.com/mql5com",
+					"https://www.youtube.com/user/MetaQuotesOfficial"
+				 ]
+			}
+		
+, 
+{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"Форум","description":"Обсуждение торговых стратегий и автоматического трейдинга. MQL5.community  крупнейший форум по форексу","url":"https://www.mql5.com/ru/forum","children":[]},{"@type":"SiteNavigationElement","position":2,"name":"Маркет","description":"MetaTrader Market - магазин торговых роботов, индикаторов, книг и журналов по трейдингу.","url":"https://www.mql5.com/ru/market","children":[]},{"@type":"SiteNavigationElement","position":3,"name":"Сигналы","description":"Социальный трейдинг, копирование сделок и мониторинг счетов в MetaTrader - Торговые сигналы на MQL5.com","url":"https://www.mql5.com/ru/signals","children":[]},{"@type":"SiteNavigationElement","position":4,"name":"Фриланс","description":"Заказать торговых роботов, технические индикаторы и программы для автоматического трейдинга. Работа на форексе. Фриланс-сервис на MQL5.com. Нанять на работу специалистов и экспертов по MetaTrader","url":"https://www.mql5.com/ru/job","children":[]},{"@type":"SiteNavigationElement","position":5,"name":"Котировки","description":"","url":"https://www.mql5.com/ru/quotes/overview","children":[]},{"@type":"SiteNavigationElement","position":6,"name":"MetaTrader","description":"","url":"https://www.metatrader.com","children":[]},{"@type":"SiteNavigationElement","position":7,"name":"Вебтерминал","description":"Вебтерминал для торговой плафтормы MetaTrader. Торгуйте на форекс рынке.","url":"https://web.metatrader.app/terminal?mode=demo","children":[]},{"@type":"SiteNavigationElement","position":8,"name":"Календарь","description":"","url":"https://www.mql5.com/ru/economic-calendar","children":[]},{"@type":"SiteNavigationElement","position":9,"name":"VPS","description":"","url":"https://www.mql5.com/ru/vps","children":[]},{"@type":"SiteNavigationElement","position":10,"name":"Статьи","description":"","url":"https://www.mql5.com/ru/articles","children":[]},{"@type":"SiteNavigationElement","position":11,"name":"CodeBase","description":"Скачать торговые роботы, технические индикаторы, скрипты в исходном коде - Библиотека кодов на MQL5 для MetaTrader 5","url":"https://www.mql5.com/ru/code","children":[]},{"@type":"SiteNavigationElement","position":12,"name":"Algo Forge","description":"","url":"https://forge.mql5.io","children":[]},{"@type":"SiteNavigationElement","position":13,"name":"Документация","description":"Справочник MetaQuotes Language 5 (MQL5) - Документация на MQL5.com","url":"https://www.mql5.com/ru/docs","children":[]}]}		
+,
+{"@context":"https://schema.org","@type":"TechArticle","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.mql5.com/ru/articles/20986"},"headline":"От новичка до эксперта: Создание индикатора для определения зон ликвидности","image":["https://c.mql5.com/2/191/Untitled_Diagram_drawio.png","https://c.mql5.com/2/191/terminal64_yhKtlRNXMd.gif","https://c.mql5.com/2/191/terminal64_WARpJKfRw7.gif","https://c.mql5.com/2/191/terminal64_7sMgF2OBUc.gif"],"datePublished":"2026-02-20T08:44:31+00:00Z","dateModified":"2026-02-20T09:13:15+00:00Z","author":{"@type":"Person","name":"Clemence Benjamin","url":"https://www.mql5.com/ru/users/billionaire2024"},"editor":{"@type":"Organization","name":"MetaQuotes","url":"https://www.mql5.com/ru/users/metaquotes","address":{"@type":"PostalAddress","addressCountry":"CY"}},"publisher":{"@type":"Organization","name":"MQL5 Community","url":"https://www.mql5.com","logo":{"@type":"ImageObject","url":"https://c.mql5.com/i/community/logo_mql5-2.png"}},"description":"Протяженность зон ликвидности и величина диапазона пробоя являются ключевыми переменными, существенно влияющими на вероятность повторного тестирования. В этом обсуждении мы описываем полный процесс разработки индикатора, который включает в себя эти коэффициенты."}
+,
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":"https://www.mql5.com/ru/articles","name":"Статьи"},{"@type":"ListItem","position":2,"item":"https://www.mql5.com/ru/articles/mt5","name":"MetaTrader 5"},{"@type":"ListItem","position":3,"item":"https://www.mql5.com/ru/articles/mt5/examples","name":"Примеры"}]}
+
+		]
+	</script>
+</body>
+</html>

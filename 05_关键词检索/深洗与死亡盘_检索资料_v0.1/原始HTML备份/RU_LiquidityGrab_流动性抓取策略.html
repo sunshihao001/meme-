@@ -1,0 +1,1004 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+
+  <meta name="robots" content="max-snippet:250,max-image-preview:large">
+  <meta name="description" content="Торговая стратегия захвата ликвидности является ключевым компонентом Концепции умных денег (Smart Money Concepts (SMC), которая направлена на выявление и использование действий институциональных игроков на рынке. Она предполагает нацеливание на области с высокой ликвидностью, такие как зоны поддержки или сопротивления, где крупные ордера могут спровоцировать движение цены до того, как рынок возобновит свой тренд. В настоящей статье подробно объясняется концепция захвата ликвидности и описывается процесс разработки советника по торговой стратегии захвата ликвидности на MQL5.">
+  <meta property="og:url" content="https://www.mql5.com/ru/articles/16518">
+  <meta property="og:title" content="Торговая стратегия &quot;Захват ликвидности&quot; (Liquidity Grab)">
+  <meta property="og:description" content="Торговая стратегия захвата ликвидности является ключевым компонентом Концепции умных денег (Smart Money Concepts (SMC), которая направлена на выявление и использование действий институциональных игроков на рынке. Она предполагает нацеливание на области с высокой ликвидностью, такие как зоны поддержки или сопротивления, где крупные ордера могут спровоцировать движение цены до того, как рынок возобновит свой тренд. В настоящей статье подробно объясняется концепция захвата ликвидности и описывается процесс разработки советника по торговой стратегии захвата ликвидности на MQL5.">
+      <meta property="og:image" content="https://c.mql5.com/2/110/The_Liquidity_Grab_Trading_Strategy_1200x628.jpg">
+      <meta property="og:image:secure_url" content="https://c.mql5.com/2/110/The_Liquidity_Grab_Trading_Strategy_1200x628.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2025-07-01T08:07:17.0000000Z">
+  <meta property="article:author" content="https://www.mql5.com/ru/users/sicklemql">
+  <meta property="article:section" content="MetaTrader 5">
+  <meta property="article:tag" content="Примеры">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@mql5com">
+  <meta name="twitter:image" content="https://c.mql5.com/2/110/The_Liquidity_Grab_Trading_Strategy_1200x628.jpg">
+  <meta name="theme-color" content="#4a76b8">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-config" content="none">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta property="qc:admins" content="36367170677651456375">
+  <meta property="wb:webmaster" content="073d7690269bcd81">
+  <link rel="shortcut icon" href="https://c.mql5.com/i/favicon4.ico">
+  <link rel="dns-prefetch" href="https://c.mql5.com">
+  <link href="https://c.mql5.com/styles/core.444bc25de4c9131a69fedfe5ac42a082.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/all.266d64b83529847f568747dd160d42b0.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/articles.bc4209e4de0b5296041832431b46f3dd.css" type="text/css" rel="stylesheet" media="all">
+  <link href="/ru/articles/rss" rel="alternate" type="application/rss+xml" title="Статьи по разработке и использованию торговых роботов и технических индикаторов для MetaTrader 5">
+  <link rel="canonical" href="https://www.mql5.com/ru/articles/16518">
+  <link rel="alternate" hreflang="en" href="https://www.mql5.com/en/articles/16518">
+  <link rel="alternate" hreflang="ru" href="https://www.mql5.com/ru/articles/16518">
+  <link rel="alternate" hreflang="zh" href="https://www.mql5.com/zh/articles/16518">
+  <link rel="alternate" hreflang="es" href="https://www.mql5.com/es/articles/16518">
+  <link rel="alternate" hreflang="de" href="https://www.mql5.com/de/articles/16518">
+  <link rel="alternate" hreflang="ja" href="https://www.mql5.com/ja/articles/16518">
+  <link rel="alternate" hreflang="pt" href="https://www.mql5.com/pt/articles/16518">
+  <title>Торговая стратегия &quot;Захват ликвидности&quot; (Liquidity Grab) - Статьи по MQL5</title>
+
+
+
+<script type="text/javascript">
+  !function(){window.mqGlobal={};var t=!1,n=!1,e=[],o=[],i=[];function d(t){var n;for(n=0;n<t.length;n+=1)t[n]()}function c(){t||(t=!0,d(e),d(o),o=[],e=[])}function a(){c(),n||(n=!0,d(i),i=[])}if(mqGlobal.AddOnReady=function(n,i){t?n(document):i?e.push(n):o.push(n)},mqGlobal.AddOnLoad=function(t){n?t(document):i.push(t)},mqGlobal.AddOnActiveWindowChange=function(t){this._onvisibility||(this._onvisibility=[]),this._onvisibility[this._onvisibility.length]=t},document.addEventListener)document.addEventListener("DOMContentLoaded",c,!1),window.addEventListener("load",a,!1);else if(document.attachEvent&&(document.attachEvent("onreadystatechange",(function(){switch(document.readyState){case"interactive":c();break;case"complete":a()}})),window.attachEvent("onload",a),document.documentElement.doScroll&&window==window.top)){!function n(){if(!t&&document.body)try{document.documentElement.doScroll("left"),c()}catch(t){setTimeout(n,0)}}()}}();
+  mqGlobal.CookieDomain = ".mql5.com";
+  mqGlobal.Language = 'ru';
+  mqGlobal.IsMobile = false;
+  mqGlobal.ClearRteStorage = function (e) { if (window.GStorage || (window.GStorage = globalStorage()), window.GStorage.supported) try { var o = e; window.GStorage.getItem("rte_autosave_uid", function (e, t) { t == o && (window.GStorage.removeItem("rte_autosave_text"), window.GStorage.removeItem("rte_autosave_date"), window.GStorage.removeItem("rte_autosave_uid")) }) } catch (e) { } };
+</script>
+  
+
+    <script src="https://c.mql5.com/js/all.c09fd283bed20d28a52c95cd70a12a27.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/vendor.1be6e9a4a90b28525f93c4c69a5058a1.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/articles.cd4c73c476b2781eecdf04f5583514b5.js" type="text/javascript" defer="defer"></script>
+
+
+</head>
+
+<body id="cover" class="cover">
+
+
+  <nav class="head">
+    <a href="https://www.mql5.com/ru" class="head__logo" title="MQL5 - Язык торговых стратегий для клиентского терминала MetaTrader 5"></a>
+      <div class="head__content">
+        <div class="main-menu" id="mainmenu">
+          
+                    <ul class="main-menu__top-level" id="menuTopLevel">
+                    <li><a href="/ru/forum" data-fz-event="MQL5+Menu+Forum">Форум</a></li>
+                    <li><a href="/ru/market" data-fz-event="MQL5+Menu+Market">Маркет</a></li>
+                    <li><a href="/ru/signals" data-fz-event="MQL5+Menu+Signals">Сигналы</a></li>
+                    <li><a href="/ru/job" data-fz-event="MQL5+Menu+Job">Фриланс</a></li>
+                    <li><a href="/ru/vps" data-fz-event="MQL5+Menu+VPS">VPS</a></li>
+                    <li><a href="/ru/quotes/overview" data-fz-event="MQL5+Menu+Overview">Котировки</a></li>
+                    <li><a href="https://www.metatrader.com/ru" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+MetaTrader">MetaTrader</a></li>
+                  </ul><ul class="main-menu__second-level" id="menuSecondLevel">
+                    <li class="main-menu__selected"><a href="/ru/articles" data-fz-event="MQL5+Menu+Articles"><img src="https://c.mql5.com/i/menu/icon-articles4.svg" alt="" width="16" height="16"/>Статьи</a></li>
+                    <li><a href="/ru/code" data-fz-event="MQL5+Menu+CodeBase"><img src="https://c.mql5.com/i/menu/icon-code4.svg" alt="" width="16" height="16"/>CodeBase</a></li>
+                    <li><a href="https://forge.mql5.io/?lang=ru-RU" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+AlgoForge"><img src="https://c.mql5.com/i/menu/icon-algoforge4.svg" alt="" width="16" height="16"/>Algo Forge</a></li>
+                    <li><a href="/ru/docs" data-fz-event="MQL5+Menu+Docs"><img src="https://c.mql5.com/i/menu/icon-docs4.svg" alt="" width="16" height="16"/>Документация</a></li>
+                    <li><a href="/ru/book" data-fz-event="MQL5+Menu+Book"><img src="https://c.mql5.com/i/menu/icon-book4.svg" alt="" width="16" height="16"/>Учебник по алготрейдингу</a></li>
+                    <li><a href="/ru/neurobook" data-fz-event="MQL5+Menu+Neurobook"><img src="https://c.mql5.com/i/menu/icon-neurobook4.svg" alt="" width="16" height="16"/>Учебник по нейросетям</a></li>
+                    <li><a href="/ru/economic-calendar" data-fz-event="MQL5+Menu+Economic+Calendar"><img src="https://c.mql5.com/i/menu/icon-economic-calendar4.svg" alt="" width="16" height="16"/>Календарь</a></li>
+                    <li><a href="https://web.metatrader.app/terminal?mode=demo&lang=ru" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Menu+Trading"><img src="https://c.mql5.com/i/menu/icon-trading4.svg" alt="" width="16" height="16"/>Вебтерминал</a></li>
+                    <li class="main-menu__mobile"><a href="/ru/about">О проекте</a></li>
+                    <li class="main-menu__second-tools"><a rel="noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" title="Загрузите последнюю версию торговой платформы бесплатно" class="button-mt" data-vars-fz="MetaTrader+5+Desktop+Download+Submenu"><img width="18" height="18" src="https://c.mql5.com/i/sidebar/download.svg" alt="" loading="lazy">Скачать MetaTrader 5</a></li>
+                    </ul>
+        </div>
+          <div class="main-menu__active">
+            <a id="mainMenuSelected" href="#">
+              <span class="main-menu__primary">Статьи</span><span class="main-menu__secondary">Разделы</span>
+            </a>
+          </div>
+<form action="https://www.mql5.com/ru/search" onsubmit="return false;" autocomplete="off" id="headerSearchForm" class="header-search" method="post">
+<button type="button" id="headerSearchButton" title="Поиск" class="header-search__button"></button><div class="header-search__input"><input name="keyword" type="text" enterkeyhint="search" title="Введите текст для поиска" placeholder="Поиск" id="headerSearchKeyword"/><label for="headerSearchKeyword" class="header-search__placeholder">Нажмите <span>/</span> для поиска: @user, $symbol, ...</label><button id="headerSearchSubmit" class="header-search__submit"></button></div><button type="button" id="headerSearchClean" title="Закрыть" class="header-search__clean"></button></form>        <input class="blurHandler" id="mainMenuBlurHandler" type="checkbox">
+      </div>
+      <div class="head__toolbar" id="headerToolbar">
+          <div class="container loginRegister">
+            <nav>
+              <ul id="loginRegisterButtons"><li><a class="login" title="Авторизуйтесь. Поддерживается OpenID-авторизация" href="https://www.mql5.com/ru/auth_login" rel="nofollow" data-fz-event="MQL5+Menu+Siginin">Вход</a></li><li><a class="registration ru" title="Зарегистрируйтесь" href="https://www.mql5.com/ru/auth_register" rel="nofollow" data-fz-event="MQL5+Menu+Register" onclick="window.fpush('MQL5+Button+Click');">Создать аккаунт</a></li></ul>
+            </nav>
+          </div>
+        <div class="toggle-button" id="sidebarToggleButton">
+          <i></i>
+        </div>
+
+        <div class="group-menu" id="groupMenu">
+
+
+          <div class="container lang-menu-container">
+            <div id="langMenuContainer" class="lang-menu">
+              <input class="blurHandler" id="langmenuBlurHandler" type="checkbox">
+              <nav>
+                <ul class="lang-menu__list" id="langmenu">
+                  <li class="lang-menu__list-item"><a href="/en/articles" aria-label="English (English)"><i class="icons-languages icons-languages_en"></i><span>English</span></a></li>
+<li class="lang-menu__list-item lang-menu__list-item_selected"><a href="/ru/articles" aria-label="Русский (Russian)"><i class="icons-languages icons-languages_ru"></i><span>Русский</span></a></li>
+<li class="lang-menu__list-item"><a href="/zh/articles" aria-label="中文 (Chinese)"><i class="icons-languages icons-languages_zh"></i><span>中文</span></a></li>
+<li class="lang-menu__list-item"><a href="/es/articles" aria-label="Español (Spanish)"><i class="icons-languages icons-languages_es"></i><span>Español</span></a></li>
+<li class="lang-menu__list-item"><a href="/pt/articles" aria-label="Português (Portuguese)"><i class="icons-languages icons-languages_pt"></i><span>Português</span></a></li>
+<li class="lang-menu__list-item"><a href="/ja/articles" aria-label="日本語 (Japanese)"><i class="icons-languages icons-languages_ja"></i><span>日本語</span></a></li>
+<li class="lang-menu__list-item"><a href="/de/articles" aria-label="Deutsch (German)"><i class="icons-languages icons-languages_de"></i><span>Deutsch</span></a></li>
+<li class="lang-menu__list-item"><a href="/ko/articles" aria-label="한국어 (Korean)"><i class="icons-languages icons-languages_ko"></i><span>한국어</span></a></li>
+<li class="lang-menu__list-item"><a href="/fr/articles" aria-label="Français (French)"><i class="icons-languages icons-languages_fr"></i><span>Français</span></a></li>
+<li class="lang-menu__list-item"><a href="/it/articles" aria-label="Italiano (Italian)"><i class="icons-languages icons-languages_it"></i><span>Italiano</span></a></li>
+<li class="lang-menu__list-item"><a href="/tr/articles" aria-label="Türkçe (Turkish)"><i class="icons-languages icons-languages_tr"></i><span>Türkçe</span></a></li>
+
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+  </nav>
+
+
+
+  <div id="left-sidebar-selector" class="left-sidebar__selector left-sidebar__selector_padding">
+    <div class="left-sidebar__title">
+MetaTrader 5 /     Примеры
+    </div>
+    <i class="icons-ux icons-ux_arrow-down-black"></i>
+  </div>
+  <div class="articles-container block-with-sidebar">
+    <aside class="left-sidebar left-sidebar_270" id="left-sidebar">
+      
+  <ul class="tree-menu-ul"><li class="tree-menu__item tree-menu__item_selected"><a class="tree-menu__link" href="/ru/articles/examples"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples.svg" alt="" loading="lazy"/>Примеры</a><ul class="tree-menu__list tree-menu__list_nested"><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/examples_indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_indicators.svg" alt="" loading="lazy"/>Индикаторы</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/examples_experts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_experts.svg" alt="" loading="lazy"/>Эксперты</a></li></ul></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/strategy_tester"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/strategy_tester.svg" alt="" loading="lazy"/>Тестер</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/trading"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading.svg" alt="" loading="lazy"/>Трейдинг</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/trading_systems"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading_systems.svg" alt="" loading="lazy"/>Торговые системы</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/integration"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/integration.svg" alt="" loading="lazy"/>Интеграция</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/indicator.svg" alt="" loading="lazy"/>Индикаторы</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/expert_advisors"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/expert.svg" alt="" loading="lazy"/>Эксперты</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/statistics"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/statistics.svg" alt="" loading="lazy"/>Статистика и анализ</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/machine_learning"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/machine_learning.svg" alt="" loading="lazy"/>Машинное обучение</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/interviews"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/interviews.svg" alt="" loading="lazy"/>Интервью</a></li></ul>
+  
+
+    <div class="hints-panel">
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_like"></i>
+        <div class="hints-panel__content">
+          Понравилась статья?<br>
+          Поставьте <a href="https://www.mql5.com/ru/articles/16518" target="_blank">ссылку</a> на нее —<br>пусть другие почитают
+        </div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_tw-square icons-hints_24px"></i><div class="hints-panel__content">
+Ищи нас в <a href="https://x.com/mql5com" target="_blank" rel="nofollow">Twitter</a>!<br> Ставь лайки и следи за новостями</div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_mt-5"></i>
+        <div class="hints-panel__content">
+          Используй новые возможности <a href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Article" rel="nofollow sponsored noopener noreferrer">MetaTrader 5</a>
+        </div>
+      </div>
+    </div>
+<div id='vgckrufggwxdtfscpyalmenexmvhljduja' class="roeid8y6hsc3ntv1l gg88d3drb"></div>      <div class="similar-author-articles ui">
+        <h4 class="similar-author-articles__title">Похожие статьи</h4>
+        <ul class="similar-author-articles__list">
+            <li>
+              <a href="/ru/articles/16050" data-fz-event="MQL5+Article+Similar+Article">От начального до среднего уровня: События в объектах (II)</a>
+            </li>
+            <li>
+              <a href="/ru/articles/16035" data-fz-event="MQL5+Article+Similar+Article">От начального до среднего уровня: События в объектах (I)</a>
+            </li>
+            <li>
+              <a href="/ru/articles/19422" data-fz-event="MQL5+Article+Similar+Article">Разрабатываем пользовательский индикатор рыночных настроений</a>
+            </li>
+            <li>
+              <a href="/ru/articles/21443" data-fz-event="MQL5+Article+Similar+Article">Разработка инструментария для анализа Price Action (Часть 62): Создание адаптивной системы обнаружения параллельных каналов и пробоев на языке MQL5</a>
+            </li>
+            <li>
+              <a href="/ru/articles/16340" data-fz-event="MQL5+Article+Similar+Article">Повышение эффективности торговли с использованием Smart Money Concepts (SMC): OB, BOS и FVG</a>
+            </li>
+        </ul>
+      </div>
+    <div class="freelance-hint">
+      <img src="https://c.mql5.com/i/articles/icon_freelance.svg" width="24" height="24" loading="lazy" />
+      <div class="freelance-hint__text">
+        Используйте идеи из этой статьи,<br>чтобы заказать собственного робота<br>на бирже фрилансеров
+      </div>
+        <a target="_blank" class="button button_blue-gray-border" title="Перейти на биржу" href="/ru/job/new" data-fz-event="MQL5+Article+New+Job">Перейти на биржу</a>
+    </div>
+
+    </aside>
+    <article class="content-with-sidebar articles-content splashed">
+      
+
+
+  <header class="article-header article-header_light" style="background-color: rgb(94,132,166)">
+    <section class="article-tools-panel">
+        <div class="article-tools-panel__item">
+          <span class="popup framed client flags">
+            <a class="dropdown" href="javascript:void(false);">
+              <span class="icons-languages icons-languages_ru"></span><i></i>
+            </a>
+            <span class="popup">
+              <span class="tip">
+                <span></span>
+              </span>
+              <span class="items">
+                    <a href="/en/articles/16518">English</a>
+                    <a href="/zh/articles/16518">中文</a>
+                    <a href="/es/articles/16518">Español</a>
+                    <a href="/de/articles/16518">Deutsch</a>
+                    <a href="/ja/articles/16518">日本語</a>
+                    <a href="/pt/articles/16518">Português</a>
+              </span>
+            </span>
+          </span>
+        </div>
+        
+      <div class="article-tools-panel__item">
+        <a href="#pocket" title="Через Карман вы можете вставить полное описание этого содержимого в редактор сообщений" onclick="return Pocket.Add(this,'ru',2,1,16518);" class="article-tools-panel__rounded">
+          <i class="article-pocket-icon"></i>
+        </a>
+      </div>
+      <div class="article-tools-panel__item">
+        <a href="/ru/articles/16518?print=" target="_blank" class="article-tools-panel__rounded" rel="nofollow" title="Версия для печати">
+          <i class="article-print-icon"></i>
+        </a>
+      </div>
+
+    </section>
+    <section class="article-header__image-box">
+        <img class="article-header__image-preview" loading="lazy" width="32" height="16" alt="preview" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAsICAoIBwsKCQoNDAsNERwSEQ8PESIZGhQcKSQrKigkJyctMkA3LTA9MCcnOEw5PUNFSElIKzZPVU5GVEBHSEX/2wBDAQwNDREPESESEiFFLicuRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUX/wAARCAAQACADASIAAhEBAxEB/8QAFwABAAMAAAAAAAAAAAAAAAAABQIDBP/EACQQAAEDAwEJAAAAAAAAAAAAAAEAAhEDBBIUEyEiMUFxgZGh/8QAFgEBAQEAAAAAAAAAAAAAAAAABAED/8QAGBEBAQADAAAAAAAAAAAAAAAAAAECERL/2gAMAwEAAhEDEQA/AFr1jHsxEBo6BD6BpqSAPKRq3eU8IKo1DRzYB2JTpjoDoHd2TQ4yAshtzT3NZATdbZ1HE4fVDGlAlh9rRZa//9k=">
+      <div class="article-header__gradient" style="background: linear-gradient(90deg, rgba(94,132,166, 1) 0%, rgba(94,132,166, 0.72) 8.31%, rgba(94,132,166, 0) 17.1%), linear-gradient(270deg, rgba(94,132,166, 1) 0%, rgba(94,132,166, 0.72) 8.06%, rgba(94,132,166, 0) 16.59%), linear-gradient(0deg, rgba(94,132,166, 1) 8.26%, rgba(94,132,166, 0.8) 65%, rgba(94,132,166, 0) 100%);"></div>
+        <picture>
+          <source srcset="https://c.mql5.com/2/110/The_Liquidity_Grab_Trading_Strategy_600x314.jpg, https://c.mql5.com/2/110/The_Liquidity_Grab_Trading_Strategy_1200x628.jpg 2x" media="(min-width:700px)">
+          <img class="article-header__image" loading="lazy" width="600" height="314" srcset="https://c.mql5.com/2/110/The_Liquidity_Grab_Trading_Strategy_300x157.jpg, https://c.mql5.com/2/110/The_Liquidity_Grab_Trading_Strategy_600x314.jpg 2x" src="https://c.mql5.com/2/110/The_Liquidity_Grab_Trading_Strategy_600x314.jpg" alt="Торговая стратегия &quot;Захват ликвидности&quot; (Liquidity Grab)" onerror="this.style.display='none';">
+        </picture>
+    </section>
+    <section class="article-header__content">
+      <h1>Торговая стратегия &quot;Захват ликвидности&quot; (Liquidity Grab)</h1>
+      <div class="article-header__info">
+        <a href="/ru/articles/mt5">MetaTrader 5</a>
+          &mdash;
+          <a href="/ru/articles/mt5/examples">Примеры</a>
+        | <time datetime="2025-07-01T08:07Z" title="08:07" datetime-type="datetime">1 июля 2025, 08:07</time>
+      </div>
+      <div class="article-header__indicators">
+        <span title="Просмотры">
+          <img src="https://c.mql5.com/i/icons.svg#views-white-usage" width="20" height="20" alt="" />
+          2 010
+        </span>
+        
+          <a title="Комментарии" href="/ru/forum/490130">
+            <img src="https://c.mql5.com/i/icons.svg#comments-white-usage" width="20" height="20" alt="" />
+            4
+          </a>
+      </div>
+      <div class="article-header__author">
+          <div class="article-header__avatar">
+            <img src="https://c.mql5.com/avatar/2024/11/6743e84b-8a3d.jpg" srcset="https://c.mql5.com/avatar/2024/11/6743e84b-8a3d_big.jpg 2x" data-user-login="SickleMQL" title="Zhuo Kai Chen" alt="Zhuo Kai Chen" loading="lazy" width="60" height="60">
+          </div>
+<a class="author" href="/ru/users/sicklemql" data-user-login="SickleMQL">Zhuo Kai Chen</a>      </div>
+    </section>
+  </header>
+
+    <div class="content">
+      <div class="inner formatted-content">
+        <p><a href="/go?link=https://www.equiruswealth.com/blog/liquidity-grabs-a-crucial-concept-in-the-investment-world" title="https://www.equiruswealth.com/blog/liquidity-grabs-a-crucial-concept-in-the-investment-world" rel="nofollow" target="_blank">Торговая стратегия </a>захвата ликвидности является ключевым компонентом Концепции умных денег (Smart Money Concepts (SMC), которая направлена на выявление и использование действий институциональных игроков на рынке. Она предполагает нацеливание на области с высокой ликвидностью, такие как зоны поддержки или сопротивления, где крупные ордера могут спровоцировать движение цены до того, как рынок возобновит свой тренд. В настоящей статье подробно объясняется концепция захвата ликвидности и описывается процесс разработки советника по торговой стратегии захвата ликвидности на MQL5.</p> <p><br/></p> <h3>Обзор стратегии: Ключевые концепции и тактика</h3> <p>Стратегия захвата ликвидности фокусируется на использовании областей с высокой ликвидностью, таких как уровни поддержки и сопротивления, где институциональные трейдеры часто манипулируют ценами, чтобы активировать стоп-лоссы и повысить волатильность. Эта стратегия использует общую динамику рынка, чтобы предвидеть эти изменения и извлечь из них выгоду.</p> <h4>Основные понятия</h4> <ol> <li><b>Поиск стоп-лосса</b>: Стимуляция цен к активации стоп-лосс-ордеров, что вызывает каскадные покупки или продажи.</li> <li><b>Лееринг и спуфинг</b>: Использование поддельных ордеров для введения трейдеров в заблуждение относительно направления рынка.</li> <li><b>Ордера Iceberg</b>: Сокрытие крупных сделок путем разбивки их на более мелкие, видимые части.</li> <li><b>Импульс зажигания (Momentum Ignition)</b>: Создание искусственного импульса, чтобы заманить других трейдеров до наступления разворота.</li> <li><b>Манипулирование уровнями поддержки и сопротивления</b>: Использование ключевых уровней цен для предсказуемой реакции.</li> <li><b>Психологические ценовые точки</b>: Использование круглых чисел для влияния на поведение.</li> </ol> <p><a href="/go?link=https://www.investor.gov/introduction-investing/investing-basics/glossary/market-manipulation%23%3a%7e%3atext%3dMarket%2520manipulation%2520may%2520involve%2520techniques%2csecurity%2520than%2520is%2520the%2520case." title="https://www.investor.gov/introduction-investing/investing-basics/glossary/market-manipulation#:~:text=Market%20manipulation%20may%20involve%20techniques,security%20than%20is%20the%20case." rel="nofollow" target="_blank">Манипулирование рынком</a> предполагает преднамеренное воздействие на цену или объем ценной бумаги с целью создания вводящих в заблуждение условий торговли. В то время как большинство институциональных трейдеров придерживаются правовых и этических стандартов, некоторые могут прибегать к манипуляциям для достижения конкретных стратегических целей. Вот краткий обзор того, почему и как это происходит: </p> <p><b>Мотивация</b>:</p> <ul> <li>Максимизировать прибыль за счет краткосрочных колебаний цен и арбитража.</li> <li>Скрывать торговые намерения от конкурентов.</li> <li>Осуществляйте крупные сделки с минимальным влиянием рынка.</li> </ul> <p><b>Тактика</b>:</p> <ul> <li>Запуск стоп-лоссов для создания ликвидности или повышения цен.</li> <li>Управление потоком ордеров с помощью ордеров iceberg или спуфинга.</li> <li>Ориентирование на поддержку, сопротивление или психологические ценовые уровни.</li> </ul> <p>Понимание этой динамики позволяет трейдерам предвидеть поведение институтов и интегрировать эти данные в автоматизированные инструменты для разработки более эффективных стратегий.</p> <p>Мы хотим извлечь выгоду из временных колебаний цен, вызванных накоплением стоп-лоссов и действиями крупных участников рынка. Определяя области ликвидности, трейдеры стремятся войти в рынок в оптимальные моменты до того, как цена развернется и продолжит преобладающий тренд, предлагая благоприятные возможности с точки зрения соотношения риска и прибыли.</p> <p>Вот приблизительная схема того, как это должно выглядеть.</p> <p style="text-align:center;"> <img width="750" height="276" src="https://c.mql5.com/2/110/example1.png" loading="lazy" title="example diagram" alt="example diagram" style="vertical-align:middle;"/></p> <p><br/></p> <h3 id="para3">Разработка стратегии</h3> <p>Я предлагаю придерживаться следующего порядка при написании кода советника:</p> <p></p> <ol> <li>Рассмотрим необходимые функции для этой стратегии и определим, как инкапсулировать их в различные компоненты.&nbsp;</li> <li>Кодируем каждую функцию по очереди, объявляя связанные глобальные переменные или инициализируя соответствующие хэндлы по мере выполнения.&nbsp;</li> <li>После реализации каждой функции просмотрите ее и подумайте, как их соединить, например, передавая параметры или вызывая функции из других функций.&nbsp;</li> <li>Наконец, перейдём к OnTick()&nbsp; и разработаем логику, используя функции, описанные в предыдущих шагах.</li> </ol> <p><b>Во-первых, мы пытаемся дать количественную оценку правилам.</b> SMC в основном торгуется дискреционными трейдерами, поскольку существует множество не поддающихся количественной оценке нюансов. Объективно трудно определить точные характеристики, которыми должна обладать манипуляция. Один из подходов заключается в анализе изменения объема потока ордеров, но данные об объеме, предоставляемые брокерами, часто ненадежны. На таких рынках, как форекс, транзакции не централизованы, а для централизованных бирж, таких как фьючерсные, большинство брокеров предоставляют данные от своих поставщиков ликвидности, а не централизованные данные.&nbsp; Более простым и оптимизируемым методом является технический анализ; это тот подход, который мы и будем использовать в настоящей статье. Чтобы дать количественную оценку правилам, для упрощения мы разделим стратегию на следующие сегменты:</p> <ol> <li>&nbsp;Паттерн rejection candle, сформированный на ключевом уровне, где ключевой уровень определяется как самая высокая или самая низкая точка в течение периода ретроспективы.</li> <li>&nbsp;После rejection candle цена разворачивается и пробивает ключевой уровень на противоположной стороне с более коротким ретроспективным периодом.&nbsp;</li> <li>&nbsp;Наконец, если общее движение совпадает с более широким трендом, на что указывает положение цены относительно скользящей средней, мы вступаем в сделку с фиксированным стоп-лоссом и тейк-профитом.</li> </ol> <p>Обратите внимание, что мы могли бы добавить больше правил, чтобы лучше имитировать особенности манипулирования рынком, но желательно, чтобы стратегия была как можно более простой, чтобы избежать переобучения.</p> <p><b>Далее мы кодируем соответствующие функции.&nbsp;</b> Это необходимые функции для выполнения ордеров после расчета тейк-профита и стоп-лосса, а также для отслеживания тикетов ордеров.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Expert trade transaction handling function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> <span class="functions">OnTradeTransaction</span>(<span class="keyword">const</span> <span class="predefines">MqlTradeTransaction</span>&amp; trans, <span class="keyword">const</span> <span class="predefines">MqlTradeRequest</span>&amp; request, <span class="keyword">const</span> <span class="predefines">MqlTradeResult</span>&amp; result) {
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (trans.type == <span class="macro">TRADE_TRANSACTION_ORDER_ADD</span>) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;COrderInfo order;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (order.Select(trans.order)) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (order.Magic() == Magic) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (order.OrderType() == <span class="macro">ORDER_TYPE_BUY</span>) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;buypos = order.Ticket();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <span class="keyword">else</span> <span class="keyword">if</span> (order.OrderType() == <span class="macro">ORDER_TYPE_SELL</span>) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sellpos = order.Ticket();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}
+
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Execute sell trade function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> executeSell() {
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> bid = <span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_BID</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;bid = <span class="functions">NormalizeDouble</span>(bid, <span class="predefines">_Digits</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> tp = <span class="functions">NormalizeDouble</span>(bid - tpp * <span class="predefines">_Point</span>, <span class="predefines">_Digits</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> sl = <span class="functions">NormalizeDouble</span>(bid + slp * <span class="predefines">_Point</span>, <span class="predefines">_Digits</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;trade.Sell(lott, <span class="predefines">_Symbol</span>, bid, sl, tp);
+&nbsp;&nbsp;&nbsp;&nbsp;sellpos = trade.ResultOrder();
+}
+
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Execute buy trade function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> executeBuy() {
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> ask = <span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_ASK</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;ask = <span class="functions">NormalizeDouble</span>(ask, <span class="predefines">_Digits</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> tp = <span class="functions">NormalizeDouble</span>(ask + tpp * <span class="predefines">_Point</span>, <span class="predefines">_Digits</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> sl = <span class="functions">NormalizeDouble</span>(ask - slp * <span class="predefines">_Point</span>, <span class="predefines">_Digits</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;trade.Buy(lott, <span class="predefines">_Symbol</span>, ask, sl, tp);
+&nbsp;&nbsp;&nbsp;&nbsp;buypos = trade.ResultOrder();
+}</pre> <p>Эти две функции определяют и возвращают самую высокую или самую низкую точку в пределах заданного диапазона, обеспечивая, что эта точка соответствует ключевому уровню, проверяя наличие поддержки или сопротивления, которые вызывают разворот от этого уровня.&nbsp;</p> <p></p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| find the key level high given a look-back period&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">double</span> findhigh(<span class="keyword">int</span> Range = <span class="number">0</span>)
+{
+&nbsp;&nbsp; <span class="keyword">double</span> highesthigh = <span class="number">0</span>;
+&nbsp;&nbsp; <span class="keyword">for</span> (<span class="keyword">int</span> i = BarsN; i &lt; Range; i++)
+&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> high = <span class="functions">iHigh</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, i);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (i &gt; BarsN &amp;&amp; <span class="functions">iHighest</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, <span class="macro">MODE_HIGH</span>, BarsN * <span class="number">2</span> + <span class="number">1</span>, i - BarsN) == i)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//used to make sure there's rejection for this high</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span> (high &gt; highesthigh)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> high;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;highesthigh = <span class="functions">MathMax</span>(highesthigh, high);
+&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">return</span> <span class="number">99999</span>;
+}
+
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| find the key level low given a look-back period&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">double</span> findlow(<span class="keyword">int</span> Range = <span class="number">0</span>)
+{
+&nbsp;&nbsp; <span class="keyword">double</span> lowestlow = <span class="macro">DBL_MAX</span>;
+&nbsp;&nbsp; <span class="keyword">for</span> (<span class="keyword">int</span> i = BarsN; i &lt; Range; i++)
+&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> low = <span class="functions">iLow</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, i);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (i &gt; BarsN &amp;&amp; <span class="functions">iLowest</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, <span class="macro">MODE_LOW</span>, BarsN * <span class="number">2</span> + <span class="number">1</span>, i - BarsN) == i)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span> (lowestlow &gt; low)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> low;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lowestlow = <span class="functions">MathMin</span>(lowestlow, low);
+&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">return</span> -<span class="number">1</span>;
+}</pre> <p></p> <p>Функция findhigh() обеспечивает отклонение в определенной точке максимума, проверяя, возникает ли самый высокий максимум в пределах указанного диапазона на текущем баре (i) и совпадает ли самая высокая точка в большем диапазоне (в два раза превышающем период ретроспективного анализа) с этим баром. Это говорит об отклонении, поскольку цена не смогла пробиться выше после достижения этого уровня. Если значение равно true, возвращается высокое значение в качестве потенциального ключевого уровня. Функция findlow() - это просто обратная логика.</p> <p>Эти две функции определяют, является ли последняя закрытая свеча индикатором rejection candle на ключевом уровне, что можно рассматривать как поведение захвата ликвидности.</p> <p></p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Check if the market rejected in the upward direction&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">bool</span> IsRejectionUp(<span class="keyword">int</span> shift=<span class="number">1</span>)
+{
+&nbsp;&nbsp; <span class="comment">// Get the values of the last candle (shift = 1)</span>
+&nbsp;&nbsp; <span class="keyword">double</span> open = <span class="functions">iOpen</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>, shift);
+&nbsp;&nbsp; <span class="keyword">double</span> close = <span class="functions">iClose</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>, shift);
+&nbsp;&nbsp; <span class="keyword">double</span> high = <span class="functions">iHigh</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>, shift);
+&nbsp;&nbsp; <span class="keyword">double</span> low = <span class="functions">iLow</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>,shift);
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">// Calculate the body size</span>
+&nbsp;&nbsp; <span class="keyword">double</span> bodySize = <span class="functions">MathAbs</span>(close - open);
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">// Calculate the lower wick size</span>
+&nbsp;&nbsp; <span class="keyword">double</span> lowerWickSize = open &lt; close ? open - low : close - low;
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">// Check if the lower wick is significantly larger than the body</span>
+&nbsp;&nbsp; <span class="keyword">if</span> (lowerWickSize &gt;= wickToBodyRatio * bodySize&amp;&amp;low&lt;findlow(DistanceRange)&amp;&amp;high&gt;findlow(DistanceRange))
+&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="macro">true</span>;
+&nbsp;&nbsp; }
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="keyword">return</span> <span class="macro">false</span>;
+}
+
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Check if the market rejected in the downward direction&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">bool</span> IsRejectionDown(<span class="keyword">int</span> shift = <span class="number">1</span>)
+{
+&nbsp;&nbsp; <span class="comment">// Get the values of the last candle (shift = 1)</span>
+&nbsp;&nbsp; <span class="keyword">double</span> open = <span class="functions">iOpen</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>, shift);
+&nbsp;&nbsp; <span class="keyword">double</span> close = <span class="functions">iClose</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>, shift);
+&nbsp;&nbsp; <span class="keyword">double</span> high = <span class="functions">iHigh</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>, shift);
+&nbsp;&nbsp; <span class="keyword">double</span> low = <span class="functions">iLow</span>(<span class="predefines">_Symbol</span>,<span class="macro">PERIOD_CURRENT</span>,shift);
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">// Calculate the body size</span>
+&nbsp;&nbsp; <span class="keyword">double</span> bodySize = <span class="functions">MathAbs</span>(close - open);
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">// Calculate the upper wick size</span>
+&nbsp;&nbsp; <span class="keyword">double</span> upperWickSize = open &gt; close ? high - open : high - close;
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">// Check if the upper wick is significantly larger than the body</span>
+&nbsp;&nbsp; <span class="keyword">if</span> (upperWickSize &gt;= wickToBodyRatio * bodySize&amp;&amp;high&gt;findhigh(DistanceRange)&amp;&amp;low&lt;findhigh(DistanceRange))
+&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="macro">true</span>;
+&nbsp;&nbsp; }
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="keyword">return</span> <span class="macro">false</span>;
+}</pre> <p></p> <p>Свеча демонстрирует паттерн отклонения, когда ее фитиль значительно больше, чем ее тело, и направление движения свечи меняется на противоположное предыдущему.</p> <p>Используя последние две функции, они были созданы для зацикливания на определенном периоде ретроспективного анализа, чтобы обнаруживать любое поведение захвата ликвидности, что будет использоваться для проверки того, имело ли место такое поведение, прежде чем появится сигнал разворота и пробоя.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| check if there were rejection up for the short look-back period&nbsp;&nbsp;|</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">bool</span> WasRejectionUp(){
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>; i&lt;CandlesBeforeBreakout;i++){
+&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(IsRejectionUp(i))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="macro">true</span>;&nbsp;&nbsp;
+&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="macro">false</span>;
+}
+
+
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| check if there were rejection down for the short look-back period|</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">bool</span> WasRejectionDown(){
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>; i&lt;CandlesBeforeBreakout;i++){
+&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(IsRejectionDown(i))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="macro">true</span>;&nbsp;&nbsp;
+&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="macro">false</span>;
+}</pre> <p>Чтобы получить данные для текущего значения скользящей средней, сначала инициализируем хэндл в функции OnInit().</p> <pre class="code"><span class="keyword">int</span> handleMa;
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Expert initialization function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">int</span> <span class="functions">OnInit</span>() {
+&nbsp;&nbsp;&nbsp;&nbsp;trade.SetExpertMagicNumber(Magic);
+&nbsp;&nbsp;&nbsp;&nbsp;handleMa = <span class="indicators">iMA</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>, MaPeriods, <span class="number">0</span>, <span class="macro">MODE_SMA</span>,<span class="macro">PRICE_CLOSE</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (handleMa == <span class="macro">INVALID_HANDLE</span>) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Failed to get indicator handles. Error: "</span>, <span class="functions">GetLastError</span>());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="macro">INIT_FAILED</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="macro">INIT_SUCCEEDED</span>;
+}</pre> <p>Затем можно легко получить доступ к значению скользящей средней, создав буферный массив и скопировав значение хэндла в буферный массив следующим образом:</p> <pre class="code"><span class="keyword">double</span> ma[];
+<span class="keyword">if</span> (<span class="functions">CopyBuffer</span>(handleMa, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, ma) &lt;= <span class="number">0</span>) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Failed to copy MA data. Error: "</span>, <span class="functions">GetLastError</span>());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+}</pre> <p></p> <p><b>Наконец, перейдем к OnTick()&nbsp;, чтобы применить торговую логику к программе, используя определенные нами функции.&nbsp;</b> Это гарантирует, что мы рассчитаем сигнал только при формировании нового бара, проверив, отличается ли текущий бар от последнего сохраненного закрытого бара. Это экономит вычислительные мощности и обеспечивает более плавные транзакции.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Expert tick function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> <span class="functions">OnTick</span>() {
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> bars = <span class="functions">iBars</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (barsTotal != bars) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;barsTotal = bars;</pre> <p>Затем мы просто применяем условие сигнала следующим образом:</p> <pre class="code"><span class="keyword">if</span>(WasRejectionDown()&amp;&amp;bid&lt;ma[<span class="number">0</span>]&amp;&amp;bid&lt;findlow(CandlesBeforeBreakout))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;executeSell();
+<span class="keyword">else</span> <span class="keyword">if</span>(WasRejectionUp()&amp;&amp;ask&gt;ma[<span class="number">0</span>]&amp;&amp;ask&gt;findhigh(CandlesBeforeBreakout))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;executeBuy();</pre> <p></p> <p>После этого шага попробуем скомпилировать программу и перейти к визуализатору бэк-тестирования, чтобы проверить, работает ли советник.</p> <p>В визуализаторе бэк-тестирования типичная запись выглядела бы следующим образом:</p> <p style="text-align:center;"> <img width="598" height="385" src="https://c.mql5.com/2/110/LG_example.jpg" loading="lazy" title="LG example" alt="LG example" style="vertical-align:middle;"/></p> <p><br/></p> <h3>Предложения<br/> </h3> <p>Несмотря на то, что мы закончили с основной идеей стратегии, у меня есть несколько предложений по реализации этого советника на реальном рынке:</p> <p>1. Манипуляции на рынке происходят быстро, поэтому лучше всего торговать по этой стратегии внутри дня, используя такие таймфреймы, как 5 или 15 минут. Более низкие таймфреймы могут быть более восприимчивы к ложным сигналам, в то время как более высокие таймфреймы могут слишком медленно реагировать на рыночные манипуляции.</p> <p>2. Рыночные манипуляции обычно происходят в периоды высокой волатильности, такие как Нью-Йоркская/Лондонская сессии Форекс или время открытия/закрытия фондового рынка. Рекомендуется реализовать функцию, ограничивающую торговлю в течение этих конкретных часов, как показано ниже:</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Check if the current time is within the specified trading hours  |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">bool</span> IsWithinTradingHours() {
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> currentTime = <span class="functions">TimeTradeServer</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="predefines">MqlDateTime</span> timeStruct;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">TimeToStruct</span>(currentTime, timeStruct);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> currentHour = timeStruct.hour;
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (( currentHour &gt;= startHour1 &amp;&amp; currentHour &lt; endHour1) ||
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;( currentHour &gt;= startHour2 &amp;&amp; currentHour &lt; endHour2))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="macro">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="macro">false</span>;
+}</pre> <p>3.&nbsp; Если цена консолидируется вокруг ключевых уровней, это может спровоцировать несколько сделок подряд в обоих направлениях. Чтобы обеспечить, что одновременно будет совершена только одна сделка, добавляем еще один критерий: для обоих тикетов позиций должно быть установлено значение 0, указывающее на отсутствие открытых позиций для данного советника. Мы сбрасываем их на 0, записывая эти строки в функцию OnTick().</p> <pre class="code"><span class="keyword">if</span>(buypos&gt;<span class="number">0</span>&amp;&amp;(!<span class="functions">PositionSelectByTicket</span>(buypos)|| <span class="functions">PositionGetInteger</span>(<span class="macro">POSITION_MAGIC</span>) != Magic)){
+&nbsp;buypos = <span class="number">0</span>;
+&nbsp;}
+<span class="keyword">if</span>(sellpos&gt;<span class="number">0</span>&amp;&amp;(!<span class="functions">PositionSelectByTicket</span>(sellpos)|| <span class="functions">PositionGetInteger</span>(<span class="macro">POSITION_MAGIC</span>) != Magic)){
+&nbsp;sellpos = <span class="number">0</span>;
+&nbsp;}</pre> <p>Мы обновляем наш исходный код, чтобы включить в него только что внесенные изменения.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Expert tick function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> <span class="functions">OnTick</span>() {
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> bars = <span class="functions">iBars</span>(<span class="predefines">_Symbol</span>, <span class="macro">PERIOD_CURRENT</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (barsTotal != bars) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;barsTotal = bars;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> ma[];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> bid = <span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_BID</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> ask = <span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_ASK</span>);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="functions">CopyBuffer</span>(handleMa, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, ma) &lt;= <span class="number">0</span>) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Failed to copy MA data. Error: "</span>, <span class="functions">GetLastError</span>());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(WasRejectionDown()&amp;&amp;IsWithinTradingHours()&amp;&amp;sellpos==buypos&amp;&amp;bid&lt;ma[<span class="number">0</span>]&amp;&amp;bid&lt;findlow(CandlesBeforeBreakout))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;executeSell();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span> <span class="keyword">if</span>(WasRejectionUp()&amp;&amp;IsWithinTradingHours()&amp;&amp;sellpos==buypos&amp;&amp;ask&gt;ma[<span class="number">0</span>]&amp;&amp;ask&gt;findhigh(CandlesBeforeBreakout))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;executeBuy();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(buypos&gt;<span class="number">0</span>&amp;&amp;(!<span class="functions">PositionSelectByTicket</span>(buypos)|| <span class="functions">PositionGetInteger</span>(<span class="macro">POSITION_MAGIC</span>) != Magic)){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;buypos = <span class="number">0</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(sellpos&gt;<span class="number">0</span>&amp;&amp;(!<span class="functions">PositionSelectByTicket</span>(sellpos)|| <span class="functions">PositionGetInteger</span>(<span class="macro">POSITION_MAGIC</span>) != Magic)){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sellpos = <span class="number">0</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}</pre> <h3><br/></h3> <h3>Бэк-тестирование<br/></h3> <p>В настоящей статье мы будем использовать этот советник на паре GBPUSD на 5-минутном таймфрейме.</p> <p>Вот настройки параметров, которые мы решили использовать для этого советника:</p> <p style="text-align:center;"> <img width="748" height="273" src="https://c.mql5.com/2/110/LG_parameters__1.png" loading="lazy" title="параметры" alt="параметры" style="vertical-align:middle;"/></p> <p></p> <p><b>Важные примечания:</b></p> <p></p> <ul> <li>Для определения тейк-профита и стоп-лосса мы выбираем обоснованную сумму в пунктах, основанную на внутридневной волатильности. Поскольку эта стратегия, по сути, работает в соответствии с трендом, рекомендуется, чтобы соотношение прибыли и риска было больше 1.</li> <li>DistanceRange - это период ретроспективы для поиска ключевых уровней для получения сигналов о захвате ликвидности.</li> <li>Схожим образом, CandlesBeforeBreakout - это период ретроспективы для поиска ключевых уровней для получения сигналов о пробое.</li> <li>Соотношение фитиля к телу может быть скорректировано до значения, которое трейдер сочтет достаточным для иллюстрации паттерна отклонения.</li> <li>График торгового дня основан на серверном времени вашего брокера. Что касается моего брокера (GMT+0), период волатильной сессии форекс в Нью-Йорке составляет с 13:00 до 19:00.</li> </ul> <p><b>Давайте теперь проведем бэк-тест с 2020.11.1 по 2024.11.1:</b></p> <p style="text-align:center;"> <img width="750" height="251" src="https://c.mql5.com/2/110/LG_setting.png" loading="lazy" title="установка" alt="установка" style="vertical-align:middle;"/></p> <p style="text-align:center;"> <img width="740" height="209" src="https://c.mql5.com/2/110/LG_curve.png" loading="lazy" title="curve" alt="curve" style="vertical-align:middle;"/></p> <p style="text-align:center;"> <img width="735" height="372" src="https://c.mql5.com/2/110/LG_result.png" loading="lazy" title="результат" alt="результат" style="vertical-align:middle;"/></p> <p>Стратегия показала достойный результат за последние 4 года.</p> <p></p> <p><br/></p> <h3 id="para4">Заключение</h3> <p>В настоящей статье мы впервые представили концепцию захвата ликвидности и лежащая в ее основе мотивациая. Затем мы предоставили пошаговое руководство по созданию советника (EA) для этой стратегии с нуля. Далее мы предложили дополнительные рекомендации по оптимизации советника. Наконец, мы продемонстрировали его потенциальную прибыльность в ходе четырехлетнего бэк-тестирования, включавшего более 200 сделок.</p> <p>Надеемся, что вы найдете эту стратегию полезной и что она вдохновит вас на ее развитие, будь то путем создания аналогичных стратегий или оптимизации ее настроек. Соответствующий файл для советника прикреплен ниже. Не стесняйтесь скачивать его и экспериментировать с ним.</p>
+      </div>
+          <p style="text-align: right;">
+            <small>
+              Перевод с английского произведен MetaQuotes Ltd. <br>Оригинальная статья: <a href="/en/articles/16518" target="_blank">https://www.mql5.com/en/articles/16518</a>
+            </small>
+          </p>
+<div id="cb_16518" class="attachBlock">
+  <strong>Прикрепленные файлы</strong> |
+  <div class="grouped-attachments-help">
+    <a title="Загрузить все вложения в одном ZIP-архиве" href="/ru/articles/download/16518.zip">
+      <i class="attach-icon attach-icon_zip"></i>Загрузить ZIP
+    </a>
+  </div>
+    <div class="attachItem">
+      <a title="Скачать Liquidity_Grab_Breakout_Example_Code.mq5" href="/ru/articles/download/16518/liquidity_grab_breakout_example_code.mq5"><i class="attach-icon attach-icon_mq5"></i>Liquidity_Grab_Breakout_Example_Code.mq5</a>
+      <span class="attachSize">(8.89 KB)</span>
+    </div>
+</div>
+    </div>
+
+  <div class="copyright">
+    <p><strong>Предупреждение:</strong> все права на данные материалы принадлежат MetaQuotes Ltd. Полная или частичная перепечатка запрещена.</p>
+      <p>Данная статья написана пользователем сайта и отражает его личную точку зрения. Компания MetaQuotes Ltd не несет ответственности за достоверность представленной информации, а также за возможные последствия использования описанных решений, стратегий или рекомендаций.</p>
+  </div>
+
+
+
+    <div class="article__author-with-articles">
+      
+
+
+<div class="article-footer__author">
+  <div class="article-footer__author-avatar">
+    <img id="avatar" src="https://c.mql5.com/avatar/2024/11/6743e84b-8a3d_big.jpg" title="Zhuo Kai Chen" alt="Zhuo Kai Chen" loading="lazy" width="164" height="164">
+  </div>
+  <div class="article-footer__author-content">
+    <div class="article-footer__author-name">
+      <a href="/ru/users/sicklemql" title="Zhuo Kai Chen">Zhuo Kai Chen</a>
+    </div>
+    <div class="article-footer__author-info">
+      <ul>
+          <li>
+            <i title="Работает" class="icons-profile icons-profile_suitcase"></i>
+Expert
+в            Algorithmic Trading
+          </li>
+          <li>
+            <i title="Живёт" class="icons-profile icons-profile_geo"></i>
+            <a target="_blank" rel="nofollow" title="Живёт" href="https://www.mql5.com/go?https://maps.google.com/?z=4&q=%d0%9a%d0%b8%d1%82%d0%b0%d0%b9">Китай</a>
+          </li>
+        <li>
+          <i title="Рейтинг" class="icons-profile icons-profile_statistics"></i>
+          <a title="Рейтинг" href="/ru/users/sicklemql/achievements">3427</a>
+        </li>
+      </ul>
+    </div>
+    <div class="article-footer__author-contacts">
+          <li title="X"><a class="icons-networks icons-networks_tw-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://x.com/codyoutcast"></a></li>
+
+    </div>
+    <div class="article-footer__author-bio">Computer Science Bachelor in CUHK(SZ) <br/>Quant Researcher with 3+ years of trading experience <br/>Currently managing 5+ trading systems <br/>Specializes in CTA strategy development <br/>Github: <a href="/go?link=https://github.com/CodyOutcast" title="https://github.com/CodyOutcast" rel="nofollow" target="_blank">https://github.com/CodyOutcast</a></div>
+  </div>
+</div>
+
+      <div class="other-author-articles ui">
+        <h4 class="other-author-articles__title">Другие статьи автора</h4>
+        <ul class="other-author-articles__list">
+          <li><a href="/ru/articles/17745" data-fz-event="MQL5+Article+From+Author+Article">Стратегии торговли прорыва: разбор ключевых методов</a></li>
+          <li><a href="/ru/articles/17636" data-fz-event="MQL5+Article+From+Author+Article">Возвратные стратегии дневной торговли RSI2 Ларри Коннорса</a></li>
+          <li><a href="/ru/articles/17466" data-fz-event="MQL5+Article+From+Author+Article">Изучение передовых методов машинного обучения в стратегии пробоя «коридора Дарваса» (Darvas Box Breakout)</a></li>
+          <li><a href="/ru/articles/17273" data-fz-event="MQL5+Article+From+Author+Article">Фильтр Калмана для возвратных стратегий на рынке Форекс</a></li>
+          <li><a href="/ru/articles/16957" data-fz-event="MQL5+Article+From+Author+Article">Тестирование надежности торговых советников</a></li>
+          <li><a href="/ru/articles/16940" data-fz-event="MQL5+Article+From+Author+Article">Прогнозирование трендов с помощью LSTM для стратегий следования за трендом</a></li>
+          <li><a href="/ru/articles/16659" data-fz-event="MQL5+Article+From+Author+Article">Торговая стратегия обратного разрыва справедливой стоимости</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+  <div class="article__last-comments" id="articleAdditional">
+    
+
+<div class="comments-preview">
+    <div class="title">
+      <span></span><b>
+         Последние комментарии |
+ <a href="/ru/forum/490130">Перейти к обсуждению на форуме трейдеров</a>
+      </b>
+        (4)
+    </div>
+    <div>
+        
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2023/4/6438c14d-e2f0.png" srcset="https://c.mql5.com/avatar/2023/4/6438c14d-e2f0_big.png 2x" alt="linfo2" title="linfo2" data-user-login="NeilHazelwood" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/ru/users/neilhazelwood" data-user-login="NeilHazelwood">linfo2</a></b>
+              |
+              <span class="comment__date">28 янв. 2025 в 18:27</span>
+              <a id="comment_57378829"></a>
+              
+            </div>
+            <div class="content" id="content57378829">
+              Спасибо за код, очень хорошо <a href="https://www.mql5.com/ru/articles/408" title="Статья: Новая система публикации статей на MQL5.community" class="linkator"><span class="mark">написанная статья</span></a> и хорошо собраны, код очень полезно спасибо. Интересно, если посмотреть на трейдеров SMC в социальных сетях, то доходность очень отличается. Буду пересматривать сделки и пробовать трейлинг стоп и трейлинг тп или фибоначчи на внешних диапазонах
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2024/11/6743e84b-8a3d.jpg" srcset="https://c.mql5.com/avatar/2024/11/6743e84b-8a3d_big.jpg 2x" alt="Zhuo Kai Chen" title="Zhuo Kai Chen" data-user-login="SickleMQL" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/ru/users/sicklemql" data-user-login="SickleMQL">Zhuo Kai Chen</a></b>
+              |
+              <span class="comment__date">29 янв. 2025 в 02:14</span>
+              <a id="comment_57378830"></a>
+              
+            </div>
+            <div class="content" id="content57378830">
+              <div class="fquote"> <strong><span style="color:#42639C;">linfo2 <a href="/en/forum/479947#comment_55758244">#</a></span>:</strong><br/> Спасибо за код, очень хорошо написанная статья и хорошо собраны, код очень полезно спасибо. Интересно, если посмотреть на трейдеров SMC в социальных сетях, то доходность очень отличается. Буду пересматривать сделки и пробовать трейлинг стоп и трейлинг тп или фибоначчи на внешних диапазонах </div> <p>Спасибо за ваш комментарий! Да, я вижу SMC-трейдеров в социальных сетях. В целом, я думаю, что они не совсем согласны со стратегией в плане захвата ликвидности. Кто-то ищет два фейкаута вместо одного, а кто-то смотрит на объем торгов. В общем, их действия предполагают некоторую свободу действий, что затрудняет оценку правильности их стратегий. Тем не менее, я с нетерпением жду ваших результатов, экспериментируя с трейлингом sl/tp и диапазонами Фибоначчи.</p>
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/avatar_na2.png" srcset="https://c.mql5.com/avatar/avatar_na2_big.png 2x" alt="rapidace1" title="rapidace1" data-user-login="rapidace1" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/ru/users/rapidace1" data-user-login="rapidace1">rapidace1</a></b>
+              |
+              <span class="comment__date">2 мар. 2025 в 13:07</span>
+              <a id="comment_57378831"></a>
+              
+            </div>
+            <div class="content" id="content57378831">
+              Эта концепция кажется мне свежей, спасибо, что поделились.
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2021/4/6075C0C6-DBF1.png" srcset="https://c.mql5.com/avatar/2021/4/6075C0C6-DBF1_big.png 2x" alt="Joab jrs" title="Joab jrs" data-user-login="Joabjrs" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/ru/users/joabjrs" data-user-login="Joabjrs">Joab jrs</a></b>
+              |
+              <span class="comment__date">28 дек. 2025 в 10:15</span>
+              <a id="comment_58817232"></a>
+              
+            </div>
+            <div class="content" id="content58817232">
+              <div class="atten"> <p>Автоматический перевод был применен модератором. Пожалуйста, пишите на языке выбранного вами раздела форума.</p> </div> <p>Привет, друг, я только что закончил читать все твои статьи, и они очень интересны.</p> <p>Я уже разрабатываю кое-что по трем из них и скоро отправлю их вам, чтобы вы проверили и добавили что-нибудь, если это необходимо!</p>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+  </div>
+
+
+    <div class="articles-bottom-list" id="articleAdditional">
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Нейросети в трейдинге: Адаптивная периодическая сегментация (Окончание)" src="https://c.mql5.com/2/153/18686-neyroseti-v-treydinge-adaptivnaya-logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/ru/articles/18686" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Нейросети в трейдинге: Адаптивная периодическая сегментация (Окончание)</a>
+                <div class="articles-bottom-list__desc">Предлагаем погрузиться в захватывающий мир LightGTS — лёгкого, но мощного фреймворка для прогноза временных рядов, где адаптивная свёртка и RoPE‑кодирование сочетаются с инновационным методами внимания. В нашей статье вы найдёте детальное описание всех компонентов — от создания патчей до сложной смеси экспертов в декодере, готовых к интеграции в MQL5‑проекты. Откройте для себя, как LightGTS выводит автоматическую торговлю на новый уровень!</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Алгоритм обратного поиска — Backtracking Search Algorithm (BSA)" src="https://c.mql5.com/2/152/18568-algoritm-obratnogo-poiska-backtracking-logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/ru/articles/18568" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Алгоритм обратного поиска — Backtracking Search Algorithm (BSA)</a>
+                <div class="articles-bottom-list__desc">Что если алгоритм оптимизации мог бы помнить свои прошлые путешествия и использовать эту память для поиска лучших решений? BSA делает именно это — балансируя между исследованием нового и возвращением к проверенному. В статье раскрываем секреты алгоритма. Простая идея, минимум параметров и стабильный результат.</div>
+              </div>
+          </div>
+        </div>
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Искусство ведения логов (Часть 1): Основные понятия и первые шаги в MQL5" src="https://c.mql5.com/2/102/logify60x60.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/ru/articles/16447" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Искусство ведения логов (Часть 1): Основные понятия и первые шаги в MQL5</a>
+                <div class="articles-bottom-list__desc">Добро пожаловать в новое приключение! Данная статья открывает специальный цикл, в котором мы будем пошагово создавать библиотеку для манипуляций с журналами, предназначенную для тех, кто занимается разработкой на языке MQL5.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Строим и оптимизируем торговую систему, основанную на объемах торгов (Chaikin Money Flow - CMF)" src="https://c.mql5.com/2/106/How_to_build_and_optimize_a_volume-based_trading_system_Chaikin_Money_Flow_LOGO.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/ru/articles/16469" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Строим и оптимизируем торговую систему, основанную на объемах торгов (Chaikin Money Flow - CMF)</a>
+                <div class="articles-bottom-list__desc">В настоящей статье мы представим основанный на объемах индикатор денежного потока Чайкина (Chaikin Money Flow, CMF) после того, как узнаем, как его можно построить, рассчитать и использовать. Разберемся как создать пользовательский индикатор. Проанализируем несколько простых стратегий, которые можно использовать и протестируем их, чтобы понять, какая стратегия лучше.</div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+<div class="clear-fix"></div>
+
+<div id='wdausxxqrpvhekbwjrjlhqjghyhesrqqau' class="r6irig5txiuua4k0m r6irig5txiuua4k0m_articles-view gg88d3drb"></div>
+    
+
+<div class="hidden" id="popupRegisterLogin">
+  <div class="register-login-popup">
+    <div class="register-login-popup__header">
+      <img src="https://c.mql5.com/i/registerlandings/logo-2.png" srcset="https://c.mql5.com/i/registerlandings/logo-2_2x.png 2x" alt="MQL5 - Язык торговых стратегий для клиентского терминала MetaTrader 5" loading="lazy" width="74" height="24" />
+    </div>
+    <div class="register-login-popup__content">
+      <div class="register-login-popup__desc">
+        <div class="register-login-popup__title">Вы упускаете торговые возможности:</div>
+        <ul>
+<li>Бесплатные приложения для трейдинга</li>
+<li>8 000+ сигналов для копирования</li>
+<li>Экономические новости для анализа финансовых рынков</li>
+</ul>
+      </div>
+      <div class="register-login-popup__forms ui">
+        <div class="register-login-popup__tabs" id="registerLoginPopupTabs">
+          <span data-id="register" id="registerLoginPopupTab_register" class="register-login-popup__tab register-login-popup__tab_active">Регистрация</span>
+          <span data-id="login" id="registerLoginPopupTab_login" class="register-login-popup__tab">Вход</span>
+        </div>
+        <div id="registerLoginPopupTabContent_register">
+          <div class="ui auth-form__content">
+    
+  <script type='text/javascript'>/*<![CDATA[*/ if (!window.V) var V = []; /*]]>*/</script>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/ru/auth_register_short" id="PopupRegisterquickRegisterForm" onsubmit="PopupRegisterquickRegistration.OnSubmit(this,&#39;ru&#39;);if(Validate(this)) Ajax.form(this,{onready:PopupRegisterquickRegistration.OnSuccessPopup,onerror:PopupRegisterquickRegistration.OnError,onbeginrequest:PopupRegisterquickRegistration.DisableInputs,onendrequest:PopupRegisterquickRegistration.EnableInputs});return(false);" enctype = "multipart/form-data"><input type="hidden" name="__signature" value="4a92a80c36b7cb6528dc8f5883f30cb8"/>
+    <div class="auth-form__inputs">
+      <input type="hidden" value="0" name="IsValidate" id="PopupRegisterIsValidate" />
+
+      <!--[if lt IE 10]><div class="note">Придумайте логин:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input type="text" id="PopupRegisterusername" name="username" class="input" maxlength="32" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.CheckUserName();}" onkeyup="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.ValidateUserName(this, 'Укажите корректный логин');}" placeholder="Придумайте логин" title="Может содержать латинские буквы, цифры, точки, тире, символы подчеркивания. Не может начинаться и заканчиваться точкой. Длина: 3-32 символов." onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisterusername'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisterusername',10,'Используйте латинские буквы, допускаются цифры, символы подчеркивания и точки.',validate_username]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisterusername">латиницей и без пробелов</label>
+      </div>
+      <!--[if lt IE 10]><div class="note">Ваш email:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input class="input" type="email" id="PopupRegisteremail" name="email" placeholder="Ваш email" title="Введите email (не более 256 символов). Например: ivan@example.com" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnChange(this);}" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisteremail'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisteremail',10,'Укажите корректный email',validate_email]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisteremail">пароль придет на email</label>
+      </div>
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Register" />
+    </div>
+    <span id="PopupRegisterquickRegisterSubmit">
+      <input type="submit" value="Зарегистрироваться" id="PopupRegisterquickRegisterButton"  title="Зарегистрируйтесь и получите пароль на ваш email" class="button button_yellow"  />
+    </span>
+    <span id="PopupRegisterquickRegisterErrorMessage" class="quick-register-error-message field-validation-error" style="text-align: center; margin-top: 16px; display: none;">
+      Произошла ошибка
+    </span>
+</form>
+    
+</div>
+<div class="auth-social">
+  <ul class="auth-social-list" id="socialList">
+    <li><a onclick="window.fpush({name: 'MQL5+Popup+Register+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/ru/auth_oauth2?provider=Google&amp;amp;return=popup&amp;amp;reg=1" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Войти через Google</a></li>
+  </ul>
+</div>
+<div class="auth-block-agree">
+  <p>
+    Вы принимаете <a target="_blank" href="/ru/about/privacy">политику сайта</a> и <a target="_blank" href="/ru/about/terms">условия использования</a>
+  </p>
+</div>
+
+
+        </div>
+        <div id="registerLoginPopupTabContent_login" class="hidden">
+            <div class="auth-form__text">
+    Если у вас нет учетной записи, <a href="https://www.mql5.com/ru/auth_register" rel="nofollow" style="vertical-align: top">зарегистрируйтесь</a>
+  </div>
+<div class="ui auth-form__content auth-form__content_login" id="loginFormWrapper">
+    
+  <div id="needCookies" class="need-cookies hidden">
+    <div class="danger-box">
+      <p>Для авторизации и пользования сайтом MQL5.com необходимо разрешить использование файлов Сookie.</p>
+<p>Пожалуйста, включите в вашем браузере данную настройку, иначе вы не сможете авторизоваться.</p>
+    </div>
+  </div>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/ru/auth_login" id="loginForm" onsubmit="if(window.quickLogin){return window.quickLogin.onSubmit(this);}var result = Validate(this); if(result) { preventDoubleSubmit(this); } return result;"><input id="RedirectAfterLoginUrl" name="RedirectAfterLoginUrl" type="hidden" value="" /><input id="RegistrationUrl" name="RegistrationUrl" type="hidden" value="" /><input data-val="true" data-val-required="The ShowOpenId field is required." id="ShowOpenId" name="ShowOpenId" type="hidden" value="True" /><input id="TrackingSection" name="TrackingSection" type="hidden" value="Articles" />    <input name="ViewType" type="hidden" value="5" />
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Login" />
+    <!--[if lt IE 10]><div class="note">Ваш логин:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <input class="input qa-login" id="Login" name="Login" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Логин" title="Ваш логин" type="text" value="" />
+      <script type='text/javascript' id='validate_Login'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Login',1,'Введите логин, указанный при регистрации']);});mqGlobal.AddOnReady(function() {V.push(['Login',10,'Email нельзя использовать, введите свой логин, пожалуйста',validateLogin]);}); /*]]>*/</script>
+    </div>
+    <!--[if lt IE 10]><div class="note">Пароль:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <div class="input-with-show">
+        <input autocomplete="off" class="input qa-password" id="Password" name="Password" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Пароль" title="Введите пароль" type="password" />
+        <span class="input-with-show__icon" title="Показать пароль" onclick="if(window.quickLogin){window.quickLogin.showPass(this, 'Показать пароль', 'Скрыть пароль');}"></span>
+      </div>
+      <script type='text/javascript' id='validate_Password'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Password',1,'Введите пароль']);}); /*]]>*/</script>
+    </div>
+    <script type="text/javascript">
+    function validateLogin(input) {
+      console.log('validate login ' + input.value);
+      return !/^\w+([-+.'']{1,2}\w+)* @\w+([-.]\w+)*\.\w+([-.]\w+)*$/i.test(input.value);
+    }
+    </script>
+    <div class="forgot" id="loginForgotBlock"><a id="loginForgotLink" href="https://www.mql5.com/ru/auth_forgotten?return=popup">Забыли логин/пароль?</a></div>
+    <input type="submit" class="button button_yellow qa-submit" id="loginSubmit" value="Вход" title="Войти">
+</form></div>
+
+  <div class="auth-social" id="authSocialBlock">
+    <ul class="auth-social-list" id="socialList">
+      <li><a onclick="window.fpush({name: 'MQL5+Popup+Login+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/ru/auth_oauth2?provider=Google&amp;amp;return=popup" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Войти через Google</a></li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script id="popupSection" type="application/json">{"section": "Articles"}</script>
+<script id="popupTranslate" data-type="translate" type="application/json">
+{
+  "popup":
+  {
+  "EmailTitle" : "Пароль отправлен на {0}",
+  "EmailDescription" : "Войдите, используя полученный пароль и логин, указанный при регистрации",
+  "SubmitButtonText" : "Активировать аккаунт",
+  "RegistrationTip" : "Если вы не получили письмо с паролем, проверьте папку спам или &lt;a href={0}&gt;повторите регистрацию&lt;/a&gt;"
+  }
+}
+</script>
+
+    
+
+    
+
+
+    </article>
+  </div>
+
+
+
+<div aria-hidden="true" class="footer  desktop" id="footer">
+  <ul class="links  links_desktop">
+      <li id="navFooterCommunity">
+        <nav>
+          <ul>
+            <li><a href="https://web.metatrader.app/terminal?mode=demo&amp;lang=ru" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Footer+Trading">Онлайн трейдинг / Вебтерминал</a></li>
+            <li><a href="/ru/code" data-fz-event="MQL5+Footer+CodeBase">Бесплатные индикаторы и советники</a></li>
+            <li><a href="/ru/articles" data-fz-event="MQL5+Footer+Articles">Статьи о программировании и трейдинге</a></li>
+            <li><a href="/ru/job" data-fz-event="MQL5+Footer+Job">Заказать торговый советник и индикатор</a></li>
+            <li><a href="/ru/market" data-fz-event="MQL5+Footer+Market">Купить торговый робот и индикатор</a></li>
+            <li><a href="/ru/signals" data-fz-event="MQL5+Footer+Signals">Торговые сигналы форекс</a></li>
+            <li><a href="/ru/vps" data-fz-event="MQL5+Footer+VPS">Forex VPS для торговли</a></li>
+            <li><a href="/ru/forum" data-fz-event="MQL5+Footer+Forum">Форум трейдеров</a></li>
+            <li><a href="/ru/blogs" data-fz-event="MQL5+Footer+Blogs">Блоги трейдеров</a></li>
+            <li><a rel="nofollow" href="/ru/charts" data-fz-event="MQL5+Footer+Charts">Графики</a></li>
+            <li><a href="/ru/widgets" data-fz-event="MQL5+Footer+Widgets">Бесплатные виджеты</a></li>
+          </ul>
+        </nav>
+      </li>
+      <li id="navFooterMt5">
+        <nav>
+          <ul>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com" data-fz-event="MQL5+Footer+MetaTrader+5">Торговая платформа <span class="nobr">MetaTrader 5</span></a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/releasenotes" data-fz-event="MQL5+Footer+MetaTrader+5">Последние обновления <span class="nobr">MetaTrader 5</span></a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/news" data-fz-event="MQL5+Footer+MetaTrader+5">Новости, внедрения и технологии</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/terminal/help" data-fz-event="MQL5+Footer+MetaTrader+5">Руководство пользователя <span class="nobr">MetaTrader 5</span></a></li>
+            <li><a href="/ru/docs" data-fz-event="MQL5+Footer+Docs">Язык торговых стратегий MQL5</a></li>
+            <li><a rel="nofollow noopener" href="https://cloud.mql5.com" data-fz-event="MQL5+Footer+Cloud">MQL5 Cloud Network</a></li>
+            <li><a rel="noopener" href="https://forge.mql5.io/?lang=ru-RU" data-fz-event="MQL5+Footer+Forge" target="_blank">MQL5 Algo Forge</a></li>
+              <li><a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Footer">Скачать <span class="nobr">MetaTrader 5</span></a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/terminal/help/start_advanced/installation" data-fz-event="MQL5+Footer+MetaTrader+5">Установка платформы</a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/terminal/help/start_advanced/deinstallation" data-fz-event="MQL5+Footer+MetaTrader+5">Удаление программы</a></li>
+          </ul>
+        </nav>
+
+      </li>
+    <li id="navFooterWebsite">
+        <nav>
+          <ul>
+            <li><a rel="nofollow" href="/ru/about" data-fz-event="MQL5+Footer+About">О проекте</a></li>
+              <li><a href="/ru/wall" data-fz-event="MQL5+Footer+Wall">Хроника сайта</a></li>
+            <li><a rel="nofollow" href="/ru/about/terms" data-fz-event="MQL5+Footer+About">Условия использования</a></li>
+            <li><a rel="nofollow" href="/ru/about/autopayments" data-fz-event="MQL5+Footer+About">Соглашение о рекуррентных платежах</a></li>
+            <li><a rel="nofollow" href="/ru/about/agencyagreement" data-fz-event="MQL5+Footer+About">Агентский договор-оферта</a></li>
+            <li><a rel="nofollow" href="/ru/about/privacy" data-fz-event="MQL5+Footer+About">Политика конфиденциальности и защиты данных</a></li>
+            <li><a rel="nofollow" href="/ru/about/cookies" data-fz-event="MQL5+Footer+About">Политика в отношении cookie-файлов</a></li>
+            <li>
+                <a rel="nofollow" href="/ru/contact" data-fz-event="MQL5+Footer+Contacts">Контакты и обращения</a>
+            </li>
+          </ul>
+        </nav>
+    </li>
+
+      <li>
+        <div class="footer__products">
+          <div class="footer__product">
+            <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com" class="footer__product-name">MetaTrader 5</a>
+            <div class="footer__product-links">
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon windows" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Скачать MetaTrader 5 для Windows</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/MetaTrader5.pkg.zip?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon macos" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Скачать MetaTrader 5 для MacOS</div></a>
+            <a rel="nofollow noopener" href="https://www.mql5.com/ru/articles/625?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon linux" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Скачать MetaTrader 5 для Linux</div></a>
+            <a rel="nofollow noopener" href="https://web.metatrader.app/terminal?mode=demo&amp;lang=ru" class="icon web"><div  class="footer__product-link-hint footer__product-link-hint-short">Открыть MetaTrader 5 WebTerminal</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/ios?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=ru" class="icon ios" data-fz-event="MetaTrader+5+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/RXd-JJC1I1d.png)">Отсканируйте для установки из App Store</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=ru" class="icon android" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/TrE06p2W-9d.png)">Отсканируйте для установки из Google Play</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon huawei" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ZRt&#x2B;zI1l&#x2B;8O.png)">Отсканируйте для установки из Huawei AppGallery</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon ark" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/L0Q9oag&#x2B;3eE.png)">Отсканируйте для получения файла APK для Android</div></a>
+            </div>
+          </div>
+          <div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com/en/news/2270" class="footer__product-name">MQL5 Channels</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon ios" data-fz-event="MQL5+Channels+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Nz0etpAYpcO.png)">Отсканируйте для установки из App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon android" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/8re&#x2B;UwV7BVs.png)">Отсканируйте для установки из Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Su&#x2B;fe4n374e.png)">Отсканируйте для установки из Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mql5channels/mql5channels.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/G6Mg4NfCPzO.png)">Отсканируйте для получения файла APK для Android</div></a>
+              </div>
+            </div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.tradays.com/ru/download?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MQL5+Footer+Download+Tradays" class="footer__product-name">Economic Calendar</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon ios" data-fz-event="Tradays+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/e0xuSVTw-1E.png)">Отсканируйте для установки из App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon android" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/YuEbj-vmYap.png)">Отсканируйте для установки из Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CrS7bbDAdAO.png)">Отсканируйте для установки из Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/tradays/tradays.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/VZi8YPIb2op.png)">Отсканируйте для получения файла APK для Android</div></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__networks">
+          <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow" title="Facebook"><i class="icons-networks icons-networks_fb"></i></a>
+          <a href="https://t.me/mql5ru" target="_blank" rel="nofollow" title="Telegram"><i class="icons-networks icons-networks_tg"></i></a>
+          <a href="https://x.com/mql5com" target="_blank" rel="nofollow" title="X (Twitter)"><i class="icons-networks icons-networks_tw"></i></a>
+          <a href="https://www.youtube.com/@MetaQuotesOfficial" target="_blank" rel="nofollow" title="YouTube"><i class="icons-networks icons-networks_yt"></i></a>
+          <a href="https://www.linkedin.com/company/mql5" target="_blank" rel="nofollow" title="LinkedIn"><i class="icons-networks icons-networks_linkedin"></i></a>
+          <span>Подпишитесь на новости алготрейдинга</span>
+        </div>
+  
+        <div class="footer__other">
+          <div class="footer__not-a-broker">Не является брокером, нет реальных торговых счетов</div>
+          <div class="copyright">35 Dodekanisou str, Germasogeia, 4043,&nbsp;Limassol,&nbsp;Cyprus</div>
+          <div class="copyright">Copyright 2000-2026, <span class="nobr">MetaQuotes Ltd</span></div>
+        </div>
+      </li>
+  </ul>
+</div>
+
+
+
+<div class="shadow-layer" id="layer"></div>
+    
+
+  <div class="b-fixed-mt" id="bFixedMt" style="display: none;">
+    
+  </div>
+
+
+<script type='text/javascript'>
+		(function (a, e, f, g, b, c, d) { a[b] || (a.FintezaCoreObject = b, a[b] = a[b] || function () { (a[b].q = a[b].q || []).push(arguments) }, a[b].l = 1 * new Date, c = e.createElement(f), d = e.getElementsByTagName(f)[0], c.async = !0, c.defer = !0, c.src = g, d && d.parentNode && d.parentNode.insertBefore(c, d)) })
+      (window, document, "script", "/ff/core.js", "fz");
+		window.fz("register", "website", {
+      id: "sqjxkxkswybhifrohpyooonwgbvsfzmayq",
+			trackLinks: true
+		});
+        mqGlobal.AddOnReady(function () { Mql5Cookie.init('mql5.com', '5095599464337938031'); });
+mqGlobal.AddOnReady(function(){if(!window.Pocket){window.Pocket=new PocketManager();}});mqGlobal.AddOnReady(function(){if(!window.translateManager){window.translateManager=new Translate(undefined,'Ошибка: не удалось выполнить перевод. Пожалуйста, повторите попытку позже.');}if(document.querySelectorAll){var translateElements=document.querySelectorAll(".translateMenu");if(translateElements){var i=0,count=translateElements.length;for(i;i<count;i++){(function(i){var contentid=dataset(translateElements[i],"contentid"),sourcelang=dataset(translateElements[i],"sourcelang"),targetlang=dataset(translateElements[i],"targetlang"),moduleid=parseInt(dataset(translateElements[i],"moduleid")),typeid=parseInt(dataset(translateElements[i],"typeid")),entityid=parseInt(dataset(translateElements[i],"entityid"));Core.AddHandler(translateElements[i],"mouseover",function(){return translateManager.SetMenu(this,contentid,sourcelang,targetlang,moduleid,typeid,entityid);});})(i);}}}});window.fz("show","wdausxxqrpvhekbwjrjlhqjghyhesrqqau");window.mqGlobal.AddOnLoad(function(){window.fpush('MQL5+Article+Open');Articles.CheckOnScrollDown();});mqGlobal.AddOnReady(function(){window.PopupRegisterquickRegistration=new QuickRegistration('PopupRegister','Popup+Register','Articles');});function validate_username(input){var reg=/^([a-z0-9]){1}([\-._a-z0-9]){1,30}([\-_a-z0-9]){1}$/i,value=input.value,result=true;if(reg.test(value)){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Login',unit:'section',value:'Articles'});}return result;}function validate_email(input){var reg=/^\w+([-+.'']{1,2}\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/i,value=input.value,result=true,length_value=value.length;if(reg.test(value)&&length_value>=1&&length_value<=40){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Email',unit:'section',value:'Articles'});}return result;};mqGlobal.AddOnReady(function(){var username=$('PopupRegisterusername'),email=$('PopupRegisteremail');if(username)username.value='';if(email)email.value='';});mqGlobal.AddOnReady(function(){window.quickLogin=new QuickLogin('Popup+Login','Articles');});mqGlobal.AddOnLoad(function(){window.showLoginRegisterPopupAtEnd();});mqGlobal.AddOnLoad(function(){window.tooltipUserInfo.init();});mqGlobal.AddOnReady(function(){{window.initHeaderSearch('','https://www.mql5.com/ru/search');}});</script><script type="text/javascript">mqGlobal.AddOnReady(function(){window.initSuggestions("headerSearchKeyword","ru","https://search.mql5.com/api/query","https://www.mql5.com/ru/users_search/suggestion");});window.fz("show","vgckrufggwxdtfscpyalmenexmvhljduja");mqGlobal.AddOnReady(function(){window.floatVerticalPanelNode=FloatVerticalPanel('Сайт использует cookie-файлы. Узнайте больше о нашей <a href="/ru/about/cookies">политике по использованию cookie-файлов</a>.','cookie_accept');});							if (typeof Attach !== "undefined")
+			Attach.setAcceptFilter(".zip, .txt, .log, .mqh, .ex5, .mq5, .mq4, .mqproj, .ex4, .mt5, .set, .tpl, .cl, .py, .sqlite, .csv, .ini, .ipynb, .onnx, .gif, .png, .jpg, .jpeg, .mp4, .webm");
+	</script>
+
+<script type="application/ld&#x2B;json">
+		[
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"url": "https://www.mql5.com",
+				"logo": "https://c.mql5.com/i/community/logo_mql5-2.png",
+				"sameAs": [
+					"https://www.facebook.com/mql5.community",
+					"https://www.x.com/mql5com",
+					"https://www.youtube.com/user/MetaQuotesOfficial"
+				 ]
+			}
+		
+, 
+{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"Форум","description":"Обсуждение торговых стратегий и автоматического трейдинга. MQL5.community  крупнейший форум по форексу","url":"https://www.mql5.com/ru/forum","children":[]},{"@type":"SiteNavigationElement","position":2,"name":"Маркет","description":"MetaTrader Market - магазин торговых роботов, индикаторов, книг и журналов по трейдингу.","url":"https://www.mql5.com/ru/market","children":[]},{"@type":"SiteNavigationElement","position":3,"name":"Сигналы","description":"Социальный трейдинг, копирование сделок и мониторинг счетов в MetaTrader - Торговые сигналы на MQL5.com","url":"https://www.mql5.com/ru/signals","children":[]},{"@type":"SiteNavigationElement","position":4,"name":"Фриланс","description":"Заказать торговых роботов, технические индикаторы и программы для автоматического трейдинга. Работа на форексе. Фриланс-сервис на MQL5.com. Нанять на работу специалистов и экспертов по MetaTrader","url":"https://www.mql5.com/ru/job","children":[]},{"@type":"SiteNavigationElement","position":5,"name":"Котировки","description":"","url":"https://www.mql5.com/ru/quotes/overview","children":[]},{"@type":"SiteNavigationElement","position":6,"name":"MetaTrader","description":"","url":"https://www.metatrader.com","children":[]},{"@type":"SiteNavigationElement","position":7,"name":"Вебтерминал","description":"Вебтерминал для торговой плафтормы MetaTrader. Торгуйте на форекс рынке.","url":"https://web.metatrader.app/terminal?mode=demo","children":[]},{"@type":"SiteNavigationElement","position":8,"name":"Календарь","description":"","url":"https://www.mql5.com/ru/economic-calendar","children":[]},{"@type":"SiteNavigationElement","position":9,"name":"VPS","description":"","url":"https://www.mql5.com/ru/vps","children":[]},{"@type":"SiteNavigationElement","position":10,"name":"Статьи","description":"","url":"https://www.mql5.com/ru/articles","children":[]},{"@type":"SiteNavigationElement","position":11,"name":"CodeBase","description":"Скачать торговые роботы, технические индикаторы, скрипты в исходном коде - Библиотека кодов на MQL5 для MetaTrader 5","url":"https://www.mql5.com/ru/code","children":[]},{"@type":"SiteNavigationElement","position":12,"name":"Algo Forge","description":"","url":"https://forge.mql5.io","children":[]},{"@type":"SiteNavigationElement","position":13,"name":"Документация","description":"Справочник MetaQuotes Language 5 (MQL5) - Документация на MQL5.com","url":"https://www.mql5.com/ru/docs","children":[]}]}		
+,
+{"@context":"https://schema.org","@type":"TechArticle","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.mql5.com/ru/articles/16518"},"headline":"Торговая стратегия \"Захват ликвидности\" (Liquidity Grab)","image":["https://c.mql5.com/2/110/example1.png","https://c.mql5.com/2/110/LG_example.jpg","https://c.mql5.com/2/110/LG_parameters__1.png","https://c.mql5.com/2/110/LG_setting.png","https://c.mql5.com/2/110/LG_curve.png","https://c.mql5.com/2/110/LG_result.png"],"datePublished":"2025-07-01T08:07:17+00:00Z","dateModified":"2025-07-01T08:09:51+00:00Z","author":{"@type":"Person","name":"Zhuo Kai Chen","url":"https://www.mql5.com/ru/users/sicklemql"},"editor":{"@type":"Organization","name":"MetaQuotes","url":"https://www.mql5.com/ru/users/metaquotes","address":{"@type":"PostalAddress","addressCountry":"CY"}},"publisher":{"@type":"Organization","name":"MQL5 Community","url":"https://www.mql5.com","logo":{"@type":"ImageObject","url":"https://c.mql5.com/i/community/logo_mql5-2.png"}},"description":"Торговая стратегия захвата ликвидности является ключевым компонентом Концепции умных денег (Smart Money Concepts (SMC), которая направлена на выявление и использование действий институциональных игроков на рынке. Она предполагает нацеливание на области с высокой ликвидностью, такие как зоны поддержки или сопротивления, где крупные ордера могут спровоцировать движение цены до того, как рынок возобновит свой тренд. В настоящей статье подробно объясняется концепция захвата ликвидности и описывается процесс разработки советника по торговой стратегии захвата ликвидности на MQL5."}
+,
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":"https://www.mql5.com/ru/articles","name":"Статьи"},{"@type":"ListItem","position":2,"item":"https://www.mql5.com/ru/articles/mt5","name":"MetaTrader 5"},{"@type":"ListItem","position":3,"item":"https://www.mql5.com/ru/articles/mt5/examples","name":"Примеры"}]}
+
+		]
+	</script>
+</body>
+</html>

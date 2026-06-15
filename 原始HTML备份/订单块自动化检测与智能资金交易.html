@@ -1,0 +1,1053 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+
+  <meta name="robots" content="max-snippet:250,max-image-preview:large">
+  <meta name="description" content="在本文中，我们将运用纯粹的价格行为分析方法，在MQL5平台上实现订单块的自动化检测。我们将界定订单块的定义，实现其检测功能，并集成自动化交易执行系统。最后，我们通过回测来评估该策略的表现。">
+  <meta property="og:url" content="https://www.mql5.com/zh/articles/17135">
+  <meta property="og:title" content="MQL5中交易策略的自动化实现（第六部分）：掌握智能资金交易中的订单块（Order Block）检测技巧">
+  <meta property="og:description" content="在本文中，我们将运用纯粹的价格行为分析方法，在MQL5平台上实现订单块的自动化检测。我们将界定订单块的定义，实现其检测功能，并集成自动化交易执行系统。最后，我们通过回测来评估该策略的表现。">
+      <meta property="og:image" content="https://c.mql5.com/2/118/Automating_Trading_Strategies_in_MQL5_Part_6__V3_1200x628.jpg">
+      <meta property="og:image:secure_url" content="https://c.mql5.com/2/118/Automating_Trading_Strategies_in_MQL5_Part_6__V3_1200x628.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2025-10-27T08:33:43.0000000Z">
+  <meta property="article:author" content="https://www.mql5.com/zh/users/29210372">
+  <meta property="article:section" content="MetaTrader 5">
+  <meta property="article:tag" content="交易">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@mql5com">
+  <meta name="twitter:image" content="https://c.mql5.com/2/118/Automating_Trading_Strategies_in_MQL5_Part_6__V3_1200x628.jpg">
+  <meta name="theme-color" content="#4a76b8">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-config" content="none">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta property="qc:admins" content="36367170677651456375">
+  <meta property="wb:webmaster" content="073d7690269bcd81">
+  <link rel="shortcut icon" href="https://c.mql5.com/i/favicon4.ico">
+  <link rel="dns-prefetch" href="https://c.mql5.com">
+  <link href="https://c.mql5.com/styles/core.444bc25de4c9131a69fedfe5ac42a082.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/all.266d64b83529847f568747dd160d42b0.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/articles.bc4209e4de0b5296041832431b46f3dd.css" type="text/css" rel="stylesheet" media="all">
+  <link href="/zh/articles/rss" rel="alternate" type="application/rss+xml" title="有关MetaTrader 5自动交易和技术指标的开发和应用程序的文章">
+  <link rel="canonical" href="https://www.mql5.com/zh/articles/17135">
+  <link rel="alternate" hreflang="en" href="https://www.mql5.com/en/articles/17135">
+  <link rel="alternate" hreflang="ru" href="https://www.mql5.com/ru/articles/17135">
+  <link rel="alternate" hreflang="zh" href="https://www.mql5.com/zh/articles/17135">
+  <link rel="alternate" hreflang="es" href="https://www.mql5.com/es/articles/17135">
+  <link rel="alternate" hreflang="de" href="https://www.mql5.com/de/articles/17135">
+  <link rel="alternate" hreflang="ja" href="https://www.mql5.com/ja/articles/17135">
+  <link rel="alternate" hreflang="pt" href="https://www.mql5.com/pt/articles/17135">
+  <title>MQL5中交易策略的自动化实现（第六部分）：掌握智能资金交易中的订单块（Order Block）检测技巧 - MQL5文章</title>
+
+
+
+<script type="text/javascript">
+  !function(){window.mqGlobal={};var t=!1,n=!1,e=[],o=[],i=[];function d(t){var n;for(n=0;n<t.length;n+=1)t[n]()}function c(){t||(t=!0,d(e),d(o),o=[],e=[])}function a(){c(),n||(n=!0,d(i),i=[])}if(mqGlobal.AddOnReady=function(n,i){t?n(document):i?e.push(n):o.push(n)},mqGlobal.AddOnLoad=function(t){n?t(document):i.push(t)},mqGlobal.AddOnActiveWindowChange=function(t){this._onvisibility||(this._onvisibility=[]),this._onvisibility[this._onvisibility.length]=t},document.addEventListener)document.addEventListener("DOMContentLoaded",c,!1),window.addEventListener("load",a,!1);else if(document.attachEvent&&(document.attachEvent("onreadystatechange",(function(){switch(document.readyState){case"interactive":c();break;case"complete":a()}})),window.attachEvent("onload",a),document.documentElement.doScroll&&window==window.top)){!function n(){if(!t&&document.body)try{document.documentElement.doScroll("left"),c()}catch(t){setTimeout(n,0)}}()}}();
+  mqGlobal.CookieDomain = ".mql5.com";
+  mqGlobal.Language = 'zh';
+  mqGlobal.IsMobile = false;
+  mqGlobal.ClearRteStorage = function (e) { if (window.GStorage || (window.GStorage = globalStorage()), window.GStorage.supported) try { var o = e; window.GStorage.getItem("rte_autosave_uid", function (e, t) { t == o && (window.GStorage.removeItem("rte_autosave_text"), window.GStorage.removeItem("rte_autosave_date"), window.GStorage.removeItem("rte_autosave_uid")) }) } catch (e) { } };
+</script>
+  
+
+    <script src="https://c.mql5.com/js/all.c09fd283bed20d28a52c95cd70a12a27.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/vendor.1be6e9a4a90b28525f93c4c69a5058a1.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/articles.cd4c73c476b2781eecdf04f5583514b5.js" type="text/javascript" defer="defer"></script>
+
+
+</head>
+
+<body id="cover" class="cover">
+
+
+  <nav class="head">
+    <a href="https://www.mql5.com/zh" class="head__logo" title="MQL5 - MetaTrader 5客户端内置的交易策略语言"></a>
+      <div class="head__content">
+        <div class="main-menu" id="mainmenu">
+          
+                    <ul class="main-menu__top-level" id="menuTopLevel">
+                    <li><a href="/zh/forum" data-fz-event="MQL5+Menu+Forum">论坛</a></li>
+                    <li><a href="/zh/market" data-fz-event="MQL5+Menu+Market">市场</a></li>
+                    <li><a href="/zh/signals" data-fz-event="MQL5+Menu+Signals">信号</a></li>
+                    <li><a href="/zh/job" data-fz-event="MQL5+Menu+Job">自由职业者</a></li>
+                    <li><a href="/zh/vps" data-fz-event="MQL5+Menu+VPS">VPS</a></li>
+                    <li><a href="/zh/quotes/overview" data-fz-event="MQL5+Menu+Overview">报价</a></li>
+                    <li><a href="https://www.metatrader.com/zh" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+MetaTrader">MetaTrader</a></li>
+                  </ul><ul class="main-menu__second-level" id="menuSecondLevel">
+                    <li class="main-menu__selected"><a href="/zh/articles" data-fz-event="MQL5+Menu+Articles"><img src="https://c.mql5.com/i/menu/icon-articles4.svg" alt="" width="16" height="16"/>文章</a></li>
+                    <li><a href="/zh/code" data-fz-event="MQL5+Menu+CodeBase"><img src="https://c.mql5.com/i/menu/icon-code4.svg" alt="" width="16" height="16"/>代码库</a></li>
+                    <li><a href="https://forge.mql5.io/?lang=zh-CN" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+AlgoForge"><img src="https://c.mql5.com/i/menu/icon-algoforge4.svg" alt="" width="16" height="16"/>Algo Forge</a></li>
+                    <li><a href="/zh/docs" data-fz-event="MQL5+Menu+Docs"><img src="https://c.mql5.com/i/menu/icon-docs4.svg" alt="" width="16" height="16"/>文档</a></li>
+                    <li><a href="/zh/book" data-fz-event="MQL5+Menu+Book"><img src="https://c.mql5.com/i/menu/icon-book4.svg" alt="" width="16" height="16"/>算法交易教程</a></li>
+                    <li><a href="/zh/neurobook" data-fz-event="MQL5+Menu+Neurobook"><img src="https://c.mql5.com/i/menu/icon-neurobook4.svg" alt="" width="16" height="16"/>神经网络教程</a></li>
+                    <li><a href="/zh/economic-calendar" data-fz-event="MQL5+Menu+Economic+Calendar"><img src="https://c.mql5.com/i/menu/icon-economic-calendar4.svg" alt="" width="16" height="16"/>经济日历</a></li>
+                    <li><a href="https://web.metatrader.app/terminal?mode=demo&lang=zh" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Menu+Trading"><img src="https://c.mql5.com/i/menu/icon-trading4.svg" alt="" width="16" height="16"/>网页端</a></li>
+                    <li class="main-menu__mobile"><a href="/zh/about">关于</a></li>
+                    <li class="main-menu__second-tools"><a rel="noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" title="免费获取交易平台的最新版本" class="button-mt" data-vars-fz="MetaTrader+5+Desktop+Download+Submenu"><img width="18" height="18" src="https://c.mql5.com/i/sidebar/download.svg" alt="" loading="lazy">下载MetaTrader 5</a></li>
+                    </ul>
+        </div>
+          <div class="main-menu__active">
+            <a id="mainMenuSelected" href="#">
+              <span class="main-menu__primary">文章</span><span class="main-menu__secondary">部分</span>
+            </a>
+          </div>
+<form action="https://www.mql5.com/zh/search" onsubmit="return false;" autocomplete="off" id="headerSearchForm" class="header-search" method="post">
+<button type="button" id="headerSearchButton" title="查找" class="header-search__button"></button><div class="header-search__input"><input name="keyword" type="text" enterkeyhint="search" title="输入查找文本" placeholder="查找" id="headerSearchKeyword"/><label for="headerSearchKeyword" class="header-search__placeholder">键入<span>/</span>进行搜索:  @user, $symbol, ...</label><button id="headerSearchSubmit" class="header-search__submit"></button></div><button type="button" id="headerSearchClean" title="关闭" class="header-search__clean"></button></form>        <input class="blurHandler" id="mainMenuBlurHandler" type="checkbox">
+      </div>
+      <div class="head__toolbar" id="headerToolbar">
+          <div class="container loginRegister">
+            <nav>
+              <ul id="loginRegisterButtons"><li><a class="login" title="请登录，支持OpenID" href="https://www.mql5.com/zh/auth_login" rel="nofollow" data-fz-event="MQL5+Menu+Siginin">登录</a></li><li><a class="registration zh" title="请注册" href="https://www.mql5.com/zh/auth_register" rel="nofollow" data-fz-event="MQL5+Menu+Register" onclick="window.fpush('MQL5+Button+Click');">创建账户</a></li></ul>
+            </nav>
+          </div>
+        <div class="toggle-button" id="sidebarToggleButton">
+          <i></i>
+        </div>
+
+        <div class="group-menu" id="groupMenu">
+
+
+          <div class="container lang-menu-container">
+            <div id="langMenuContainer" class="lang-menu">
+              <input class="blurHandler" id="langmenuBlurHandler" type="checkbox">
+              <nav>
+                <ul class="lang-menu__list" id="langmenu">
+                  <li class="lang-menu__list-item"><a href="/en/articles" aria-label="English (English)"><i class="icons-languages icons-languages_en"></i><span>English</span></a></li>
+<li class="lang-menu__list-item"><a href="/ru/articles" aria-label="Русский (Russian)"><i class="icons-languages icons-languages_ru"></i><span>Русский</span></a></li>
+<li class="lang-menu__list-item lang-menu__list-item_selected"><a href="/zh/articles" aria-label="中文 (Chinese)"><i class="icons-languages icons-languages_zh"></i><span>中文</span></a></li>
+<li class="lang-menu__list-item"><a href="/es/articles" aria-label="Español (Spanish)"><i class="icons-languages icons-languages_es"></i><span>Español</span></a></li>
+<li class="lang-menu__list-item"><a href="/pt/articles" aria-label="Português (Portuguese)"><i class="icons-languages icons-languages_pt"></i><span>Português</span></a></li>
+<li class="lang-menu__list-item"><a href="/ja/articles" aria-label="日本語 (Japanese)"><i class="icons-languages icons-languages_ja"></i><span>日本語</span></a></li>
+<li class="lang-menu__list-item"><a href="/de/articles" aria-label="Deutsch (German)"><i class="icons-languages icons-languages_de"></i><span>Deutsch</span></a></li>
+<li class="lang-menu__list-item"><a href="/ko/articles" aria-label="한국어 (Korean)"><i class="icons-languages icons-languages_ko"></i><span>한국어</span></a></li>
+<li class="lang-menu__list-item"><a href="/fr/articles" aria-label="Français (French)"><i class="icons-languages icons-languages_fr"></i><span>Français</span></a></li>
+<li class="lang-menu__list-item"><a href="/it/articles" aria-label="Italiano (Italian)"><i class="icons-languages icons-languages_it"></i><span>Italiano</span></a></li>
+<li class="lang-menu__list-item"><a href="/tr/articles" aria-label="Türkçe (Turkish)"><i class="icons-languages icons-languages_tr"></i><span>Türkçe</span></a></li>
+
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+  </nav>
+
+
+
+  <div id="left-sidebar-selector" class="left-sidebar__selector left-sidebar__selector_padding">
+    <div class="left-sidebar__title">
+MetaTrader 5 /     交易
+    </div>
+    <i class="icons-ux icons-ux_arrow-down-black"></i>
+  </div>
+  <div class="articles-container block-with-sidebar">
+    <aside class="left-sidebar left-sidebar_270" id="left-sidebar">
+      
+  <ul class="tree-menu-ul"><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/examples"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples.svg" alt="" loading="lazy"/>示例</a><ul class="tree-menu__list tree-menu__list_nested"><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/examples_indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_indicators.svg" alt="" loading="lazy"/>指标</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/examples_experts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_experts.svg" alt="" loading="lazy"/>专家</a></li></ul></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/strategy_tester"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/strategy_tester.svg" alt="" loading="lazy"/>测试者</a></li><li class="tree-menu__item tree-menu__item_selected"><a class="tree-menu__link" href="/zh/articles/trading"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading.svg" alt="" loading="lazy"/>交易</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/trading_systems"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading_systems.svg" alt="" loading="lazy"/>交易系统</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/integration"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/integration.svg" alt="" loading="lazy"/>积分</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/indicator.svg" alt="" loading="lazy"/>指标</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/expert_advisors"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/expert.svg" alt="" loading="lazy"/>EA交易</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/statistics"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/statistics.svg" alt="" loading="lazy"/>统计分析</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/machine_learning"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/machine_learning.svg" alt="" loading="lazy"/>机器学习</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/zh/articles/interviews"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/interviews.svg" alt="" loading="lazy"/>采访</a></li></ul>
+  
+
+    <div class="hints-panel">
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_like"></i>
+        <div class="hints-panel__content">
+          您喜欢这篇文章？<br>
+          分享或-<br>发布<a href="https://www.mql5.com/zh/articles/17135" target="_blank">链接</a>！
+        </div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_tw-square icons-hints_24px"></i><div class="hints-panel__content">
+请在<a href="https://x.com/mql5com" target="_blank" rel="nofollow">Twitter</a>上找到我们！<br> 加入我们粉丝页</div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_mt-5"></i>
+        <div class="hints-panel__content">
+          使用<a href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Article" rel="nofollow sponsored noopener noreferrer">MetaTrader 5</a>新的可能性
+        </div>
+      </div>
+    </div>
+<div id='vgckrufggwxdtfscpyalmenexmvhljduja' class="roeid8y6hsc3ntv1l gg88d3drb"></div>      <div class="similar-author-articles ui">
+        <h4 class="similar-author-articles__title">相似文章</h4>
+        <ul class="similar-author-articles__list">
+            <li>
+              <a href="/zh/articles/18251" data-fz-event="MQL5+Article+Similar+Article">你应该了解的 MQL5 向导技巧（第67部分）：使用 TRIX 和威廉百分比范围的形态</a>
+            </li>
+            <li>
+              <a href="/zh/articles/18154" data-fz-event="MQL5+Article+Similar+Article">确定性振荡搜索（DOS）</a>
+            </li>
+            <li>
+              <a href="/zh/articles/17957" data-fz-event="MQL5+Article+Similar+Article">在MQL5中实现盈亏平衡机制（第一部分）：基类与固定点数的盈亏平衡模式</a>
+            </li>
+            <li>
+              <a href="/zh/articles/18057" data-fz-event="MQL5+Article+Similar+Article">骆驼算法（CA）</a>
+            </li>
+            <li>
+              <a href="/zh/articles/17458" data-fz-event="MQL5+Article+Similar+Article">基于分形的算法（FBA）</a>
+            </li>
+        </ul>
+      </div>
+    <div class="freelance-hint">
+      <img src="https://c.mql5.com/i/articles/icon_freelance.svg" width="24" height="24" loading="lazy" />
+      <div class="freelance-hint__text">
+        使用本文的理念在自由职业者服务<br>订购您自己的EA交易<br>
+      </div>
+        <a target="_blank" class="button button_blue-gray-border" title="进入自由职业者服务" href="/zh/job/new" data-fz-event="MQL5+Article+New+Job">进入自由职业者服务</a>
+    </div>
+
+    </aside>
+    <article class="content-with-sidebar articles-content splashed">
+      
+
+
+  <header class="article-header article-header_light" style="background-color: rgb(28,37,53)">
+    <section class="article-tools-panel">
+        <div class="article-tools-panel__item">
+          <span class="popup framed client flags">
+            <a class="dropdown" href="javascript:void(false);">
+              <span class="icons-languages icons-languages_zh"></span><i></i>
+            </a>
+            <span class="popup">
+              <span class="tip">
+                <span></span>
+              </span>
+              <span class="items">
+                    <a href="/en/articles/17135">English</a>
+                    <a href="/ru/articles/17135">Русский</a>
+                    <a href="/es/articles/17135">Español</a>
+                    <a href="/de/articles/17135">Deutsch</a>
+                    <a href="/ja/articles/17135">日本語</a>
+                    <a href="/pt/articles/17135">Português</a>
+              </span>
+            </span>
+          </span>
+        </div>
+        
+      <div class="article-tools-panel__item">
+        <a href="#pocket" title="允许您插入一个完整的说明以及适当的注释内容。" onclick="return Pocket.Add(this,'zh',2,1,17135);" class="article-tools-panel__rounded">
+          <i class="article-pocket-icon"></i>
+        </a>
+      </div>
+      <div class="article-tools-panel__item">
+        <a href="/zh/articles/17135?print=" target="_blank" class="article-tools-panel__rounded" rel="nofollow" title="打印优化版本">
+          <i class="article-print-icon"></i>
+        </a>
+      </div>
+
+    </section>
+    <section class="article-header__image-box">
+        <img class="article-header__image-preview" loading="lazy" width="32" height="16" alt="preview" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAsICAoIBwsKCQoNDAsNERwSEQ8PESIZGhQcKSQrKigkJyctMkA3LTA9MCcnOEw5PUNFSElIKzZPVU5GVEBHSEX/2wBDAQwNDREPESESEiFFLicuRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUX/wAARCAAQACADASIAAhEBAxEB/8QAFwABAAMAAAAAAAAAAAAAAAAAAwECB//EACIQAAEDAgYDAAAAAAAAAAAAAAEAAhEEEgMTITFBUUJhgf/EABYBAQEBAAAAAAAAAAAAAAAAAAMAAf/EABgRAQEAAwAAAAAAAAAAAAAAAAABERJx/9oADAMBAAIRAxEAPwDNW0zjqRHxJYItiUwx&#x2B;C0R0pOM0&#x2B;ACbWDzRNp2jiXdJMp42aI9KuZB0CRtUWiLQtXX/9k=">
+      <div class="article-header__gradient" style="background: linear-gradient(90deg, rgba(28,37,53, 1) 0%, rgba(28,37,53, 0.72) 8.31%, rgba(28,37,53, 0) 17.1%), linear-gradient(270deg, rgba(28,37,53, 1) 0%, rgba(28,37,53, 0.72) 8.06%, rgba(28,37,53, 0) 16.59%), linear-gradient(0deg, rgba(28,37,53, 1) 8.26%, rgba(28,37,53, 0.8) 65%, rgba(28,37,53, 0) 100%);"></div>
+        <picture>
+          <source srcset="https://c.mql5.com/2/118/Automating_Trading_Strategies_in_MQL5_Part_6__V3_600x314.jpg, https://c.mql5.com/2/118/Automating_Trading_Strategies_in_MQL5_Part_6__V3_1200x628.jpg 2x" media="(min-width:700px)">
+          <img class="article-header__image" loading="lazy" width="600" height="314" srcset="https://c.mql5.com/2/118/Automating_Trading_Strategies_in_MQL5_Part_6__V3_300x157.jpg, https://c.mql5.com/2/118/Automating_Trading_Strategies_in_MQL5_Part_6__V3_600x314.jpg 2x" src="https://c.mql5.com/2/118/Automating_Trading_Strategies_in_MQL5_Part_6__V3_600x314.jpg" alt="MQL5中交易策略的自动化实现（第六部分）：掌握智能资金交易中的订单块（Order Block）检测技巧" onerror="this.style.display='none';">
+        </picture>
+    </section>
+    <section class="article-header__content">
+      <h1>MQL5中交易策略的自动化实现（第六部分）：掌握智能资金交易中的订单块（Order Block）检测技巧</h1>
+      <div class="article-header__info">
+        <a href="/zh/articles/mt5">MetaTrader 5</a>
+          &mdash;
+          <a href="/zh/articles/mt5/trading">交易</a>
+        | <time datetime="2025-10-27T08:33Z" title="08:33" datetime-type="datetime">27 十月 2025, 08:33</time>
+      </div>
+      <div class="article-header__indicators">
+        <span title="查看">
+          <img src="https://c.mql5.com/i/icons.svg#views-white-usage" width="20" height="20" alt="" />
+          694
+        </span>
+        
+          <a title="评论" href="/zh/forum/498725">
+            <img src="https://c.mql5.com/i/icons.svg#comments-white-usage" width="20" height="20" alt="" />
+            0
+          </a>
+      </div>
+      <div class="article-header__author">
+          <div class="article-header__avatar">
+            <img src="https://c.mql5.com/avatar/2022/11/637df59b-9551.jpg" srcset="https://c.mql5.com/avatar/2022/11/637df59b-9551_big.jpg 2x" data-user-login="29210372" title="Allan Munene Mutiiria" alt="Allan Munene Mutiiria" loading="lazy" width="60" height="60">
+          </div>
+<a class="author" href="/zh/users/29210372" data-user-login="29210372">Allan Munene Mutiiria</a>      </div>
+    </section>
+  </header>
+
+    <div class="content">
+      <div class="inner formatted-content">
+        <h3 id="para1">概述</h3><p>在<a href="/zh/articles/17040" target="_blank">前一篇文章（本系列第五部分）</a>中，我们开发了自适应交叉相对强弱指数（RSI）交易套件策略，该策略将移动平均线交叉与RSI过滤相结合，以识别高概率的交易机会。现在，在第六部分中，我们将聚焦于纯粹的价格行为分析，在MQL5（一种常用于聪明资金交易的强大工具）中实现一个自动化的<a href="/go?link=https://tradingkit.net/articles/order-block/" title="https://tradingkit.net/articles/order-block/" rel="nofollow" target="_blank">订单块检测系统</a> 。该策略能够识别关键的机构订单块——即大型交易者累积或派发头寸的区域——从而帮助交易者预测潜在的反转和趋势延续。</p><p>与传统指标不同，这种方法完全依赖于价格结构，根据历史价格行为动态检测多头和空头订单块。该系统会直接在图表上可视化这些区域，为交易者提供清晰的市场背景和潜在的交易机会。在本文中，我们将逐步介绍该策略的开发过程，从定义订单块到在MQL5中的实现，再到回测其有效性并分析其表现。我们将通过以下部分来展开讨论：</p><ol><li>策略设计方案</li><li>在MQL5中的实现</li><li>回测</li><li>结论</li></ol><p></p><p>到文章结尾时，您将具备自动化订单块检测的坚实基础，能够把聪明资金理念融入您的交易算法之中。让我们开始吧。</p><p><br/></p><h3 id="para2">策略设计方案</h3><p>我们将首先识别盘整区间，即价格在无明显趋势方向的情况下在一个有限范围内波动的情况。为此，我们将在市场中扫描价格走势缺乏显著突破的区域。一旦我们检测到价格从这个区间突破，我们将评估是否可以形成订单块。我们的验证过程将涉及检查突破发生前的三根K线。如果这些K线表现出强劲的推动走势，我们将根据突破方向把订单块归类为多头或空头。当向上突破时，我们将识别出多头订单块；而当向下突破时，我们将标记为空头订单块。一旦验证成功，我们将在图表上标出订单块，以供之后参考。具体示例如下：</p><p style="text-align:center;"><img width="675" height="549" src="https://c.mql5.com/2/116/Screenshot_2025-02-06_113438.png" loading="lazy" title="订单块示例" alt="订单块示例" style="vertical-align:middle;"/></p><p>如果前方的三根K线未展现出强劲的推动走势，我们将不会确认订单块的有效性。相反，我们仅会绘制出盘整区间，以确保不会标记出那些薄弱或无关紧要的区域。在标记出有效的订单块之后，我们将持续监控价格走势。如果价格回撤至先前已确认有效的订单块区域，我们将按照初始突破方向执行交易，预期趋势将持续。然而，如果某个订单块的范围超出了最后一个显著的价格点，我们会将其从有效订单块数组中移除，以确保仅交易那些相关且较新的区域。这种结构化的方法将有助于我们专注于高概率的交易机会，过滤掉那些弱势的突破，并确保交易与聪明资金的动向保持一致。</p><p><br/></p><h3 id="para3">在MQL5中的实现</h3><p>要在MQL5中实现订单块的识别功能，我们需要定义一些在整个过程中必需的<a href="/zh/docs/basis/variables/global" target="_blank">全局变量</a>。</p><pre class="code"><span class="preprocessor">#include </span>&lt;Trade/Trade.mqh&gt;
+CTrade obj_Trade;
+
+<span class="comment">// Struct to hold both the price and the index of the high or low</span>
+<span class="keyword">struct</span> PriceIndex {
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> price;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> index;
+};
+
+<span class="comment">// Global variables to track the range and breakout state</span>
+PriceIndex highestHigh = {<span class="number">0</span>, <span class="number">0</span>}; <span class="comment">// Stores the highest high of the range</span>
+PriceIndex lowestLow = {<span class="number">0</span>, <span class="number">0</span>};&nbsp;&nbsp;<span class="comment">// Stores the lowest low of the range</span>
+<span class="keyword">bool</span> breakoutDetected = <span class="macro">false</span>;&nbsp;&nbsp;<span class="comment">// Tracks if a breakout has occurred</span>
+
+<span class="keyword">double</span> impulseLow = <span class="number">0.0</span>;
+<span class="keyword">double</span> impulseHigh = <span class="number">0.0</span>;
+<span class="keyword">int</span> breakoutBarIndex = -<span class="number">1</span>; <span class="comment">// To track the bar at which breakout occurred</span>
+<span class="keyword">datetime</span> breakoutTime = <span class="number">0</span>; <span class="comment">// To store the breakout time</span>
+
+<span class="keyword">string</span> totalOBs_names[];
+<span class="keyword">datetime</span> totalOBs_dates[];
+<span class="keyword">bool</span> totalOBs_is_signals[];
+
+<span class="preprocessor">#define </span>OB_Prefix <span class="string">"OB REC "</span>
+<span class="preprocessor">#define </span>CLR_UP <span class="macro">clrLime</span>
+<span class="preprocessor">#define </span>CLR_DOWN <span class="macro">clrRed</span>
+
+<span class="keyword">bool</span> is_OB_UP = <span class="macro">false</span>;
+<span class="keyword">bool</span> is_OB_DOWN = <span class="macro">false</span>;
+</pre><p>我们首先引入"<a href="/zh/docs/standardlibrary/tradeclasses/ctrade" target="_blank">Trade.mqh</a>"库，并创建一个"<a href="/zh/docs/standardlibrary/cobject" target="_blank">CTrade</a>"对象"obj_Trade"，用于处理交易执行。我们定义了一个"PriceIndex" <a href="/zh/docs/basis/types/classes" target="_blank">结构体</a>，用于存储价格水平及其对应的索引，这有助于我们追踪盘整区间内的最高价和最低价。<a href="/zh/docs/basis/variables/global" target="_blank">全局变量</a>"highestHigh"和"lowestLow"用于存储这些关键水平位，而"breakoutDetected"标识则用于指示是否发生了突破。</p><p>为了验证是否存在强劲的推动走势，我们引入了"impulseLow"和"impulseHigh"变量，它们将有助于判断突破的强度。变量"breakoutBarIndex"用于追踪突破发生的具体K线位置，而"breakoutTime"则存储对应的时间戳。对于订单块管理，我们维护三个全局<a href="/zh/book/basis/arrays/arrays_usage" target="_blank">数组</a>："totalOBs_names"、"totalOBs_dates"和"totalOBs_is_signals"。这些数组分别存储订单块的名称、各自的时间戳，以及是否为有效的交易信号。</p><p>我们将订单块前缀定义为"OB_Prefix"，并使用"CLR_UP"（浅绿色）表示多头订单块，使用"CLR_DOWN"（红色）表示空头订单块，为它们分配颜色代码。最后，布尔标志"is_OB_UP"和"is_OB_DOWN"帮助我们追踪最后检测到的订单块是多头还是空头。由于我们希望每次运行时都能从一个全新的状态开始，因此在程序初始化时无需追踪订单块。因此，我们将直接在<a href="/zh/docs/event_handlers/ontick" target="_blank">OnTick</a>事件处理器中实现该控制逻辑。</p><pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Expert ontick function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> <span class="functions">OnTick</span>() {
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">static</span> <span class="keyword">bool</span> isNewBar = <span class="macro">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> currBars = <span class="functions">iBars</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">static</span> <span class="keyword">int</span> prevBars = currBars;
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Detect a new bar</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (prevBars == currBars) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isNewBar = <span class="macro">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;} <span class="keyword">else</span> <span class="keyword">if</span> (prevBars != currBars) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isNewBar = <span class="macro">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prevBars = currBars;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (!isNewBar)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>; <span class="comment">// Process only on a new bar</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> rangeCandles = <span class="number">7</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Initial number of candles to check</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> maxDeviation = <span class="number">50</span>;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Max deviation between highs and lows in points</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> startingIndex = <span class="number">1</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Starting index for the scan</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> waitBars = <span class="number">3</span>;
+
+&nbsp;&nbsp; <span class="comment">//---</span>
+
+}</pre><p>在OnTick事件处理器中，我们首先通过“currBars”（当前K线数）和“prevBars”（前一K线数）来检测新K线的形成。当出现新K线时，我们将“isNewBar”设为“true”；如果未检测到新K线，则提前返回。接下来，我们将“rangeCandles”定义为“7”，表示我们分析以识别盘整区间所需的最少K线数。“maxDeviation”变量被设为“50”点，用于限制盘整区间内最高价与最低价之间可接受的差值范围。“startingIndex”初始化为“1”，以确保我们从最近一根已完成的K线开始扫描。此外，我们将“waitBars”设为“3”，以定义在验证订单块有效性之前应经过的K线数量。接下来，我们需要检查是否存在盘整区间，并获取相关价格，以便进一步确定有效的订单块。</p><pre class="code"><span class="comment">// Check for consolidation or extend the range</span>
+<span class="keyword">if</span> (!breakoutDetected) {
+&nbsp;&nbsp;<span class="keyword">if</span> (highestHigh.price == <span class="number">0</span> &amp;&amp; lowestLow.price == <span class="number">0</span>) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// If range is not yet established, look for consolidation</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (IsConsolidationEqualHighsAndLows(rangeCandles, maxDeviation, startingIndex)) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetHighestHigh(rangeCandles, startingIndex, highestHigh);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetLowestLow(rangeCandles, startingIndex, lowestLow);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Consolidation range established: Highest High = "</span>, highestHigh.price, 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">" at index "</span>, highestHigh.index, 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">" and Lowest Low = "</span>, lowestLow.price, 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">" at index "</span>, lowestLow.index);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;} <span class="keyword">else</span> {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Extend the range if the current bar's prices remain within the range</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ExtendRangeIfWithinLimits();
+&nbsp;&nbsp;}
+}<span>
+</span></pre><p>每当有新K线形成时，我们都会检查是否出现盘整区间；若未检测到突破，则扩展现有盘整区间范围。如果“highestHigh.price”（最高价）和“lowestLow.price”（最低价）均为0，则表明尚未确立盘整区间。此时，我们调用“IsConsolidationEqualHighsAndLows”函数，检查最近“rangeCandles”根K线是否在允许的“maxDeviation”（最大偏差）范围内形成盘整。如果确认形成盘整，我们则使用“GetHighestHigh”和“GetLowestLow”函数，确定该区间内的确切最高价和最低价，并将这些值及其对应的K线索引存储起来。</p><p>如果已确立盘整区间，我们则调用“ExtendRangeIfWithinLimits”函数，确保当前K线仍在定义范围内。该函数有助于在未发生突破的情况下，动态调整盘整区间范围。以下是实现自定义函数的代码段：</p><pre class="code"><span class="comment">// Function to detect consolidation where both highs and lows are nearly equal</span>
+<span class="keyword">bool</span> IsConsolidationEqualHighsAndLows(<span class="keyword">int</span> rangeCandles, <span class="keyword">double</span> maxDeviation, <span class="keyword">int</span> startingIndex) {
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Loop through the last `rangeCandles` to check if highs and lows are nearly equal</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span> (<span class="keyword">int</span> i = startingIndex; i &lt; startingIndex + rangeCandles - <span class="number">1</span>; i++) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Compare the high of the current candle with the next one</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="functions">MathAbs</span>(high(i) - high(i + <span class="number">1</span>)) &gt; maxDeviation * <span class="functions">Point</span>()) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="macro">false</span>; <span class="comment">// If the high difference is greater than allowed, it's not a consolidation</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Compare the low of the current candle with the next one</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="functions">MathAbs</span>(low(i) - low(i + <span class="number">1</span>)) &gt; maxDeviation * <span class="functions">Point</span>()) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="macro">false</span>; <span class="comment">// If the low difference is greater than allowed, it's not a consolidation</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// If both highs and lows are nearly equal, it's a consolidation range</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="macro">true</span>;
+}<span>
+</span></pre><p>我们定义了一个<a href="/zh/docs/basis/operations/bool" target="_blank">布尔型</a>函数“IsConsolidationEqualHighsAndLows”，该函数负责通过验证最近“rangeCandles”根K线的最高价和最低价是否在指定的“maxDeviation”范围内近乎相等，来检测是否存在盘整区间。我们通过从“startingIndex”（起始索引）开始遍历每一根K线，并比较连续K线的最高价和最低价来实现这一功能。</p><p>在<a href="/zh/docs/basis/operators/for" target="_blank">for循环</a>内部，我们使用<a href="/zh/docs/math/mathabs" target="_blank">MathAbs</a>函数计算当前K线最高价（"high(i)"）与下一根K线最高价之间的绝对差值。若该差值超过转换为点值形式的<a href="/zh/docs/check/point" target="_blank">最大偏差（Point）</a>,，函数将立即返回false，表明这些最高价之间的差异过大，不足以构成盘整区间。同样地，我们再次使用<a href="/zh/docs/math/mathabs" target="_blank">MathAbs</a>函数比较连续两根K线的最低价（"low(i)"和"low(i + 1)"），确保最低价也处于允许的偏差范围内。如果有任何一项检查未通过，函数将提前退出并返回false。如果所有最高价和最低价均处于可接受的偏差范围内，则返回true，确认存在有效的盘整区间。接下来，我们将定义负责获取最高价和最低价K线价格的函数。</p><pre class="code"><span class="comment">// Function to get the highest high and its index in the last `rangeCandles` candles, starting from `startingIndex`</span>
+<span class="keyword">void</span> GetHighestHigh(<span class="keyword">int</span> rangeCandles, <span class="keyword">int</span> startingIndex, PriceIndex &amp;highestHighRef) {
+&nbsp;&nbsp;&nbsp;&nbsp;highestHighRef.price = high(startingIndex); <span class="comment">// Start by assuming the first candle's high is the highest</span>
+&nbsp;&nbsp;&nbsp;&nbsp;highestHighRef.index = startingIndex;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// The index of the highest high (starting with the `startingIndex`)</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Loop through the candles and find the highest high and its index</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span> (<span class="keyword">int</span> i = startingIndex + <span class="number">1</span>; i &lt; startingIndex + rangeCandles; i++) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (high(i) &gt; highestHighRef.price) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;highestHighRef.price = high(i); <span class="comment">// Update highest high</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;highestHighRef.index = i;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Update index of highest high</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}
+
+<span class="comment">// Function to get the lowest low and its index in the last `rangeCandles` candles, starting from `startingIndex`</span>
+<span class="keyword">void</span> GetLowestLow(<span class="keyword">int</span> rangeCandles, <span class="keyword">int</span> startingIndex, PriceIndex &amp;lowestLowRef) {
+&nbsp;&nbsp;&nbsp;&nbsp;lowestLowRef.price = low(startingIndex); <span class="comment">// Start by assuming the first candle's low is the lowest</span>
+&nbsp;&nbsp;&nbsp;&nbsp;lowestLowRef.index = startingIndex;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// The index of the lowest low (starting with the `startingIndex`)</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Loop through the candles and find the lowest low and its index</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span> (<span class="keyword">int</span> i = startingIndex + <span class="number">1</span>; i &lt; startingIndex + rangeCandles; i++) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (low(i) &lt; lowestLowRef.price) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lowestLowRef.price = low(i); <span class="comment">// Update lowest low</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lowestLowRef.index = i;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Update index of lowest low</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}<span>
+</span></pre><p>“GetHighestHigh”函数负责从“startingIndex”起始的最近“rangeCandles”根K线中，识别出最高价及其对应的索引位置。我们首先将“highestHighRef.price”初始化为该区间内第一根K线的最高价（“high(startingIndex)”），并将“highestHighRef.index”设置为“startingIndex”。接下来，我们遍历该区间内剩余的K线，检查是否存在价格高于当前“highestHighRef.price”的K线。若发现新的最高价，则更新“highestHighRef.price”和“highestHighRef.index”的值。该函数有助于我们确定盘整区间的上边界。</p><p>同理，“GetLowestLow”函数用于在相同区间内找出最低价及其索引的位置。我们将“lowestLowRef.price”初始化为“low(startingIndex)”，并将“lowestLowRef.index”初始化为“startingIndex”。在遍历K线的过程中，我们检查是否存在价格低于当前“lowestLowRef.price”的K线。如果存在，我们则更新“lowestLowRef.price”和“lowestLowRef.index”的值。该函数用于确定盘整区间的下边界。最后，我们来介绍用于扩展区间的函数。</p><pre class="code"><span class="comment">// Function to extend the range if the latest bar remains within the range limits</span>
+<span class="keyword">void</span> ExtendRangeIfWithinLimits() {
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> currentHigh = high(<span class="number">1</span>); <span class="comment">// Get the high of the latest closed bar</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> currentLow = low(<span class="number">1</span>);&nbsp;&nbsp; <span class="comment">// Get the low of the latest closed bar</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (currentHigh &lt;= highestHigh.price &amp;&amp; currentLow &gt;= lowestLow.price) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Extend the range if the current bar is within the established range</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Range extended: Including candle with High = "</span>, currentHigh, <span class="string">" and Low = "</span>, currentLow);
+&nbsp;&nbsp;&nbsp;&nbsp;} <span class="keyword">else</span> {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"No extension possible. The current bar is outside the range."</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}
+</pre><p>这里，通过“ExtendRangeIfWithinLimits”函数确保：如果新K线持续落在先前识别出的盘整区间边界内，则该区间仍保持有效。我们首先使用“high(1)”和“low(1)”函数获取最近一根已收盘K线的最高价和最低价。接下来，我们检查“currentHigh”（当前最高价）是否小于或等于“highestHigh.price”（之前记录的最高价），以及“currentLow”（当前最低价）是否大于或等于“lowestLow.price”（之前记录的最低价）。如果这两个条件均满足，则区间得以扩展，并打印一条确认消息，表明新K线已包含在现有区间内。 </p><p>反之，如果新K线超出了既定的区间范围，则不进行区间扩展，并打印一条消息，显示该区间无法扩展。该函数在维持有效盘整区间方面发挥着关键的作用，且如果市场价格保持在预设区间内，则可防止误报突破信号。</p><p>我们还使用了预定义的函数来获取K线价格数据。以下是这些函数的代码段：</p><pre class="code"><span class="comment">//--- One-line functions to access price data</span>
+<span class="keyword">double</span> high(<span class="keyword">int</span> index) { <span class="keyword">return</span> <span class="functions">iHigh</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, index); }
+<span class="keyword">double</span> low(<span class="keyword">int</span> index) { <span class="keyword">return</span> <span class="functions">iLow</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, index); }
+<span class="keyword">double</span> open(<span class="keyword">int</span> index) { <span class="keyword">return</span> <span class="functions">iOpen</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, index); }
+<span class="keyword">double</span> close(<span class="keyword">int</span> index) { <span class="keyword">return</span> <span class="functions">iClose</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, index); }
+<span class="keyword">datetime</span> time(<span class="keyword">int</span> index) { <span class="keyword">return</span> <span class="functions">iTime</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, index); }
+</pre><p>这些单行函数“high”、“low”、“open”、“close”和“time”是获取历史K线价格数据和时间数据的简单封装函数。每个函数都会调用相应的MQL5内置函数——<a href="/zh/docs/series/ihigh" target="_blank">iHigh</a>、<a href="/zh/docs/series/ilow" target="_blank">iLow</a>、<a href="/zh/docs/series/iopen" target="_blank">iOpen</a>、<a href="/zh/docs/series/iclose" target="_blank">iClose</a>和<a href="/zh/docs/series/itime" target="_blank">iTime</a>——以获取指定“索引”位置K线的对应值。其中，“high”函数返回特定K线的最高价，而“low”函数返回最低价。同样，“open”函数用于获取开盘价，“close”函数用于获取收盘价。“time”函数则返回K线的时间戳。我们使用这些函数来提高代码的可读性，并使程序能够以更清晰地、更有条理的方式访问历史数据。</p><p>借助这些函数，我们现在就可以通过以下代码段，在盘整区间确立后检查是否发生突破。</p><pre class="code"><span class="comment">// Check for breakout if a consolidation range is established</span>
+<span class="keyword">if</span> (highestHigh.price &gt; <span class="number">0</span> &amp;&amp; lowestLow.price &gt; <span class="number">0</span>) {
+&nbsp;&nbsp;breakoutDetected = CheckRangeBreak(highestHigh, lowestLow);
+}
+</pre><p>在此，若已确立盘整区间，我们会再次调用一个名为“CheckRangeBreak”的自定义函数来检查区间是否发生突破，并将结果存储在“breakoutDetected”（突破检测）变量中。实现该函数代码如下：</p><pre class="code"><span class="comment">// Function to check for range breaks</span>
+<span class="keyword">bool</span> CheckRangeBreak(PriceIndex &amp;highestHighRef, PriceIndex &amp;lowestLowRef) {
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> closingPrice = close(<span class="number">1</span>); <span class="comment">// Get the closing price of the current candle</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (closingPrice &gt; highestHighRef.price) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Range break upwards detected. Closing price "</span>, closingPrice, <span class="string">" is above the highest high: "</span>, highestHighRef.price);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="macro">true</span>; <span class="comment">// Breakout detected</span>
+&nbsp;&nbsp;&nbsp;&nbsp;} <span class="keyword">else</span> <span class="keyword">if</span> (closingPrice &lt; lowestLowRef.price) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Range break downwards detected. Closing price "</span>, closingPrice, <span class="string">" is below the lowest low: "</span>, lowestLowRef.price);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="macro">true</span>; <span class="comment">// Breakout detected</span>
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="macro">false</span>; <span class="comment">// No breakout</span>
+}</pre><p>对于<a href="/zh/docs/basis/operations/bool" target="_blank">布尔型</a>的“CheckRangeBreak”函数，我们会将当前K线的“收盘价”（closingPrice）与“最高价参考值”（highestHighRef.price）和“最低价参考值”（lowestLowRef.price）进行比较。如果“收盘价”高于“最高价参考值”，则判定为向上突破。如果“收盘价”低于“最低价参考值”，则判定为向下突破。在这两种情况下，函数均返回“true”，并打印突破方向。如果以上条件均不满足，则返回“false”。</p><p>现在，我们可以利用该变量来检测突破情况，并在需要时重置区间状态，以便为下一个可能的盘整区间做好准备，具体实现如下：</p><pre class="code"><span class="comment">// Reset state after breakout</span>
+<span class="keyword">if</span> (breakoutDetected) {
+&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Breakout detected. Resetting for the next range."</span>);
+&nbsp;&nbsp;
+&nbsp;&nbsp;breakoutBarIndex = <span class="number">1</span>; <span class="comment">// Use the current bar's index (index 1 refers to the most recent completed bar)</span>
+&nbsp;&nbsp;breakoutTime = <span class="functions">TimeCurrent</span>();
+&nbsp;&nbsp;impulseHigh = highestHigh.price;
+&nbsp;&nbsp;impulseLow = lowestLow.price;
+&nbsp;&nbsp;
+&nbsp;&nbsp;breakoutDetected = <span class="macro">false</span>;
+&nbsp;&nbsp;highestHigh.price = <span class="number">0</span>; 
+&nbsp;&nbsp;highestHigh.index = <span class="number">0</span>;
+
+&nbsp;&nbsp;lowestLow.price = <span class="number">0</span>; 
+&nbsp;&nbsp;lowestLow.index = <span class="number">0</span>;
+}
+</pre><p>在检测到突破后，我们需要为下一个盘整区间重置相关状态。首先，将“breakoutBarIndex”（突破K线索引）设置为1，以指向最近一根已完成的K线。接着，使用“TimeCurrent”函数将当前时间更新至“breakoutTime”（突破时间）。然后，将“impulseHigh”（脉冲高点）和“impulseLow”（脉冲低点）分别设置为上一个盘整区间的“highestHigh.price”（最高价）和“lowestLow.price”（最低价）。随后，将“breakoutDetected”（突破检测）标记为“false”（未检测到突破），并将“highestHigh”（最高价）和“lowestLow”（最低价）的价格及其索引均重置为0，为下一个盘整区间的检测做好准备。现在，我们可以继续基于脉冲式行情检查有效的订单块。</p><pre class="code"><span class="keyword">if</span> (breakoutBarIndex &gt;= <span class="number">0</span> &amp;&amp; <span class="functions">TimeCurrent</span>() &gt; breakoutTime + waitBars * <span class="functions">PeriodSeconds</span>()) {
+&nbsp;&nbsp;DetectImpulsiveMovement(impulseHigh,impulseLow,waitBars,<span class="number">1</span>);
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="keyword">bool</span> is_OB_Valid = is_OB_DOWN || is_OB_UP;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp; <span class="keyword">datetime</span> time1 = <span class="functions">iTime</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,rangeCandles+waitBars+<span class="number">1</span>);
+&nbsp;&nbsp; <span class="keyword">double</span> price1 = impulseHigh;
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="keyword">int</span> visibleBars = (<span class="keyword">int</span>)<span class="functions">ChartGetInteger</span>(<span class="number">0</span>,<span class="macro">CHART_VISIBLE_BARS</span>);
+&nbsp;&nbsp; <span class="keyword">datetime</span> time2 = is_OB_Valid ? time1 + (visibleBars/<span class="number">1</span>)*<span class="functions">PeriodSeconds</span>() : time(waitBars+<span class="number">1</span>);
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="keyword">double</span> price2 = impulseLow;
+&nbsp;&nbsp; <span class="keyword">string</span> obNAME = OB_Prefix+<span class="string">"("</span>+<span class="functions">TimeToString</span>(time1)+<span class="string">")"</span>;
+&nbsp;&nbsp; <span class="keyword">color</span> obClr = <span class="macro">clrBlack</span>;
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="keyword">if</span> (is_OB_Valid){obClr = is_OB_UP ? CLR_UP : CLR_DOWN;}
+&nbsp;&nbsp; <span class="keyword">else</span> <span class="keyword">if</span> (!is_OB_Valid){obClr = <span class="macro">clrBlue</span>;}
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="keyword">string</span> obText = <span class="string">""</span>;
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="keyword">if</span> (is_OB_Valid){obText = is_OB_UP ? <span class="string">"Bullish Order Block"</span>+<span class="functions">ShortToString</span>(<span class="number">0x2BED</span>) : <span class="string">"Bearish Order Block"</span>+<span class="functions">ShortToString</span>(<span class="number">0x2BEF</span>);}
+&nbsp;&nbsp; <span class="keyword">else</span> <span class="keyword">if</span> (!is_OB_Valid){obText = <span class="string">"Range"</span>;}
+
+&nbsp;&nbsp; <span class="comment">//---</span>
+
+}</pre><p>这里，我们首先检查“breakoutBarIndex”是否大于或等于0，并确认当前时间是否已超过“breakoutTime”加上一个等待周期。该等待周期通过将“waitBars”（等待K线数量）乘以每根K线对应的秒数（使用<a href="/zh/docs/common/periodseconds" target="_blank">PeriodSeconds</a>函数）来计算。如果满足上述条件，我们将调用“DetectImpulsiveMovement”函数，以识别市场中的脉冲式行情。调用时，需传入“impulseHigh”、“impulseLow”、“waitBars”以及一个固定参数1。</p><p>随后，我们通过检查“is_OB_DOWN”（看跌订单块）或“is_OB_UP”（看涨订单块）是否为真来验证订单块的有效性，并将结果存储在“is_OB_Valid”（订单块是否有效）变量中。我们使用<a href="/zh/docs/series/itime" target="_blank">iTime</a>函数获取特定K线的时间戳（该函数返回指定品种和周期下特定K线的时间），并将其存储在“time1”变量中。该K线的价格存储在“impulseHigh”中，供后续计算使用。接下来，我们使用<a href="/zh/docs/chart_operations/chartgetinteger" target="_blank">ChartGetInteger</a>函数（参数为<a href="/zh/docs/constants/chartconstants/enum_chart_property#enum_chart_property_integer" target="_blank">CHART_VISIBLE_BARS</a>）获取图表上可见的K线数量，该函数返回图表上当前可见的K线总数。然后，我们根据订单块是否有效来计算“time2”（第二个时间点）。若“is_OB_Valid”为true，我们将“time1”加上可见K线数量乘以周期秒数，从而调整时间。否则，我们使用“time(waitBars+1)”确定下一根K线的时间。通过使用<a href="/zh/docs/basis/operators/Ternary" target="_blank">三元运算符</a>来实现条件判断。</p><p>将“price2”变量设置为“impulseLow”。接下来，我们使用“OB_Prefix”（订单块前缀）以及<a href="/zh/docs/convert/timetostring" target="_blank">TimeToString</a>函数（将时间转换为字符串格式）生成订单块名称。订单块的颜色通过“obClr”变量设置，默认颜色为黑色。如果订单块有效，我们将颜色设置为“CLR_UP”（看涨订单块颜色）或“CLR_DOWN”（看跌订单块颜色）。如果订单块无效，则将颜色设置为蓝色。</p><p>订单块文本存储在“obText”变量中，其内容根据订单块方向设置。如果订单块有效，我们显示“看涨订单块”或“看跌订单块”，并附带唯一的Unicode字符编码（看涨为0x2BED，看跌为0x2BEF），这些编码通过“ShortToString”函数进行转换。如果订单块无效，则标记为“区间”。这些Unicode符号如下：</p><p style="text-align:center;"><img width="674" height="522" src="https://c.mql5.com/2/116/Screenshot_2025-02-06_131655.png" loading="lazy" title="UNICODE符号" alt="UNICODE符号" style="vertical-align:middle;"/></p><p>检测脉冲式行情的函数如下：</p><pre class="code"><span class="comment">// Function to detect impulsive movement after breakout</span>
+<span class="keyword">void</span> DetectImpulsiveMovement(<span class="keyword">double</span> breakoutHigh, <span class="keyword">double</span> breakoutLow, <span class="keyword">int</span> impulseBars, <span class="keyword">double</span> impulseThreshold) {
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> range = breakoutHigh - breakoutLow;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Calculate the breakout range</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> impulseThresholdPrice = range * impulseThreshold; <span class="comment">// Threshold for impulsive move</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Check for the price movement in the next `impulseBars` bars after breakout</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= impulseBars; i++) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> closePrice = close(i); <span class="comment">// Get the close price of the bar</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Check if the price moves significantly beyond the breakout high</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (closePrice &gt;= breakoutHigh + impulseThresholdPrice) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is_OB_UP = <span class="macro">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Impulsive upward movement detected: Close Price = "</span>, closePrice, 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">", Threshold = "</span>, breakoutHigh + impulseThresholdPrice);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Check if the price moves significantly below the breakout low</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span> <span class="keyword">if</span> (closePrice &lt;= breakoutLow - impulseThresholdPrice) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is_OB_DOWN = <span class="macro">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Impulsive downward movement detected: Close Price = "</span>, closePrice, 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">", Threshold = "</span>, breakoutLow - impulseThresholdPrice);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// If no impulsive movement is detected</span>
+&nbsp;&nbsp;&nbsp;&nbsp;is_OB_UP = <span class="macro">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;is_OB_DOWN = <span class="macro">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"No impulsive movement detected after breakout."</span>);
+}<span>
+</span></pre><p>在该函数中，为检测突破后价格是否出现脉冲式行情，我们首先通过“breakoutHigh”（突破高点）减去“breakoutLow" （突破低点）”计算出“range”（波动区间）。“脉冲阈值价格”（impulseThresholdPrice）通过将波动区间乘以“脉冲阈值”（impulseThreshold）来确定，该值定义了价格需达到的波动幅度，用作判定脉冲式行情。随后，我们使用<a href="/zh/docs/basis/operators/for" target="_blank">for循环</a>检查后续“脉冲K线数”（impulseBars）根K线内的价格走势。 </p><p>对于每根K线，我们使用“close(i)”函数获取其"收盘价"，该函数用于检索第i根K线的收盘价。若某根K线的收盘价超过“突破高点”的最小幅度达到了“脉冲阈值价格”，则判定为脉冲式上涨行情，将“is_OB_UP”设置为true，并打印检测到的上涨行情。同理，若某根K线的收盘价低于“突破低点”的最小幅度达到了“脉冲阈值价格”，则判定为脉冲式下跌行情，将“is_OB_DOWN”设置为true，并打印检测结果。</p><p>如果检查完所有K线后未发现显著价格波动，则将“is_OB_UP”和“is_OB_DOWN”均设置为false，并打印未检测到脉冲式行情的信息。现在，我们可以按照以下方式在图表上绘制波动区间以及订单块：</p><pre class="code"><span class="keyword">if</span> (!is_OB_Valid){
+&nbsp;&nbsp; <span class="keyword">if</span> (<span class="functions">ObjectFind</span>(<span class="number">0</span>,obNAME) &lt; <span class="number">0</span>){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CreateRec(obNAME,time1,price1,time2,price2,obClr,obText);
+&nbsp;&nbsp; }
+}
+<span class="keyword">else</span> <span class="keyword">if</span> (is_OB_Valid){
+&nbsp;&nbsp; <span class="keyword">if</span> (<span class="functions">ObjectFind</span>(<span class="number">0</span>,obNAME) &lt; <span class="number">0</span>){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CreateRec(obNAME,time1,price1,time2,price2,obClr,obText);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Old ArraySize = "</span>,<span class="functions">ArraySize</span>(totalOBs_names));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayResize</span>(totalOBs_names,<span class="functions">ArraySize</span>(totalOBs_names)+<span class="number">1</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"New ArraySize = "</span>,<span class="functions">ArraySize</span>(totalOBs_names));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;totalOBs_names[<span class="functions">ArraySize</span>(totalOBs_names)-<span class="number">1</span>] = obNAME;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayPrint</span>(totalOBs_names);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Old ArraySize = "</span>,<span class="functions">ArraySize</span>(totalOBs_dates));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayResize</span>(totalOBs_dates,<span class="functions">ArraySize</span>(totalOBs_dates)+<span class="number">1</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"New ArraySize = "</span>,<span class="functions">ArraySize</span>(totalOBs_dates));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;totalOBs_dates[<span class="functions">ArraySize</span>(totalOBs_dates)-<span class="number">1</span>] = time2;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayPrint</span>(totalOBs_dates);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Old ArraySize = "</span>,<span class="functions">ArraySize</span>(totalOBs_is_signals));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayResize</span>(totalOBs_is_signals,<span class="functions">ArraySize</span>(totalOBs_is_signals)+<span class="number">1</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"New ArraySize = "</span>,<span class="functions">ArraySize</span>(totalOBs_is_signals));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;totalOBs_is_signals[<span class="functions">ArraySize</span>(totalOBs_is_signals)-<span class="number">1</span>] = <span class="macro">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayPrint</span>(totalOBs_is_signals);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp; }
+}
+
+breakoutBarIndex = -<span class="number">1</span>; <span class="comment">// Use the current bar's index (index 1 refers to the most recent completed bar)</span>
+breakoutTime = <span class="number">0</span>;
+impulseHigh = <span class="number">0</span>;
+impulseLow = <span class="number">0</span>;
+is_OB_UP = <span class="macro">false</span>;
+is_OB_DOWN = <span class="macro">false</span>;</pre><p>在此，我们首先检查订单块（“is_OB_Valid”）是否有效。若订单块无效，则使用<a href="/zh/docs/objects/ObjectFind" target="_blank">ObjectFind</a>函数检查图表上是否已存在名为“obNAME”的对象。如果未找到该对象（函数返回负值），则调用“CreateRec”函数，根据提供的时间、价格、颜色和文本等参数，在图表上创建订单块图形对象。</p><p>如果订单块有效，那么我们会再次检查图表上是否已存在对应的图形对象。如果对象不存在，则先创建该订单块图形，随后通过<a href="/zh/docs/array/arrayresize" target="_blank">ArrayResize</a>函数调整三个数组的大小："totalOBs_names"用于存储订单块名称；"totalOBs_dates"用于存储时间戳；"totalOBs_is_signals"用于标记每个订单块是否为有效信号（初始值设置为false）。调整数组大小后，使用<a href="/zh/docs/array/arraysize" target="_blank">ArraySize</a>函数打印旧数组与新数组的大小，并通过<a href="/zh/docs/array/arrayprint" target="_blank">ArrayPrint</a>函数显示数组内容。最后，我们重置突破状态：将"breakoutBarIndex"设置为-1；"breakoutTime"、"impulseHigh"和"impulseLow"重置为0；订单块方向标识"is_OB_UP"和"is_OB_DOWN"设置为false。</p><p>为了创建附带文本的矩形图形，我们使用自定义函数"CreateRec"，其实现如下：</p><pre class="code"><span class="keyword">void</span> CreateRec(<span class="keyword">string</span> objName,<span class="keyword">datetime</span> time1,<span class="keyword">double</span> price1,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">datetime</span> time2,<span class="keyword">double</span> price2,<span class="keyword">color</span> clr,<span class="keyword">string</span> txt){
+&nbsp;&nbsp; <span class="keyword">if</span> (<span class="functions">ObjectFind</span>(<span class="number">0</span>,objName) &lt; <span class="number">0</span>){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectCreate</span>(<span class="number">0</span>,objName,<span class="macro">OBJ_RECTANGLE</span>,<span class="number">0</span>,time1,price1,time2,price2);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"SUCCESS CREATING OBJECT &gt;"</span>,objName,<span class="string">"&lt; WITH"</span>,<span class="string">" T1: "</span>,time1,<span class="string">", P1: "</span>,price1,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">", T2: "</span>,time2,<span class="string">", P2: "</span>,price2);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="number">0</span>,objName,<span class="macro">OBJPROP_TIME</span>,<span class="number">0</span>,time1);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetDouble</span>(<span class="number">0</span>,objName,<span class="macro">OBJPROP_PRICE</span>,<span class="number">0</span>,price1);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="number">0</span>,objName,<span class="macro">OBJPROP_TIME</span>,<span class="number">1</span>,time2);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetDouble</span>(<span class="number">0</span>,objName,<span class="macro">OBJPROP_PRICE</span>,<span class="number">1</span>,price2);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="number">0</span>,objName,<span class="macro">OBJPROP_FILL</span>,<span class="macro">true</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="number">0</span>,objName,<span class="macro">OBJPROP_COLOR</span>,clr);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="number">0</span>,objName,<span class="macro">OBJPROP_BACK</span>,<span class="macro">false</span>);
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Calculate the center position of the rectangle</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> midTime = time1 + (time2 - time1) / <span class="number">2</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> midPrice = (price1 + price2) / <span class="number">2</span>;
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Create a descriptive text label centered in the rectangle</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span> <span class="macro">description</span> = txt;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span> textObjName = objName + <span class="macro">description</span>; <span class="comment">// Unique name for the text object</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="functions">ObjectFind</span>(<span class="number">0</span>, textObjName) &lt; <span class="number">0</span>) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectCreate</span>(<span class="number">0</span>, textObjName, <span class="macro">OBJ_TEXT</span>, <span class="number">0</span>, midTime, midPrice);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetString</span>(<span class="number">0</span>, textObjName, <span class="macro">OBJPROP_TEXT</span>, <span class="macro">description</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, textObjName, <span class="macro">OBJPROP_COLOR</span>, <span class="macro">clrBlack</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, textObjName, <span class="macro">OBJPROP_FONTSIZE</span>, <span class="number">15</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, textObjName, <span class="macro">OBJPROP_ANCHOR</span>, <span class="macro">ANCHOR_CENTER</span>);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"SUCCESS CREATING LABEL &gt;"</span>, textObjName, <span class="string">"&lt; WITH TEXT: "</span>, <span class="macro">description</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ChartRedraw</span>(<span class="number">0</span>);
+&nbsp;&nbsp; }
+}<span>
+</span></pre><p>在已定义的 "CreateRec" 函数中，我们首先通过<a href="/zh/docs/objects/ObjectFind" target="_blank">ObjectFind</a>函数检查名为 "objName" 的图形对象是否已存在于图表上。如果对象不存在，则执行以下操作：使用<a href="/zh/docs/objects/objectcreate" target="_blank">ObjectCreate</a>函数创建一个矩形图形（类型为<a href="/zh/docs/constants/objectconstants/enum_object" target="_blank">OBJ_RECTANGLE</a>），并指定其时间与价格坐标；通过<a href="/zh/docs/objects/objectsetinteger" target="_blank">ObjectSetInteger</a>和<a href="/zh/docs/objects/objectsetdouble" target="_blank">ObjectSetDouble</a>函数设置矩形的属性（如颜色、填充、可见性等）。计算矩形的中心位置，并在该位置创建一个文本标签（类型为<a href="/zh/docs/constants/objectconstants/enum_object" target="_blank">OBJ_TEXT</a>），同时设置标签的属性（文本内容、颜色、字号、锚点等）。最后，我们调用<a href="/zh/docs/chart_operations/ChartRedraw" target="_blank">ChartRedraw</a> 函数更新图表显示。如果对象或标签已存在，则不执行任何操作。</p><p>完成订单块的绘制后，我们可以进一步判断价格是否回测订单块范围，并在价格进入或突破该范围时触发开仓操作。</p><pre class="code"><span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="functions">ArraySize</span>(totalOBs_names)-<span class="number">1</span>; j&gt;=<span class="number">0</span>; j--){
+&nbsp;&nbsp; <span class="keyword">string</span> obNAME = totalOBs_names[j];
+&nbsp;&nbsp; <span class="keyword">bool</span> obExist = <span class="macro">false</span>;
+&nbsp;&nbsp; <span class="comment">//Print("name = ",fvgNAME," &gt;",ArraySize(totalFVGs)," &gt;",j);</span>
+&nbsp;&nbsp; <span class="comment">//ArrayPrint(totalFVGs);</span>
+&nbsp;&nbsp; <span class="comment">//ArrayPrint(barTIMES);</span>
+&nbsp;&nbsp; <span class="keyword">double</span> obHigh = <span class="functions">ObjectGetDouble</span>(<span class="number">0</span>,obNAME,<span class="macro">OBJPROP_PRICE</span>,<span class="number">0</span>);
+&nbsp;&nbsp; <span class="keyword">double</span> obLow = <span class="functions">ObjectGetDouble</span>(<span class="number">0</span>,obNAME,<span class="macro">OBJPROP_PRICE</span>,<span class="number">1</span>);
+&nbsp;&nbsp; <span class="keyword">datetime</span> objTime1 = (<span class="keyword">datetime</span>)<span class="functions">ObjectGetInteger</span>(<span class="number">0</span>,obNAME,<span class="macro">OBJPROP_TIME</span>,<span class="number">0</span>);
+&nbsp;&nbsp; <span class="keyword">datetime</span> objTime2 = (<span class="keyword">datetime</span>)<span class="functions">ObjectGetInteger</span>(<span class="number">0</span>,obNAME,<span class="macro">OBJPROP_TIME</span>,<span class="number">1</span>);
+&nbsp;&nbsp; <span class="keyword">color</span> obColor = (<span class="keyword">color</span>)<span class="functions">ObjectGetInteger</span>(<span class="number">0</span>,obNAME,<span class="macro">OBJPROP_COLOR</span>);
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="keyword">if</span> (time(<span class="number">1</span>) &lt; objTime2){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//Print("FOUND: ",obNAME," @ bar ",j,", H: ",obHigh,", L: ",obLow);</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obExist = <span class="macro">true</span>;
+&nbsp;&nbsp; }&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="keyword">double</span> Ask = <span class="functions">NormalizeDouble</span>(<span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>,<span class="macro">SYMBOL_ASK</span>),<span class="predefines">_Digits</span>);
+&nbsp;&nbsp; <span class="keyword">double</span> Bid = <span class="functions">NormalizeDouble</span>(<span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>,<span class="macro">SYMBOL_BID</span>),<span class="predefines">_Digits</span>);
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="keyword">if</span> (obColor == CLR_UP &amp;&amp; Ask &gt; obHigh &amp;&amp; close(<span class="number">1</span>) &gt; obHigh &amp;&amp; open(<span class="number">1</span>) &lt; obHigh &amp;&amp; !totalOBs_is_signals[j]){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"BUY SIGNAL For ("</span>,obNAME,<span class="string">") Now @ "</span>,Ask);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> sl = Bid - <span class="number">1500</span>*<span class="predefines">_Point</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> tp = Bid + <span class="number">1500</span>*<span class="predefines">_Point</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj_Trade.Buy(<span class="number">0.01</span>,<span class="predefines">_Symbol</span>,Ask,sl,tp);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;totalOBs_is_signals[j] = <span class="macro">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayPrint</span>(totalOBs_names,<span class="predefines">_Digits</span>,<span class="string">" [&lt; &gt;] "</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayPrint</span>(totalOBs_is_signals,<span class="predefines">_Digits</span>,<span class="string">" [&lt; &gt;] "</span>);
+&nbsp;&nbsp; }
+&nbsp;&nbsp; <span class="keyword">else</span> <span class="keyword">if</span> (obColor == CLR_DOWN &amp;&amp; Bid &lt; obLow &amp;&amp; close(<span class="number">1</span>) &lt; obLow &amp;&amp; open(<span class="number">1</span>) &gt; obLow &amp;&amp; !totalOBs_is_signals[j]){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"SELL SIGNAL For ("</span>,obNAME,<span class="string">") Now @ "</span>,Bid);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> sl = Ask&nbsp;&nbsp;+ <span class="number">1500</span>*<span class="predefines">_Point</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> tp = Ask - <span class="number">1500</span>*<span class="predefines">_Point</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj_Trade.Sell(<span class="number">0.01</span>,<span class="predefines">_Symbol</span>,Bid,sl,tp);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;totalOBs_is_signals[j] = <span class="macro">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayPrint</span>(totalOBs_names,<span class="predefines">_Digits</span>,<span class="string">" [&lt; &gt;] "</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayPrint</span>(totalOBs_is_signals,<span class="predefines">_Digits</span>,<span class="string">" [&lt; &gt;] "</span>);
+&nbsp;&nbsp; }
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="keyword">if</span> (obExist == <span class="macro">false</span>){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">bool</span> removeName = <span class="functions">ArrayRemove</span>(totalOBs_names,<span class="number">0</span>,<span class="number">1</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">bool</span> removeTime = <span class="functions">ArrayRemove</span>(totalOBs_dates,<span class="number">0</span>,<span class="number">1</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">bool</span> remove_isSignal = <span class="functions">ArrayRemove</span>(totalOBs_is_signals,<span class="number">0</span>,<span class="number">1</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (removeName &amp;&amp; removeTime &amp;&amp; remove_isSignal){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Success removing the OB DATA from arrays. New Data as below:"</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Total Sizes =&gt; OBs: "</span>,<span class="functions">ArraySize</span>(totalOBs_names),<span class="string">", TIMEs: "</span>,<span class="functions">ArraySize</span>(totalOBs_dates),<span class="string">", SIGNALs: "</span>,<span class="functions">ArraySize</span>(totalOBs_is_signals));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">ArrayPrint</span>(totalOBs_names);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">ArrayPrint</span>(totalOBs_dates);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">ArrayPrint</span>(totalOBs_is_signals);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp; }&nbsp;&nbsp; 
+}</pre><p>这里，我们通过 <a href="/zh/docs/basis/operators/for" target="_blank">循环</a>遍历"totalOBs_names"数组，逐个处理每个订单块（标记为"obNAME"）。我们使用<a href="/zh/docs/objects/objectgetdouble" target="_blank">ObjectGetDouble</a>和<a href="/zh/docs/objects/objectgetinteger" target="_blank">ObjectGetInteger</a>函数，获取订单块的最高价、最低价、时间戳以及颜色属性。检查当前时间是否早于订单块的结束时间。如果时间条件满足，则根据订单块的颜色和价格条件，进一步判断是否产生买入或卖出信号。如果上述条件成立，调用"obj_Trade.Buy"或"obj_Trade.Sell"函数执行交易，同时更新"totalOBs_is_signals"数组，标记该订单块已触发信号（避免价格回撤时重复交易）。</p><p>如果订单块未满足时间条件，则使用<a href="/zh/docs/array/arrayremove" target="_blank">ArrayRemove</a>函数将其从"totalOBs_names"、"totalOBs_dates"和"totalOBs_is_signals"数组中移除。如果删除操作成功，则打印更新后的数组大小及内容。至此，我们已达成关键里程碑。</p><p style="text-align:center;"><img width="674" height="646" src="https://c.mql5.com/2/116/Screenshot_2025-02-06_140307.png" loading="lazy" title="订单块验证完成" alt="订单块验证完成" style="vertical-align:middle;"/></p><p>从图像中可以看出，订单块已被成功识别并且完成了交易，达到了我们的既定目标。目前仅需对程序进行回测，并分析其实际表现。相关内容将在下一节展开说明。</p><p><br/></p><h3 id="para4">回测与优化</h3><p>经过全面回测后，我们得到以下结果：</p><p>回测图：</p><p style="text-align:center;"><img width="674" height="369" src="https://c.mql5.com/2/117/Screenshot_2025-02-06_143757.png" loading="lazy" title="图表" alt="图表" style="vertical-align:middle;"/></p><p>回测报告：</p><p style="text-align:center;"><img width="674" height="499" src="https://c.mql5.com/2/117/Screenshot_2025-02-06_143437.png" loading="lazy" title="报告" alt="报告" style="vertical-align:middle;"/></p><p>以下这段视频展示了2024年全年针对该策略的完整回测过程。</p><p style="text-align:center;"><iframe width="560" height="315" src="https://www.youtube.com/embed/DdU9UIcupVw" frameborder="0" allowfullscreen="allowfullscreen"></iframe></p><p><br/></p><h3 id="para5">结论</h3><p>综上所述，我们演示了如何开发一款基于订单块识别的MQL5 EA，该系统可应用于聪明资金（smart money）的交易策略。通过整合动态区间分析、价格行为模式及实时突破检测等工具，我们构建了一款能够精准识别关键支撑与阻力位、生成可操作交易信号并高效管理订单的程序。</p><div class="atten"><p>免责声明：本文仅供教学参考。交易存在重大财务风险，且市场行为具有高度的不确定性。文中所述策略提供了一种结构化方法，但无法保证未来盈利。在实际交易前，请务必进行充分测试并实施严格的风险管理。</p></div><p>通过应用这些方法，您可构建更高效的交易系统，优化市场分析，并将算法交易提升至全新水平。祝您交易顺利！</p>
+      </div>
+          <p style="text-align: right;">
+            <small>
+              本文由MetaQuotes Ltd译自英文<br>原文地址： <a href="/en/articles/17135" target="_blank">https://www.mql5.com/en/articles/17135</a>
+            </small>
+          </p>
+<div id="cb_17135" class="attachBlock">
+  <strong>附加的文件</strong> |
+  <div class="grouped-attachments-help">
+    <a title="下载单独ZIP中的所有附件" href="/zh/articles/download/17135.zip">
+      <i class="attach-icon attach-icon_zip"></i>下载ZIP
+    </a>
+  </div>
+    <div class="attachItem">
+      <a title="下载 ORDER_BLOCKS_EA.mq5" href="/zh/articles/download/17135/order_blocks_ea.mq5"><i class="attach-icon attach-icon_mq5"></i>ORDER_BLOCKS_EA.mq5</a>
+      <span class="attachSize">(33.68 KB)</span>
+    </div>
+</div>
+    </div>
+
+  <div class="copyright">
+    <p><strong>注意:</strong> MetaQuotes Ltd.将保留所有关于这些材料的权利。全部或部分复制或者转载这些材料将被禁止。</p>
+      <p>本文由网站的一位用户撰写，反映了他们的个人观点。MetaQuotes Ltd 不对所提供信息的准确性负责，也不对因使用所述解决方案、策略或建议而产生的任何后果负责。</p>
+  </div>
+
+
+
+    <div class="article__author-with-articles">
+      
+
+
+<div class="article-footer__author">
+  <div class="article-footer__author-avatar">
+    <img id="avatar" src="https://c.mql5.com/avatar/2022/11/637df59b-9551_big.jpg" title="Allan Munene Mutiiria" alt="Allan Munene Mutiiria" loading="lazy" width="164" height="164">
+  </div>
+  <div class="article-footer__author-content">
+    <div class="article-footer__author-name">
+      <a href="/zh/users/29210372" title="Allan Munene Mutiiria">Allan Munene Mutiiria</a>
+    </div>
+    <div class="article-footer__author-info">
+      <ul>
+          <li>
+            <i title="实时" class="icons-profile icons-profile_geo"></i>
+            <a target="_blank" rel="nofollow" title="实时" href="https://www.mql5.com/go?https://maps.google.com/?z=4&q=%e8%82%af%e5%b0%bc%e4%ba%9a">肯尼亚</a>
+          </li>
+        <li>
+          <i title="等级" class="icons-profile icons-profile_statistics"></i>
+          <a title="等级" href="/zh/users/29210372/achievements">194457</a>
+        </li>
+      </ul>
+    </div>
+    <div class="article-footer__author-contacts">
+          <li title="网站"><a target="_blank" rel="noreferrer noopener nofollow" href="https://forexalgo-trader.com/" class="icons-profile icons-profile_net"></a>
+      <a target="_blank" rel="noreferrer noopener nofollow" href="https://forexalgo-trader.com/" style="display: inline-block; vertical-align: top; margin-top: -2px;">https://forexalgo-trader.com/</a></li>
+
+    </div>
+    <div class="article-footer__author-bio"></div>
+  </div>
+</div>
+
+      <div class="other-author-articles ui">
+        <h4 class="other-author-articles__title">该作者的其他文章</h4>
+        <ul class="other-author-articles__list">
+          <li><a href="/zh/articles/18986" data-fz-event="MQL5+Article+From+Author+Article">MQL5交易工具（第七部分）：用于多品种持仓与账户监控的信息仪表盘</a></li>
+          <li><a href="/zh/articles/18880" data-fz-event="MQL5+Article+From+Author+Article">MQL5交易工具（第六部分）：带脉冲动画与控件的动态全息仪表盘</a></li>
+          <li><a href="/zh/articles/18867" data-fz-event="MQL5+Article+From+Author+Article">MQL5 交易策略自动化（第24篇）：集成风险管理与移动止损的伦敦时段突破系统</a></li>
+          <li><a href="/zh/articles/18844" data-fz-event="MQL5+Article+From+Author+Article">MQL5 交易工具（第五部分）：创建滚动行情条，实现交易品种实时监控</a></li>
+          <li><a href="/zh/articles/18786" data-fz-event="MQL5+Article+From+Author+Article">MQL5交易工具（第四部分）：为多周期扫描仪表盘添加动态定位与切换功能</a></li>
+          <li><a href="/zh/articles/18778" data-fz-event="MQL5+Article+From+Author+Article">MQL5 交易策略自动化（第 23 部分）：带追踪止损与篮子交易的区间补仓系统</a></li>
+          <li><a href="/zh/articles/18720" data-fz-event="MQL5+Article+From+Author+Article">MQL5交易策略自动化（第二十二部分）：构建基于包络线趋势交易的区间补仓系统</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+  <div class="article__last-comments" id="articleAdditional">
+    
+
+<div class="comments-preview">
+    <div class="title">
+      <span></span><b>
+ <a href="/zh/forum/498725">前往讨论</a>
+      </b>
+    </div>
+    <div>
+        
+    </div>
+</div>
+
+  </div>
+
+
+    <div class="articles-bottom-list" id="articleAdditional">
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="交易中的神经网络：使用小波变换和多任务注意力的模型（终篇）" src="https://c.mql5.com/2/108/Neural_Networks_in_Trading_-_Models_Using_Wavelet_Transform_and_Multitask_Attention__LOGO.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/zh/articles/16757" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">交易中的神经网络：使用小波变换和多任务注意力的模型（终篇）</a>
+                <div class="articles-bottom-list__desc">在上一篇文章中，我们探索了理论基础，并开始实现多任务-Stockformer 框架的方式，其结合了小波变换和自注意力多任务模型。我们继续实现该框架的算法，并评估其在真实历史数据上的有效性。</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="价格行为分析工具包开发（第12部分）：外部资金流（3）趋势图谱（TrendMap）" src="https://c.mql5.com/2/118/Price_Action_Analysis_Toolkit_Development_Part_12___LOGO.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/zh/articles/17121" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">价格行为分析工具包开发（第12部分）：外部资金流（3）趋势图谱（TrendMap）</a>
+                <div class="articles-bottom-list__desc">市场走势由多头与空头之间的力量博弈所决定。由于作用在这些水平上的力量，市场会尊重某些特定价位水平。斐波那契（Fibonacci）水平和成交量加权平均价（VWAP）水平在影响市场行为方面尤为强大。请随我一同探讨本文中基于VWAP和斐波那契水平生成交易信号的策略。</div>
+              </div>
+          </div>
+        </div>
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="开发先进的 ICT 交易系统：在订单块指标中实现信号" src="https://c.mql5.com/2/100/Final_Logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/zh/articles/16268" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">开发先进的 ICT 交易系统：在订单块指标中实现信号</a>
+                <div class="articles-bottom-list__desc">在本文中，您将学习如何基于订单簿交易量（市场深度）开发订单块（Order Blocks）指标，并使用缓冲区对其进行优化以提高准确性。这结束了项目的当前阶段，并为下一阶段做准备，下一阶段将包括实施风险管理类和使用指标生成的信号的交易机器人。</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="将您自己的 LLM 集成到 EA 中（第 5 部分）：使用 LLM 开发和测试交易策略（三）—— 适配器微调" src="https://c.mql5.com/2/106/Integrate_Your_Own_LLM_into_EA_Part_5___LOGO__1.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/zh/articles/13500" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">将您自己的 LLM 集成到 EA 中（第 5 部分）：使用 LLM 开发和测试交易策略（三）—— 适配器微调</a>
+                <div class="articles-bottom-list__desc">随着当今人工智能的快速发展，语言模型（LLMs）是人工智能的重要组成部分，因此我们应该考虑如何将强大的 LLMs 整合到我们的算法交易中。对于大多数人来说，很难根据他们的需求微调这些强大的模型，在本地部署它们，然后将它们应用于算法交易。本系列文章将采取循序渐进的方法来实现这一目标。</div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+<div class="clear-fix"></div>
+
+<div id='wdausxxqrpvhekbwjrjlhqjghyhesrqqau' class="r6irig5txiuua4k0m r6irig5txiuua4k0m_articles-view gg88d3drb"></div>
+    
+
+<div class="hidden" id="popupRegisterLogin">
+  <div class="register-login-popup">
+    <div class="register-login-popup__header">
+      <img src="https://c.mql5.com/i/registerlandings/logo-2.png" srcset="https://c.mql5.com/i/registerlandings/logo-2_2x.png 2x" alt="MQL5 - MetaTrader 5客户端内置的交易策略语言" loading="lazy" width="74" height="24" />
+    </div>
+    <div class="register-login-popup__content">
+      <div class="register-login-popup__desc">
+        <div class="register-login-popup__title">您错过了交易机会：</div>
+        <ul>
+<li>免费交易应用程序</li>
+<li>8,000+信号可供复制</li>
+<li>探索金融市场的经济新闻</li>
+</ul>
+      </div>
+      <div class="register-login-popup__forms ui">
+        <div class="register-login-popup__tabs" id="registerLoginPopupTabs">
+          <span data-id="register" id="registerLoginPopupTab_register" class="register-login-popup__tab register-login-popup__tab_active">注册</span>
+          <span data-id="login" id="registerLoginPopupTab_login" class="register-login-popup__tab">登录</span>
+        </div>
+        <div id="registerLoginPopupTabContent_register">
+          <div class="ui auth-form__content">
+    
+  <script type='text/javascript'>/*<![CDATA[*/ if (!window.V) var V = []; /*]]>*/</script>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/zh/auth_register_short" id="PopupRegisterquickRegisterForm" onsubmit="PopupRegisterquickRegistration.OnSubmit(this,&#39;zh&#39;);if(Validate(this)) Ajax.form(this,{onready:PopupRegisterquickRegistration.OnSuccessPopup,onerror:PopupRegisterquickRegistration.OnError,onbeginrequest:PopupRegisterquickRegistration.DisableInputs,onendrequest:PopupRegisterquickRegistration.EnableInputs});return(false);" enctype = "multipart/form-data"><input type="hidden" name="__signature" value="68b0fb64f6ff4c7b32e00663baf25571"/>
+    <div class="auth-form__inputs">
+      <input type="hidden" value="0" name="IsValidate" id="PopupRegisterIsValidate" />
+
+      <!--[if lt IE 10]><div class="note">登录名:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input type="text" id="PopupRegisterusername" name="username" class="input" maxlength="32" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.CheckUserName();}" onkeyup="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.ValidateUserName(this, '请输入有效登录名');}" placeholder="登录名" title="可以包括字母，数字，点，破折号和下划线字符，不能以点开始或结束。允许长度为3至32个字符。" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisterusername'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisterusername',10,'您可以使用拉丁字符、数字、下划线和句号。',validate_username]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisterusername">拉丁字符（不带空格）</label>
+      </div>
+      <!--[if lt IE 10]><div class="note">您的电子邮箱:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input class="input" type="email" id="PopupRegisteremail" name="email" placeholder="您的电子邮箱" title="请输入电子邮箱地址(不能超过 256 个字符)。例如：john@example.com" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnChange(this);}" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisteremail'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisteremail',10,'请输入有效email',validate_email]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisteremail">密码将被发送至该邮箱</label>
+      </div>
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Register" />
+    </div>
+    <span id="PopupRegisterquickRegisterSubmit">
+      <input type="submit" value="注册" id="PopupRegisterquickRegisterButton"  title="注册并接收包含密码的邮件" class="button button_yellow"  />
+    </span>
+    <span id="PopupRegisterquickRegisterErrorMessage" class="quick-register-error-message field-validation-error" style="text-align: center; margin-top: 16px; display: none;">
+      发生错误
+    </span>
+</form>
+    
+</div>
+<div class="auth-social">
+  <ul class="auth-social-list" id="socialList">
+    <li><a onclick="window.fpush({name: 'MQL5+Popup+Register+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/zh/auth_oauth2?provider=Google&amp;amp;return=popup&amp;amp;reg=1" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">使用 Google 登录</a></li>
+  </ul>
+</div>
+<div class="auth-block-agree">
+  <p>
+    您同意<a target="_blank" href="/zh/about/privacy">网站政策</a>和<a target="_blank" href="/zh/about/terms">使用条款</a>
+  </p>
+</div>
+
+
+        </div>
+        <div id="registerLoginPopupTabContent_login" class="hidden">
+            <div class="auth-form__text">
+    如果您没有帐号，请<a href="https://www.mql5.com/zh/auth_register" rel="nofollow" style="vertical-align: top">注册</a>
+  </div>
+<div class="ui auth-form__content auth-form__content_login" id="loginFormWrapper">
+    
+  <div id="needCookies" class="need-cookies hidden">
+    <div class="danger-box">
+      <p>可以使用cookies登录MQL5.com网站。</p>
+<p>请在您的浏览器中启用必要的设置，否则您将无法登录。</p>
+    </div>
+  </div>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/zh/auth_login" id="loginForm" onsubmit="if(window.quickLogin){return window.quickLogin.onSubmit(this);}var result = Validate(this); if(result) { preventDoubleSubmit(this); } return result;"><input id="RedirectAfterLoginUrl" name="RedirectAfterLoginUrl" type="hidden" value="" /><input id="RegistrationUrl" name="RegistrationUrl" type="hidden" value="" /><input data-val="true" data-val-required="The ShowOpenId field is required." id="ShowOpenId" name="ShowOpenId" type="hidden" value="True" /><input id="TrackingSection" name="TrackingSection" type="hidden" value="Articles" />    <input name="ViewType" type="hidden" value="5" />
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Login" />
+    <!--[if lt IE 10]><div class="note">您的登录名:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <input class="input qa-login" id="Login" name="Login" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="登录名" title="您的登录名" type="text" value="" />
+      <script type='text/javascript' id='validate_Login'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Login',1,'输入注册时使用的登录名']);});mqGlobal.AddOnReady(function() {V.push(['Login',10,'电子邮箱无法使用。请输入您的登录名',validateLogin]);}); /*]]>*/</script>
+    </div>
+    <!--[if lt IE 10]><div class="note">密码:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <div class="input-with-show">
+        <input autocomplete="off" class="input qa-password" id="Password" name="Password" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="密码" title="请输入密码" type="password" />
+        <span class="input-with-show__icon" title="显示密码" onclick="if(window.quickLogin){window.quickLogin.showPass(this, '显示密码', '隐藏密码');}"></span>
+      </div>
+      <script type='text/javascript' id='validate_Password'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Password',1,'请输入密码']);}); /*]]>*/</script>
+    </div>
+    <script type="text/javascript">
+    function validateLogin(input) {
+      console.log('validate login ' + input.value);
+      return !/^\w+([-+.'']{1,2}\w+)* @\w+([-.]\w+)*\.\w+([-.]\w+)*$/i.test(input.value);
+    }
+    </script>
+    <div class="forgot" id="loginForgotBlock"><a id="loginForgotLink" href="https://www.mql5.com/zh/auth_forgotten?return=popup">忘记您的登录名/密码？</a></div>
+    <input type="submit" class="button button_yellow qa-submit" id="loginSubmit" value="登录" title="输入">
+</form></div>
+
+  <div class="auth-social" id="authSocialBlock">
+    <ul class="auth-social-list" id="socialList">
+      <li><a onclick="window.fpush({name: 'MQL5+Popup+Login+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/zh/auth_oauth2?provider=Google&amp;amp;return=popup" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">使用 Google 登录</a></li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script id="popupSection" type="application/json">{"section": "Articles"}</script>
+<script id="popupTranslate" data-type="translate" type="application/json">
+{
+  "popup":
+  {
+  "EmailTitle" : "密码已经发送到{0}",
+  "EmailDescription" : "使用收到的密码和注册时指定的登录名进行登录",
+  "SubmitButtonText" : "激活账户",
+  "RegistrationTip" : "如果您没有收到密码邮件，请检查垃圾箱文件夹或&lt;a href={0}&gt;重新注册&lt;/a&gt;"
+  }
+}
+</script>
+
+    
+
+    
+
+
+    </article>
+  </div>
+
+
+
+<div aria-hidden="true" class="footer  desktop" id="footer">
+  <ul class="links  links_desktop">
+      <li id="navFooterCommunity">
+        <nav>
+          <ul>
+            <li><a href="https://web.metatrader.app/terminal?mode=demo&amp;lang=zh" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Footer+Trading">在线交易 / WebTerminal</a></li>
+            <li><a href="/zh/code" data-fz-event="MQL5+Footer+CodeBase">免费技术指标和自动交易</a></li>
+            <li><a href="/zh/articles" data-fz-event="MQL5+Footer+Articles">关于编程和交易的文章</a></li>
+            <li><a href="/zh/job" data-fz-event="MQL5+Footer+Job">订购自由职业者的自动交易</a></li>
+            <li><a href="/zh/market" data-fz-event="MQL5+Footer+Market">EA交易和应用程序市场</a></li>
+            <li><a href="/zh/signals" data-fz-event="MQL5+Footer+Signals">跟随外汇信号</a></li>
+            <li><a href="/zh/vps" data-fz-event="MQL5+Footer+VPS">低延迟外汇VPS</a></li>
+            <li><a href="/zh/forum" data-fz-event="MQL5+Footer+Forum">交易者论坛</a></li>
+            <li><a href="/zh/blogs" data-fz-event="MQL5+Footer+Blogs">交易博客</a></li>
+            <li><a rel="nofollow" href="/zh/charts" data-fz-event="MQL5+Footer+Charts">图表</a></li>
+            <li><a href="/zh/widgets" data-fz-event="MQL5+Footer+Widgets">免费小工具</a></li>
+          </ul>
+        </nav>
+      </li>
+      <li id="navFooterMt5">
+        <nav>
+          <ul>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> 交易平台</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/zh/releasenotes" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span>最新更新</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/zh/news" data-fz-event="MQL5+Footer+MetaTrader+5">新闻，执行和技术</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/zh/terminal/help" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> 用户手册</a></li>
+            <li><a href="/zh/docs" data-fz-event="MQL5+Footer+Docs">交易策略的MQL5语言</a></li>
+            <li><a rel="nofollow noopener" href="https://cloud.mql5.com" data-fz-event="MQL5+Footer+Cloud">MQL5 Cloud Network</a></li>
+            <li><a rel="noopener" href="https://forge.mql5.io/?lang=zh-CN" data-fz-event="MQL5+Footer+Forge" target="_blank">MQL5 Algo Forge</a></li>
+              <li><a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Footer">下载 <span class="nobr">MetaTrader 5</span></a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/zh/terminal/help/start_advanced/installation" data-fz-event="MQL5+Footer+MetaTrader+5">安装平台</a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/zh/terminal/help/start_advanced/deinstallation" data-fz-event="MQL5+Footer+MetaTrader+5">卸载平台</a></li>
+          </ul>
+        </nav>
+
+      </li>
+    <li id="navFooterWebsite">
+        <nav>
+          <ul>
+            <li><a rel="nofollow" href="/zh/about" data-fz-event="MQL5+Footer+About">关于</a></li>
+              <li><a href="/zh/wall" data-fz-event="MQL5+Footer+Wall">时间轴</a></li>
+            <li><a rel="nofollow" href="/zh/about/terms" data-fz-event="MQL5+Footer+About">条款和条件</a></li>
+            <li><a rel="nofollow" href="/zh/about/autopayments" data-fz-event="MQL5+Footer+About">定期付款协议</a></li>
+            <li><a rel="nofollow" href="/zh/about/agencyagreement" data-fz-event="MQL5+Footer+About">代理协议 – 报价</a></li>
+            <li><a rel="nofollow" href="/zh/about/privacy" data-fz-event="MQL5+Footer+About">隐私和数据保护政策</a></li>
+            <li><a rel="nofollow" href="/zh/about/cookies" data-fz-event="MQL5+Footer+About">Cookies政策</a></li>
+            <li>
+                <a rel="nofollow" href="/zh/contact" data-fz-event="MQL5+Footer+Contacts">联系和请求</a>
+            </li>
+          </ul>
+        </nav>
+    </li>
+
+      <li>
+        <div class="footer__products">
+          <div class="footer__product">
+            <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com" class="footer__product-name">MetaTrader 5</a>
+            <div class="footer__product-links">
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon windows" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">下载MetaTrader 5 Windows</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/MetaTrader5.pkg.zip?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon macos" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">下载MetaTrader 5 MacOS</div></a>
+            <a rel="nofollow noopener" href="https://www.mql5.com/zh/articles/625?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon linux" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">下载MetaTrader 5 Linux</div></a>
+            <a rel="nofollow noopener" href="https://web.metatrader.app/terminal?mode=demo&amp;lang=zh" class="icon web"><div  class="footer__product-link-hint footer__product-link-hint-short">打开MetaTrader 5网页端</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/ios?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=zh" class="icon ios" data-fz-event="MetaTrader+5+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/2gQnNpp1I1s.png)">扫描并从App Store安装</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=zh" class="icon android" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Rw3xvJ-W-9d.png)">扫描并从Google Play安装</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon huawei" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ZRt&#x2B;zI1l&#x2B;8O.png)">扫描并从华为AppGallery安装</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon ark" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/L0Q9oag&#x2B;3eE.png)">扫描并获取Android APK文件</div></a>
+            </div>
+          </div>
+          <div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com/en/news/2270" class="footer__product-name">MQL5 Channels</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=zh" class="icon ios" data-fz-event="MQL5+Channels+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/dJ&#x2B;ywneYpcO.png)">扫描并从App Store安装</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=zh" class="icon android" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ztQ9rjR7BVd.png)">扫描并从Google Play安装</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Su&#x2B;fe4n374e.png)">扫描并从华为AppGallery安装</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mql5channels/mql5channels.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/G6Mg4NfCPzO.png)">扫描并获取Android APK文件</div></a>
+              </div>
+            </div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.tradays.com/zh/download?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MQL5+Footer+Download+Tradays" class="footer__product-name">Economic Calendar</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=zh" class="icon ios" data-fz-event="Tradays+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/hnFNkjPw-1E.png)">扫描并从App Store安装</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=zh" class="icon android" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/wG3Ztd6mYap.png)">扫描并从Google Play安装</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CrS7bbDAdAO.png)">扫描并从华为AppGallery安装</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/tradays/tradays.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/VZi8YPIb2op.png)">扫描并获取Android APK文件</div></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__networks">
+          <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow" title="Facebook"><i class="icons-networks icons-networks_fb"></i></a>
+          <a href="https://t.me/mql5dev" target="_blank" rel="nofollow" title="Telegram"><i class="icons-networks icons-networks_tg"></i></a>
+          <a href="https://x.com/mql5com" target="_blank" rel="nofollow" title="X (Twitter)"><i class="icons-networks icons-networks_tw"></i></a>
+          <a href="https://www.youtube.com/@MetaQuotesOfficial" target="_blank" rel="nofollow" title="YouTube"><i class="icons-networks icons-networks_yt"></i></a>
+          <a href="https://www.linkedin.com/company/mql5" target="_blank" rel="nofollow" title="LinkedIn"><i class="icons-networks icons-networks_linkedin"></i></a>
+          <span>订阅算法交易新闻</span>
+        </div>
+  
+        <div class="footer__other">
+          <div class="footer__not-a-broker">不是交易商，不提供真实交易账户</div>
+          <div class="copyright">35 Dodekanisou str, Germasogeia, 4043,&nbsp;Limassol,&nbsp;Cyprus</div>
+          <div class="copyright">Copyright 2000-2026, <span class="nobr">MetaQuotes Ltd</span></div>
+        </div>
+      </li>
+  </ul>
+</div>
+
+
+
+<div class="shadow-layer" id="layer"></div>
+    
+
+  <div class="b-fixed-mt" id="bFixedMt" style="display: none;">
+    
+  </div>
+
+
+<script type='text/javascript'>
+		(function (a, e, f, g, b, c, d) { a[b] || (a.FintezaCoreObject = b, a[b] = a[b] || function () { (a[b].q = a[b].q || []).push(arguments) }, a[b].l = 1 * new Date, c = e.createElement(f), d = e.getElementsByTagName(f)[0], c.async = !0, c.defer = !0, c.src = g, d && d.parentNode && d.parentNode.insertBefore(c, d)) })
+      (window, document, "script", "/ff/core.js", "fz");
+		window.fz("register", "website", {
+      id: "sqjxkxkswybhifrohpyooonwgbvsfzmayq",
+			trackLinks: true
+		});
+        mqGlobal.AddOnReady(function () { Mql5Cookie.init('mql5.com', '5089404837301872567'); });
+mqGlobal.AddOnReady(function(){if(!window.Pocket){window.Pocket=new PocketManager();}});mqGlobal.AddOnReady(function(){if(!window.translateManager){window.translateManager=new Translate(undefined,'错误：翻译失败，请稍后再试。');}if(document.querySelectorAll){var translateElements=document.querySelectorAll(".translateMenu");if(translateElements){var i=0,count=translateElements.length;for(i;i<count;i++){(function(i){var contentid=dataset(translateElements[i],"contentid"),sourcelang=dataset(translateElements[i],"sourcelang"),targetlang=dataset(translateElements[i],"targetlang"),moduleid=parseInt(dataset(translateElements[i],"moduleid")),typeid=parseInt(dataset(translateElements[i],"typeid")),entityid=parseInt(dataset(translateElements[i],"entityid"));Core.AddHandler(translateElements[i],"mouseover",function(){return translateManager.SetMenu(this,contentid,sourcelang,targetlang,moduleid,typeid,entityid);});})(i);}}}});window.fz("show","wdausxxqrpvhekbwjrjlhqjghyhesrqqau");window.mqGlobal.AddOnLoad(function(){window.fpush('MQL5+Article+Open');Articles.CheckOnScrollDown();});mqGlobal.AddOnReady(function(){window.PopupRegisterquickRegistration=new QuickRegistration('PopupRegister','Popup+Register','Articles');});function validate_username(input){var reg=/^([a-z0-9]){1}([\-._a-z0-9]){1,30}([\-_a-z0-9]){1}$/i,value=input.value,result=true;if(reg.test(value)){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Login',unit:'section',value:'Articles'});}return result;}function validate_email(input){var reg=/^\w+([-+.'']{1,2}\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/i,value=input.value,result=true,length_value=value.length;if(reg.test(value)&&length_value>=1&&length_value<=40){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Email',unit:'section',value:'Articles'});}return result;};mqGlobal.AddOnReady(function(){var username=$('PopupRegisterusername'),email=$('PopupRegisteremail');if(username)username.value='';if(email)email.value='';});mqGlobal.AddOnReady(function(){window.quickLogin=new QuickLogin('Popup+Login','Articles');});mqGlobal.AddOnLoad(function(){window.showLoginRegisterPopupAtEnd();});mqGlobal.AddOnLoad(function(){window.tooltipUserInfo.init();});mqGlobal.AddOnReady(function(){{window.initHeaderSearch('','https://www.mql5.com/zh/search');}});</script><script type="text/javascript">mqGlobal.AddOnReady(function(){window.initSuggestions("headerSearchKeyword","zh","https://search.mql5.com/api/query","https://www.mql5.com/zh/users_search/suggestion");});window.fz("show","vgckrufggwxdtfscpyalmenexmvhljduja");mqGlobal.AddOnReady(function(){window.floatVerticalPanelNode=FloatVerticalPanel('该网站使用cookies。了解有关我们<a href="/zh/about/cookies">Cookies政策</a>的更多信息。','cookie_accept');});							if (typeof Attach !== "undefined")
+			Attach.setAcceptFilter(".zip, .txt, .log, .mqh, .ex5, .mq5, .mq4, .mqproj, .ex4, .mt5, .set, .tpl, .cl, .py, .sqlite, .csv, .ini, .ipynb, .onnx, .gif, .png, .jpg, .jpeg, .mp4, .webm");
+	</script>
+
+<script type="application/ld&#x2B;json">
+		[
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"url": "https://www.mql5.com",
+				"logo": "https://c.mql5.com/i/community/logo_mql5-2.png",
+				"sameAs": [
+					"https://www.facebook.com/mql5.community",
+					"https://www.x.com/mql5com",
+					"https://www.youtube.com/user/MetaQuotesOfficial"
+				 ]
+			}
+		
+, 
+{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"论坛","description":"交易策略和算法交易的讨论。MQL5.community  最大的外汇论坛","url":"https://www.mql5.com/zh/forum","children":[]},{"@type":"SiteNavigationElement","position":2,"name":"市场","description":"MetaTrader 市场 - 自动交易，指标，交易书籍和杂志的市场","url":"https://www.mql5.com/zh/market","children":[]},{"@type":"SiteNavigationElement","position":3,"name":"信号","description":"MetaTrader的群组交易，复制交易和账户监控 - MQL5.com交易信号","url":"https://www.mql5.com/zh/signals","children":[]},{"@type":"SiteNavigationElement","position":4,"name":"自由职业者","description":"订购EA交易、技术指标和算法交易应用程序。外汇工作。MQL5.com自由职业者服务。聘请MetaTrader专家和专业人员。","url":"https://www.mql5.com/zh/job","children":[]},{"@type":"SiteNavigationElement","position":5,"name":"报价","description":"","url":"https://www.mql5.com/zh/quotes/overview","children":[]},{"@type":"SiteNavigationElement","position":6,"name":"MetaTrader","description":"","url":"https://www.metatrader.com","children":[]},{"@type":"SiteNavigationElement","position":7,"name":"网页端","description":"MetaTrader交易平台的网页端。在线外汇交易。","url":"https://web.metatrader.app/terminal?mode=demo","children":[]},{"@type":"SiteNavigationElement","position":8,"name":"经济日历","description":"","url":"https://www.mql5.com/zh/economic-calendar","children":[]},{"@type":"SiteNavigationElement","position":9,"name":"VPS","description":"","url":"https://www.mql5.com/zh/vps","children":[]},{"@type":"SiteNavigationElement","position":10,"name":"文章","description":"","url":"https://www.mql5.com/zh/articles","children":[]},{"@type":"SiteNavigationElement","position":11,"name":"代码库","description":"下载带有源代码的自动交易，技术指标和脚本 - MetaTrader 5的MQL5代码库","url":"https://www.mql5.com/zh/code","children":[]},{"@type":"SiteNavigationElement","position":12,"name":"Algo Forge","description":"","url":"https://forge.mql5.io","children":[]},{"@type":"SiteNavigationElement","position":13,"name":"文档","description":"MetaQuotes Language 5 (MQL5)语言参考 - MQL5.com文档","url":"https://www.mql5.com/zh/docs","children":[]}]}		
+,
+{"@context":"https://schema.org","@type":"TechArticle","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.mql5.com/zh/articles/17135"},"headline":"MQL5中交易策略的自动化实现（第六部分）：掌握智能资金交易中的订单块（Order Block）检测技巧","image":["https://c.mql5.com/2/116/Screenshot_2025-02-06_113438.png","https://c.mql5.com/2/116/Screenshot_2025-02-06_131655.png","https://c.mql5.com/2/116/Screenshot_2025-02-06_140307.png","https://c.mql5.com/2/117/Screenshot_2025-02-06_143757.png","https://c.mql5.com/2/117/Screenshot_2025-02-06_143437.png"],"datePublished":"2025-10-27T08:33:43+00:00Z","dateModified":"2025-10-24T15:04:34+00:00Z","author":{"@type":"Person","name":"Allan Munene Mutiiria","url":"https://www.mql5.com/zh/users/29210372"},"editor":{"@type":"Organization","name":"MetaQuotes","url":"https://www.mql5.com/zh/users/metaquotes","address":{"@type":"PostalAddress","addressCountry":"MY"}},"publisher":{"@type":"Organization","name":"MQL5 Community","url":"https://www.mql5.com","logo":{"@type":"ImageObject","url":"https://c.mql5.com/i/community/logo_mql5-2.png"}},"description":"在本文中，我们将运用纯粹的价格行为分析方法，在MQL5平台上实现订单块的自动化检测。我们将界定订单块的定义，实现其检测功能，并集成自动化交易执行系统。最后，我们通过回测来评估该策略的表现。"}
+,
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":"https://www.mql5.com/zh/articles","name":"文章"},{"@type":"ListItem","position":2,"item":"https://www.mql5.com/zh/articles/mt5","name":"MetaTrader 5"},{"@type":"ListItem","position":3,"item":"https://www.mql5.com/zh/articles/mt5/trading","name":"交易"}]}
+
+		]
+	</script>
+</body>
+</html>

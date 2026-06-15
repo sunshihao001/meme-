@@ -1,0 +1,260 @@
+[
+  {
+    "目标名": "EN_价格直方图市场轮廓MQL5实现",
+    "来源标题": "The Price Histogram (Market Profile) and its implementation in MQL5 - MQL5 Articles",
+    "url": "https://www.mql5.com/en/articles/17",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_价格直方图市场轮廓MQL5实现.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_价格直方图市场轮廓MQL5实现_17.zip",
+        "https://www.mql5.com/en/articles/download/17.zip",
+        10586
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_价格直方图市场轮廓MQL5实现_classexpert.mqh",
+        "https://www.mql5.com/en/articles/download/17/classexpert.mqh",
+        9665
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_价格直方图市场轮廓MQL5实现_classprogressbar.mqh",
+        "https://www.mql5.com/en/articles/download/17/classprogressbar.mqh",
+        3839
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_价格直方图市场轮廓MQL5实现_pricehistogram.mq5",
+        "https://www.mql5.com/en/articles/download/17/pricehistogram.mq5",
+        3716
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_价格直方图市场轮廓MQL5实现_colorprogressbar.mqh",
+        "https://www.mql5.com/en/articles/download/17/colorprogressbar.mqh",
+        5008
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_价格直方图市场轮廓MQL5实现_classpricehistogram.mqh",
+        "https://www.mql5.com/en/articles/download/17/classpricehistogram.mqh",
+        16460
+      ]
+    ]
+  },
+  {
+    "目标名": "EN_自定义TPO市场轮廓加入成交量POC价值区域VWAP",
+    "来源标题": "Creating Custom Indicators in MQL5 (Part 8): Adding Volume Integration for Deeper Market Profile Analysis - MQL5 Articles",
+    "url": "https://www.mql5.com/en/articles/21390",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_自定义TPO市场轮廓加入成交量POC价值区域VWAP.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_自定义TPO市场轮廓加入成交量POC价值区域VWAP_21390.zip",
+        "https://www.mql5.com/en/articles/download/21390.zip",
+        13421
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_自定义TPO市场轮廓加入成交量POC价值区域VWAP_Hybrid_TPO_Market_Profile_PART_2.mq5",
+        "https://www.mql5.com/en/articles/download/21390/Hybrid_TPO_Market_Profile_PART_2.mq5",
+        88228
+      ]
+    ]
+  },
+  {
+    "目标名": "EN_订单块结合BOS与诱导确认自动化策略",
+    "来源标题": "Automating Trading Strategies in MQL5 (Part 48): Order Blocks, Inducement, Break of Structure - MQL5 Articles",
+    "url": "https://www.mql5.com/en/articles/22078",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_订单块结合BOS与诱导确认自动化策略.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_订单块结合BOS与诱导确认自动化策略_22078.zip",
+        "https://www.mql5.com/en/articles/download/22078.zip",
+        17519
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_订单块结合BOS与诱导确认自动化策略_Inducement_Mitigation_Block_Strategy.mq5",
+        "https://www.mql5.com/en/articles/download/22078/Inducement_Mitigation_Block_Strategy.mq5",
+        78553
+      ]
+    ]
+  },
+  {
+    "目标名": "EN_吞没形态与回测验证",
+    "来源标题": "Adaptive Malaysian Engulfing Indicator (Part 1): Pattern Detection and Retest Validation - MQL5 Articles",
+    "url": "https://www.mql5.com/en/articles/22419",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_吞没形态与回测验证.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_吞没形态与回测验证_22419.zip",
+        "https://www.mql5.com/en/articles/download/22419.zip",
+        3434
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_吞没形态与回测验证_Malaysian_Engulfing_-_Pattern_Detection.mq5",
+        "https://www.mql5.com/en/articles/download/22419/Malaysian_Engulfing_-_Pattern_Detection.mq5",
+        4519
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_吞没形态与回测验证_Malaysian_Engulfing_-_Retest_Validation.mq5",
+        "https://www.mql5.com/en/articles/download/22419/Malaysian_Engulfing_-_Retest_Validation.mq5",
+        10123
+      ]
+    ]
+  },
+  {
+    "目标名": "EN_RSI结合市场结构意识",
+    "来源标题": "From Novice to Expert: Trading the RSI with Market Structure Awareness - MQL5 Articles",
+    "url": "https://www.mql5.com/en/articles/20554",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_RSI结合市场结构意识.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_RSI结合市场结构意识_RSIDivergenceDetector.mq5",
+        "https://www.mql5.com/en/articles/download/20554/RSIDivergenceDetector.mq5",
+        24124
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_RSI结合市场结构意识_EquidistantChannelAuto-Placement.mq5",
+        "https://www.mql5.com/en/articles/download/20554/EquidistantChannelAuto-Placement.mq5",
+        24458
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_RSI结合市场结构意识_20554.zip",
+        "https://www.mql5.com/en/articles/download/20554.zip",
+        9625
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_RSI结合市场结构意识_RSIDivergenceDetector.mq5",
+        "https://www.mql5.com/en/articles/download/20554/RSIDivergenceDetector.mq5",
+        24124
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_RSI结合市场结构意识_EquidistantChannelAuto-Placement.mq5",
+        "https://www.mql5.com/en/articles/download/20554/EquidistantChannelAuto-Placement.mq5",
+        24458
+      ]
+    ]
+  },
+  {
+    "目标名": "EN_ICT订单块指标实现",
+    "来源标题": "Developing Advanced ICT Trading Systems: Implementing Order Blocks in an Indicator - MQL5 Articles",
+    "url": "https://www.mql5.com/en/articles/15899",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_ICT订单块指标实现.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_ICT订单块指标实现_15899.zip",
+        "https://www.mql5.com/en/articles/download/15899.zip",
+        10048
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_ICT订单块指标实现_order_block_indicator_new.mq5",
+        "https://www.mql5.com/en/articles/download/15899/order_block_indicator_new.mq5",
+        87518
+      ]
+    ]
+  },
+  {
+    "目标名": "EN_Mitigation订单块策略",
+    "来源标题": "Automating Trading Strategies in MQL5 (Part 12): Implementing the Mitigation Order Blocks (MOB) Strategy - MQL5 Articles",
+    "url": "https://www.mql5.com/en/articles/17547",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_Mitigation订单块策略.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_Mitigation订单块策略_17547.zip",
+        "https://www.mql5.com/en/articles/download/17547.zip",
+        4638
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_Mitigation订单块策略_mitigation_order_blocks.mq5",
+        "https://www.mql5.com/en/articles/download/17547/mitigation_order_blocks.mq5",
+        19728
+      ]
+    ]
+  },
+  {
+    "目标名": "EN_BreakerBlock交易系统",
+    "来源标题": "Automating Trading Strategies in MQL5 (Part 35): Creating a Breaker Block Trading System - MQL5 Articles",
+    "url": "https://www.mql5.com/en/articles/19638",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_BreakerBlock交易系统.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_BreakerBlock交易系统_19638.zip",
+        "https://www.mql5.com/en/articles/download/19638.zip",
+        7515
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\EN_BreakerBlock交易系统_Breaker_Block_Strategy_EA.mq5",
+        "https://www.mql5.com/en/articles/download/19638/Breaker_Block_Strategy_EA.mq5",
+        41298
+      ]
+    ]
+  },
+  {
+    "目标名": "RU_隐藏斐波那契回撤水平聚类验证",
+    "来源标题": "От новичка до эксперта: Раскрываем скрытые уровни коррекции Фибоначчи - Статьи по MQL5",
+    "url": "https://www.mql5.com/ru/articles/19780",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\RU_隐藏斐波那契回撤水平聚类验证.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\RU_隐藏斐波那契回撤水平聚类验证_19780.zip",
+        "https://www.mql5.com/ru/articles/download/19780.zip",
+        91479
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\RU_隐藏斐波那契回撤水平聚类验证_CandleRangeData.mq5",
+        "https://www.mql5.com/ru/articles/download/19780/CandleRangeData.mq5",
+        14279
+      ]
+    ]
+  },
+  {
+    "目标名": "RU_市场轮廓MarketProfile",
+    "来源标题": "Изучаем индикатор рыночного профиля — Market Profile: Что это и как устроен? - Статьи по MQL5",
+    "url": "https://www.mql5.com/ru/articles/16461",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\RU_市场轮廓MarketProfile.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\RU_市场轮廓MarketProfile_16461.zip",
+        "https://www.mql5.com/ru/articles/download/16461.zip",
+        4312
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\RU_市场轮廓MarketProfile_marketprofile.mq5",
+        "https://www.mql5.com/ru/articles/download/16461/marketprofile.mq5",
+        26610
+      ]
+    ]
+  },
+  {
+    "目标名": "ES_价格直方图市场轮廓MQL5实现",
+    "来源标题": "El histograma del precio (perfil del mercado) y su implementación en MQL5 - Artículos sobre MQL5",
+    "url": "https://www.mql5.com/es/articles/17",
+    "本地文档": "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\ES_价格直方图市场轮廓MQL5实现.md",
+    "附件": [
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\ES_价格直方图市场轮廓MQL5实现_17.zip",
+        "https://www.mql5.com/es/articles/download/17.zip",
+        10586
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\ES_价格直方图市场轮廓MQL5实现_classexpert.mqh",
+        "https://www.mql5.com/es/articles/download/17/classexpert.mqh",
+        9665
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\ES_价格直方图市场轮廓MQL5实现_classprogressbar.mqh",
+        "https://www.mql5.com/es/articles/download/17/classprogressbar.mqh",
+        3839
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\ES_价格直方图市场轮廓MQL5实现_pricehistogram.mq5",
+        "https://www.mql5.com/es/articles/download/17/pricehistogram.mq5",
+        3716
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\ES_价格直方图市场轮廓MQL5实现_colorprogressbar.mqh",
+        "https://www.mql5.com/es/articles/download/17/colorprogressbar.mqh",
+        5008
+      ],
+      [
+        "C:\\Users\\Administrator\\Documents\\MQL5_第一控盘区成本中枢回收模型_学习资料\\多语言关键词补充资料\\ES_价格直方图市场轮廓MQL5实现_classpricehistogram.mqh",
+        "https://www.mql5.com/es/articles/download/17/classpricehistogram.mqh",
+        16460
+      ]
+    ]
+  }
+]

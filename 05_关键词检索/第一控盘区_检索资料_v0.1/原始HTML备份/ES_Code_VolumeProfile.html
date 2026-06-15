@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+  <link rel="dns-prefetch" href="https://c.mql5.com">
+  <meta name="description" content="Se trata de un indicador para mostrar el perfil de volumen en el gráfico, utilizando cálculos sencillos y una ejecución muy rápida. - Descargar gratis el indicador &#x27;Volume Profile&#x27; de &#x27;baset84&#x27; para MetaTrader 5 en MQL5 Code Base, 2025.12.30">
+  <meta property="og:url" content="https://www.mql5.com/es/code/47784">
+  <meta property="og:title" content="Volume Profile">
+  <meta property="og:description" content="Se trata de un indicador para mostrar el perfil de volumen en el gráfico, utilizando cálculos sencillos y una ejecución muy rápida.">
+      <meta property="og:image" content="https://c.mql5.com/18/175/XAUUSDDaily__5.png">
+      <meta property="og:image:secure_url" content="https://c.mql5.com/18/175/XAUUSDDaily__5.png">
+            <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="object">
+  <meta property="article:published_time" content="2025-12-30T13:43:44.0000000Z">
+  <meta property="article:author" content="https://www.mql5.com/es/users/baset84">
+  <meta property="article:section" content="MetaTrader 5">
+  <meta property="article:tag" content="Indicadores">
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:site" content="@mql5com">
+  <meta name="twitter:image" content="https://c.mql5.com/18/175/XAUUSDDaily__5.png">
+  <meta name="theme-color" content="#4a76b8">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="manifest" href="https://www.mql5.com/manifest.json">
+  <link rel="apple-touch-icon" sizes="57x57" href="https://www.mql5.com/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="https://www.mql5.com/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="https://www.mql5.com/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="https://www.mql5.com/apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="https://www.mql5.com/apple-touch-icon-167x167.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://www.mql5.com/apple-touch-icon-180x180.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="https://www.mql5.com/apple-touch-icon-192x192.png">
+  <link rel="icon" sizes="192x192" href="https://www.mql5.com/android-touch-icon-192x192.png">
+  <link rel="icon" sizes="128x128" href="https://www.mql5.com/android-touch-icon-128x128.png">
+  <link rel="shortcut icon" href="https://c.mql5.com/i/favicon4.ico">
+  <meta name="msapplication-config" content="none"/>
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta property="qc:admins" content="36367170677651456375"/>
+  <meta property="wb:webmaster" content="073d7690269bcd81"/>
+  <link href="https://c.mql5.com/styles/core.444bc25de4c9131a69fedfe5ac42a082.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/all.266d64b83529847f568747dd160d42b0.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/codebase.b60ba9023f9f4873a22b4fb71e2dfaa7.css" type="text/css" rel="stylesheet" media="all">
+  <link href="/es/code/rss" rel="alternate" type="application/rss+xml" title="Code Base es una base de datos gratuita que reúne los robots comerciales e indicadores técnicos para MetaTrader 5">
+  <link rel="canonical" href="https://www.mql5.com/es/code/47784">
+  <link rel="alternate" hreflang="en" href="https://www.mql5.com/en/code/47784">
+  <link rel="alternate" hreflang="ru" href="https://www.mql5.com/ru/code/47784">
+  <link rel="alternate" hreflang="zh" href="https://www.mql5.com/zh/code/47784">
+  <link rel="alternate" hreflang="es" href="https://www.mql5.com/es/code/47784">
+  <link rel="alternate" hreflang="de" href="https://www.mql5.com/de/code/47784">
+  <link rel="alternate" hreflang="ja" href="https://www.mql5.com/ja/code/47784">
+  <link rel="alternate" hreflang="pt" href="https://www.mql5.com/pt/code/47784">
+  <link rel="alternate" hreflang="ko" href="https://www.mql5.com/ko/code/47784">
+  <link rel="alternate" hreflang="fr" href="https://www.mql5.com/fr/code/47784">
+  <link rel="alternate" hreflang="it" href="https://www.mql5.com/it/code/47784">
+  <link rel="alternate" hreflang="tr" href="https://www.mql5.com/tr/code/47784">
+  <title>Descargar gratis el indicador &#x27;Volume Profile&#x27; de &#x27;baset84&#x27; para MetaTrader 5 en MQL5 Code Base, 2025.12.30</title>
+  <script type='text/javascript'>
+  (function(a,e,f,g,b,c,d){a[b]||(a.FintezaCoreObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=!0,c.defer=!0,c.src=g,d&&d.parentNode&&d.parentNode.insertBefore(c,d))})
+      (window, document, "script", "/ff/core.js", "fz");
+  window.fz("register", "website", {
+      id: "sqjxkxkswybhifrohpyooonwgbvsfzmayq",
+    trackLinks: true,
+    sendEventsByBeacon: true,
+  });
+  </script>
+
+
+<script type="text/javascript">
+  !function(){window.mqGlobal={};var t=!1,n=!1,e=[],o=[],i=[];function d(t){var n;for(n=0;n<t.length;n+=1)t[n]()}function c(){t||(t=!0,d(e),d(o),o=[],e=[])}function a(){c(),n||(n=!0,d(i),i=[])}if(mqGlobal.AddOnReady=function(n,i){t?n(document):i?e.push(n):o.push(n)},mqGlobal.AddOnLoad=function(t){n?t(document):i.push(t)},mqGlobal.AddOnActiveWindowChange=function(t){this._onvisibility||(this._onvisibility=[]),this._onvisibility[this._onvisibility.length]=t},document.addEventListener)document.addEventListener("DOMContentLoaded",c,!1),window.addEventListener("load",a,!1);else if(document.attachEvent&&(document.attachEvent("onreadystatechange",(function(){switch(document.readyState){case"interactive":c();break;case"complete":a()}})),window.attachEvent("onload",a),document.documentElement.doScroll&&window==window.top)){!function n(){if(!t&&document.body)try{document.documentElement.doScroll("left"),c()}catch(t){setTimeout(n,0)}}()}}();
+  mqGlobal.CookieDomain = ".mql5.com";
+  mqGlobal.Language = 'es';
+  mqGlobal.IsMobile = false;
+  mqGlobal.ClearRteStorage = function (e) { if (window.GStorage || (window.GStorage = globalStorage()), window.GStorage.supported) try { var o = e; window.GStorage.getItem("rte_autosave_uid", function (e, t) { t == o && (window.GStorage.removeItem("rte_autosave_text"), window.GStorage.removeItem("rte_autosave_date"), window.GStorage.removeItem("rte_autosave_uid")) }) } catch (e) { } };
+</script>
+  
+
+
+    <script src="https://c.mql5.com/js/all.c09fd283bed20d28a52c95cd70a12a27.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/vendor.1be6e9a4a90b28525f93c4c69a5058a1.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/articles.cd4c73c476b2781eecdf04f5583514b5.js" type="text/javascript" defer="defer"></script>
+
+
+</head>
+
+<body>
+
+<div class="cover" id="cover">
+
+    <header class="head">
+      <a href="https://www.mql5.com/es" class="head__logo" title="MQL5 - Lenguaje de estrategias comerciales para el terminal de cliente MetaTrader 5"></a>
+        <div class="head__content">
+          <nav class="main-menu" id="mainmenu">
+            
+                    <ul class="main-menu__top-level" id="menuTopLevel">
+                    <li><a href="/es/forum" data-fz-event="MQL5+Menu+Forum">Foro</a></li>
+                    <li><a href="/es/market" data-fz-event="MQL5+Menu+Market">Market</a></li>
+                    <li><a href="/es/signals" data-fz-event="MQL5+Menu+Signals">Señales</a></li>
+                    <li><a href="/es/job" data-fz-event="MQL5+Menu+Job">Freelance</a></li>
+                    <li><a href="/es/vps" data-fz-event="MQL5+Menu+VPS">VPS</a></li>
+                    <li><a href="/es/quotes/overview" data-fz-event="MQL5+Menu+Overview">Cotizaciones</a></li>
+                    <li><a href="https://www.metatrader.com/es" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+MetaTrader">MetaTrader</a></li>
+                  </ul><ul class="main-menu__second-level" id="menuSecondLevel">
+                    <li><a href="/es/articles" data-fz-event="MQL5+Menu+Articles"><img src="https://c.mql5.com/i/menu/icon-articles4.svg" alt="" width="16" height="16"/>Artículos</a></li>
+                    <li class="main-menu__selected"><a href="/es/code" data-fz-event="MQL5+Menu+CodeBase"><img src="https://c.mql5.com/i/menu/icon-code4.svg" alt="" width="16" height="16"/>CodeBase</a></li>
+                    <li><a href="https://forge.mql5.io/?lang=es-ES" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+AlgoForge"><img src="https://c.mql5.com/i/menu/icon-algoforge4.svg" alt="" width="16" height="16"/>Algo Forge</a></li>
+                    <li><a href="/es/docs" data-fz-event="MQL5+Menu+Docs"><img src="https://c.mql5.com/i/menu/icon-docs4.svg" alt="" width="16" height="16"/>Documentación</a></li>
+                    <li><a href="/es/book" data-fz-event="MQL5+Menu+Book"><img src="https://c.mql5.com/i/menu/icon-book4.svg" alt="" width="16" height="16"/>Guía de algotrading</a></li>
+                    <li><a href="/es/neurobook" data-fz-event="MQL5+Menu+Neurobook"><img src="https://c.mql5.com/i/menu/icon-neurobook4.svg" alt="" width="16" height="16"/>Manual sobre redes neuronales</a></li>
+                    <li><a href="/es/economic-calendar" data-fz-event="MQL5+Menu+Economic+Calendar"><img src="https://c.mql5.com/i/menu/icon-economic-calendar4.svg" alt="" width="16" height="16"/>Calendario</a></li>
+                    <li><a href="https://web.metatrader.app/terminal?mode=demo&lang=es" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Menu+Trading"><img src="https://c.mql5.com/i/menu/icon-trading4.svg" alt="" width="16" height="16"/>WebTerminal</a></li>
+                    <li class="main-menu__mobile"><a href="/es/about">Sobre el proyecto</a></li>
+                    <li class="main-menu__second-tools"><a rel="noopener" href="/es/vps" title="Alojamiento fiable del tráder para el funcionamiento ininterrumpido de robots y el copiado instantáneo de operaciones" class="button-mt" data-vars-fz="Start+VPS+Trial+Submenu"><img width="18" height="18" src="https://c.mql5.com/i/sidebar/vpstrial2.svg" alt="" loading="lazy">Inicie una versión de prueba del VPS</a></li>
+                    </ul>
+          </nav>
+            <div class="main-menu__active">
+              <a id="mainMenuSelected" href="#">
+                <span class="main-menu__primary">CodeBase</span><span class="main-menu__secondary">Secciones</span>
+              </a>
+            </div>
+<form action="https://www.mql5.com/es/search" onsubmit="return false;" autocomplete="off" id="headerSearchForm" class="header-search" method="post">
+<button type="button" id="headerSearchButton" title="Buscar" class="header-search__button"></button><div class="header-search__input"><input name="keyword" type="text" enterkeyhint="search" title="Introduzca el texto de búsqueda" placeholder="Buscar" id="headerSearchKeyword"/><label for="headerSearchKeyword" class="header-search__placeholder">Escriba <span>/</span> para buscar:  @user, $symbol, ...</label><button id="headerSearchSubmit" class="header-search__submit"></button></div><button type="button" id="headerSearchClean" title="Cerrar" class="header-search__clean"></button></form>          <input class="blurHandler" id="mainMenuBlurHandler" type="checkbox">
+        </div>
+        <div class="head__toolbar" id="headerToolbar">
+            <div class="container loginRegister">
+              <nav>
+                <ul id="loginRegisterButtons"><li><a class="login" title="Autorícese, por favor. Se soporta la autorización OpenID" href="https://www.mql5.com/es/auth_login" rel="nofollow" data-fz-event="MQL5+Menu+Siginin">Entrada</a></li><li><a class="registration es" title="Regístrese, por favor" href="https://www.mql5.com/es/auth_register" rel="nofollow" data-fz-event="MQL5+Menu+Register" onclick="window.fpush('MQL5+Button+Click');">Crear una cuenta</a></li></ul>
+              </nav>
+            </div>
+          <div class="container">
+            <div class="toggle-button" id="sidebarToggleButton">
+              <i></i>
+            </div>
+          </div>
+
+          <div class="group-menu" id="groupMenu">
+
+
+            <div class="container lang-menu-container">
+              <div id="langMenuContainer" class="lang-menu">
+                <input class="blurHandler" id="langmenuBlurHandler" type="checkbox">
+                <nav>
+                  <ul class="lang-menu__list" id="langmenu">
+                    <li class="lang-menu__list-item"><a href="/en/code/47784" aria-label="English (English)"><i class="icons-languages icons-languages_en"></i><span>English</span></a></li>
+<li class="lang-menu__list-item"><a href="/ru/code/47784" aria-label="Русский (Russian)"><i class="icons-languages icons-languages_ru"></i><span>Русский</span></a></li>
+<li class="lang-menu__list-item"><a href="/zh/code/47784" aria-label="中文 (Chinese)"><i class="icons-languages icons-languages_zh"></i><span>中文</span></a></li>
+<li class="lang-menu__list-item lang-menu__list-item_selected"><a href="/es/code/47784" aria-label="Español (Spanish)"><i class="icons-languages icons-languages_es"></i><span>Español</span></a></li>
+<li class="lang-menu__list-item"><a href="/pt/code/47784" aria-label="Português (Portuguese)"><i class="icons-languages icons-languages_pt"></i><span>Português</span></a></li>
+<li class="lang-menu__list-item"><a href="/ja/code/47784" aria-label="日本語 (Japanese)"><i class="icons-languages icons-languages_ja"></i><span>日本語</span></a></li>
+<li class="lang-menu__list-item"><a href="/de/code/47784" aria-label="Deutsch (German)"><i class="icons-languages icons-languages_de"></i><span>Deutsch</span></a></li>
+<li class="lang-menu__list-item"><a href="/ko/code/47784" aria-label="한국어 (Korean)"><i class="icons-languages icons-languages_ko"></i><span>한국어</span></a></li>
+<li class="lang-menu__list-item"><a href="/fr/code/47784" aria-label="Français (French)"><i class="icons-languages icons-languages_fr"></i><span>Français</span></a></li>
+<li class="lang-menu__list-item"><a href="/it/code/47784" aria-label="Italiano (Italian)"><i class="icons-languages icons-languages_it"></i><span>Italiano</span></a></li>
+<li class="lang-menu__list-item"><a href="/tr/code/47784" aria-label="Türkçe (Turkish)"><i class="icons-languages icons-languages_tr"></i><span>Türkçe</span></a></li>
+
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+    </header>
+
+  <main>
+
+    <article class="body" id="bodyContent">
+      <header class="top-band">
+        
+
+      
+    
+
+      </header>
+
+      
+
+<div id="left-panel" class="left-panel left-panel_270">
+  <div class="tree-menu tree-menu_code">
+    <ul class="tree-menu__list"><li class="tree-menu__item"><a class="tree-menu__link" href="/es/code/mt5"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/mt.svg" alt="" loading="lazy"/>MetaTrader 5</a><ul class="tree-menu__list tree-menu__list_nested"><li class="tree-menu__item"><a class="tree-menu__link" href="/es/code/mt5/experts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/expert.svg" alt="" loading="lazy"/>Asesores Expertos</a></li><li class="tree-menu__item tree-menu__item_selected"><a class="tree-menu__link" href="/es/code/mt5/indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/indicator.svg" alt="" loading="lazy"/>Indicadores</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/es/code/mt5/scripts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/scripts.svg" alt="" loading="lazy"/>Scripts</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/es/code/mt5/libraries"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/library.svg" alt="" loading="lazy"/>Librerías</a></li></ul></li><li class="tree-menu__item"><a class="tree-menu__link" href="/es/code/mt4"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/mt.svg" alt="" loading="lazy"/>MetaTrader 4</a><ul class="tree-menu__list tree-menu__list_nested"><li class="tree-menu__item"><a class="tree-menu__link" href="/es/code/mt4/experts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/expert.svg" alt="" loading="lazy"/>Asesores Expertos</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/es/code/mt4/indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/indicator.svg" alt="" loading="lazy"/>Indicadores</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/es/code/mt4/scripts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/scripts.svg" alt="" loading="lazy"/>Scripts</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/es/code/mt4/libraries"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/library.svg" alt="" loading="lazy"/>Librerías</a></li></ul></li></ul><ul class="tree-menu__list"><li class="tree-menu__item"><a class="tree-menu__link" href="/es/code/storage"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/storage.svg" alt="" loading="lazy"/>Repositorio</a></li></ul>
+  </div>
+
+  
+
+
+    <div class="hints-panel">
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_watch"></i>
+        <div class="hints-panel__content">
+          Mira <a href="https://youtu.be/rloNyFVtHuA?list=PLltlMLQ7OLeKwyQwC8FhiKwjl9syKhOCK" target="_blank" rel="nofollow">cómo descargar</a> robots gratis
+        </div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_fb-square icons-hints_24px"></i><div class="hints-panel__content">
+¡Búscanos en <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow">Facebook</a>!<br> Pon "Me gusta" y sigue las noticias</div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_like-script"></i>
+        <div class="hints-panel__content">
+          ¿Es interesante este script?<br>
+          Deje un <a href="/es/code/47784" target="_blank">enlace</a> a él, ¡qué los demás también lo valoren!
+        </div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_mt-5"></i>
+        <div class="hints-panel__content">
+          ¿Le ha gustado el script?<br>
+Evalúe su trabajo en el terminal <a class="together" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Code" rel="nofollow">MetaTrader 5</a>
+        </div>
+      </div>
+    </div>
+<div id='vgckrufggwxdtfscpyalmenexmvhljduja' class="roeid8y6hsc3ntv1l gg88d3drb"></div></div>
+<div class="code-content">
+  <div>
+    <div class="header inline-translation">
+        <div class="header__tools">
+            
+          <div class="header__tools-item header__tools-item_pocket">
+            <a href="#pocket" title="Utilizando el Bolsillo puede insertar la descripción completa de este contenido en el editor de mensajes" onclick="return Pocket.Add(this,'es',18,1,47784);" class="pocket icon">al bolsillo</a>
+          </div>
+        </div>
+        <img loading="lazy" width="60" height="60" src="https://c.mql5.com/i/code/indicator.png" alt="Indicadores">
+
+      <h1><span>Volume Profile - indicador para MetaTrader 5</span></h1>
+      <div class="author-line">
+        <span>
+          <span class="authorIco"></span>
+
+  <div class="user-popup">
+      <a href="/es/users/baset84" class="user-popup__trigger">Mohammad Baset</a>
+    <div class="user-popup__content">
+      <div class="user-popup__avatar">
+        <img src="https://c.mql5.com/avatar/2024/1/65930fb1-5225.jpg" srcset="https://c.mql5.com/avatar/2024/1/65930fb1-5225_big.jpg 2x" width="60" height="60" alt="Mohammad Baset" title="Mohammad Baset" loading="lazy">
+      </div>
+      <div class="user-popup__meta">
+        <div class="user-popup__title">
+          <h4>
+              <a href="/es/users/baset84">Mohammad Baset</a>
+          </h4>
+        </div>
+
+        <div class="user-popup__info">
+          <ul>
+              <li>
+                <i title="Vive" class="icons-profile icons-profile_geo"></i>
+              <a target="_blank" rel="nofollow" title="Vive" href="https://www.mql5.com/go?https://maps.google.com/?z=4&q=Ir%c3%a1n">Irán</a>
+            </li>
+            <li>
+              <i title="Ranking" class="icons-profile icons-profile_statistics"></i>
+              <a title="Ranking" href="/es/users/baset84/achievements">1514</a>
+            </li>
+          </ul>
+        </div>
+
+
+        <ul class="user-popup__contacts">
+          
+        </ul>
+      </div>
+    
+
+      <div class="user-popup__counters">
+        <a href="/es/users/baset84/publications" target="_blank">
+          <span>1</span> código
+        </a>
+        <a href="/es/users/baset84/publications/all" target="_blank">
+          <span>6</span> comentarios
+        </a>
+    </div>
+
+    </div>
+  </div>
+        </span>            |
+            <span class="popup framed client" style="padding: 0; margin: 0;">
+              <a class="dropdown" href="javascript:void(false);"><span style="border-bottom: dotted 1px #333;">Spanish</span><i></i></a>
+              <span class="popup">
+                <span class="items">
+                      <a href="/en/code/47784">English</a>
+                      <a href="/ru/code/47784">Русский</a>
+                      <a href="/zh/code/47784">中文</a>
+                      <a href="/de/code/47784">Deutsch</a>
+                      <a href="/ja/code/47784">日本語</a>
+                      <a href="/pt/code/47784">Português</a>
+                      <a href="/ko/code/47784">한국어</a>
+                      <a href="/fr/code/47784">Français</a>
+                      <a href="/it/code/47784">Italiano</a>
+                      <a href="/tr/code/47784">Türkçe</a>
+                </span>
+              </span>
+            </span>
+      </div>
+    </div>
+      <dl class="code-table">
+        <dt>Visualizaciones: </dt>
+        <dd>745</dd>
+
+          <dt>Ranking: </dt>
+          <dd style="margin-top: -2px;">
+            <div class="g-rating  g-rating_v45" onmouseover="if(window.tooltip) window.tooltip(this, createRatingTooltip(reviewTypes.slice(1), [4.8,4.7,4.7]));"></div><span class="g-rating__info">(25)</span>
+
+          </dd>
+
+        <dt>Publicado: </dt>
+        <dd><time datetime="2025-12-30T13:43Z" title="13:43" datetime-type="datetime">30 diciembre 2025, 13:43</time></dd>
+          <dt>Actualizado: </dt>
+          <dd><time datetime="2026-01-29T13:50Z" title="13:50" datetime-type="datetime">29 enero 2026, 13:50</time></dd>
+        <dt class="code-table__spaced"></dt>
+        <dd class="attachments">
+<div id="codeAttachments" class="grouped-attachments">
+        <div class="attachItem">
+          <a title="Volume Profile.mq5" class="attach-item__link" rel="nofollow" href="/es/code/download/47784/volume_profile.mq5" data-fz-event="MQL5+Code+Download" onclick="window.showLoginRegisterPopupAtDownload(event);"><i class="attach-icon attach-icon_mq5"></i>Volume Profile.mq5</a>
+          <span class="attachSize">(15.55 KB)</span>
+                  <a href="#" class="attach-item__view" title="ver" onclick="Code('/es/code/viewcode/47784/346005/volume_profile.mq5');return(false);">ver</a>
+        </div>
+</div><div class="grouped-attachments-help">
+        
+    <i class="codebase-tooltip__icon codebase-tooltip__icon_1" style="position: fixed; left: -9999px;"></i>
+    <span id="codebaseDownloadZip"><a title="Descargar todos los archivos adjuntos en un archivo ZIP" rel="nofollow" href="/es/code/download/47784.zip" data-fz-event="MQL5+Code+Download" onclick="window.showLoginRegisterPopupAtDownload(event);"><i class="attach-icon attach-icon_zip-blue"></i>Descargar ZIP</a></span> <a href="https://www.metatrader5.com/es/metaeditor/help/workspace/toolbox#codebase" rel="nofollow" target="_blank"><i class="attach-icon attach-icon_code"></i>Cómo bajar códigos desde MetaEditor</a></div>
+
+<div class="hidden" id="popupRegisterLogin">
+  <div class="register-login-popup">
+    <div class="register-login-popup__header">
+      <img src="https://c.mql5.com/i/registerlandings/logo-2.png" srcset="https://c.mql5.com/i/registerlandings/logo-2_2x.png 2x" alt="MQL5 - Lenguaje de estrategias comerciales para el terminal de cliente MetaTrader 5" loading="lazy" width="74" height="24" />
+    </div>
+    <div class="register-login-popup__content">
+      <div class="register-login-popup__desc">
+        <div class="register-login-popup__title">Está perdiendo oportunidades comerciales:</div>
+        <ul>
+<li>Aplicaciones de trading gratuitas</li>
+<li>8 000+ señales para copiar</li>
+<li>Noticias económicas para analizar los mercados financieros</li>
+</ul>
+      </div>
+      <div class="register-login-popup__forms ui">
+        <div class="register-login-popup__tabs" id="registerLoginPopupTabs">
+          <span data-id="register" id="registerLoginPopupTab_register" class="register-login-popup__tab register-login-popup__tab_active">Registro</span>
+          <span data-id="login" id="registerLoginPopupTab_login" class="register-login-popup__tab">Entrada</span>
+        </div>
+        <div id="registerLoginPopupTabContent_register">
+          <div class="ui auth-form__content">
+    
+  <script type='text/javascript'>/*<![CDATA[*/ if (!window.V) var V = []; /*]]>*/</script>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/es/auth_register_short" id="PopupRegisterquickRegisterForm" onsubmit="PopupRegisterquickRegistration.OnSubmit(this,&#39;es&#39;);if(Validate(this)) Ajax.form(this,{onready:PopupRegisterquickRegistration.OnSuccessPopup,onerror:PopupRegisterquickRegistration.OnError,onbeginrequest:PopupRegisterquickRegistration.DisableInputs,onendrequest:PopupRegisterquickRegistration.EnableInputs});return(false);" enctype = "multipart/form-data"><input type="hidden" name="__signature" value="d600d22b1f0e7420be4a2c818323a4cc"/>
+    <div class="auth-form__inputs">
+      <input type="hidden" value="0" name="IsValidate" id="PopupRegisterIsValidate" />
+
+      <!--[if lt IE 10]><div class="note">Piense un login:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input type="text" id="PopupRegisterusername" name="username" class="input" maxlength="32" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.CheckUserName();}" onkeyup="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.ValidateUserName(this, 'Indique su login');}" placeholder="Piense un login" title="Puede contener letras latinas, números, puntos, rayas, símbolos de subrayado. El punto no puede ir al inicio y al final. Longitud: 3-32 símbolos." onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisterusername'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisterusername',10,'Use letras latinas, se permiten cifras, símbolos de subrayado y puntos',validate_username]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisterusername">en caracteres latinos y sin espacios</label>
+      </div>
+      <!--[if lt IE 10]><div class="note">Su email:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input class="input" type="email" id="PopupRegisteremail" name="email" placeholder="Su email" title="Introduzca su email (como máximo 256 caracteres). Por ejemplo: juan@example.com" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnChange(this);}" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisteremail'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisteremail',10,'Indique su email',validate_email]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisteremail">la contraseña llegará a su email</label>
+      </div>
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Register" />
+    </div>
+    <span id="PopupRegisterquickRegisterSubmit">
+      <input type="submit" value="Registrarse" id="PopupRegisterquickRegisterButton"  title="Regístrese y reciba la contraseña en su email" class="button button_yellow"  />
+    </span>
+    <span id="PopupRegisterquickRegisterErrorMessage" class="quick-register-error-message field-validation-error" style="text-align: center; margin-top: 16px; display: none;">
+      Ha ocurrido un error
+    </span>
+</form>
+    
+</div>
+<div class="auth-social">
+  <ul class="auth-social-list" id="socialList">
+    <li><a onclick="window.fpush({name: 'MQL5+Popup+Register+Google', unit: 'section', value: 'Code'}); " href="https://www.mql5.com/es/auth_oauth2?provider=Google&amp;amp;return=popup&amp;amp;reg=1" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Iniciar sesión con Google</a></li>
+  </ul>
+</div>
+<div class="auth-block-agree">
+  <p>
+    Usted acepta <a target="_blank" href="/es/about/privacy">la política del sitio web</a> y <a target="_blank" href="/es/about/terms"> las condiciones de uso</a>
+  </p>
+</div>
+
+
+        </div>
+        <div id="registerLoginPopupTabContent_login" class="hidden">
+            <div class="auth-form__text">
+    Si no tiene cuenta de usuario, <a href="https://www.mql5.com/es/auth_register" rel="nofollow" style="vertical-align: top">regístrese</a>
+  </div>
+<div class="ui auth-form__content auth-form__content_login" id="loginFormWrapper">
+    
+  <div id="needCookies" class="need-cookies hidden">
+    <div class="danger-box">
+      <p>Para iniciar sesión y usar el sitio web MQL5.com es necesario permitir el uso de Сookies.</p>
+<p>Por favor, active este ajuste en su navegador, de lo contrario, no podrá iniciar sesión.</p>
+    </div>
+  </div>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/es/auth_login" id="loginForm" onsubmit="if(window.quickLogin){return window.quickLogin.onSubmit(this);}var result = Validate(this); if(result) { preventDoubleSubmit(this); } return result;"><input id="RedirectAfterLoginUrl" name="RedirectAfterLoginUrl" type="hidden" value="" /><input id="RegistrationUrl" name="RegistrationUrl" type="hidden" value="" /><input data-val="true" data-val-required="The ShowOpenId field is required." id="ShowOpenId" name="ShowOpenId" type="hidden" value="True" /><input id="TrackingSection" name="TrackingSection" type="hidden" value="Code" />    <input name="ViewType" type="hidden" value="5" />
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Login" />
+    <!--[if lt IE 10]><div class="note">Su login:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <input class="input qa-login" id="Login" name="Login" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Login" title="Su login" type="text" value="" />
+      <script type='text/javascript' id='validate_Login'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Login',1,'Introduzca el login indicado al registrarse']);});mqGlobal.AddOnReady(function() {V.push(['Login',10,'El email no puede ser utilizado, introduzca su login, por favor',validateLogin]);}); /*]]>*/</script>
+    </div>
+    <!--[if lt IE 10]><div class="note">Contraseña:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <div class="input-with-show">
+        <input autocomplete="off" class="input qa-password" id="Password" name="Password" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Contraseña" title="Introduzca la contraseña" type="password" />
+        <span class="input-with-show__icon" title="Mostrar contraseña" onclick="if(window.quickLogin){window.quickLogin.showPass(this, 'Mostrar contraseña', 'Ocultar contraseña');}"></span>
+      </div>
+      <script type='text/javascript' id='validate_Password'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Password',1,'Introduzca la contraseña']);}); /*]]>*/</script>
+    </div>
+    <script type="text/javascript">
+    function validateLogin(input) {
+      console.log('validate login ' + input.value);
+      return !/^\w+([-+.'']{1,2}\w+)* @\w+([-.]\w+)*\.\w+([-.]\w+)*$/i.test(input.value);
+    }
+    </script>
+    <div class="forgot" id="loginForgotBlock"><a id="loginForgotLink" href="https://www.mql5.com/es/auth_forgotten?return=popup">&#191;Ha olvidado el login/contrase&#241;a?</a></div>
+    <input type="submit" class="button button_yellow qa-submit" id="loginSubmit" value="Entrada" title="Entrar">
+</form></div>
+
+  <div class="auth-social" id="authSocialBlock">
+    <ul class="auth-social-list" id="socialList">
+      <li><a onclick="window.fpush({name: 'MQL5+Popup+Login+Google', unit: 'section', value: 'Code'}); " href="https://www.mql5.com/es/auth_oauth2?provider=Google&amp;amp;return=popup" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Iniciar sesión con Google</a></li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script id="popupSection" type="application/json">{"section": "Code"}</script>
+<script id="popupTranslate" data-type="translate" type="application/json">
+{
+  "popup":
+  {
+  "EmailTitle" : "Contraseña enviada a {0}",
+  "EmailDescription" : "Entre usando la contraseña y el login que ha recibido al registrarse",
+  "SubmitButtonText" : "Activar cuenta",
+  "RegistrationTip" : "Si no ha recibido el correo con la contraseña, compruebe la carpeta de spam o &lt;a href={0}&gt;repita el proceso de registro&lt;/a&gt;"
+  }
+}
+</script>
+
+        </dd>
+        <dt class="code-table__spaced"></dt>
+        <dd class="job-hint">
+          <span class="job-hint__text"><img src="https://c.mql5.com/i/code/icon_freelance.svg" width="16px" height="16px" loading="lazy" alt="MQL5 Freelance" />
+          ¿Necesita un robot o indicador basado en este código? Solicítelo en la bolsa freelance
+          </span>
+          <a target="_blank" class="button button_blue-gray-border" title="Pasar a la bolsa" href="/es/job/new" data-fz-event="MQL5+Code+New+Job">Pasar a la bolsa</a>
+        </dd>
+      </dl>
+  </div>
+  <div class="code-text">
+    <div id="publication_content" class="formatted-content">
+      <h3>¿Qué es el perfil de volumen?<br/></h3> <p>La herramienta de perfil de volumen, también conocida como volumen horizontal, ilustra el volumen de transacciones en cada precio dentro de un intervalo de tiempo específico utilizando un gráfico de histograma horizontal. Las barras más largas indican un mayor volumen de transacciones a ese precio, mientras que las barras más cortas representan una menor actividad de transacciones. Los cálculos de este indicador se ejecutan de forma sencilla, lo que permite una ejecución rápida y ligera.</p> <h3>Cómo utilizar<br/> </h3> <div> <p>Para mostrar el perfil de volumen dentro de un intervalo de tiempo específico, coloque dos líneas verticales que aparecen después de ejecutar el indicador al principio y al final de ese intervalo. Ajustando estas líneas cambiará el perfil de volumen en función del intervalo seleccionado.</p> <p><br/></p> </div> <p style="text-align:center;"> <img width="626" height="284" src="https://c.mql5.com/18/175/XAUUSDDaily__5.png" loading="lazy" title="captura de pantalla de muestra" alt="captura de pantalla de muestra" style="vertical-align:middle;"/><br/></p> <p style="text-align:center;"><b><span class="small">captura de pantalla de ejemplo</span></b></p> <h3>Ajustes de entrada<br/></h3> <p></p> <ul> <li><b>Intervalo de Cálculo</b>: La suposición detrás de los cálculos de este indicador es que el volumen se distribuye uniformemente a lo largo de la longitud de la vela (desde su mínimo hasta su máximo), lo que puede conducir a resultados menos precisos, especialmente cuando se utilizan rangos de tiempo pequeños (ver Figura 1). Al cambiar esta opción en la sección de entrada, los cálculos pueden basarse en plazos inferiores (por ejemplo, 1 minuto), lo que da lugar a resultados precisos casi comparables a los que se obtienen utilizando datos de ticks para el cálculo (véase la Figura 2).</li> <li><b>Número de barras VP</b>: El número de barras del histograma, donde los números más pequeños muestran el <b>rango de precios</b> donde se han producido la mayoría de las transacciones, y los números más grandes muestran los <b>precios exactos</b> donde se han producido la mayoría de las transacciones. Al cambiar esta entrada, la posición del Punto de Control (POC) puede cambiar, pero no se debe a un error en los cálculos o a errores en el código, sino a que está buscando algo diferente.</li> <li><b>Volumen aplicado</b>: El volumen aplicado por defecto es el volumen real. Sin embargo, seleccionando 'tick_volume' en la entrada, o en ausencia de datos de volumen real en el servidor, el indicador utilizará datos de volumen de ticks.</li> </ul> <p></p> <p></p> <ul> <li><b>Longitud máxima de la barra VP en relación con el ancho del gráfico</b>: Puede ajustar la longitud de las barras VP en relación con el ancho de su gráfico.</li> </ul> <p></p> <h3><br/></h3> <p style="text-align:center;"> <img width="626" height="369" src="https://c.mql5.com/18/175/current_tf__3.png" loading="lazy" title="figura 1 (marco temporal actual)" alt="figura 1 (marco temporal actual)" style="vertical-align:middle;"/></p> <p style="text-align:center;"><b><span class="small">figura 1: cálculo basado en el marco temporal actual</span></b></p> <p style="text-align:center;"><br/></p> <p style="text-align:center;"> <img width="626" height="369" src="https://c.mql5.com/18/175/1minute_tf__3.png" loading="lazy" title="figura 2 (1 minuto)" alt="figura 2 (1 minuto)" style="vertical-align:middle;"/></p> <p style="text-align:center;"><span class="small"><b>figura 2: cálculo basado en el marco temporal de 1 minuto</b></span></p> <h3><span>Precaución</span><br/></h3> <p>Cuando se utilizan marcos temporales inferiores para el cálculo, el indicador necesita los datos de precios de ese marco temporal, que pueden no haberse descargado todavía. Puede tardar un poco en descargarse, así que tenga paciencia y arrastre y suelte las líneas verticales hasta que se complete la descarga.</p> <p style="text-align:left;"><span>Espero que le ayude a realizar operaciones con éxito y me haga feliz comentando los errores y fallos del código.</span></p> <ul></ul>
+    </div>
+        <p style="text-align: right;"><small>Traducción del inglés realizada por MetaQuotes Ltd. <br>Artículo original: <a href="/en/code/47784" target="_blank">https://www.mql5.com/en/code/47784</a></small></p>
+  </div>
+  <div>
+      <div class="article-navigator">
+          <div class="right">
+              <img alt="Cosine distance and cosine similarity" src="https://c.mql5.com/i/code/library.png" loading="lazy" width="60" height="60" class="icon">
+              <a href="/es/code/47793" class="title">Cosine distance and cosine similarity</a>
+              <p>Calcular la distancia coseno y la semejanza entre 2 vectores . La distancia coseno es 1-coseno_semejanza y la semejanza coseno es el producto punto de dos vectores por sus magnitudes multiplicadas.</p>
+              <img alt="Connect Disconnect Sound Alert" src="https://c.mql5.com/i/code/expert.png" loading="lazy" width="60" height="60" class="icon">
+              <a href="/es/code/47846" class="title">Connect Disconnect Sound Alert</a>
+              <p>Esta utilidad es un simple ejemplo para añadir sonido de alerta en la conexión / desconexión</p>
+          </div>
+          <div class="left">
+              <img alt="COLLECT ALL INDICATORS DATA" src="https://c.mql5.com/i/code/script.png" loading="lazy" width="60" height="60" class="icon">
+              <a href="/es/code/47755" class="title">COLLECT ALL INDICATORS DATA</a>
+              <p>Este Script recoge todos los buffers de indicadores incorporados en MQL5 y los almacena en un archivo CSV para su análisis</p>
+              <img alt="Candle ZigZag" src="https://c.mql5.com/i/code/indicator.png" loading="lazy" width="60" height="60" class="icon">
+              <a href="/es/code/47743" class="title">Candle ZigZag</a>
+              <p>Vela ZigZag es un indicador que cambia su pierna si un cambio de color vela</p>
+          </div>
+      </div>
+  </div>
+
+<div id='wdausxxqrpvhekbwjrjlhqjghyhesrqqau' class="r6irig5txiuua4k0m r6irig5txiuua4k0m_code gg88d3drb"></div></div>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","applicationSubCategory":"Indicadores","applicationCategory":"FinanceApplication","operatingSystem":"Windows","description":"Se trata de un indicador para mostrar el perfil de volumen en el gráfico, utilizando cálculos sencillos y una ejecución muy rápida.","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.mql5.com/es/code/47784"},"name":"Volume Profile","interactionCount":"UserDownloads:14390","image":{"@type":"ImageObject","url":"https://c.mql5.com/i/code/indicator.png","width":60,"height":60},"aggregateRating":{"@type":"AggregateRating","ratingValue":4.733333333333333,"ratingCount":25},"offers":{"price":0,"priceCurrency":"USD"},"datePublished":"2025-12-30T13:43:44","dateModified":"2026-01-29T13:50:23","author":{"@type":"Person","name":"Mohammad Baset","url":"https://www.mql5.com/es/users/baset84"},"publisher":{"@type":"Organization","name":"MQL5 Community","url":"https://www.mql5.com","logo":{"@type":"ImageObject","url":"https://c.mql5.com/i/community/logo_mql5-2.png"}}}
+</script>
+
+
+
+
+    </article>
+  </main>
+
+    <footer aria-hidden="true">
+
+
+<div aria-hidden="true" class="footer  desktop" id="footer">
+  <ul class="links  links_desktop">
+      <li id="navFooterCommunity">
+        <nav>
+          <ul>
+            <li><a href="https://web.metatrader.app/terminal?mode=demo&amp;lang=es" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Footer+Trading">Trading online / Terminal web</a></li>
+            <li><a href="/es/code" data-fz-event="MQL5+Footer+CodeBase">Indicadores y asesores gratuitos</a></li>
+            <li><a href="/es/articles" data-fz-event="MQL5+Footer+Articles">Artículos sobre programación y trading</a></li>
+            <li><a href="/es/job" data-fz-event="MQL5+Footer+Job">Encargar un asesor experto o indicador</a></li>
+            <li><a href="/es/market" data-fz-event="MQL5+Footer+Market">Comprar un robot comercial o indicador</a></li>
+            <li><a href="/es/signals" data-fz-event="MQL5+Footer+Signals">Señales comerciales fórex</a></li>
+            <li><a href="/es/vps" data-fz-event="MQL5+Footer+VPS">Forex VPS para comerciar</a></li>
+            <li><a href="/es/forum" data-fz-event="MQL5+Footer+Forum">Foro de tráders</a></li>
+            <li><a href="/es/blogs" data-fz-event="MQL5+Footer+Blogs">Blogs de tráders</a></li>
+            <li><a rel="nofollow" href="/es/charts" data-fz-event="MQL5+Footer+Charts">Gráfico</a></li>
+            <li><a href="/es/widgets" data-fz-event="MQL5+Footer+Widgets">Widgets gratuitos</a></li>
+          </ul>
+        </nav>
+      </li>
+      <li id="navFooterMt5">
+        <nav>
+          <ul>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com" data-fz-event="MQL5+Footer+MetaTrader+5">Plataforma comercial MetaTrader 5</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/es/releasenotes" data-fz-event="MQL5+Footer+MetaTrader+5">Últimas actualizaciones de <span class="nobr">MetaTrader 5</span></a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/es/news" data-fz-event="MQL5+Footer+MetaTrader+5">Noticias, implementaciones y tecnologías</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/es/terminal/help" data-fz-event="MQL5+Footer+MetaTrader+5">Guía del usuario de MetaTrader 5</a></li>
+            <li><a href="/es/docs" data-fz-event="MQL5+Footer+Docs">Lenguaje de estrategias comerciales MQL5</a></li>
+            <li><a rel="nofollow noopener" href="https://cloud.mql5.com" data-fz-event="MQL5+Footer+Cloud">MQL5 Cloud Network</a></li>
+            <li><a rel="noopener" href="https://forge.mql5.io/?lang=es-ES" data-fz-event="MQL5+Footer+Forge" target="_blank">MQL5 Algo Forge</a></li>
+              <li><a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Footer">Descargar MetaTrader 5</a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/es/terminal/help/start_advanced/installation" data-fz-event="MQL5+Footer+MetaTrader+5">Instalar la plataforma</a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/es/terminal/help/start_advanced/deinstallation" data-fz-event="MQL5+Footer+MetaTrader+5">Eliminar programas</a></li>
+          </ul>
+        </nav>
+
+      </li>
+    <li id="navFooterWebsite">
+        <nav>
+          <ul>
+            <li><a rel="nofollow" href="/es/about" data-fz-event="MQL5+Footer+About">Sobre el proyecto</a></li>
+              <li><a href="/es/wall" data-fz-event="MQL5+Footer+Wall">Crónica de la página</a></li>
+            <li><a rel="nofollow" href="/es/about/terms" data-fz-event="MQL5+Footer+About">Condiciones de uso</a></li>
+            <li><a rel="nofollow" href="/es/about/autopayments" data-fz-event="MQL5+Footer+About">Acuerdo de Pago Recurrente</a></li>
+            <li><a rel="nofollow" href="/es/about/agencyagreement" data-fz-event="MQL5+Footer+About">Contrato de Representación - Oferta</a></li>
+            <li><a rel="nofollow" href="/es/about/privacy" data-fz-event="MQL5+Footer+About">Política de Privacidad y Protección de Datos</a></li>
+            <li><a rel="nofollow" href="/es/about/cookies" data-fz-event="MQL5+Footer+About">Política sobre cookies</a></li>
+            <li>
+                <a rel="nofollow" href="/es/contact" data-fz-event="MQL5+Footer+Contacts">Información y contacto</a>
+            </li>
+          </ul>
+        </nav>
+    </li>
+
+      <li>
+        <div class="footer__products">
+          <div class="footer__product">
+            <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com" class="footer__product-name">MetaTrader 5</a>
+            <div class="footer__product-links">
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon windows" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Descargar MetaTrader 5 para Windows</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/MetaTrader5.pkg.zip?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon macos" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Descargar MetaTrader 5 para MacOS</div></a>
+            <a rel="nofollow noopener" href="https://www.mql5.com/es/articles/625?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon linux" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Descargar MetaTrader 5 para Linux</div></a>
+            <a rel="nofollow noopener" href="https://web.metatrader.app/terminal?mode=demo&amp;lang=es" class="icon web"><div  class="footer__product-link-hint footer__product-link-hint-short">Abrir MetaTrader 5 WebTerminal</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/ios?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=es" class="icon ios" data-fz-event="MetaTrader+5+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/hsZn8Ed1I1d.png)">Escanee para instalar desde la App Store</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=es" class="icon android" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/wIF2Io6W-9d.png)">Escanee para instalar desde Google Play</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon huawei" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ZRt&#x2B;zI1l&#x2B;8O.png)">Escanee para instalar desde Huawei AppGallery</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon ark" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/L0Q9oag&#x2B;3eE.png)">Escanee para obtener un archivo APK para Android</div></a>
+            </div>
+          </div>
+          <div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com/en/news/2270" class="footer__product-name">MQL5 Channels</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=es" class="icon ios" data-fz-event="MQL5+Channels+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/uuVfOJnYpcO.png)">Escanee para instalar desde la App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=es" class="icon android" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ovMJFgw7BVd.png)">Escanee para instalar desde Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Su&#x2B;fe4n374e.png)">Escanee para instalar desde Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mql5channels/mql5channels.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/G6Mg4NfCPzO.png)">Escanee para obtener un archivo APK para Android</div></a>
+              </div>
+            </div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.tradays.com/es/download?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MQL5+Footer+Download+Tradays" class="footer__product-name">Economic Calendar</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=es" class="icon ios" data-fz-event="Tradays+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/YnD&#x2B;mhIw-1E.png)">Escanee para instalar desde la App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=es" class="icon android" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Djyx8UcmYap.png)">Escanee para instalar desde Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CrS7bbDAdAO.png)">Escanee para instalar desde Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/tradays/tradays.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/VZi8YPIb2op.png)">Escanee para obtener un archivo APK para Android</div></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__networks">
+          <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow" title="Facebook"><i class="icons-networks icons-networks_fb"></i></a>
+          <a href="https://t.me/mql5es" target="_blank" rel="nofollow" title="Telegram"><i class="icons-networks icons-networks_tg"></i></a>
+          <a href="https://x.com/mql5com" target="_blank" rel="nofollow" title="X (Twitter)"><i class="icons-networks icons-networks_tw"></i></a>
+          <a href="https://www.youtube.com/@MetaQuotesOfficial" target="_blank" rel="nofollow" title="YouTube"><i class="icons-networks icons-networks_yt"></i></a>
+          <a href="https://www.linkedin.com/company/mql5" target="_blank" rel="nofollow" title="LinkedIn"><i class="icons-networks icons-networks_linkedin"></i></a>
+          <span>Suscríbase a las noticias de trading algorítmico</span>
+        </div>
+  
+        <div class="footer__other">
+          <div class="footer__not-a-broker">No es un bróker, no hay cuentas comerciales reales</div>
+          <div class="copyright">35 Dodekanisou str, Germasogeia, 4043,&nbsp;Limassol,&nbsp;Cyprus</div>
+          <div class="copyright">Copyright 2000-2026, <span class="nobr">MetaQuotes Ltd</span></div>
+        </div>
+      </li>
+  </ul>
+</div>
+
+
+    </footer>
+
+  <div class="shadow-layer" id="layer"></div>
+      
+</div>
+
+<script type="text/javascript">
+           mqGlobal.AddOnReady(function () { Mql5Cookie.init('mql5.com','5095787583905503230'); });
+window.fz("show","vgckrufggwxdtfscpyalmenexmvhljduja");mqGlobal.AddOnReady(function(){if(!window.Pocket){window.Pocket=new PocketManager();}});window.codebaseTooltipText="<div class=\"codebase-tooltip ui\"><i class=\"codebase-tooltip__icon codebase-tooltip__icon_3\"></i><div class=\"codebase-tooltip__text\">¿Tiene dudas sobre esta aplicación? Regístrese y pregunte al autor</div><a href=\"https://www.mql5.com/es/auth_register?pageid=4\" data-fz-event=\"MQL5+Code+Tooltip03+Register\" class=\"button\">Únete >></a></div>";mqGlobal.AddOnReady(function(){window.PopupRegisterquickRegistration=new QuickRegistration('PopupRegister','Popup+Register','Code');});function validate_username(input){var reg=/^([a-z0-9]){1}([\-._a-z0-9]){1,30}([\-_a-z0-9]){1}$/i,value=input.value,result=true;if(reg.test(value)){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Login',unit:'section',value:'Code'});}return result;}function validate_email(input){var reg=/^\w+([-+.'']{1,2}\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/i,value=input.value,result=true,length_value=value.length;if(reg.test(value)&&length_value>=1&&length_value<=40){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Email',unit:'section',value:'Code'});}return result;};mqGlobal.AddOnReady(function(){var username=$('PopupRegisterusername'),email=$('PopupRegisteremail');if(username)username.value='';if(email)email.value='';});mqGlobal.AddOnReady(function(){window.quickLogin=new QuickLogin('Popup+Login','Code');});window.fz("show","wdausxxqrpvhekbwjrjlhqjghyhesrqqau");mqGlobal.AddOnReady(function(){if(!window.shareManager){window.shareManager=new Share();}});mqGlobal.AddOnReady(function(){{window.initHeaderSearch('','https://www.mql5.com/es/search');}});</script><script type="text/javascript">mqGlobal.AddOnReady(function(){window.initSuggestions("headerSearchKeyword","es","https://search.mql5.com/api/query","https://www.mql5.com/es/users_search/suggestion");});function complaintInline(itemId,moduleId,typeId,parentModuleId){if(!window.showComplaintForm)return false;return showComplaintForm(itemId,moduleId,typeId,parentModuleId,'a9c3e688bb30f398363aa5137a0cee9f');};let reviewTypes=['Valoraciones sin categoría','Calidad de la descripción y las imágenes en la publicación','Formateo, calidad del código y los comentarios','Cómo de útil le resulta este código'];mqGlobal.AddOnReady(function(){window.floatVerticalPanelNode=FloatVerticalPanel('Esta página utiliza cookies. Aprenda más sobre ellas en nuestra <a href="/es/about/cookies">Política sobre Cookies</a>.','cookie_accept');});      if (typeof Attach !== "undefined")
+        Attach.setAcceptFilter(".zip, .txt, .log, .mqh, .ex5, .mq5, .mq4, .mqproj, .ex4, .mt5, .set, .tpl, .cl, .py, .sqlite, .csv, .ini, .ipynb, .onnx, .gif, .png, .jpg, .jpeg, .mp4, .webm");
+  </script>
+
+  <div class="b-fixed-mt" id="bFixedMt" style="display: none;">
+    
+  </div>
+
+  <script type="application/ld&#x2B;json">
+  [{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"Foro","description":"Discusión sobre estrategias comerciales y trading automático. MQL5.community: el mayor foro sobre fórex","url":"https://www.mql5.com/es/forum","children":[]},{"@type":"SiteNavigationElement","position":2,"name":"Market","description":"MetaTrader Market - tienda de robots comerciales, indicadores, libros y revistas sobre el trading.","url":"https://www.mql5.com/es/market","children":[]},{"@type":"SiteNavigationElement","position":3,"name":"Señales","description":"Señales Comerciales para MetaTrader: copiado de transacciones, monitoreo de cuenta, ejecución automática de señales y trading social","url":"https://www.mql5.com/es/signals","children":[]},{"@type":"SiteNavigationElement","position":4,"name":"Freelance","description":"Encargar robots comerciales, indicadores técnicos y programas de trading automático. Trabajo en fórex. Servicio freelance en MQL5.com. Contratar para el trabajo especialistas y expertos en MetaTrader","url":"https://www.mql5.com/es/job","children":[]},{"@type":"SiteNavigationElement","position":5,"name":"Cotizaciones","description":"","url":"https://www.mql5.com/es/quotes/overview","children":[]},{"@type":"SiteNavigationElement","position":6,"name":"MetaTrader","description":"","url":"https://www.metatrader.com","children":[]},{"@type":"SiteNavigationElement","position":7,"name":"WebTerminal","description":"WebTerminal para la plataforma comercial MetaTrader. Trading fórex online.","url":"https://web.metatrader.app/terminal?mode=demo","children":[]},{"@type":"SiteNavigationElement","position":8,"name":"Calendario","description":"","url":"https://www.mql5.com/es/economic-calendar","children":[]},{"@type":"SiteNavigationElement","position":9,"name":"VPS","description":"","url":"https://www.mql5.com/es/vps","children":[]},{"@type":"SiteNavigationElement","position":10,"name":"Artículos","description":"","url":"https://www.mql5.com/es/articles","children":[]},{"@type":"SiteNavigationElement","position":11,"name":"CodeBase","description":"Descargar robots comerciales, indicadores técnicos, scripts con el código fuente - Biblioteca de códigos en MQL5 para MetaTrader 5","url":"https://www.mql5.com/es/code","children":[]},{"@type":"SiteNavigationElement","position":12,"name":"Algo Forge","description":"","url":"https://forge.mql5.io","children":[]},{"@type":"SiteNavigationElement","position":13,"name":"Documentación","description":"Guía de usuario MetaQuotes Language 5 (MQL5) - Documentación en MQL5.com","url":"https://www.mql5.com/es/docs","children":[]}]}  
+,
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":"https://www.mql5.com/es/code","name":"CodeBase"},{"@type":"ListItem","position":2,"item":"https://www.mql5.com/es/code/mt5","name":"MetaTrader 5"},{"@type":"ListItem","position":3,"item":"https://www.mql5.com/es/code/mt5/indicators","name":"Indicadores"}]}
+
+  ]
+</script>
+</body>
+</html>

@@ -1,0 +1,1085 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+
+  <meta name="robots" content="max-snippet:250,max-image-preview:large">
+  <meta name="description" content="Сегодня познакомимся с &quot;Профилем рынка&quot;. Узнаем что лежит за этим названием, попробуем разобраться в принципах работы с Профилем и рассмотрим представленную в терминале его версию под названием MarketProfile.">
+  <meta property="og:url" content="https://www.mql5.com/ru/articles/16461">
+  <meta property="og:title" content="Изучаем индикатор рыночного профиля — Market Profile: Что это и как устроен?">
+  <meta property="og:description" content="Сегодня познакомимся с &quot;Профилем рынка&quot;. Узнаем что лежит за этим названием, попробуем разобраться в принципах работы с Профилем и рассмотрим представленную в терминале его версию под названием MarketProfile.">
+      <meta property="og:image" content="https://c.mql5.com/2/103/Learning_about_the_Market_Profile_indicator_1200x628.jpg">
+      <meta property="og:image:secure_url" content="https://c.mql5.com/2/103/Learning_about_the_Market_Profile_indicator_1200x628.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2024-11-28T15:55:27.0000000Z">
+  <meta property="article:author" content="https://www.mql5.com/ru/users/artmedia70">
+  <meta property="article:section" content="MetaTrader 5">
+  <meta property="article:tag" content="Примеры">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@mql5com">
+  <meta name="twitter:image" content="https://c.mql5.com/2/103/Learning_about_the_Market_Profile_indicator_1200x628.jpg">
+  <meta name="theme-color" content="#4a76b8">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-config" content="none">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta property="qc:admins" content="36367170677651456375">
+  <meta property="wb:webmaster" content="073d7690269bcd81">
+  <link rel="shortcut icon" href="https://c.mql5.com/i/favicon4.ico">
+  <link rel="dns-prefetch" href="https://c.mql5.com">
+  <link href="https://c.mql5.com/styles/core.444bc25de4c9131a69fedfe5ac42a082.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/all.266d64b83529847f568747dd160d42b0.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/articles.bc4209e4de0b5296041832431b46f3dd.css" type="text/css" rel="stylesheet" media="all">
+  <link href="/ru/articles/rss" rel="alternate" type="application/rss+xml" title="Статьи по разработке и использованию торговых роботов и технических индикаторов для MetaTrader 5">
+  <link rel="canonical" href="https://www.mql5.com/ru/articles/16461">
+  <link rel="alternate" hreflang="en" href="https://www.mql5.com/en/articles/16461">
+  <link rel="alternate" hreflang="ru" href="https://www.mql5.com/ru/articles/16461">
+  <link rel="alternate" hreflang="zh" href="https://www.mql5.com/zh/articles/16461">
+  <link rel="alternate" hreflang="es" href="https://www.mql5.com/es/articles/16461">
+  <link rel="alternate" hreflang="de" href="https://www.mql5.com/de/articles/16461">
+  <link rel="alternate" hreflang="ja" href="https://www.mql5.com/ja/articles/16461">
+  <link rel="alternate" hreflang="pt" href="https://www.mql5.com/pt/articles/16461">
+  <title>Изучаем индикатор рыночного профиля — Market Profile: Что это и как устроен? - Статьи по MQL5</title>
+
+
+
+<script type="text/javascript">
+  !function(){window.mqGlobal={};var t=!1,n=!1,e=[],o=[],i=[];function d(t){var n;for(n=0;n<t.length;n+=1)t[n]()}function c(){t||(t=!0,d(e),d(o),o=[],e=[])}function a(){c(),n||(n=!0,d(i),i=[])}if(mqGlobal.AddOnReady=function(n,i){t?n(document):i?e.push(n):o.push(n)},mqGlobal.AddOnLoad=function(t){n?t(document):i.push(t)},mqGlobal.AddOnActiveWindowChange=function(t){this._onvisibility||(this._onvisibility=[]),this._onvisibility[this._onvisibility.length]=t},document.addEventListener)document.addEventListener("DOMContentLoaded",c,!1),window.addEventListener("load",a,!1);else if(document.attachEvent&&(document.attachEvent("onreadystatechange",(function(){switch(document.readyState){case"interactive":c();break;case"complete":a()}})),window.attachEvent("onload",a),document.documentElement.doScroll&&window==window.top)){!function n(){if(!t&&document.body)try{document.documentElement.doScroll("left"),c()}catch(t){setTimeout(n,0)}}()}}();
+  mqGlobal.CookieDomain = ".mql5.com";
+  mqGlobal.Language = 'ru';
+  mqGlobal.IsMobile = false;
+  mqGlobal.ClearRteStorage = function (e) { if (window.GStorage || (window.GStorage = globalStorage()), window.GStorage.supported) try { var o = e; window.GStorage.getItem("rte_autosave_uid", function (e, t) { t == o && (window.GStorage.removeItem("rte_autosave_text"), window.GStorage.removeItem("rte_autosave_date"), window.GStorage.removeItem("rte_autosave_uid")) }) } catch (e) { } };
+</script>
+  
+
+    <script src="https://c.mql5.com/js/all.c09fd283bed20d28a52c95cd70a12a27.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/vendor.1be6e9a4a90b28525f93c4c69a5058a1.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/articles.cd4c73c476b2781eecdf04f5583514b5.js" type="text/javascript" defer="defer"></script>
+
+
+</head>
+
+<body id="cover" class="cover">
+
+
+  <nav class="head">
+    <a href="https://www.mql5.com/ru" class="head__logo" title="MQL5 - Язык торговых стратегий для клиентского терминала MetaTrader 5"></a>
+      <div class="head__content">
+        <div class="main-menu" id="mainmenu">
+          
+                    <ul class="main-menu__top-level" id="menuTopLevel">
+                    <li><a href="/ru/forum" data-fz-event="MQL5+Menu+Forum">Форум</a></li>
+                    <li><a href="/ru/market" data-fz-event="MQL5+Menu+Market">Маркет</a></li>
+                    <li><a href="/ru/signals" data-fz-event="MQL5+Menu+Signals">Сигналы</a></li>
+                    <li><a href="/ru/job" data-fz-event="MQL5+Menu+Job">Фриланс</a></li>
+                    <li><a href="/ru/vps" data-fz-event="MQL5+Menu+VPS">VPS</a></li>
+                    <li><a href="/ru/quotes/overview" data-fz-event="MQL5+Menu+Overview">Котировки</a></li>
+                    <li><a href="https://www.metatrader.com/ru" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+MetaTrader">MetaTrader</a></li>
+                  </ul><ul class="main-menu__second-level" id="menuSecondLevel">
+                    <li class="main-menu__selected"><a href="/ru/articles" data-fz-event="MQL5+Menu+Articles"><img src="https://c.mql5.com/i/menu/icon-articles4.svg" alt="" width="16" height="16"/>Статьи</a></li>
+                    <li><a href="/ru/code" data-fz-event="MQL5+Menu+CodeBase"><img src="https://c.mql5.com/i/menu/icon-code4.svg" alt="" width="16" height="16"/>CodeBase</a></li>
+                    <li><a href="https://forge.mql5.io/?lang=ru-RU" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+AlgoForge"><img src="https://c.mql5.com/i/menu/icon-algoforge4.svg" alt="" width="16" height="16"/>Algo Forge</a></li>
+                    <li><a href="/ru/docs" data-fz-event="MQL5+Menu+Docs"><img src="https://c.mql5.com/i/menu/icon-docs4.svg" alt="" width="16" height="16"/>Документация</a></li>
+                    <li><a href="/ru/book" data-fz-event="MQL5+Menu+Book"><img src="https://c.mql5.com/i/menu/icon-book4.svg" alt="" width="16" height="16"/>Учебник по алготрейдингу</a></li>
+                    <li><a href="/ru/neurobook" data-fz-event="MQL5+Menu+Neurobook"><img src="https://c.mql5.com/i/menu/icon-neurobook4.svg" alt="" width="16" height="16"/>Учебник по нейросетям</a></li>
+                    <li><a href="/ru/economic-calendar" data-fz-event="MQL5+Menu+Economic+Calendar"><img src="https://c.mql5.com/i/menu/icon-economic-calendar4.svg" alt="" width="16" height="16"/>Календарь</a></li>
+                    <li><a href="https://web.metatrader.app/terminal?mode=demo&lang=ru" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Menu+Trading"><img src="https://c.mql5.com/i/menu/icon-trading4.svg" alt="" width="16" height="16"/>Вебтерминал</a></li>
+                    <li class="main-menu__mobile"><a href="/ru/about">О проекте</a></li>
+                    <li class="main-menu__second-tools"><a rel="noopener" href="/ru/vps" title="Надежный трейдерский хостинг для бесперебойной работы роботов  и мгновенного копирования  сделок" class="button-mt" data-vars-fz="Start+VPS+Trial+Submenu"><img width="18" height="18" src="https://c.mql5.com/i/sidebar/vpstrial2.svg" alt="" loading="lazy">Запустите пробную версию VPS</a></li>
+                    </ul>
+        </div>
+          <div class="main-menu__active">
+            <a id="mainMenuSelected" href="#">
+              <span class="main-menu__primary">Статьи</span><span class="main-menu__secondary">Разделы</span>
+            </a>
+          </div>
+<form action="https://www.mql5.com/ru/search" onsubmit="return false;" autocomplete="off" id="headerSearchForm" class="header-search" method="post">
+<button type="button" id="headerSearchButton" title="Поиск" class="header-search__button"></button><div class="header-search__input"><input name="keyword" type="text" enterkeyhint="search" title="Введите текст для поиска" placeholder="Поиск" id="headerSearchKeyword"/><label for="headerSearchKeyword" class="header-search__placeholder">Нажмите <span>/</span> для поиска: @user, $symbol, ...</label><button id="headerSearchSubmit" class="header-search__submit"></button></div><button type="button" id="headerSearchClean" title="Закрыть" class="header-search__clean"></button></form>        <input class="blurHandler" id="mainMenuBlurHandler" type="checkbox">
+      </div>
+      <div class="head__toolbar" id="headerToolbar">
+          <div class="container loginRegister">
+            <nav>
+              <ul id="loginRegisterButtons"><li><a class="login" title="Авторизуйтесь. Поддерживается OpenID-авторизация" href="https://www.mql5.com/ru/auth_login" rel="nofollow" data-fz-event="MQL5+Menu+Siginin">Вход</a></li><li><a class="registration ru" title="Зарегистрируйтесь" href="https://www.mql5.com/ru/auth_register" rel="nofollow" data-fz-event="MQL5+Menu+Register" onclick="window.fpush('MQL5+Button+Click');">Создать аккаунт</a></li></ul>
+            </nav>
+          </div>
+        <div class="toggle-button" id="sidebarToggleButton">
+          <i></i>
+        </div>
+
+        <div class="group-menu" id="groupMenu">
+
+
+          <div class="container lang-menu-container">
+            <div id="langMenuContainer" class="lang-menu">
+              <input class="blurHandler" id="langmenuBlurHandler" type="checkbox">
+              <nav>
+                <ul class="lang-menu__list" id="langmenu">
+                  <li class="lang-menu__list-item"><a href="/en/articles" aria-label="English (English)"><i class="icons-languages icons-languages_en"></i><span>English</span></a></li>
+<li class="lang-menu__list-item lang-menu__list-item_selected"><a href="/ru/articles" aria-label="Русский (Russian)"><i class="icons-languages icons-languages_ru"></i><span>Русский</span></a></li>
+<li class="lang-menu__list-item"><a href="/zh/articles" aria-label="中文 (Chinese)"><i class="icons-languages icons-languages_zh"></i><span>中文</span></a></li>
+<li class="lang-menu__list-item"><a href="/es/articles" aria-label="Español (Spanish)"><i class="icons-languages icons-languages_es"></i><span>Español</span></a></li>
+<li class="lang-menu__list-item"><a href="/pt/articles" aria-label="Português (Portuguese)"><i class="icons-languages icons-languages_pt"></i><span>Português</span></a></li>
+<li class="lang-menu__list-item"><a href="/ja/articles" aria-label="日本語 (Japanese)"><i class="icons-languages icons-languages_ja"></i><span>日本語</span></a></li>
+<li class="lang-menu__list-item"><a href="/de/articles" aria-label="Deutsch (German)"><i class="icons-languages icons-languages_de"></i><span>Deutsch</span></a></li>
+<li class="lang-menu__list-item"><a href="/ko/articles" aria-label="한국어 (Korean)"><i class="icons-languages icons-languages_ko"></i><span>한국어</span></a></li>
+<li class="lang-menu__list-item"><a href="/fr/articles" aria-label="Français (French)"><i class="icons-languages icons-languages_fr"></i><span>Français</span></a></li>
+<li class="lang-menu__list-item"><a href="/it/articles" aria-label="Italiano (Italian)"><i class="icons-languages icons-languages_it"></i><span>Italiano</span></a></li>
+<li class="lang-menu__list-item"><a href="/tr/articles" aria-label="Türkçe (Turkish)"><i class="icons-languages icons-languages_tr"></i><span>Türkçe</span></a></li>
+
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+  </nav>
+
+
+
+  <div id="left-sidebar-selector" class="left-sidebar__selector left-sidebar__selector_padding">
+    <div class="left-sidebar__title">
+MetaTrader 5 /     Примеры
+    </div>
+    <i class="icons-ux icons-ux_arrow-down-black"></i>
+  </div>
+  <div class="articles-container block-with-sidebar">
+    <aside class="left-sidebar left-sidebar_270" id="left-sidebar">
+      
+  <ul class="tree-menu-ul"><li class="tree-menu__item tree-menu__item_selected"><a class="tree-menu__link" href="/ru/articles/examples"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples.svg" alt="" loading="lazy"/>Примеры</a><ul class="tree-menu__list tree-menu__list_nested"><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/examples_indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_indicators.svg" alt="" loading="lazy"/>Индикаторы</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/examples_experts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_experts.svg" alt="" loading="lazy"/>Эксперты</a></li></ul></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/strategy_tester"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/strategy_tester.svg" alt="" loading="lazy"/>Тестер</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/trading"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading.svg" alt="" loading="lazy"/>Трейдинг</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/trading_systems"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading_systems.svg" alt="" loading="lazy"/>Торговые системы</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/integration"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/integration.svg" alt="" loading="lazy"/>Интеграция</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/indicator.svg" alt="" loading="lazy"/>Индикаторы</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/expert_advisors"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/expert.svg" alt="" loading="lazy"/>Эксперты</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/statistics"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/statistics.svg" alt="" loading="lazy"/>Статистика и анализ</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/machine_learning"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/machine_learning.svg" alt="" loading="lazy"/>Машинное обучение</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/interviews"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/interviews.svg" alt="" loading="lazy"/>Интервью</a></li></ul>
+  
+
+    <div class="hints-panel">
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_like"></i>
+        <div class="hints-panel__content">
+          Понравилась статья?<br>
+          Поставьте <a href="https://www.mql5.com/ru/articles/16461" target="_blank">ссылку</a> на нее —<br>пусть другие почитают
+        </div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_tw-square icons-hints_24px"></i><div class="hints-panel__content">
+Ищи нас в <a href="https://x.com/mql5com" target="_blank" rel="nofollow">Twitter</a>!<br> Ставь лайки и следи за новостями</div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_mt-5"></i>
+        <div class="hints-panel__content">
+          Используй новые возможности <a href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Article" rel="nofollow sponsored noopener noreferrer">MetaTrader 5</a>
+        </div>
+      </div>
+    </div>
+<div id='vgckrufggwxdtfscpyalmenexmvhljduja' class="roeid8y6hsc3ntv1l gg88d3drb"></div>      <div class="similar-author-articles ui">
+        <h4 class="similar-author-articles__title">Похожие статьи</h4>
+        <ul class="similar-author-articles__list">
+            <li>
+              <a href="/ru/articles/16050" data-fz-event="MQL5+Article+Similar+Article">От начального до среднего уровня: События в объектах (II)</a>
+            </li>
+            <li>
+              <a href="/ru/articles/16035" data-fz-event="MQL5+Article+Similar+Article">От начального до среднего уровня: События в объектах (I)</a>
+            </li>
+            <li>
+              <a href="/ru/articles/19422" data-fz-event="MQL5+Article+Similar+Article">Разрабатываем пользовательский индикатор рыночных настроений</a>
+            </li>
+            <li>
+              <a href="/ru/articles/21443" data-fz-event="MQL5+Article+Similar+Article">Разработка инструментария для анализа Price Action (Часть 62): Создание адаптивной системы обнаружения параллельных каналов и пробоев на языке MQL5</a>
+            </li>
+            <li>
+              <a href="/ru/articles/16340" data-fz-event="MQL5+Article+Similar+Article">Повышение эффективности торговли с использованием Smart Money Concepts (SMC): OB, BOS и FVG</a>
+            </li>
+        </ul>
+      </div>
+    <div class="freelance-hint">
+      <img src="https://c.mql5.com/i/articles/icon_freelance.svg" width="24" height="24" loading="lazy" />
+      <div class="freelance-hint__text">
+        Используйте идеи из этой статьи,<br>чтобы заказать собственного робота<br>на бирже фрилансеров
+      </div>
+        <a target="_blank" class="button button_blue-gray-border" title="Перейти на биржу" href="/ru/job/new" data-fz-event="MQL5+Article+New+Job">Перейти на биржу</a>
+    </div>
+
+    </aside>
+    <article class="content-with-sidebar articles-content splashed">
+      
+
+
+  <header class="article-header article-header_light" style="background-color: rgb(42,26,45)">
+    <section class="article-tools-panel">
+        <div class="article-tools-panel__item">
+          <span class="popup framed client flags">
+            <a class="dropdown" href="javascript:void(false);">
+              <span class="icons-languages icons-languages_ru"></span><i></i>
+            </a>
+            <span class="popup">
+              <span class="tip">
+                <span></span>
+              </span>
+              <span class="items">
+                    <a href="/en/articles/16461">English</a>
+                    <a href="/zh/articles/16461">中文</a>
+                    <a href="/es/articles/16461">Español</a>
+                    <a href="/de/articles/16461">Deutsch</a>
+                    <a href="/ja/articles/16461">日本語</a>
+                    <a href="/pt/articles/16461">Português</a>
+              </span>
+            </span>
+          </span>
+        </div>
+        
+      <div class="article-tools-panel__item">
+        <a href="#pocket" title="Через Карман вы можете вставить полное описание этого содержимого в редактор сообщений" onclick="return Pocket.Add(this,'ru',2,1,16461);" class="article-tools-panel__rounded">
+          <i class="article-pocket-icon"></i>
+        </a>
+      </div>
+      <div class="article-tools-panel__item">
+        <a href="/ru/articles/16461?print=" target="_blank" class="article-tools-panel__rounded" rel="nofollow" title="Версия для печати">
+          <i class="article-print-icon"></i>
+        </a>
+      </div>
+
+    </section>
+    <section class="article-header__image-box">
+        <img class="article-header__image-preview" loading="lazy" width="32" height="16" alt="preview" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAsICAoIBwsKCQoNDAsNERwSEQ8PESIZGhQcKSQrKigkJyctMkA3LTA9MCcnOEw5PUNFSElIKzZPVU5GVEBHSEX/2wBDAQwNDREPESESEiFFLicuRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUX/wAARCAAQACADASIAAhEBAxEB/8QAGAAAAgMAAAAAAAAAAAAAAAAAAwQBAgf/xAAfEAACAgEEAwAAAAAAAAAAAAABAgADBRETIVEVMUH/xAAWAQEBAQAAAAAAAAAAAAAAAAADAAH/xAAZEQADAQEBAAAAAAAAAAAAAAAAAQIRMVH/2gAMAwEAAhEDEQA/AM6qxaAam1dYVcbUvO4CYnut3LC09zUnvRG58GmxqMdTYJHjVX1YsCLCfsItnHJj5pRUrqP/2Q==">
+      <div class="article-header__gradient" style="background: linear-gradient(90deg, rgba(42,26,45, 1) 0%, rgba(42,26,45, 0.72) 8.31%, rgba(42,26,45, 0) 17.1%), linear-gradient(270deg, rgba(42,26,45, 1) 0%, rgba(42,26,45, 0.72) 8.06%, rgba(42,26,45, 0) 16.59%), linear-gradient(0deg, rgba(42,26,45, 1) 8.26%, rgba(42,26,45, 0.8) 65%, rgba(42,26,45, 0) 100%);"></div>
+        <picture>
+          <source srcset="https://c.mql5.com/2/103/Learning_about_the_Market_Profile_indicator_600x314.jpg, https://c.mql5.com/2/103/Learning_about_the_Market_Profile_indicator_1200x628.jpg 2x" media="(min-width:700px)">
+          <img class="article-header__image" loading="lazy" width="600" height="314" srcset="https://c.mql5.com/2/103/Learning_about_the_Market_Profile_indicator_300x157.jpg, https://c.mql5.com/2/103/Learning_about_the_Market_Profile_indicator_600x314.jpg 2x" src="https://c.mql5.com/2/103/Learning_about_the_Market_Profile_indicator_600x314.jpg" alt="Изучаем индикатор рыночного профиля — Market Profile: Что это и как устроен?" onerror="this.style.display='none';">
+        </picture>
+    </section>
+    <section class="article-header__content">
+      <h1>Изучаем индикатор рыночного профиля — Market Profile: Что это и как устроен?</h1>
+      <div class="article-header__info">
+        <a href="/ru/articles/mt5">MetaTrader 5</a>
+          &mdash;
+          <a href="/ru/articles/mt5/examples">Примеры</a>
+        | <time datetime="2024-11-28T15:55Z" title="15:55" datetime-type="datetime">28 ноября 2024, 15:55</time>
+      </div>
+      <div class="article-header__indicators">
+        <span title="Просмотры">
+          <img src="https://c.mql5.com/i/icons.svg#views-white-usage" width="20" height="20" alt="" />
+          6 162
+        </span>
+        
+          <a title="Комментарии" href="/ru/forum/477309">
+            <img src="https://c.mql5.com/i/icons.svg#comments-white-usage" width="20" height="20" alt="" />
+            9
+          </a>
+      </div>
+      <div class="article-header__author">
+          <div class="article-header__avatar">
+            <img src="https://c.mql5.com/avatar/2022/7/62C4775C-ABD6.jpg" srcset="https://c.mql5.com/avatar/2022/7/62C4775C-ABD6_big.jpg 2x" data-user-login="artmedia70" title="Artyom Trishkin" alt="Artyom Trishkin" loading="lazy" width="60" height="60">
+          </div>
+<a class="author" href="/ru/users/artmedia70" data-user-login="artmedia70">Artyom Trishkin</a>      </div>
+    </section>
+  </header>
+
+    <div class="content">
+      <div class="inner formatted-content">
+        <h3 id="node00">Содержание</h3> <ul> <li><a href="/ru/articles/16461#node01">Market Profile — что это?</a></li> <li><a href="/ru/articles/16461#node02">Market Profile в терминале MetaTrader 5</a><br/></li> <li><a href="/ru/articles/16461#node03">Устройство и принципы</a></li> <li><a href="/ru/articles/16461#node04">Заключение</a><br/></li> </ul> <h3 id="node01"><br/><br/>Market Profile — что это?</h3> <p>Питер Стайдлмэйер (Peter Steidlmayer) разработал концепцию Профиля рынка в 1980-х с Чикагской товарной биржей. Трейдеры, применяющие этот метод, отмечают его пользу для глубокого понимания рынка и повышения эффективности торговли.</p> <p>Профиль рынка — это не традиционный технический индикатор, и он не дает прямых сигналов для торговли. Но он служит дополнением к торговой системе, позволяя упорядочить данные и определить, кто контролирует рынок, что такое справедливая стоимость, и какие факторы влияют на движение цен. </p> <p>Профиль рынка отражает организацию торгов на основе времени, цены и объема. Каждый день формируется диапазон с областью стоимости, представляющей равновесие между покупателями и продавцами. В этой зоне цены колеблются, и Market Profile помогает трейдерам интерпретировать эти изменения как во время, так и уже после завершения торгов. Он строится на кривой нормального распределения, где около 70% стоимости находится в пределах одного стандартного отклонения от среднего значения. Иными словами — это инструмент анализа, который показывает распределение объёмов или времени, проведённого ценой на определённых уровнях. Он помогает трейдерам понимать, где происходили наибольшие сделки, и определять ключевые уровни спроса и предложения. </p> <p>При использовании Профиля рынка существуют некоторые понятия, обусловленные поведением рынка и прямо или косвенно отображаемые на графике. Рекомендуемый таймфрейм для анализа — M30.</p> <p>Первый час торгов образует основной паттерн торгового дня и является базовым для изучения активности участников рынка в течении всей сессии. Этот период важен для определения, что делают трейдеры на площадке для поиска цены, по которой покупатель и продавец согласятся на сделку. </p> <p>Существуют две категории участников рынка: </p> <ol> <li><b>day-timeframe trader</b> — трейдер на площадке, торгующий внутри дня большими объемами в несколько тиков;</li> <li><b>other-timeframe trader</b> — трейдер, торгующий на остальных отрезках времени, обеспечивающий движение цены к новым уровням. <br/></li> </ol> <p>Рассмотрим некоторые базовые понятия, помогающие лучше понять Профиль рынка.</p> <ul> <p></p> <li><b>Initial balance (первоначальный баланс)</b> — диапазон цен рынка в течение первого часа торговой сессии (два 30-минутных бара после открытия сессии).<br/><br/> <p style="text-align:center;"> <img width="714" height="399" src="https://c.mql5.com/2/202/OCCqrxbjV6.png" style="vertical-align:middle;" loading="lazy" alt/></p></li> <p></p> <li><b>Range </b> — диапазон, абсолютная высота всего Профиля рынка. <p></p> <p style="text-align:center;"> <img width="714" height="399" src="https://c.mql5.com/2/202/7kQMWwPwYX.png" style="vertical-align:middle;" loading="lazy" alt/></p></li> <p></p> <li><b>Range extension</b> — расширение диапазона при движении цены по отношению к первоначальному балансу.<br/><br/> <p style="text-align:center;"> <img width="714" height="399" src="https://c.mql5.com/2/202/8q3fZvwF3R.png" style="vertical-align:middle;" loading="lazy" alt/></p></li> <li><b>Value area </b> — зона стоимости, диапазон цен, который включает в себя 70 % торговой активности.<br/><br/> <p style="text-align:center;"> <img width="714" height="399" src="https://c.mql5.com/2/202/XaePNjPn8k.png" style="vertical-align:middle;" loading="lazy" alt/></p></li> <li><b>Point of control (POC — точка контроля)</b> — самая длинная линия профиля, которая в то же время наиболее близка к центру диапазона.<br/><br/> <p style="text-align:center;"> <img width="714" height="399" src="https://c.mql5.com/2/202/mZuDkksI78.png" style="vertical-align:middle;" loading="lazy" alt/></p></li> <li><b>Closing range (диапазон закрытия)</b> — располагается вблизи закрытия торговой сессии.<br/><br/> <p style="text-align:center;"> <img width="714" height="399" src="https://c.mql5.com/2/202/TnQHOROKN2.png" style="vertical-align:middle;" loading="lazy" alt/></p></li> <li><b>Buying/Selling tail (хвост покупки/продажи)</b>. Наличие подобных хвостов указывает на резкую активность трейдеров "other-timeframe". <br/>Небольшая длина хвостов говорит о достаточной агрессивности трейдеров "other-timeframe" как со стороны покупателей, так и со стороны продавцов. <br/><br/> <p style="text-align:center;"> <img width="714" height="399" src="https://c.mql5.com/2/202/XXsRkrcOru.png" style="vertical-align:middle;" loading="lazy" alt/></p></li> </ul> <p></p> <p>Чтобы читать Market Profile, можно следовать этим основным принципам:</p> <ol> <li><b>Определение "Цена-объём" (Price-Volume)</b><br/>Market Profile отображает, на каких уровнях цен был максимальный объём. Линии или блоки на графике (обычно горизонтальные) показывают, сколько времени цена проводила на определённом уровне, или какой объём был здесь наторгован. Более длинные линии означают больше времени или больший объём — это ключевые уровни поддержки и сопротивления.<br/><br/></li> <li><b>Точка контроля (POC — Point of Control)</b><br/>Это уровень цены, на котором был максимальный объём торговли за период. Он часто действует, как сильный уровень поддержки или сопротивления, поскольку цена здесь наиболее "приемлема" для участников рынка.<br/><br/></li> <li><b>Зоны справедливой и несправедливой цены (Value Area и Non-Value Area)</b><br/> <ul> <li><b>Value Area:</b> обычно составляет около 70% объёма торговли за период. Это диапазон, где цена находила большую часть времени "баланс" между спросом и предложением.</li> <li><b>Non-Value Area:</b> уровни выше или ниже Value Area считаются зонами с низким интересом. Если цена уходит в эти зоны, она может либо быстро вернуться в Value Area, либо продолжить движение за счёт дисбаланса спроса и предложения.</li> </ul><br/></li> <li><b>Обнаружение трендов и флэтов</b><br/> <ul> <li><b>Трендовый день:</b> Market Profile "удлиняется" в одну сторону, когда рынок устойчиво движется вверх или вниз. В этих случаях цена не задерживается на уровнях, а движется, создавая новые зоны интереса. У трендового дня небольшой первоначальный баланс, представляющий менее 25% диапазона всего дня. Фактически это существенное доминирование покупателей или продавцов с сильным расширением диапазона в одном из направлений. <br/></li> <li><b>Флетовый день:</b> профиль концентрируется вокруг одного уровня, а Value Area остаётся узкой. Это говорит о балансе и отсутствии сильного тренда.</li> <li><b>Нетрендовый день:</b> характеризуется узким первоначальным балансом, который впоследствии содержит диапазон цен всего дня.</li> <li><b>Нормальный день:</b> у такого дня присутствует широкий первоначальный баланс, приблизительно равный 80% от всего диапазона. Это самый распространенный тип торгового дня. <br/></li> <li><b>Нормальное изменение нормального дня:</b> первоначальный баланс такой структуры равняется приблизительно 50% диапазона дня. При этом формируется расширение диапазона либо в одном, либо в другом направлении. <br/></li> <li><b>Нейтральный день:</b> такой профиль не характеризуется его первоначальным балансом, присутствует расширение диапазона в обоих направлениях, и день завершается около центра диапазона. <br/><br/></li> </ul></li> <li><b>Понимание экстремумов и реакции цены</b><br/> <ul> <li>Если цена достигает новых уровней с низким объёмом и быстро возвращается к POC или Value Area, это может указывать на отскок.</li> <li>Если цена продолжает торговаться за пределами Value Area и создаёт новую POC, это сигнализирует о возможном начале нового тренда.</li> </ul><br/></li> <li><b>Практическое применение Market Profile</b><br/> <ul> <li><b>Для поиска точек входа:</b> определите уровни поддержки и сопротивления, используя POC и границы Value Area, ожидайте откатов от этих уровней или пробоев в сторону тренда.</li> <li><b>Для установки стоп-лоссов и целей:</b> используйте POC и Value Area High/Low как уровни для размещения защитных стопов и фиксации прибыли.</li> </ul></li> </ol> <p>Классический Market Profile основан на TPOs (временно-ценовых возможностях), которые включают в себя заглавные буквы латинского алфавита.&nbsp; При этом каждая буква представляет собой 30 минут торговой сессии. </p> <h3 id="node02"><br/><br/>Market Profile в терминале MetaTrader 5</h3> <p>В клиентском терминале MetaTrader 5 в каталоге индикаторов \MQL5\Indicators\<b>Free Indicators\</b> представлена простая версия Профиля рынка, код которого содержится в файле<b> MarketProfile.mq5</b>. Этот индикатор, в отличие от его классического представления, строит вертикальные объемные профили по сессиям (Азия, Европа, Америка), визуализируя зоны, где цена проводила больше времени. Он анализирует внутридневные бары и разбивает их по трем временным периодам, отражающим разные сессии рынка. Индикатор рассчитывает количество времени, проведённого на каждом ценовом уровне, в течение этих сессий, и визуально отображает их как прямоугольники на графике.</p> <p style="text-align:center;"> <img width="481" height="561" src="https://c.mql5.com/2/202/wNNAEXRrL6.png" style="vertical-align:middle;" loading="lazy" alt/></p> <p>Основные моменты для чтения этого индикатора:</p> <ol> <li><b>Разделение на торговые сессии:</b><br/> <ul> <li>Весь день делится на три сессии: Азиатская, Европейская и Американская.</li> <li>Цветовые зоны на графике показывают время, проведённое на уровне цены в каждой сессии.</li> </ul><br/></li> <li><b>Ценовые уровни:</b><br/> <ul> <li>Каждый ценовой уровень окрашивается согласно сессии и продолжительности пребывания на нём цены. Уровни, где цена задерживалась дольше, считаются важными уровнями, так как там наблюдалась активная торговля.</li> </ul><br/></li> <li><b>POC (Point of Control):</b><br/> <ul> <li>Индикатор не рассчитывает POC напрямую, но можно визуально выделить уровни с наибольшей протяженностью цветных зон — это и есть точки контроля, указывающие ключевые уровни спроса и предложения.</li> </ul><br/></li> <li><b>Области ценности (Value Areas):</b><br/> <ul> <li>Как и в стандартном Market Profile, области с более высокой концентрацией объёма (долгое нахождение цены) можно рассматривать как уровни, к которым цена может стремиться вернуться.</li> </ul></li> </ol> <p>Таким образом, индикатор Market Profile в данном коде помогает понять, на каких уровнях в течение дня была сосредоточена основная активность, и выделить уровни поддержки и сопротивления для каждой торговой сессии.</p> <p>Давайте разберёмся, как работает этот индикатор.</p> <h3 id="node03"><br/><br/>Устройство и принципы</h3> <p>Во входных параметрах индикатора указываются:</p> <ol> <li>количество дней, для которых необходимо показать профиль,</li> <li>номер ближайшего дня к текущему:<br/> <ul> <li>0 — текущий день,</li> <li>1 — прошлый,</li> <li>2 — позапрошлый, и т.д.,</li> </ul></li> <li>цвета, которыми рисуются сессии (азиатская, европейская и американская),</li> <li>часы открытия европейской и американской сессий (азиатская сессия открывается на открытии дня)</li> <li>множитель длины отрезков гистограммы:</li> </ol> <pre class="code"><span class="comment">//--- input parameters</span>
+<span class="keyword">input</span> <span class="keyword">uint</span>&nbsp;&nbsp;InpStartDate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =<span class="number">0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">/* day number to start calculation */</span>&nbsp;&nbsp;<span class="comment">// номер дня, с которого начнём расчёт (0 - текущий, 1 - предыдущий, и т.д.)</span>
+<span class="keyword">input</span> <span class="keyword">uint</span>&nbsp;&nbsp;InpShowDays&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=<span class="number">3</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">/* number of days to display */</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// количество отображаемых дней, начиная и включая день в InpStartDate</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp; InpMultiplier&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=<span class="number">1</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">/* histogram length multiplier */</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// множитель длины гистограммы</span>
+<span class="keyword">input</span> <span class="keyword">color</span> InpAsiaSession&nbsp;&nbsp;&nbsp;&nbsp; =<span class="macro">clrGold</span>;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">/* Asian session */</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// цвет гистограммы азиатской сессии</span>
+<span class="keyword">input</span> <span class="keyword">color</span> InpEuropeSession&nbsp;&nbsp; =<span class="macro">clrBlue</span>;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">/* European session */</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// цвет гистограммы европейской сессии</span>
+<span class="keyword">input</span> <span class="keyword">color</span> InpAmericaSession&nbsp;&nbsp;=<span class="macro">clrViolet</span>;&nbsp;&nbsp; <span class="comment">/* American session */</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// цвет гистограммы американской сессии</span>
+<span class="keyword">input</span> <span class="keyword">uint</span>&nbsp;&nbsp;InpEuropeStartHour =<span class="number">8</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">/* European session opening hour */</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// час открытия европейской сессии</span>
+<span class="keyword">input</span> <span class="keyword">uint</span>&nbsp;&nbsp;InpAmericaStartHour=<span class="number">14</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">/* American session opening hour */</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// час открытия американской сессии</span>
+</pre> <p>При инициализации индикатора создаём уникальный идентификатор имён объектов из последних четырёх цифр количества миллисекунд, прошедших с момента старта системы:</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Custom indicator initialization function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">int</span> <span class="functions">OnInit</span>()
+&nbsp;&nbsp;{
+<span class="comment">//--- создаём префикс для имён объектов</span>
+&nbsp;&nbsp; <span class="keyword">string</span> number=<span class="functions">StringFormat</span>(<span class="string">"%I64d"</span>, <span class="functions">GetTickCount64</span>());
+&nbsp;&nbsp; ExtPrefixUniq=<span class="functions">StringSubstr</span>(number, <span class="functions">StringLen</span>(number)-<span class="number">4</span>);
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Indicator \"Market Profile\" started, prefix="</span>, ExtPrefixUniq);
+
+&nbsp;&nbsp; <span class="keyword">return</span>(<span class="macro">INIT_SUCCEEDED</span>);
+&nbsp;&nbsp;}
+</pre> <div id="help"></div> <p>Далее это число будет использоваться при создании имён графических объектов индикатора, и по этому же префиксу при деинициализации объекты будут удалены:</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Custom indicator deinitialization function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> <span class="functions">OnDeinit</span>(<span class="keyword">const</span> <span class="keyword">int</span> reason)
+&nbsp;&nbsp;{
+<span class="comment">//--- после использования удалим все графические объекты, созданные индикатором</span>
+&nbsp;&nbsp; <span class="functions">Print</span>(<span class="string">"Indicator \"Market Profile\" stopped, delete all objects with prefix="</span>, ExtPrefixUniq);
+&nbsp;&nbsp; <span class="functions">ObjectsDeleteAll</span>(<span class="number">0</span>, ExtPrefixUniq, <span class="number">0</span>, <span class="macro">OBJ_RECTANGLE</span>);
+&nbsp;&nbsp; <span class="functions">ChartRedraw</span>(<span class="number">0</span>);
+&nbsp;&nbsp;}
+</pre> <p>Так как же устроен индикатор? Какова его логика рисования? Давайте представим, что полный размер дневной свечи от её Low до High — это размер таблицы. Тогда строками таблицы будут являться ценовые уровни: каждый пункт цены — это одна строка таблицы. Столбцами таблицы в самом простом варианте является дистанция от одного внутридневного бара до другого. Строка с нулевым индексом — это самая нижняя цена, равная Low бара. Цена с индексом 1 — это Low бара плюс один пункт. Соответственно, строка, определяющая High бара — это строка с индексом Low бара плюс количество пунктов от Low до High бара. </p> <p>Если теперь создать простой массив, соответствующий строкам этой таблицы, то в его нулевом индексе будет храниться количество баров, которые успели побывать на цене Low бара за время движения цены в течение дня. И точно так же, и все остальные ячейки этого массива будут хранить в себе то количество, сколько раз цена успела побыть на этих уровнях. </p> <p>Как это определить? Да очень просто. Так как Low дневного бара на открытии дня — это нулевой индекс массива, то можно рассчитать индексы всех остальных внутридневных баров: индекс строки, соответствующей бару, следующему за баром открытия, — это Low этого бара минус Low открытия дня в пунктах. Последним индексом для этого бара будет High этого бара минус Low открытия дня.</p> <p>На рисунке ниже показаны начальные и конечные индексы в массиве Array для четырёх шестичасовых баров внутри дня: Bar0, Bar1, Bar2 и Bar3:</p> <p style="text-align:center;"> <img width="680" height="222" src="https://c.mql5.com/2/202/Market_Profile_indexes__1.png" style="vertical-align:middle;" loading="lazy" alt/></p> <p>Если теперь отметить в массиве количество баров, побывавших на ценовых уровнях, и нарисовать прямоугольники профиля рынка, то получим такую картину в массиве и на графике:</p> <p style="text-align:center;"> <img width="673" height="220" src="https://c.mql5.com/2/202/Market_Profile_indexes1.png" style="vertical-align:middle;" loading="lazy" alt/></p> <p>Массив Array на каждом новом тике очищается, ему устанавливается новый размер Range дневного бара и его индексы заполняются заново значением количества баров, побывавших на каждом уровне цены. Таким образом, в профиле рынка динамически заполняется и отображается на графике актуальная информация о состоянии рынка и, чем дольше цена находится на каком-либо уровне (больше баров включают в себя уровень), тем длиннее линия, обозначающая этот уровень.</p> <p>Посмотрим, как это реализовано в коде индикатора:</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Custom indicator iteration function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">int</span> <span class="functions">OnCalculate</span>(<span class="keyword">const</span> <span class="keyword">int</span> rates_total,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">int</span> prev_calculated,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">datetime</span> &amp;time[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">double</span> &amp;open[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">double</span> &amp;high[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">double</span> &amp;low[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">double</span> &amp;close[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">long</span> &amp;tick_volume[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">long</span> &amp;volume[],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="keyword">int</span> &amp;spread[])
+&nbsp;&nbsp;{
+<span class="comment">//--- время открытия текущего дневного бара</span>
+&nbsp;&nbsp; <span class="keyword">datetime</span> <span class="keyword">static</span> open_time=<span class="number">0</span>;
+
+<span class="comment">//--- номер последнего дня для расчетов</span>
+<span class="comment">//--- (при InpStartDate = 0 и InpShowDays = 3, lastday = 3)</span>
+<span class="comment">//--- (при InpStartDate = 1 и InpShowDays = 3, lastday = 4) etc ...</span>
+&nbsp;&nbsp; <span class="keyword">uint</span> lastday=InpStartDate+InpShowDays;
+
+<span class="comment">//--- если первый расчет уже был</span>
+&nbsp;&nbsp; <span class="keyword">if</span>(prev_calculated!=<span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- получаем время открытия текущего дневного бара</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> current_open=<span class="functions">iTime</span>(<span class="functions">Symbol</span>(), <span class="macro">PERIOD_D1</span>, <span class="number">0</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- если текущий день не рассчитываем</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(InpStartDate!=<span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- если время открытия не было получено - уходим</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(current_open==open_time)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>(rates_total);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- обновляем время открытия</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;open_time=current_open;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- далее будем рассчитывать только один день, так как все остальные дни уже посчитаны при первом запуске</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lastday=InpStartDate+<span class="number">1</span>;
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+<span class="comment">//--- в цикле по указанному количеству дней (либо InpStartDate+InpShowDays при первом запуске, либо InpStartDate+1 на каждом тике)</span>
+&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">uint</span> day=InpStartDate; day&lt;lastday; day++)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- получаем в структуру данные дня с индексом day</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="predefines">MqlRates</span> day_rate[];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- если индикатор запускается в выходные или праздничные дни, когда нет тиков, сначала нужно открыть дневной график символа</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- если не получили данные бара по индексу day дневного периода - уходим до следующего вызова OnCalculate()</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">CopyRates</span>(<span class="functions">Symbol</span>(), <span class="macro">PERIOD_D1</span>, day, <span class="number">1</span>, day_rate)==-<span class="number">1</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">return</span>(prev_calculated);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- получаем дневной диапазон (Range) в пунктах</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> high_day=day_rate[<span class="number">0</span>].high;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> low_day=day_rate[<span class="number">0</span>].low;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> point=<span class="functions">SymbolInfoDouble</span>(<span class="functions">Symbol</span>(), <span class="macro">SYMBOL_POINT</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;day_size=(<span class="keyword">int</span>)((high_day-low_day)/point);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- подготавливаем массивы для хранения прямоугольников уровней цены</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> boxes_asia[], boxes_europe[], boxes_america[];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- размеры массивов равны количеству пунктов в диапазоне дня</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayResize</span>(boxes_asia, day_size);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayResize</span>(boxes_europe, day_size);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayResize</span>(boxes_america, day_size);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- обнуляем массивы</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ZeroMemory</span>(boxes_asia);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ZeroMemory</span>(boxes_europe);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ZeroMemory</span>(boxes_america);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- получаем все внутридневные бары текущего дня</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="predefines">MqlRates</span> bars_in_day[];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> start_time=day_rate[<span class="number">0</span>].time+<span class="functions">PeriodSeconds</span>(<span class="macro">PERIOD_D1</span>)-<span class="number">1</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> stop_time=day_rate[<span class="number">0</span>].time;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- если индикатор запускается в выходные или праздничные дни, когда нет тиков, сначала нужно открыть дневной график символа</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- если для указанного дня не удалось получить бары текущего таймфрейма - уходим до следующего вызова OnCalculate()</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">CopyRates</span>(<span class="functions">Symbol</span>(), <span class="macro">PERIOD_CURRENT</span>, start_time, stop_time, bars_in_day)==-<span class="number">1</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">return</span>(prev_calculated);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- перебираем в цикле все бары текущего дня и отмечаем ячейки цены, в которые попадают бары</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> size=<span class="functions">ArraySize</span>(bars_in_day);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;size; i++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- рассчитываем диапазон индексов уровней цены в дневном диапазоне</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; start_box=(<span class="keyword">int</span>)((bars_in_day[i].low-low_day)/point);&nbsp;&nbsp;<span class="comment">// индекс первой ячейки массива цен, соответствующей цене Low текущего бара i</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; stop_box =(<span class="keyword">int</span>)((bars_in_day[i].high-low_day)/point); <span class="comment">// индекс последней ячейки массива цен, соответствующей цене High текущего бара i</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- получаем час бара по индексу цикла</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="predefines">MqlDateTime</span> bar_time;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">TimeToStruct</span>(bars_in_day[i].time, bar_time);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">uint</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hour=bar_time.hour;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- по часу бара определяем к какой сессии принадлежит бар</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- американская сессия</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(hour&gt;=InpAmericaStartHour)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- в массиве американской сессии, в ячейках от start_box до stop_box увеличиваем счётчики баров</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> ind=start_box; ind&lt;stop_box; ind++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; boxes_america[ind]++;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- Европа или Азия</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- европейская сессия</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(hour&gt;=InpEuropeStartHour &amp;&amp; hour&lt;InpAmericaStartHour)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- в массиве европейской сессии, в ячейках от start_box до stop_box увеличиваем счётчики баров</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> ind=start_box; ind&lt;stop_box; ind++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;boxes_europe[ind]++;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- азиатская сессия</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- в массиве азиатской сессии, в ячейках от start_box до stop_box увеличиваем счётчики баров</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">for</span>(<span class="keyword">int</span> ind=start_box; ind&lt;stop_box; ind++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;boxes_asia[ind]++;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- на основании созданных массивов уровней цен рисуем профиль рынка</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- профиль рынка на графике рисуется отрезками цветных линий цветом, заданным в настройках для каждой торговой сессии</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- отрезки рисуются объектами-прямоугольниками с высотой прямоугольника, равной одному пункту цены, и шириной, равной дистанции до следующего бара справа</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- определяем день для наименования графического объекта и ширину прямоугольника</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span> day_prefix=<span class="functions">TimeToString</span>(day_rate[<span class="number">0</span>].time, <span class="macro">TIME_DATE</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;box_length=<span class="functions">PeriodSeconds</span>(<span class="macro">PERIOD_CURRENT</span>);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- азиатская сессия</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- в цикле по количеству пунктов дневного бара</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> ind=<span class="number">0</span>; ind&lt;day_size; ind++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- если массив азиатской сессии заполнен</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(boxes_asia[ind]&gt;<span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- получаем очередную цену методом прибавления количества пунктов ind к цене Low дневного бара</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- получаем время начала отрезка (время открытия дневного бара)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- и время конца отрезка (время открытия дневного бара + количество баров, хранящееся в ячейке ind массива boxes_asia[])</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span>&nbsp;&nbsp; price=low_day+ind*point;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time1=day_rate[<span class="number">0</span>].time;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time2=time1+boxes_asia[ind]*box_length*InpMultiplier;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- создаём префикс имени графического объекта азиатской сессии</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span>&nbsp;&nbsp; prefix=ExtPrefixUniq+<span class="string">"_"</span>+day_prefix+<span class="string">"_Asia_"</span>+<span class="functions">StringFormat</span>(<span class="string">"%.5f"</span>, price);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- рисуем прямоугольник (отрезок линии) на рассчитанных координатах с цветом для азиатской сессии</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DrawBox(prefix, price, time1, time2, InpAsiaSession);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- европейская сессия</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> ind=<span class="number">0</span>; ind&lt;day_size; ind++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- если массив европейской сессии заполнен</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(boxes_europe[ind]&gt;<span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- получаем очередную цену методом прибавления количества пунктов ind к цене Low дневного бара</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- получаем время начала отрезка (время открытия дневного бара + время правого края профиля азиатской сессии)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- и время конца отрезка (время начала отрезка европейской сессии + количество баров, хранящееся в ячейке ind массива boxes_europe[])</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span>&nbsp;&nbsp; price=low_day+ind*point;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time1=day_rate[<span class="number">0</span>].time+boxes_asia[ind]*box_length*InpMultiplier;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time2=time1+boxes_europe[ind]*box_length*InpMultiplier;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- создаём префикс имени графического объекта европейской сессии</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span>&nbsp;&nbsp; prefix=ExtPrefixUniq+<span class="string">"_"</span>+day_prefix+<span class="string">"_Europe_"</span>+<span class="functions">StringFormat</span>(<span class="string">"%.5f"</span>, price);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- рисуем прямоугольник (отрезок линии) на рассчитанных координатах с цветом для европейской сессии</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DrawBox(prefix, price, time1, time2, InpEuropeSession);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- американская сессия</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> ind=<span class="number">0</span>; ind&lt;day_size; ind++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">//--- если массив американской сессии заполнен</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">if</span>(boxes_america[ind]&gt;<span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- получаем очередную цену методом прибавления количества пунктов ind к цене Low дневного бара</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- получаем время начала отрезка (время открытия дневного бара + время правого края профиля азиатской сессии + время правого края профиля европейской сессии)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- и время конца отрезка (время начала отрезка американской сессии + количество баров, хранящееся в ячейке ind массива boxes_america[])</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span>&nbsp;&nbsp; price=low_day+ind*point;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time1=day_rate[<span class="number">0</span>].time+(boxes_asia[ind]+boxes_europe[ind])*box_length*InpMultiplier;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time2=time1+boxes_america[ind]*box_length*InpMultiplier;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- создаём префикс имени графического объекта американской сессии</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span>&nbsp;&nbsp; prefix=ExtPrefixUniq+<span class="string">"_"</span>+day_prefix+<span class="string">"_America_"</span>+<span class="functions">StringFormat</span>(<span class="string">"%.5f"</span>, price);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//--- рисуем прямоугольник (отрезок линии) на рассчитанных координатах с цветом для американской сессии</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DrawBox(prefix, price, time1, time2, InpAmericaSession);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+<span class="comment">//--- по завершении цикла перерисуем график</span>
+&nbsp;&nbsp; <span class="functions">ChartRedraw</span>(<span class="number">0</span>);
+
+<span class="comment">//--- возвращаем количество баров для следующего вызова OnCalculate</span>
+&nbsp;&nbsp; <span class="keyword">return</span>(rates_total);
+&nbsp;&nbsp;}
+</pre> <p>Код достаточно подробно прокомментирован. Индикатор может рисовать профиль сразу для нескольких дней. Все они рисуются в цикле по количеству отображаемых дней. </p> <p><br/></p> <h3>Разбор основного алгоритма<br/></h3> <p>Давайте разберем алгоритм вышеприведенного кода более детально. Каждый отдельный день рисуется таким образом: </p> <ul> <li>в зависимости от периода графика, на котором запущен индикатор, получаем бары, входящие в отображаемый день:<br/> <pre class="code"><span class="predefines">MqlRates</span> day_rate[];
+<span class="keyword">if</span>(<span class="functions">CopyRates</span>(<span class="functions">Symbol</span>(), <span class="macro">PERIOD_D1</span>, day, <span class="number">1</span>, day_rate)==-<span class="number">1</span>)
+&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>(prev_calculated);
+
+<span class="predefines">MqlRates</span> bars_in_day[];
+<span class="keyword">datetime</span> start_time=day_rate[<span class="number">0</span>].time+<span class="functions">PeriodSeconds</span>(<span class="macro">PERIOD_D1</span>)-<span class="number">1</span>;
+<span class="keyword">datetime</span> stop_time=day_rate[<span class="number">0</span>].time;
+
+<span class="keyword">if</span>(<span class="functions">CopyRates</span>(<span class="functions">Symbol</span>(), <span class="macro">PERIOD_CURRENT</span>, start_time, stop_time, bars_in_day)==-<span class="number">1</span>)
+&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>(prev_calculated);
+</pre></li> <li>в цикле по количеству внутридневных баров<br/> <pre class="code"><span class="keyword">int</span> size=<span class="functions">ArraySize</span>(bars_in_day);
+<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;size; i++)
+</pre></li> <ul> <li>для текущего бара, выбранного в цикле, рассчитываем индексы начала и конца диапазона цен, в котором расположен выбранный бар внутри дневного бара<br/> <pre class="code"><span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; start_box=(<span class="keyword">int</span>)((bars_in_day[i].low-low_day)/point);&nbsp;&nbsp;<span class="comment">// индекс первой ячейки массива цен, соответствующей цене Low текущего бара i</span>
+<span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; stop_box =(<span class="keyword">int</span>)((bars_in_day[i].high-low_day)/point); <span class="comment">// индекс последней ячейки массива цен, соответствующей цене High текущего бара i</span>
+</pre></li> <li>определяем сессию, в которой расположен выбранный в цикле бар, и в соответствующем массиве увеличиваем счётчики баров во всех ячейках, расположенных в диапазоне цен внутридневного бара<br/> <pre class="code"><span class="predefines">MqlDateTime</span> bar_time;
+<span class="functions">TimeToStruct</span>(bars_in_day[i].time, bar_time);
+<span class="keyword">uint</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hour=bar_time.hour;
+
+<span class="keyword">if</span>(hour&gt;=InpAmericaStartHour)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> ind=start_box; ind&lt;stop_box; ind++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;boxes_america[ind]++;
+&nbsp;&nbsp;}
+<span class="keyword">else</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(hour&gt;=InpEuropeStartHour &amp;&amp; hour&lt;InpAmericaStartHour)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> ind=start_box; ind&lt;stop_box; ind++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;boxes_europe[ind]++;
+&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> ind=start_box; ind&lt;stop_box; ind++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;boxes_asia[ind]++;
+&nbsp;&nbsp;&nbsp;}
+</pre></li> </ul> </ul> <ul> <li>после прохождения в цикле по всем внутридневным барам, в каждой ячейке массивов сессий будет записано число баров, побывавших на этой цене. Все массивы сессий будут иметь одинаковый размер, равный количеству пунктов цены в дневном диапазоне от Low до High дневной свечи, но заполнены массивы будут каждый в соответствии с тем, какие уровни цены были в эту сессию достигнуты.<br/></li> <li>Далее в цикле по всем заполненным массивам сессий на график выводятся графические объекты по рассчитанным координатам:<br/> <pre class="code"><span class="keyword">for</span>(<span class="keyword">int</span> ind=<span class="number">0</span>; ind&lt;day_size; ind++)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(boxes_asia[ind]&gt;<span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span>&nbsp;&nbsp; price=low_day+ind*point;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time1=day_rate[<span class="number">0</span>].time;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time2=time1+boxes_asia[ind]*box_length*InpMultiplier;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span>&nbsp;&nbsp; prefix=ExtPrefixUniq+<span class="string">"_"</span>+day_prefix+<span class="string">"_Asia_"</span>+<span class="functions">StringFormat</span>(<span class="string">"%.5f"</span>, price);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DrawBox(prefix, price, time1, time2, InpAsiaSession);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+
+<span class="keyword">for</span>(<span class="keyword">int</span> ind=<span class="number">0</span>; ind&lt;day_size; ind++)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(boxes_europe[ind]&gt;<span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span>&nbsp;&nbsp; price=low_day+ind*point;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time1=day_rate[<span class="number">0</span>].time+boxes_asia[ind]*box_length*InpMultiplier;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time2=time1+boxes_europe[ind]*box_length*InpMultiplier;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span>&nbsp;&nbsp; prefix=ExtPrefixUniq+<span class="string">"_"</span>+day_prefix+<span class="string">"_Europe_"</span>+<span class="functions">StringFormat</span>(<span class="string">"%.5f"</span>, price);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DrawBox(prefix, price, time1, time2, InpEuropeSession);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+
+<span class="keyword">for</span>(<span class="keyword">int</span> ind=<span class="number">0</span>; ind&lt;day_size; ind++)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(boxes_america[ind]&gt;<span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span>&nbsp;&nbsp; price=low_day+ind*point;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time1=day_rate[<span class="number">0</span>].time+(boxes_asia[ind]+boxes_europe[ind])*box_length*InpMultiplier;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">datetime</span> time2=time1+boxes_america[ind]*box_length*InpMultiplier;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span>&nbsp;&nbsp; prefix=ExtPrefixUniq+<span class="string">"_"</span>+day_prefix+<span class="string">"_America_"</span>+<span class="functions">StringFormat</span>(<span class="string">"%.5f"</span>, price);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DrawBox(prefix, price, time1, time2, InpAmericaSession);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}</pre></li> <li>В итоге на графике будет нарисован профиль рынка для одного дня.<br/></li> </ul> <p>Функция, рисующая отрезки линий:</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Draw color box&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> DrawBox(<span class="keyword">string</span> bar_prefix, <span class="keyword">double</span> price, <span class="keyword">datetime</span> time1, <span class="keyword">datetime</span> time2, <span class="keyword">color</span> clr)
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="functions">ObjectCreate</span>(<span class="number">0</span>, bar_prefix, <span class="macro">OBJ_RECTANGLE</span>, <span class="number">0</span>, time1, price, time2, price);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, bar_prefix, <span class="macro">OBJPROP_COLOR</span>, clr);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, bar_prefix, <span class="macro">OBJPROP_STYLE</span>, <span class="macro">STYLE_SOLID</span>);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, bar_prefix, <span class="macro">OBJPROP_WIDTH</span>, <span class="number">1</span>);
+&nbsp;&nbsp; <span class="functions">ObjectSetString</span>(<span class="number">0</span>, bar_prefix, <span class="macro">OBJPROP_TOOLTIP</span>, <span class="string">"\n"</span>);
+&nbsp;&nbsp; <span class="functions">ObjectSetInteger</span>(<span class="number">0</span>, bar_prefix, <span class="macro">OBJPROP_BACK</span>, <span class="macro">true</span>);
+&nbsp;&nbsp;}
+</pre> <p>Отрезки рисуются графическими объектами-прямоугольниками (в принципе, можно рисовать и трендовыми линиями, отключив для них свойства "луч влево" и "луч вправо"). В функцию передаются координаты прямоугольника в виде времени его начала и конца, и цены, которая одинакова для обеих сторон прямоугольника. Таким образом, получается обычная линия с указанным во входных параметрах цветом.</p> <p>Запустив индикатор на графике EURUSD M30 можно увидеть такую картину профиля рынка:</p> <p style="text-align:center;"> <img width="707" height="375" src="https://c.mql5.com/2/202/terminal64_atbx0MwvSc.png" style="vertical-align:middle;" loading="lazy" alt/></p> <p>Если от каждого из предыдущих дней, от его точки Point of Control провести линии, то отчётливо можно увидеть уровни "справедливой" цены, которые вполне могут послужить уровнями поддержки и сопротивления, или притяжения (гэп текущего дня вполне вероятно, что может быть закрыт, а это — POC вчерашнего дня).</p> <p><br/></p> <h3 id="node04">Заключение</h3> <p>Изучая Market Profile, вы сможете лучше понимать рыночную динамику, выявлять ключевые уровни и находить эффективные точки для входа и выхода из позиций.&nbsp; Профиль рынка отличается от тикового графика, объединяя цену, объем и время в удобной форме. Он позволяет выявлять ценовые уровни равновесия и анализировать, кто контролирует рынок в данный момент. Это предоставляет преимущество в принятии торговых решений, позволяя адаптироваться к изменению оценки справедливой стоимости трейдерами. </p> <p>Ознакомившись с индикатором Market Profile, поставляемым с клиентским терминалом MetaTrader 5, теперь мы понимаем всю простоту его работы, понимаем логику его построения, и можем использовать его, как для оценки рыночной ситуации в предоставленном виде, так и создать на его основе нечто более продвинутое и сложное.</p> <p>Для полноты понимания и сравнения с иными концепциями, можно ознакомиться с другими работами по Профилю рынка, представленными на ресурсе <a href="/" target="_blank">mql5.com</a>:</p> <ul> <li><a href="/ru/articles/17" target="_blank">Инструмент "Ценовая гистограмма" (Рыночный профиль) и его реализация на MQL5</a></li> <li><a href="/ru/code/9777" target="_blank">Рыночный профиль ( Market Profile) — индикатор для MetaTrader 4</a></li> <li><a href="/ru/code/8115" target="_blank">MarketProfile — индикатор для MetaTrader 4</a></li> <li><a href="/ru/code/501" target="_blank">MarketProfile — индикатор для MetaTrader 5</a><br/></li> </ul> <p>Полностью прокомментированный код индикатора, рассмотренного в статье, прикреплён внизу страницы — его можно скачать и самостоятельно изучить, опираясь на комментарии в коде.</p>Полный исходный код проекта со всеми файлами, описанными в статье, доступен в <span><a href="/go?link=https://forge.mql5.io/artmedia70/Article-16461-MQL5-Market-Profile-Introduction" title="https://forge.mql5.io/artmedia70/Article-12953-MQL5-SymbolInfo-StringFormat" rel="nofollow" target="_blank">репозитории</a></span>. <p><br/></p>
+      </div>
+<div id="cb_16461" class="attachBlock">
+  <strong>Прикрепленные файлы</strong> |
+  <div class="grouped-attachments-help">
+    <a title="Загрузить все вложения в одном ZIP-архиве" href="/ru/articles/download/16461.zip">
+      <i class="attach-icon attach-icon_zip"></i>Загрузить ZIP
+    </a>
+  </div>
+    <div class="attachItem">
+      <a title="Скачать MarketProfile.mq5" href="/ru/articles/download/16461/marketprofile.mq5"><i class="attach-icon attach-icon_mq5"></i>MarketProfile.mq5</a>
+      <span class="attachSize">(25.99 KB)</span>
+    </div>
+</div>
+    </div>
+
+  <div class="copyright">
+    <p><strong>Предупреждение:</strong> все права на данные материалы принадлежат MetaQuotes Ltd. Полная или частичная перепечатка запрещена.</p>
+      <p>Данная статья написана пользователем сайта и отражает его личную точку зрения. Компания MetaQuotes Ltd не несет ответственности за достоверность представленной информации, а также за возможные последствия использования описанных решений, стратегий или рекомендаций.</p>
+  </div>
+
+
+
+    <div class="article__author-with-articles">
+      
+
+
+<div class="article-footer__author">
+  <div class="article-footer__author-avatar">
+    <img id="avatar" src="https://c.mql5.com/avatar/2022/7/62C4775C-ABD6_big.jpg" title="Artyom Trishkin" alt="Artyom Trishkin" loading="lazy" width="164" height="164">
+  </div>
+  <div class="article-footer__author-content">
+    <div class="article-footer__author-name">
+      <a href="/ru/users/artmedia70" title="Artyom Trishkin">Artyom Trishkin</a>
+    </div>
+    <div class="article-footer__author-info">
+      <ul>
+          <li>
+            <i title="Живёт" class="icons-profile icons-profile_geo"></i>
+            <a target="_blank" rel="nofollow" title="Живёт" href="https://www.mql5.com/go?https://maps.google.com/?z=4&q=%d0%a0%d0%be%d1%81%d1%81%d0%b8%d1%8f">Россия</a>
+          </li>
+        <li>
+          <i title="Рейтинг" class="icons-profile icons-profile_statistics"></i>
+          <a title="Рейтинг" href="/ru/users/artmedia70/achievements">87275</a>
+        </li>
+      </ul>
+    </div>
+    <div class="article-footer__author-contacts">
+          <li title="Facebook"><a class="icons-networks icons-networks_fb-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://www.facebook.com/profile.php?id=100007373025859"></a></li>
+    <li title="LinkedIn"><a class="icons-networks icons-networks_linkedin-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://ru.linkedin.com/pub/artyom-trishkin/97/144/604/"></a></li>
+    <li title="X"><a class="icons-networks icons-networks_tw-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://x.com/artmedia70"></a></li>
+    <li title="В Контакте"><a class="icons-networks icons-networks_vk-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://vk.me/artmedia70"></a></li>
+
+    </div>
+    <div class="article-footer__author-bio">Пишу скрипты, индикаторы, советники на mql5 <br/> ------------------------------------------------ <br/> По всем вопросам, пожалуйста обращайтесь в личных сообщениях. <br/> ------------------------------------------------ <br/> For all questions, please contact personal messages. <br/> ===============================================</div>
+  </div>
+</div>
+
+      <div class="other-author-articles ui">
+        <h4 class="other-author-articles__title">Другие статьи автора</h4>
+        <ul class="other-author-articles__list">
+          <li><a href="/ru/articles/21732" data-fz-event="MQL5+Article+From+Author+Article">Код, слёзы и Algo Forge</a></li>
+          <li><a href="/ru/articles/21319" data-fz-event="MQL5+Article+From+Author+Article">Индикатор CandleCode: Формализация свечных моделей в MQL5</a></li>
+          <li><a href="/ru/articles/20940" data-fz-event="MQL5+Article+From+Author+Article">Забытая классика объёма: индикатор &quot;Finite Volume Elements&quot; для современных рынков</a></li>
+          <li><a href="/ru/articles/20795" data-fz-event="MQL5+Article+From+Author+Article">Математика волатильности: Почему индикатор GRI достоин возвращения в ваш торговый терминал</a></li>
+          <li><a href="/ru/articles/20596" data-fz-event="MQL5+Article+From+Author+Article">Таблицы в парадигме MVC на MQL5: Таблица корреляции символов</a></li>
+          <li><a href="/ru/articles/20147" data-fz-event="MQL5+Article+From+Author+Article">Автоматизация запуска терминала для выполнения сервисных задач</a></li>
+          <li><a href="/ru/articles/19979" data-fz-event="MQL5+Article+From+Author+Article">Таблицы в парадигме MVC на MQL5: настраиваемые и сортируемые столбцы таблицы</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+  <div class="article__last-comments" id="articleAdditional">
+    
+
+<div class="comments-preview">
+    <div class="title">
+      <span></span><b>
+         Последние комментарии |
+ <a href="/ru/forum/477309">Перейти к обсуждению на форуме трейдеров</a>
+      </b>
+        (9)
+    </div>
+    <div>
+        
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/avatar_na2.png" srcset="https://c.mql5.com/avatar/avatar_na2_big.png 2x" alt="Forex210" title="Forex210" data-user-login="Forex210" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/ru/users/forex210" data-user-login="Forex210">Forex210</a></b>
+              |
+              <span class="comment__date">4 дек. 2025 в 09:42</span>
+              <a id="comment_58653951"></a>
+              
+            </div>
+            <div class="content" id="content58653951">
+              ПОЖАЛУЙСТА, подтвердите, что это тот же самый, который используется в мобильном приложении mt5?????
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2012/5/4FC60566-2EEC.jpg" srcset="https://c.mql5.com/avatar/2012/5/4FC60566-2EEC_big.jpg 2x" alt="Rashid Umarov" title="Rashid Umarov" data-user-login="Rosh" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/ru/users/rosh" data-user-login="Rosh">Rashid Umarov</a></b>
+              |
+              <span class="comment__date">4 дек. 2025 в 11:10</span>
+              <a id="comment_58654635"></a>
+              
+            </div>
+            <div class="content" id="content58654635">
+              Да, алгоритм вычисления одинаков.
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2021/3/6062D850-3704.jpg" srcset="https://c.mql5.com/avatar/2021/3/6062D850-3704_big.jpg 2x" alt="Gyanbote Anand Ratilal" title="Gyanbote Anand Ratilal" data-user-login="anandgyanbote" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/ru/users/anandgyanbote" data-user-login="anandgyanbote">Gyanbote Anand Ratilal</a></b>
+              |
+              <span class="comment__date">11 мар. 2026 в 14:28</span>
+              <a id="comment_59357120"></a>
+              
+            </div>
+            <div class="content" id="content59357120">
+              <p>Индикатор хороший и очень полезный для трейдеров,</p> <p>но после компиляции он не выдает ошибку,</p> <p>но после применения на графике mt5, mt5 зависает, нужно закрыть, появляется окно не отвечающее на запросы, пожалуйста</p> <p>решите эту проблему</p>
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2021/3/6062D850-3704.jpg" srcset="https://c.mql5.com/avatar/2021/3/6062D850-3704_big.jpg 2x" alt="Gyanbote Anand Ratilal" title="Gyanbote Anand Ratilal" data-user-login="anandgyanbote" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/ru/users/anandgyanbote" data-user-login="anandgyanbote">Gyanbote Anand Ratilal</a></b>
+              |
+              <span class="comment__date">11 мар. 2026 в 14:29</span>
+              <a id="comment_59357127"></a>
+              
+            </div>
+            <div class="content" id="content59357127">
+              <div class="fquote"> <strong><span style="color:#42639C;">Rashid Umarov <a href="/en/forum/491030#comment_58654633">#</a></span>:</strong><br/> Да, алгоритм расчета тот же. </div> <p>Индикатор хороший и очень полезный для трейдеров,</p> <p>но после компиляции он не выдает ошибку,</p> <p>но после применения на графике mt5, mt5 зависает, нужно закрыть, появляется окно "не отвечает", пожалуйста, решите эту проблему.</p> <p>решите эту проблему</p>
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2022/7/62C4775C-ABD6.jpg" srcset="https://c.mql5.com/avatar/2022/7/62C4775C-ABD6_big.jpg 2x" alt="Artyom Trishkin" title="Artyom Trishkin" data-user-login="artmedia70" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/ru/users/artmedia70" data-user-login="artmedia70">Artyom Trishkin</a></b>
+              |
+              <span class="comment__date">11 мар. 2026 в 17:37</span>
+              <a id="comment_59358618"></a>
+              
+            </div>
+            <div class="content" id="content59358618">
+              <div class="fquote"> <b><span style="color:#42639C;">Gyanbote Anand Ratilal <a href="/ru/forum/477309#comment_59357127">#</a></span>:</b><br/> <p>Индикатор хороший и очень полезный для трейдеров,</p> <p>но после компиляции он не выдает ошибку,</p> <p>но после применения на графике mt5, mt5 зависает, нужно закрыть, появляется окно "не отвечает", пожалуйста, решите эту проблему.</p> <p>решите эту проблему</p> </div> <p>Проверил. Оба варианта индикатора нормально запускаются на графике.</p> <p>Нужно больше данных о том, где и как Вы его запускаете.</p>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+  </div>
+
+
+    <div class="articles-bottom-list" id="articleAdditional">
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Построение модели для ограничения диапазона сигналов по тренду (Часть 5): Система уведомлений (Часть I)" src="https://c.mql5.com/2/81/Building_A_Candlestick_Trend_Constraint_Model_Part_5___LOGO.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/ru/articles/14963" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Построение модели для ограничения диапазона сигналов по тренду (Часть 5): Система уведомлений (Часть I)</a>
+                <div class="articles-bottom-list__desc">Мы разобьем основной код MQL5 на отдельные фрагменты, чтобы проиллюстрировать интеграцию Telegram и WhatsApp для получения уведомлений о сигналах от индикатора Trend Constraint, который мы создаем в этой серии статей. Статья будет полезна трейдерам, а также начинающим и опытным разработчикам. Сначала мы рассмотрим настройку уведомлений в MetaTrader 5 и пользу их подключения для пользователя. На основе этого разработчики смогут отметить для себя определенные моменты для дальнейшего применения в своих системах.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Машинное обучение и Data Science (Часть 24): Прогнозирование временных рядов на форексе с помощью обычных ИИ-моделей" src="https://c.mql5.com/2/81/Data_Science_and_Machine_Learning_Part_24__LOGO.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/ru/articles/15013" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Машинное обучение и Data Science (Часть 24): Прогнозирование временных рядов на форексе с помощью обычных ИИ-моделей</a>
+                <div class="articles-bottom-list__desc">На валютном рынке сложно предсказать будущие тренды, не имея представления о прошлом. Очень немногие модели машинного обучения способны делать прогнозы на будущее, учитывая прошлые значения. В этой статье мы посмотрим, как можно использовать классические (не временные ряды) модели искусственного интеллекта, чтобы понять рынок.</div>
+              </div>
+          </div>
+        </div>
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Прогнозирование временных рядов с использованием нейронных сетей LSTM: Нормализация цены и токенизация времени" src="https://c.mql5.com/2/82/Creating_Time_Series_Predictions_using_LSTM_Neural_Networks___LOGO.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/ru/articles/15063" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Прогнозирование временных рядов с использованием нейронных сетей LSTM: Нормализация цены и токенизация времени</a>
+                <div class="articles-bottom-list__desc">В статье описывается простая стратегия нормализации рыночных данных с использованием дневного диапазона и обучения нейронной сети для улучшения рыночных прогнозов. Разработанные модели могут использоваться совместно с существующими системами технического анализа или отдельно для прогнозирования общего направления рынка. Структура, изложенная в этой статье, может быть дополнительно усовершенствована техническим аналитиком для разработки моделей, подходящих как для ручных, так и для автоматизированных торговых стратегий.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Циклы и трейдинг" src="https://c.mql5.com/2/103/Cycles_and_Trading___LOGO.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/ru/articles/16494" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Циклы и трейдинг</a>
+                <div class="articles-bottom-list__desc">Эта статья посвящена использованию циклов в трейдинге. В ней мы постараемся разобраться, как можно построить торговую стратегию, основываясь на циклических моделях.</div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+<div class="clear-fix"></div>
+
+<div id='wdausxxqrpvhekbwjrjlhqjghyhesrqqau' class="r6irig5txiuua4k0m r6irig5txiuua4k0m_articles-view gg88d3drb"></div>
+    
+
+<div class="hidden" id="popupRegisterLogin">
+  <div class="register-login-popup">
+    <div class="register-login-popup__header">
+      <img src="https://c.mql5.com/i/registerlandings/logo-2.png" srcset="https://c.mql5.com/i/registerlandings/logo-2_2x.png 2x" alt="MQL5 - Язык торговых стратегий для клиентского терминала MetaTrader 5" loading="lazy" width="74" height="24" />
+    </div>
+    <div class="register-login-popup__content">
+      <div class="register-login-popup__desc">
+        <div class="register-login-popup__title">Вы упускаете торговые возможности:</div>
+        <ul>
+<li>Бесплатные приложения для трейдинга</li>
+<li>8 000+ сигналов для копирования</li>
+<li>Экономические новости для анализа финансовых рынков</li>
+</ul>
+      </div>
+      <div class="register-login-popup__forms ui">
+        <div class="register-login-popup__tabs" id="registerLoginPopupTabs">
+          <span data-id="register" id="registerLoginPopupTab_register" class="register-login-popup__tab register-login-popup__tab_active">Регистрация</span>
+          <span data-id="login" id="registerLoginPopupTab_login" class="register-login-popup__tab">Вход</span>
+        </div>
+        <div id="registerLoginPopupTabContent_register">
+          <div class="ui auth-form__content">
+    
+  <script type='text/javascript'>/*<![CDATA[*/ if (!window.V) var V = []; /*]]>*/</script>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/ru/auth_register_short" id="PopupRegisterquickRegisterForm" onsubmit="PopupRegisterquickRegistration.OnSubmit(this,&#39;ru&#39;);if(Validate(this)) Ajax.form(this,{onready:PopupRegisterquickRegistration.OnSuccessPopup,onerror:PopupRegisterquickRegistration.OnError,onbeginrequest:PopupRegisterquickRegistration.DisableInputs,onendrequest:PopupRegisterquickRegistration.EnableInputs});return(false);" enctype = "multipart/form-data"><input type="hidden" name="__signature" value="b9b58c5d1747bb24db32301298e4b940"/>
+    <div class="auth-form__inputs">
+      <input type="hidden" value="0" name="IsValidate" id="PopupRegisterIsValidate" />
+
+      <!--[if lt IE 10]><div class="note">Придумайте логин:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input type="text" id="PopupRegisterusername" name="username" class="input" maxlength="32" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.CheckUserName();}" onkeyup="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.ValidateUserName(this, 'Укажите корректный логин');}" placeholder="Придумайте логин" title="Может содержать латинские буквы, цифры, точки, тире, символы подчеркивания. Не может начинаться и заканчиваться точкой. Длина: 3-32 символов." onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisterusername'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisterusername',10,'Используйте латинские буквы, допускаются цифры, символы подчеркивания и точки.',validate_username]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisterusername">латиницей и без пробелов</label>
+      </div>
+      <!--[if lt IE 10]><div class="note">Ваш email:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input class="input" type="email" id="PopupRegisteremail" name="email" placeholder="Ваш email" title="Введите email (не более 256 символов). Например: ivan@example.com" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnChange(this);}" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisteremail'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisteremail',10,'Укажите корректный email',validate_email]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisteremail">пароль придет на email</label>
+      </div>
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Register" />
+    </div>
+    <span id="PopupRegisterquickRegisterSubmit">
+      <input type="submit" value="Зарегистрироваться" id="PopupRegisterquickRegisterButton"  title="Зарегистрируйтесь и получите пароль на ваш email" class="button button_yellow"  />
+    </span>
+    <span id="PopupRegisterquickRegisterErrorMessage" class="quick-register-error-message field-validation-error" style="text-align: center; margin-top: 16px; display: none;">
+      Произошла ошибка
+    </span>
+</form>
+    
+</div>
+<div class="auth-social">
+  <ul class="auth-social-list" id="socialList">
+    <li><a onclick="window.fpush({name: 'MQL5+Popup+Register+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/ru/auth_oauth2?provider=Google&amp;amp;return=popup&amp;amp;reg=1" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Войти через Google</a></li>
+  </ul>
+</div>
+<div class="auth-block-agree">
+  <p>
+    Вы принимаете <a target="_blank" href="/ru/about/privacy">политику сайта</a> и <a target="_blank" href="/ru/about/terms">условия использования</a>
+  </p>
+</div>
+
+
+        </div>
+        <div id="registerLoginPopupTabContent_login" class="hidden">
+            <div class="auth-form__text">
+    Если у вас нет учетной записи, <a href="https://www.mql5.com/ru/auth_register" rel="nofollow" style="vertical-align: top">зарегистрируйтесь</a>
+  </div>
+<div class="ui auth-form__content auth-form__content_login" id="loginFormWrapper">
+    
+  <div id="needCookies" class="need-cookies hidden">
+    <div class="danger-box">
+      <p>Для авторизации и пользования сайтом MQL5.com необходимо разрешить использование файлов Сookie.</p>
+<p>Пожалуйста, включите в вашем браузере данную настройку, иначе вы не сможете авторизоваться.</p>
+    </div>
+  </div>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/ru/auth_login" id="loginForm" onsubmit="if(window.quickLogin){return window.quickLogin.onSubmit(this);}var result = Validate(this); if(result) { preventDoubleSubmit(this); } return result;"><input id="RedirectAfterLoginUrl" name="RedirectAfterLoginUrl" type="hidden" value="" /><input id="RegistrationUrl" name="RegistrationUrl" type="hidden" value="" /><input data-val="true" data-val-required="The ShowOpenId field is required." id="ShowOpenId" name="ShowOpenId" type="hidden" value="True" /><input id="TrackingSection" name="TrackingSection" type="hidden" value="Articles" />    <input name="ViewType" type="hidden" value="5" />
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Login" />
+    <!--[if lt IE 10]><div class="note">Ваш логин:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <input class="input qa-login" id="Login" name="Login" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Логин" title="Ваш логин" type="text" value="" />
+      <script type='text/javascript' id='validate_Login'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Login',1,'Введите логин, указанный при регистрации']);});mqGlobal.AddOnReady(function() {V.push(['Login',10,'Email нельзя использовать, введите свой логин, пожалуйста',validateLogin]);}); /*]]>*/</script>
+    </div>
+    <!--[if lt IE 10]><div class="note">Пароль:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <div class="input-with-show">
+        <input autocomplete="off" class="input qa-password" id="Password" name="Password" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Пароль" title="Введите пароль" type="password" />
+        <span class="input-with-show__icon" title="Показать пароль" onclick="if(window.quickLogin){window.quickLogin.showPass(this, 'Показать пароль', 'Скрыть пароль');}"></span>
+      </div>
+      <script type='text/javascript' id='validate_Password'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Password',1,'Введите пароль']);}); /*]]>*/</script>
+    </div>
+    <script type="text/javascript">
+    function validateLogin(input) {
+      console.log('validate login ' + input.value);
+      return !/^\w+([-+.'']{1,2}\w+)* @\w+([-.]\w+)*\.\w+([-.]\w+)*$/i.test(input.value);
+    }
+    </script>
+    <div class="forgot" id="loginForgotBlock"><a id="loginForgotLink" href="https://www.mql5.com/ru/auth_forgotten?return=popup">Забыли логин/пароль?</a></div>
+    <input type="submit" class="button button_yellow qa-submit" id="loginSubmit" value="Вход" title="Войти">
+</form></div>
+
+  <div class="auth-social" id="authSocialBlock">
+    <ul class="auth-social-list" id="socialList">
+      <li><a onclick="window.fpush({name: 'MQL5+Popup+Login+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/ru/auth_oauth2?provider=Google&amp;amp;return=popup" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Войти через Google</a></li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script id="popupSection" type="application/json">{"section": "Articles"}</script>
+<script id="popupTranslate" data-type="translate" type="application/json">
+{
+  "popup":
+  {
+  "EmailTitle" : "Пароль отправлен на {0}",
+  "EmailDescription" : "Войдите, используя полученный пароль и логин, указанный при регистрации",
+  "SubmitButtonText" : "Активировать аккаунт",
+  "RegistrationTip" : "Если вы не получили письмо с паролем, проверьте папку спам или &lt;a href={0}&gt;повторите регистрацию&lt;/a&gt;"
+  }
+}
+</script>
+
+    
+
+    
+
+
+    </article>
+  </div>
+
+
+
+<div aria-hidden="true" class="footer  desktop" id="footer">
+  <ul class="links  links_desktop">
+      <li id="navFooterCommunity">
+        <nav>
+          <ul>
+            <li><a href="https://web.metatrader.app/terminal?mode=demo&amp;lang=ru" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Footer+Trading">Онлайн трейдинг / Вебтерминал</a></li>
+            <li><a href="/ru/code" data-fz-event="MQL5+Footer+CodeBase">Бесплатные индикаторы и советники</a></li>
+            <li><a href="/ru/articles" data-fz-event="MQL5+Footer+Articles">Статьи о программировании и трейдинге</a></li>
+            <li><a href="/ru/job" data-fz-event="MQL5+Footer+Job">Заказать торговый советник и индикатор</a></li>
+            <li><a href="/ru/market" data-fz-event="MQL5+Footer+Market">Купить торговый робот и индикатор</a></li>
+            <li><a href="/ru/signals" data-fz-event="MQL5+Footer+Signals">Торговые сигналы форекс</a></li>
+            <li><a href="/ru/vps" data-fz-event="MQL5+Footer+VPS">Forex VPS для торговли</a></li>
+            <li><a href="/ru/forum" data-fz-event="MQL5+Footer+Forum">Форум трейдеров</a></li>
+            <li><a href="/ru/blogs" data-fz-event="MQL5+Footer+Blogs">Блоги трейдеров</a></li>
+            <li><a rel="nofollow" href="/ru/charts" data-fz-event="MQL5+Footer+Charts">Графики</a></li>
+            <li><a href="/ru/widgets" data-fz-event="MQL5+Footer+Widgets">Бесплатные виджеты</a></li>
+          </ul>
+        </nav>
+      </li>
+      <li id="navFooterMt5">
+        <nav>
+          <ul>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com" data-fz-event="MQL5+Footer+MetaTrader+5">Торговая платформа <span class="nobr">MetaTrader 5</span></a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/releasenotes" data-fz-event="MQL5+Footer+MetaTrader+5">Последние обновления <span class="nobr">MetaTrader 5</span></a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/news" data-fz-event="MQL5+Footer+MetaTrader+5">Новости, внедрения и технологии</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/terminal/help" data-fz-event="MQL5+Footer+MetaTrader+5">Руководство пользователя <span class="nobr">MetaTrader 5</span></a></li>
+            <li><a href="/ru/docs" data-fz-event="MQL5+Footer+Docs">Язык торговых стратегий MQL5</a></li>
+            <li><a rel="nofollow noopener" href="https://cloud.mql5.com" data-fz-event="MQL5+Footer+Cloud">MQL5 Cloud Network</a></li>
+            <li><a rel="noopener" href="https://forge.mql5.io/?lang=ru-RU" data-fz-event="MQL5+Footer+Forge" target="_blank">MQL5 Algo Forge</a></li>
+              <li><a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Footer">Скачать <span class="nobr">MetaTrader 5</span></a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/terminal/help/start_advanced/installation" data-fz-event="MQL5+Footer+MetaTrader+5">Установка платформы</a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/terminal/help/start_advanced/deinstallation" data-fz-event="MQL5+Footer+MetaTrader+5">Удаление программы</a></li>
+          </ul>
+        </nav>
+
+      </li>
+    <li id="navFooterWebsite">
+        <nav>
+          <ul>
+            <li><a rel="nofollow" href="/ru/about" data-fz-event="MQL5+Footer+About">О проекте</a></li>
+              <li><a href="/ru/wall" data-fz-event="MQL5+Footer+Wall">Хроника сайта</a></li>
+            <li><a rel="nofollow" href="/ru/about/terms" data-fz-event="MQL5+Footer+About">Условия использования</a></li>
+            <li><a rel="nofollow" href="/ru/about/autopayments" data-fz-event="MQL5+Footer+About">Соглашение о рекуррентных платежах</a></li>
+            <li><a rel="nofollow" href="/ru/about/agencyagreement" data-fz-event="MQL5+Footer+About">Агентский договор-оферта</a></li>
+            <li><a rel="nofollow" href="/ru/about/privacy" data-fz-event="MQL5+Footer+About">Политика конфиденциальности и защиты данных</a></li>
+            <li><a rel="nofollow" href="/ru/about/cookies" data-fz-event="MQL5+Footer+About">Политика в отношении cookie-файлов</a></li>
+            <li>
+                <a rel="nofollow" href="/ru/contact" data-fz-event="MQL5+Footer+Contacts">Контакты и обращения</a>
+            </li>
+          </ul>
+        </nav>
+    </li>
+
+      <li>
+        <div class="footer__products">
+          <div class="footer__product">
+            <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com" class="footer__product-name">MetaTrader 5</a>
+            <div class="footer__product-links">
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon windows" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Скачать MetaTrader 5 для Windows</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/MetaTrader5.pkg.zip?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon macos" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Скачать MetaTrader 5 для MacOS</div></a>
+            <a rel="nofollow noopener" href="https://www.mql5.com/ru/articles/625?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon linux" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Скачать MetaTrader 5 для Linux</div></a>
+            <a rel="nofollow noopener" href="https://web.metatrader.app/terminal?mode=demo&amp;lang=ru" class="icon web"><div  class="footer__product-link-hint footer__product-link-hint-short">Открыть MetaTrader 5 WebTerminal</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/ios?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=ru" class="icon ios" data-fz-event="MetaTrader+5+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/RXd-JJC1I1d.png)">Отсканируйте для установки из App Store</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=ru" class="icon android" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/TrE06p2W-9d.png)">Отсканируйте для установки из Google Play</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon huawei" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ZRt&#x2B;zI1l&#x2B;8O.png)">Отсканируйте для установки из Huawei AppGallery</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon ark" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/L0Q9oag&#x2B;3eE.png)">Отсканируйте для получения файла APK для Android</div></a>
+            </div>
+          </div>
+          <div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com/en/news/2270" class="footer__product-name">MQL5 Channels</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon ios" data-fz-event="MQL5+Channels+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Nz0etpAYpcO.png)">Отсканируйте для установки из App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon android" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/8re&#x2B;UwV7BVs.png)">Отсканируйте для установки из Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Su&#x2B;fe4n374e.png)">Отсканируйте для установки из Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mql5channels/mql5channels.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/G6Mg4NfCPzO.png)">Отсканируйте для получения файла APK для Android</div></a>
+              </div>
+            </div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.tradays.com/ru/download?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MQL5+Footer+Download+Tradays" class="footer__product-name">Economic Calendar</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon ios" data-fz-event="Tradays+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/e0xuSVTw-1E.png)">Отсканируйте для установки из App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon android" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/YuEbj-vmYap.png)">Отсканируйте для установки из Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CrS7bbDAdAO.png)">Отсканируйте для установки из Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/tradays/tradays.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/VZi8YPIb2op.png)">Отсканируйте для получения файла APK для Android</div></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__networks">
+          <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow" title="Facebook"><i class="icons-networks icons-networks_fb"></i></a>
+          <a href="https://t.me/mql5ru" target="_blank" rel="nofollow" title="Telegram"><i class="icons-networks icons-networks_tg"></i></a>
+          <a href="https://x.com/mql5com" target="_blank" rel="nofollow" title="X (Twitter)"><i class="icons-networks icons-networks_tw"></i></a>
+          <a href="https://www.youtube.com/@MetaQuotesOfficial" target="_blank" rel="nofollow" title="YouTube"><i class="icons-networks icons-networks_yt"></i></a>
+          <a href="https://www.linkedin.com/company/mql5" target="_blank" rel="nofollow" title="LinkedIn"><i class="icons-networks icons-networks_linkedin"></i></a>
+          <span>Подпишитесь на новости алготрейдинга</span>
+        </div>
+  
+        <div class="footer__other">
+          <div class="footer__not-a-broker">Не является брокером, нет реальных торговых счетов</div>
+          <div class="copyright">35 Dodekanisou str, Germasogeia, 4043,&nbsp;Limassol,&nbsp;Cyprus</div>
+          <div class="copyright">Copyright 2000-2026, <span class="nobr">MetaQuotes Ltd</span></div>
+        </div>
+      </li>
+  </ul>
+</div>
+
+
+
+<div class="shadow-layer" id="layer"></div>
+    
+
+  <div class="b-fixed-mt" id="bFixedMt" style="display: none;">
+    
+  </div>
+
+
+<script type='text/javascript'>
+		(function (a, e, f, g, b, c, d) { a[b] || (a.FintezaCoreObject = b, a[b] = a[b] || function () { (a[b].q = a[b].q || []).push(arguments) }, a[b].l = 1 * new Date, c = e.createElement(f), d = e.getElementsByTagName(f)[0], c.async = !0, c.defer = !0, c.src = g, d && d.parentNode && d.parentNode.insertBefore(c, d)) })
+      (window, document, "script", "/ff/core.js", "fz");
+		window.fz("register", "website", {
+      id: "sqjxkxkswybhifrohpyooonwgbvsfzmayq",
+			trackLinks: true
+		});
+        mqGlobal.AddOnReady(function () { Mql5Cookie.init('mql5.com', '5089796886211619498'); });
+mqGlobal.AddOnReady(function(){if(!window.Pocket){window.Pocket=new PocketManager();}});mqGlobal.AddOnReady(function(){if(!window.translateManager){window.translateManager=new Translate(undefined,'Ошибка: не удалось выполнить перевод. Пожалуйста, повторите попытку позже.');}if(document.querySelectorAll){var translateElements=document.querySelectorAll(".translateMenu");if(translateElements){var i=0,count=translateElements.length;for(i;i<count;i++){(function(i){var contentid=dataset(translateElements[i],"contentid"),sourcelang=dataset(translateElements[i],"sourcelang"),targetlang=dataset(translateElements[i],"targetlang"),moduleid=parseInt(dataset(translateElements[i],"moduleid")),typeid=parseInt(dataset(translateElements[i],"typeid")),entityid=parseInt(dataset(translateElements[i],"entityid"));Core.AddHandler(translateElements[i],"mouseover",function(){return translateManager.SetMenu(this,contentid,sourcelang,targetlang,moduleid,typeid,entityid);});})(i);}}}});window.fz("show","wdausxxqrpvhekbwjrjlhqjghyhesrqqau");window.mqGlobal.AddOnLoad(function(){window.fpush('MQL5+Article+Open');Articles.CheckOnScrollDown();});mqGlobal.AddOnReady(function(){window.PopupRegisterquickRegistration=new QuickRegistration('PopupRegister','Popup+Register','Articles');});function validate_username(input){var reg=/^([a-z0-9]){1}([\-._a-z0-9]){1,30}([\-_a-z0-9]){1}$/i,value=input.value,result=true;if(reg.test(value)){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Login',unit:'section',value:'Articles'});}return result;}function validate_email(input){var reg=/^\w+([-+.'']{1,2}\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/i,value=input.value,result=true,length_value=value.length;if(reg.test(value)&&length_value>=1&&length_value<=40){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Email',unit:'section',value:'Articles'});}return result;};mqGlobal.AddOnReady(function(){var username=$('PopupRegisterusername'),email=$('PopupRegisteremail');if(username)username.value='';if(email)email.value='';});mqGlobal.AddOnReady(function(){window.quickLogin=new QuickLogin('Popup+Login','Articles');});mqGlobal.AddOnLoad(function(){window.showLoginRegisterPopupAtEnd();});mqGlobal.AddOnLoad(function(){window.tooltipUserInfo.init();});mqGlobal.AddOnReady(function(){{window.initHeaderSearch('','https://www.mql5.com/ru/search');}});</script><script type="text/javascript">mqGlobal.AddOnReady(function(){window.initSuggestions("headerSearchKeyword","ru","https://search.mql5.com/api/query","https://www.mql5.com/ru/users_search/suggestion");});window.fz("show","vgckrufggwxdtfscpyalmenexmvhljduja");mqGlobal.AddOnReady(function(){window.floatVerticalPanelNode=FloatVerticalPanel('Сайт использует cookie-файлы. Узнайте больше о нашей <a href="/ru/about/cookies">политике по использованию cookie-файлов</a>.','cookie_accept');});							if (typeof Attach !== "undefined")
+			Attach.setAcceptFilter(".zip, .txt, .log, .mqh, .ex5, .mq5, .mq4, .mqproj, .ex4, .mt5, .set, .tpl, .cl, .py, .sqlite, .csv, .ini, .ipynb, .onnx, .gif, .png, .jpg, .jpeg, .mp4, .webm");
+	</script>
+
+<script type="application/ld&#x2B;json">
+		[
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"url": "https://www.mql5.com",
+				"logo": "https://c.mql5.com/i/community/logo_mql5-2.png",
+				"sameAs": [
+					"https://www.facebook.com/mql5.community",
+					"https://www.x.com/mql5com",
+					"https://www.youtube.com/user/MetaQuotesOfficial"
+				 ]
+			}
+		
+, 
+{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"Форум","description":"Обсуждение торговых стратегий и автоматического трейдинга. MQL5.community  крупнейший форум по форексу","url":"https://www.mql5.com/ru/forum","children":[]},{"@type":"SiteNavigationElement","position":2,"name":"Маркет","description":"MetaTrader Market - магазин торговых роботов, индикаторов, книг и журналов по трейдингу.","url":"https://www.mql5.com/ru/market","children":[]},{"@type":"SiteNavigationElement","position":3,"name":"Сигналы","description":"Социальный трейдинг, копирование сделок и мониторинг счетов в MetaTrader - Торговые сигналы на MQL5.com","url":"https://www.mql5.com/ru/signals","children":[]},{"@type":"SiteNavigationElement","position":4,"name":"Фриланс","description":"Заказать торговых роботов, технические индикаторы и программы для автоматического трейдинга. Работа на форексе. Фриланс-сервис на MQL5.com. Нанять на работу специалистов и экспертов по MetaTrader","url":"https://www.mql5.com/ru/job","children":[]},{"@type":"SiteNavigationElement","position":5,"name":"Котировки","description":"","url":"https://www.mql5.com/ru/quotes/overview","children":[]},{"@type":"SiteNavigationElement","position":6,"name":"MetaTrader","description":"","url":"https://www.metatrader.com","children":[]},{"@type":"SiteNavigationElement","position":7,"name":"Вебтерминал","description":"Вебтерминал для торговой плафтормы MetaTrader. Торгуйте на форекс рынке.","url":"https://web.metatrader.app/terminal?mode=demo","children":[]},{"@type":"SiteNavigationElement","position":8,"name":"Календарь","description":"","url":"https://www.mql5.com/ru/economic-calendar","children":[]},{"@type":"SiteNavigationElement","position":9,"name":"VPS","description":"","url":"https://www.mql5.com/ru/vps","children":[]},{"@type":"SiteNavigationElement","position":10,"name":"Статьи","description":"","url":"https://www.mql5.com/ru/articles","children":[]},{"@type":"SiteNavigationElement","position":11,"name":"CodeBase","description":"Скачать торговые роботы, технические индикаторы, скрипты в исходном коде - Библиотека кодов на MQL5 для MetaTrader 5","url":"https://www.mql5.com/ru/code","children":[]},{"@type":"SiteNavigationElement","position":12,"name":"Algo Forge","description":"","url":"https://forge.mql5.io","children":[]},{"@type":"SiteNavigationElement","position":13,"name":"Документация","description":"Справочник MetaQuotes Language 5 (MQL5) - Документация на MQL5.com","url":"https://www.mql5.com/ru/docs","children":[]}]}		
+,
+{"@context":"https://schema.org","@type":"TechArticle","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.mql5.com/ru/articles/16461"},"headline":"Изучаем индикатор рыночного профиля  Market Profile: Что это и как устроен?","image":["https://c.mql5.com/2/202/OCCqrxbjV6.png","https://c.mql5.com/2/202/7kQMWwPwYX.png","https://c.mql5.com/2/202/8q3fZvwF3R.png","https://c.mql5.com/2/202/XaePNjPn8k.png","https://c.mql5.com/2/202/mZuDkksI78.png","https://c.mql5.com/2/202/TnQHOROKN2.png","https://c.mql5.com/2/202/XXsRkrcOru.png","https://c.mql5.com/2/202/wNNAEXRrL6.png","https://c.mql5.com/2/202/Market_Profile_indexes__1.png","https://c.mql5.com/2/202/Market_Profile_indexes1.png","https://c.mql5.com/2/202/terminal64_atbx0MwvSc.png"],"datePublished":"2024-11-28T15:55:27+00:00Z","dateModified":"2026-03-24T08:41:49+00:00Z","author":{"@type":"Person","name":"Artyom Trishkin","url":"https://www.mql5.com/ru/users/artmedia70"},"editor":{"@type":"Organization","name":"MetaQuotes","url":"https://www.mql5.com/ru/users/metaquotes","address":{"@type":"PostalAddress","addressCountry":"CY"}},"publisher":{"@type":"Organization","name":"MQL5 Community","url":"https://www.mql5.com","logo":{"@type":"ImageObject","url":"https://c.mql5.com/i/community/logo_mql5-2.png"}},"description":"Сегодня познакомимся с \"Профилем рынка\". Узнаем что лежит за этим названием, попробуем разобраться в принципах работы с Профилем и рассмотрим представленную в терминале его версию под названием MarketProfile."}
+,
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":"https://www.mql5.com/ru/articles","name":"Статьи"},{"@type":"ListItem","position":2,"item":"https://www.mql5.com/ru/articles/mt5","name":"MetaTrader 5"},{"@type":"ListItem","position":3,"item":"https://www.mql5.com/ru/articles/mt5/examples","name":"Примеры"}]}
+
+		]
+	</script>
+</body>
+</html>

@@ -1,0 +1,932 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+
+  <meta name="robots" content="max-snippet:250,max-image-preview:large">
+  <meta name="description" content="Есть множество различных способов для фильтрации сигналов, генерируемых какой-либо стратегией. Вероятно, простейший из них — это использование скользящей средней. Об этом мы и поговорим в этой статье.">
+  <meta property="og:url" content="https://www.mql5.com/ru/articles/3040">
+  <meta property="og:title" content="Как разрабатывать системы на основе скользящих средних">
+  <meta property="og:description" content="Есть множество различных способов для фильтрации сигналов, генерируемых какой-либо стратегией. Вероятно, простейший из них — это использование скользящей средней. Об этом мы и поговорим в этой статье.">
+      <meta property="og:image" content="https://www.mql5.com/ru/articles/images/og/fb/3040">
+      <meta property="og:image:secure_url" content="https://www.mql5.com/ru/articles/images/og/fb/3040">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2022-03-16T14:08:28.0000000Z">
+  <meta property="article:author" content="https://www.mql5.com/ru/users/m.aboud">
+  <meta property="article:section" content="MetaTrader 5">
+  <meta property="article:tag" content="Трейдинг">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@mql5com">
+  <meta name="twitter:image" content="https://www.mql5.com/ru/articles/images/og/fb/3040">
+  <meta name="theme-color" content="#4a76b8">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-config" content="none">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta property="qc:admins" content="36367170677651456375">
+  <meta property="wb:webmaster" content="073d7690269bcd81">
+  <link rel="shortcut icon" href="https://c.mql5.com/i/favicon4.ico">
+  <link rel="dns-prefetch" href="https://c.mql5.com">
+  <link href="https://c.mql5.com/styles/core.444bc25de4c9131a69fedfe5ac42a082.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/all.266d64b83529847f568747dd160d42b0.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/articles.bc4209e4de0b5296041832431b46f3dd.css" type="text/css" rel="stylesheet" media="all">
+  <link href="/ru/articles/rss" rel="alternate" type="application/rss+xml" title="Статьи по разработке и использованию торговых роботов и технических индикаторов для MetaTrader 5">
+  <link rel="canonical" href="https://www.mql5.com/ru/articles/3040">
+  <link rel="alternate" hreflang="en" href="https://www.mql5.com/en/articles/3040">
+  <link rel="alternate" hreflang="ru" href="https://www.mql5.com/ru/articles/3040">
+  <link rel="alternate" hreflang="zh" href="https://www.mql5.com/zh/articles/3040">
+  <link rel="alternate" hreflang="es" href="https://www.mql5.com/es/articles/3040">
+  <link rel="alternate" hreflang="de" href="https://www.mql5.com/de/articles/3040">
+  <link rel="alternate" hreflang="ja" href="https://www.mql5.com/ja/articles/3040">
+  <link rel="alternate" hreflang="pt" href="https://www.mql5.com/pt/articles/3040">
+  <link rel="alternate" hreflang="ko" href="https://www.mql5.com/ko/articles/3040">
+  <link rel="alternate" hreflang="fr" href="https://www.mql5.com/fr/articles/3040">
+  <link rel="alternate" hreflang="it" href="https://www.mql5.com/it/articles/3040">
+  <link rel="alternate" hreflang="tr" href="https://www.mql5.com/tr/articles/3040">
+  <title>Как разрабатывать системы на основе скользящих средних - Статьи по MQL5</title>
+
+
+
+<script type="text/javascript">
+  !function(){window.mqGlobal={};var t=!1,n=!1,e=[],o=[],i=[];function d(t){var n;for(n=0;n<t.length;n+=1)t[n]()}function c(){t||(t=!0,d(e),d(o),o=[],e=[])}function a(){c(),n||(n=!0,d(i),i=[])}if(mqGlobal.AddOnReady=function(n,i){t?n(document):i?e.push(n):o.push(n)},mqGlobal.AddOnLoad=function(t){n?t(document):i.push(t)},mqGlobal.AddOnActiveWindowChange=function(t){this._onvisibility||(this._onvisibility=[]),this._onvisibility[this._onvisibility.length]=t},document.addEventListener)document.addEventListener("DOMContentLoaded",c,!1),window.addEventListener("load",a,!1);else if(document.attachEvent&&(document.attachEvent("onreadystatechange",(function(){switch(document.readyState){case"interactive":c();break;case"complete":a()}})),window.attachEvent("onload",a),document.documentElement.doScroll&&window==window.top)){!function n(){if(!t&&document.body)try{document.documentElement.doScroll("left"),c()}catch(t){setTimeout(n,0)}}()}}();
+  mqGlobal.CookieDomain = ".mql5.com";
+  mqGlobal.Language = 'ru';
+  mqGlobal.IsMobile = false;
+  mqGlobal.ClearRteStorage = function (e) { if (window.GStorage || (window.GStorage = globalStorage()), window.GStorage.supported) try { var o = e; window.GStorage.getItem("rte_autosave_uid", function (e, t) { t == o && (window.GStorage.removeItem("rte_autosave_text"), window.GStorage.removeItem("rte_autosave_date"), window.GStorage.removeItem("rte_autosave_uid")) }) } catch (e) { } };
+</script>
+  
+
+    <script src="https://c.mql5.com/js/all.c09fd283bed20d28a52c95cd70a12a27.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/vendor.1be6e9a4a90b28525f93c4c69a5058a1.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/articles.cd4c73c476b2781eecdf04f5583514b5.js" type="text/javascript" defer="defer"></script>
+
+
+</head>
+
+<body id="cover" class="cover">
+
+
+  <nav class="head">
+    <a href="https://www.mql5.com/ru" class="head__logo" title="MQL5 - Язык торговых стратегий для клиентского терминала MetaTrader 5"></a>
+      <div class="head__content">
+        <div class="main-menu" id="mainmenu">
+          
+                    <ul class="main-menu__top-level" id="menuTopLevel">
+                    <li><a href="/ru/forum" data-fz-event="MQL5+Menu+Forum">Форум</a></li>
+                    <li><a href="/ru/market" data-fz-event="MQL5+Menu+Market">Маркет</a></li>
+                    <li><a href="/ru/signals" data-fz-event="MQL5+Menu+Signals">Сигналы</a></li>
+                    <li><a href="/ru/job" data-fz-event="MQL5+Menu+Job">Фриланс</a></li>
+                    <li><a href="/ru/vps" data-fz-event="MQL5+Menu+VPS">VPS</a></li>
+                    <li><a href="/ru/quotes/overview" data-fz-event="MQL5+Menu+Overview">Котировки</a></li>
+                    <li><a href="https://www.metatrader.com/ru" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+MetaTrader">MetaTrader</a></li>
+                  </ul><ul class="main-menu__second-level" id="menuSecondLevel">
+                    <li class="main-menu__selected"><a href="/ru/articles" data-fz-event="MQL5+Menu+Articles"><img src="https://c.mql5.com/i/menu/icon-articles4.svg" alt="" width="16" height="16"/>Статьи</a></li>
+                    <li><a href="/ru/code" data-fz-event="MQL5+Menu+CodeBase"><img src="https://c.mql5.com/i/menu/icon-code4.svg" alt="" width="16" height="16"/>CodeBase</a></li>
+                    <li><a href="https://forge.mql5.io/?lang=ru-RU" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+AlgoForge"><img src="https://c.mql5.com/i/menu/icon-algoforge4.svg" alt="" width="16" height="16"/>Algo Forge</a></li>
+                    <li><a href="/ru/docs" data-fz-event="MQL5+Menu+Docs"><img src="https://c.mql5.com/i/menu/icon-docs4.svg" alt="" width="16" height="16"/>Документация</a></li>
+                    <li><a href="/ru/book" data-fz-event="MQL5+Menu+Book"><img src="https://c.mql5.com/i/menu/icon-book4.svg" alt="" width="16" height="16"/>Учебник по алготрейдингу</a></li>
+                    <li><a href="/ru/neurobook" data-fz-event="MQL5+Menu+Neurobook"><img src="https://c.mql5.com/i/menu/icon-neurobook4.svg" alt="" width="16" height="16"/>Учебник по нейросетям</a></li>
+                    <li><a href="/ru/economic-calendar" data-fz-event="MQL5+Menu+Economic+Calendar"><img src="https://c.mql5.com/i/menu/icon-economic-calendar4.svg" alt="" width="16" height="16"/>Календарь</a></li>
+                    <li><a href="https://web.metatrader.app/terminal?mode=demo&lang=ru" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Menu+Trading"><img src="https://c.mql5.com/i/menu/icon-trading4.svg" alt="" width="16" height="16"/>Вебтерминал</a></li>
+                    <li class="main-menu__mobile"><a href="/ru/about">О проекте</a></li>
+                    <li class="main-menu__second-tools"><a rel="noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" title="Загрузите последнюю версию торговой платформы бесплатно" class="button-mt" data-vars-fz="MetaTrader+5+Desktop+Download+Submenu"><img width="18" height="18" src="https://c.mql5.com/i/sidebar/download.svg" alt="" loading="lazy">Скачать MetaTrader 5</a></li>
+                    </ul>
+        </div>
+          <div class="main-menu__active">
+            <a id="mainMenuSelected" href="#">
+              <span class="main-menu__primary">Статьи</span><span class="main-menu__secondary">Разделы</span>
+            </a>
+          </div>
+<form action="https://www.mql5.com/ru/search" onsubmit="return false;" autocomplete="off" id="headerSearchForm" class="header-search" method="post">
+<button type="button" id="headerSearchButton" title="Поиск" class="header-search__button"></button><div class="header-search__input"><input name="keyword" type="text" enterkeyhint="search" title="Введите текст для поиска" placeholder="Поиск" id="headerSearchKeyword"/><label for="headerSearchKeyword" class="header-search__placeholder">Нажмите <span>/</span> для поиска: @user, $symbol, ...</label><button id="headerSearchSubmit" class="header-search__submit"></button></div><button type="button" id="headerSearchClean" title="Закрыть" class="header-search__clean"></button></form>        <input class="blurHandler" id="mainMenuBlurHandler" type="checkbox">
+      </div>
+      <div class="head__toolbar" id="headerToolbar">
+          <div class="container loginRegister">
+            <nav>
+              <ul id="loginRegisterButtons"><li><a class="login" title="Авторизуйтесь. Поддерживается OpenID-авторизация" href="https://www.mql5.com/ru/auth_login" rel="nofollow" data-fz-event="MQL5+Menu+Siginin">Вход</a></li><li><a class="registration ru" title="Зарегистрируйтесь" href="https://www.mql5.com/ru/auth_register" rel="nofollow" data-fz-event="MQL5+Menu+Register" onclick="window.fpush('MQL5+Button+Click');">Создать аккаунт</a></li></ul>
+            </nav>
+          </div>
+        <div class="toggle-button" id="sidebarToggleButton">
+          <i></i>
+        </div>
+
+        <div class="group-menu" id="groupMenu">
+
+
+          <div class="container lang-menu-container">
+            <div id="langMenuContainer" class="lang-menu">
+              <input class="blurHandler" id="langmenuBlurHandler" type="checkbox">
+              <nav>
+                <ul class="lang-menu__list" id="langmenu">
+                  <li class="lang-menu__list-item"><a href="/en/articles/3040" aria-label="English (English)"><i class="icons-languages icons-languages_en"></i><span>English</span></a></li>
+<li class="lang-menu__list-item lang-menu__list-item_selected"><a href="/ru/articles/3040" aria-label="Русский (Russian)"><i class="icons-languages icons-languages_ru"></i><span>Русский</span></a></li>
+<li class="lang-menu__list-item"><a href="/zh/articles/3040" aria-label="中文 (Chinese)"><i class="icons-languages icons-languages_zh"></i><span>中文</span></a></li>
+<li class="lang-menu__list-item"><a href="/es/articles/3040" aria-label="Español (Spanish)"><i class="icons-languages icons-languages_es"></i><span>Español</span></a></li>
+<li class="lang-menu__list-item"><a href="/pt/articles/3040" aria-label="Português (Portuguese)"><i class="icons-languages icons-languages_pt"></i><span>Português</span></a></li>
+<li class="lang-menu__list-item"><a href="/ja/articles/3040" aria-label="日本語 (Japanese)"><i class="icons-languages icons-languages_ja"></i><span>日本語</span></a></li>
+<li class="lang-menu__list-item"><a href="/de/articles/3040" aria-label="Deutsch (German)"><i class="icons-languages icons-languages_de"></i><span>Deutsch</span></a></li>
+<li class="lang-menu__list-item"><a href="/ko/articles/3040" aria-label="한국어 (Korean)"><i class="icons-languages icons-languages_ko"></i><span>한국어</span></a></li>
+<li class="lang-menu__list-item"><a href="/fr/articles/3040" aria-label="Français (French)"><i class="icons-languages icons-languages_fr"></i><span>Français</span></a></li>
+<li class="lang-menu__list-item"><a href="/it/articles/3040" aria-label="Italiano (Italian)"><i class="icons-languages icons-languages_it"></i><span>Italiano</span></a></li>
+<li class="lang-menu__list-item"><a href="/tr/articles/3040" aria-label="Türkçe (Turkish)"><i class="icons-languages icons-languages_tr"></i><span>Türkçe</span></a></li>
+
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+  </nav>
+
+
+
+  <div id="left-sidebar-selector" class="left-sidebar__selector left-sidebar__selector_padding">
+    <div class="left-sidebar__title">
+MetaTrader 5 /     Трейдинг
+    </div>
+    <i class="icons-ux icons-ux_arrow-down-black"></i>
+  </div>
+  <div class="articles-container block-with-sidebar">
+    <aside class="left-sidebar left-sidebar_270" id="left-sidebar">
+      
+  <ul class="tree-menu-ul"><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/examples"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples.svg" alt="" loading="lazy"/>Примеры</a><ul class="tree-menu__list tree-menu__list_nested"><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/examples_indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_indicators.svg" alt="" loading="lazy"/>Индикаторы</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/examples_experts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_experts.svg" alt="" loading="lazy"/>Эксперты</a></li></ul></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/strategy_tester"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/strategy_tester.svg" alt="" loading="lazy"/>Тестер</a></li><li class="tree-menu__item tree-menu__item_selected"><a class="tree-menu__link" href="/ru/articles/trading"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading.svg" alt="" loading="lazy"/>Трейдинг</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/trading_systems"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading_systems.svg" alt="" loading="lazy"/>Торговые системы</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/integration"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/integration.svg" alt="" loading="lazy"/>Интеграция</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/indicator.svg" alt="" loading="lazy"/>Индикаторы</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/expert_advisors"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/expert.svg" alt="" loading="lazy"/>Эксперты</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/statistics"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/statistics.svg" alt="" loading="lazy"/>Статистика и анализ</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/machine_learning"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/machine_learning.svg" alt="" loading="lazy"/>Машинное обучение</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/ru/articles/interviews"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/interviews.svg" alt="" loading="lazy"/>Интервью</a></li></ul>
+  
+
+    <div class="hints-panel">
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_like"></i>
+        <div class="hints-panel__content">
+          Понравилась статья?<br>
+          Поставьте <a href="https://www.mql5.com/ru/articles/3040" target="_blank">ссылку</a> на нее —<br>пусть другие почитают
+        </div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_fb-square icons-hints_24px"></i><div class="hints-panel__content">
+Ищи нас в <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow">Facebook</a>!<br> Ставь лайки и следи за новостями</div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_mt-5"></i>
+        <div class="hints-panel__content">
+          Используй новые возможности <a href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Article" rel="nofollow sponsored noopener noreferrer">MetaTrader 5</a>
+        </div>
+      </div>
+    </div>
+<div id='vgckrufggwxdtfscpyalmenexmvhljduja' class="roeid8y6hsc3ntv1l gg88d3drb"></div>      <div class="similar-author-articles ui">
+        <h4 class="similar-author-articles__title">Похожие статьи</h4>
+        <ul class="similar-author-articles__list">
+            <li>
+              <a href="/ru/articles/21096" data-fz-event="MQL5+Article+Similar+Article">Автоматизация торговых стратегий с помощью MQL5 (Часть 47): Торговая система Nick Rypock Trailing Reverse (NRTR) с поддержкой хеджирования</a>
+            </li>
+            <li>
+              <a href="/ru/articles/19932" data-fz-event="MQL5+Article+Similar+Article">Советник для размещения сделок на основе риска с графическим интерфейсом на графике (Часть 1): Проектирование пользовательского интерфейса</a>
+            </li>
+            <li>
+              <a href="/ru/articles/21315" data-fz-event="MQL5+Article+Similar+Article">Торговые инструменты MQL5 (Часть 22): Построение гистограммы и функции вероятностной массы (PMF) биномиального распределения</a>
+            </li>
+            <li>
+              <a href="/ru/articles/20933" data-fz-event="MQL5+Article+Similar+Article">Переосмысливаем классические стратегии (Часть 21): Разработка комбинированной стратегии на основе полос Боллинджера и RSI</a>
+            </li>
+            <li>
+              <a href="/ru/articles/20530" data-fz-event="MQL5+Article+Similar+Article">Переосмысливаем классические стратегии (Часть 20): Современная интерпретация стохастического осциллятора</a>
+            </li>
+        </ul>
+      </div>
+    <div class="freelance-hint">
+      <img src="https://c.mql5.com/i/articles/icon_freelance.svg" width="24" height="24" loading="lazy" />
+      <div class="freelance-hint__text">
+        Используйте идеи из этой статьи,<br>чтобы заказать собственного робота<br>на бирже фрилансеров
+      </div>
+        <a target="_blank" class="button button_blue-gray-border" title="Перейти на биржу" href="/ru/job/new" data-fz-event="MQL5+Article+New+Job">Перейти на биржу</a>
+    </div>
+
+    </aside>
+    <article class="content-with-sidebar articles-content splashed">
+      
+
+
+  <header class="article-header" style="background-color: rgb(191,222,130)">
+    <section class="article-tools-panel">
+        <div class="article-tools-panel__item">
+          <span class="popup framed client flags">
+            <a class="dropdown" href="javascript:void(false);">
+              <span class="icons-languages icons-languages_ru"></span><i></i>
+            </a>
+            <span class="popup">
+              <span class="tip">
+                <span></span>
+              </span>
+              <span class="items">
+                    <a href="/en/articles/3040">English</a>
+                    <a href="/zh/articles/3040">中文</a>
+                    <a href="/es/articles/3040">Español</a>
+                    <a href="/de/articles/3040">Deutsch</a>
+                    <a href="/ja/articles/3040">日本語</a>
+                    <a href="/pt/articles/3040">Português</a>
+                    <a href="/ko/articles/3040">한국어</a>
+                    <a href="/fr/articles/3040">Français</a>
+                    <a href="/it/articles/3040">Italiano</a>
+                    <a href="/tr/articles/3040">Türkçe</a>
+              </span>
+            </span>
+          </span>
+        </div>
+        
+      <div class="article-tools-panel__item">
+        <a href="#pocket" title="Через Карман вы можете вставить полное описание этого содержимого в редактор сообщений" onclick="return Pocket.Add(this,'ru',2,1,3040);" class="article-tools-panel__rounded">
+          <i class="article-pocket-icon"></i>
+        </a>
+      </div>
+      <div class="article-tools-panel__item">
+        <a href="/ru/articles/3040?print=" target="_blank" class="article-tools-panel__rounded" rel="nofollow" title="Версия для печати">
+          <i class="article-print-icon"></i>
+        </a>
+      </div>
+
+    </section>
+    <section class="article-header__image-box">
+      <div class="article-header__gradient" style="background: linear-gradient(90deg, rgba(191,222,130, 1) 0%, rgba(191,222,130, 0.72) 8.31%, rgba(191,222,130, 0) 17.1%), linear-gradient(270deg, rgba(191,222,130, 1) 0%, rgba(191,222,130, 0.72) 8.06%, rgba(191,222,130, 0) 16.59%), linear-gradient(0deg, rgba(191,222,130, 1) 8.26%, rgba(191,222,130, 0.8) 65%, rgba(191,222,130, 0) 100%);"></div>
+        <img loading="lazy" width="600" height="314" srcset="https://c.mql5.com/i/articles/overlay.png, https://c.mql5.com/i/articles/overlay_2x.png 2x" src="https://c.mql5.com/i/articles/overlay.png" alt="Как разрабатывать системы на основе скользящих средних">
+    </section>
+    <section class="article-header__content">
+      <h1>Как разрабатывать системы на основе скользящих средних</h1>
+      <div class="article-header__info">
+        <a href="/ru/articles/mt5">MetaTrader 5</a>
+          &mdash;
+          <a href="/ru/articles/mt5/trading">Трейдинг</a>
+        | <time datetime="2022-03-16T14:08Z" title="14:08" datetime-type="datetime">16 марта 2022, 14:08</time>
+      </div>
+      <div class="article-header__indicators">
+        <span title="Просмотры">
+          <img src="https://c.mql5.com/i/icons.svg#views-usage" width="20" height="20" alt="" />
+          7 285
+        </span>
+        
+          <a title="Комментарии" href="/ru/forum/391045">
+            <img src="https://c.mql5.com/i/icons.svg#comments-usage" width="20" height="20" alt="" />
+            3
+          </a>
+      </div>
+      <div class="article-header__author">
+          <div class="article-header__avatar">
+            <img src="https://c.mql5.com/avatar/2018/5/5AE8D3AC-DEC5.jpg" srcset="https://c.mql5.com/avatar/2018/5/5AE8D3AC-DEC5_big.jpg 2x" data-user-login="M.Aboud" title="Mohamed Abdelmaaboud" alt="Mohamed Abdelmaaboud" loading="lazy" width="60" height="60">
+          </div>
+<a class="author" href="/ru/users/m.aboud" data-user-login="M.Aboud">Mohamed Abdelmaaboud</a>      </div>
+    </section>
+  </header>
+
+    <div class="content">
+      <div class="inner formatted-content">
+        <h3>Введение</h3> <p>Думаю, независимо от опыта многие из вас наверняка слышали фразу "Тренд — твой друг" (Trend is your friend). Если еще нет, я объясню. На рынке могут образовываться различные направления движения цены, или тренды.</p> <ul> <li>Восходящий тренд: при таком движении цена образует более высокие минимумы и более высокие максимумы</li> <li>Нисходящий тренд: противоположен восходящему, при таком движении цена образует более низкие минимумы и более низкие максимумы</li> <li>Боковое движение: любое движение, которое нельзя отнести ни к восходящему, ни к нисходящему тренду.</li> </ul> <p style="text-align:center;"></p> <p style="text-align:left;">На рисунках ниже показаны графики растущего и падающего тренда:</p> <p style="text-align:center;"> <img src="https://c.mql5.com/2/44/Uptrend.png" loading="lazy" title="Восходящий тренд" alt="Восходящий тренд" style="vertical-align:middle;" width="750" height="643"/></p> <p></p> <p style="text-align:center;"> <img src="https://c.mql5.com/2/44/Downtrend.png" loading="lazy" title="Нисходящий тренд" alt="Нисходящий тренд" style="vertical-align:middle;" width="750" height="643"/></p> <p style="text-align:left;"></p> <p>Мы разобрали, что такое тренд. Но почему же этот тренд — друг?</p> <p>Далее мы будем говорить только о восходящем и падающем тренде, поскольку у них четко определяемое движение вверх или вниз. Можно увидеть, кто сейчас преобладает на рынке и двигает цены. Во время восходящего тренда на рынке преобладают покупатели, которые подталкивают цены вверх независимо от предложения, такой рынок называется бычьим. И наоборот, при падающем тренде на рынок большее влияние оказывают продавцы, которые подталкивают цены вниз. Такой рынок называется медвежьим. </p> <p>Но иногда на рынке можно наблюдать пилообразное движение с разворотами и ложными пробоями. Такие ложные пробои могут изрядно навредить. Далее мы посмотрим, как именно они могут навредить, но для начала разберемся, что же означает ложный пробой.</p> <p><b>Ложный пробой</b> — ситуация, при которой срабатывает сигнал к определенному действию, мы совершаем это действие, а ситуация разворачивается в противоположную сторону. И конечно результат таких действий получается негативным. Есть разные способы отфильтровывать такие ложные пробои. Один из них — это использовать скользящие средние. Об этом мы и поговорим в данной статье, научимся использовать стратегии на основе скользящих средних и разрабатывать автоматические системы для алгоритмической торговли, с которыми работа с о скользящими средними будет удобнее, проще и точнее.</p> <p>В статье мы рассмотрим следующие темы:</p> <ul> <li><a href="/ru/articles/3040#par1">Определение скользящей средней</a></li> <li><a href="/ru/articles/3040#par2">Типы скользящих средних</a></li> <li><a href="/ru/articles/3040#par3">Стратегия 1: пересечение с одной скользящей средней</a></li> <li><a href="/ru/articles/3040#par4">Стратегия 2: пересечение двух скользящих средних</a></li> <li><a href="/ru/articles/3040#par5">Стратегия 3: пересечение трех скользящих средних</a></li> </ul> <div class="atten"> <p><b>Примечание.</b> Все содержание настоящей статьи предназначено только для целей обучения и не предназначена для других целей. Все, что вы применяете на практике на основе этой статьи, вы делаете исключительно на свой страх и риск, автор не гарантирует никаких результатов. В любом случае, любые стратегии должны быть тщательно протестированы и оптимизированы. Еще раз повторюсь: статья и примеры в ней приводятся исключительно в информационных целях. </p> <p>Все коды мы будем писать на MQL5, а тестировать будем в платформе MetaTrader 5. </p> </div> <p>Есть множество различных способов для фильтрации сигналов, генерируемых какой-либо стратегией. Вероятно, простейший из них — это использование скользящей средней. Об этом мы и поговорим в этой статье. Мы рассмотрим стратегии на основе скользящих средних и научимся писать алгоритмическую торговую стратегию. Цель статьи — научить читателей создавать собственные автоматические торговые системы. </p> <p><br/></p> <p></p> <p></p> <h3 id="par1">Определение скользящей средней</h3> <p><br/>Индикатор скользящего среднего очень распространен в техническом анализе. Он рассчитывается как среднее значение цены за определенный период времени. Индикатор сглаживает ценовые данные и уменьшает влияние случайных краткосрочных движений и флуктуаций на графике.</p> <p></p> <p>Есть разные типы скользящих средних. Основная разница заключается в способе расчета, но об этом поговорим в следующем разделе. Сейчас достаточно понимать, что есть много разных видов, и что можно использовать разные варианты расчетов для получения наилучших результатов в конкретных ситуациях.</p> <p>Скользящая средняя — трендовый индикатор, основанный на анализе цен. То есть если цена движется в определенном направлении, скользящая средняя будет следовать за ценой в том же направлении.</p> <p>Это запаздывающий индикатор, поскольку он следует за ценой, т.е. сначала появляется цена, а уже на основе ее значения рассчитывается средняя. Без значения цены рассчитывать будет нечего.</p> <p>По характеру скользящей среднее можно определить, что этот индикатор:</p> <ul> <li>Показывает среднее значение</li> <li>Лучше работает на трендовом рынке</li> <li>Подтверждает наличие тренда и помогает определить его</li> <li>Убирает шумы из ценового движения</li> <li>Помогает определять ложные пробои</li> <li>И многое другое…</li> </ul> <div> <br/> </div> <p></p> <h3 id="par2">Типы скользящих средних</h3> <p><br/>Есть много разных типов скользящей средней. Наиболее часто встречающиеся из них:</p> <ul> <li>Простая скользящая средняя</li> <li>Взвешенная скользящая средняя</li> <li>Экспоненциальная скользящая средняя</li> </ul> <p>Основное различие между ними заключается в способах расчета.</p> <p>Далее, рассмотрим каждую из них, а также узнаем, как их использовать в MQL5.</p> <p><b>Простая скользящая средняя:</b></p> <p>Это самый простой тип скользящей средней, часто для ее обозначения используется аббревиатура SMA (Simple Moving Average). </p> <p>Рассчитывается как арифметическое среднее определенного набора значения за выбранный период времени. То есть, складываются значения определенного количества цен, а затем результат делится на это количество. </p> <p style="text-align:center;"> <img src="https://c.mql5.com/2/44/Screen_Shot_2022-01-28_at_10.11.51_PM.png" loading="lazy" title="SMA" alt="SMA" style="vertical-align:middle;" width="750" height="125"/></p> <p style="text-align:left;"></p> <p>Для примера, возьмем пять торговых дней. Цены закрытия этих пяти дней были такими: </p> <ul> <li style="text-align:left;">День 1 = 10</li> <li style="text-align:left;">День 2 = 15</li> <li style="text-align:left;">День 3 = 20</li> <li style="text-align:left;">День 4 = 30</li> <li style="text-align:left;">День 5 = 35</li> </ul> <p>Значение SMA для этих пяти дней рассчитывается так:</p> <div> <br/> </div> <div></div> <p></p> <p style="text-align:center;"> <img src="https://c.mql5.com/2/44/Screen_Shot_2022-01-28_at_10.12.04_PM.png" loading="lazy" title="SMA example" alt="SMA example" style="vertical-align:middle;" width="750" height="105"/></p> <p></p> <p><b> Взвешенная скользящая средняя</b></p> <p>Взвешенная скользящая средняя (Weighted Moving Average, WMA) также отображает среднее значение цены за выбранный период, но большее значение придается более свежим данным. То есть если мы рассчитываем WMA за 10 дней, веса всем этим ценовым данным будут назначены разные, и больший вес будут иметь более поздние данные. </p> <p>Рассчитывается взвешенная скользящая средняя по следующей формуле:</p> <p></p> <p style="text-align:left;"></p> <p style="text-align:center;"> <img src="https://c.mql5.com/2/44/Screen_Shot_2022-01-28_at_10.12.18_PM.png" loading="lazy" title="WMA" alt="WMA" style="vertical-align:middle;" width="750" height="65"/></p> <p style="text-align:center;"><br/></p> <p></p> <p>Пример:</p> <p>Возьмем те же 5 торговых дней с теми же ценами закрытия:</p> <ul> <li>День 1 = 10</li> <li>День 2 = 15</li> <li>День 3 = 20</li> <li>День 4 = 30</li> <li>День 5 = 35</li> </ul> <p>Взвешенную скользящую среднюю за эти пять дней можно рассчитать по формуле:</p> <p></p> <p style="text-align:center;"> <img src="https://c.mql5.com/2/44/Screen_Shot_2022-01-28_at_10.12.34_PM.png" loading="lazy" title="Пример WMA" alt="Пример WMA" style="vertical-align:middle;" width="750" height="82"/></p> <p style="text-align:center;"><br/></p> <p style="text-align:center;"> <img src="https://c.mql5.com/2/44/Screen_Shot_2022-01-28_at_10.12.46_PM.png" loading="lazy" title="Пример WMA" alt="Пример WMA" style="vertical-align:middle;" width="750" height="104"/></p> <p style="text-align:center;"><br/></p> <p style="text-align:left;"></p> <p><b> Экспоненциальная скользящая средняя</b></p> <p>Экспоненциальная скользящая средняя — Exponential Moving Average или EMA. Особенностью этого типа является то, что расчет учитывает так же и период, предшествующий периоду расчета. То есть при расчете среднего значения за 10 дней более ранний период будет также учитываться. </p> <p>Рассчитывается WMA по следующей формуле:</p> <p>Сначала рассчитываем K — экспонента для расчета веса интервала, и n — количество интервалов:</p> <div></div> <p></p> <p style="text-align:left;"></p> <p style="text-align:center;"> <img src="https://c.mql5.com/2/44/Screen_Shot_2022-01-28_at_10.29.50_PM.png" loading="lazy" title="EMA" alt="EMA" style="vertical-align:middle;" width="300" height="144"/></p> <p style="text-align:left;"></p> <p>Затем,</p> <div></div> <p></p> <p style="text-align:center;"> <img src="https://c.mql5.com/2/44/Screen_Shot_2022-01-28_at_10.30.10_PM.png" loading="lazy" title="EMA" alt="EMA" style="vertical-align:middle;" width="750" height="74"/></p> <p style="text-align:left;"></p> <p>Пример:</p> <p>Возьмем те же 5 торговых дней с теми же ценами закрытия:</p> <ul> <li>День 1 = 10</li> <li>День 2 = 15</li> <li>День 3 = 20</li> <li>День 4 = 30</li> <li>День 5 = 35</li> <li>День 6 = 40</li> </ul> <p>Средняя EMA за пять дней рассчитывается так:</p> <p></p> <p style="text-align:center;"> <img src="https://c.mql5.com/2/44/Screen_Shot_2022-01-28_at_10.30.28_PM.png" loading="lazy" title="Пример EMA" alt="Пример EMA" style="vertical-align:middle;" width="492" height="134"/></p> <p style="text-align:center;"><br/></p> <p style="text-align:center;"> <img src="https://c.mql5.com/2/44/Screen_Shot_2022-01-28_at_10.30.40_PM.png" loading="lazy" title="Пример EMA" alt="Пример EMA" style="vertical-align:middle;" width="750" height="89"/></p> <p style="text-align:left;"></p> <p>Обратите внимание, что первым днем расчета экспоненциальной скользящей средней является День 6, а за предыдущие пять дней рассчитывалась простая средняя (22).</p> <div> <br/> </div> <p>Мы познакомились с определением скользящей средней и ее видами. Теперь перейдем к самой интересной части. Мы поговорим о стратегиях на основе скользящих средних и научимся создавать алгоритмические торговые системы по ним.</p> <p></p><br/> <p></p> <h3 id="par3">Стратегия 1: пересечение с одной скользящей средней<br/></h3> <p>В рамках данной статьи в примерах мы будем работать с простой скользящей средней (SMA). Тем не менее, вы можете выбрать любой подходящий тип скользящей для вашего кода.</p> <p>В этой стратегии на каждом тике будем проверять пересечение цены и SMA:</p> <ul> <li>Цена &gt; SMA: сигнал на покупку, будем показывать этот сигнал в виде комментария на графике.</li> <li>Цена &lt; SMA: сигнал на продажу, будем показывать этот сигнал в виде комментария на графике.</li> <li>Во всех других случаях не делаем ничего.</li> </ul> <p>На рисунке ниже показана схема работы данной стратегии на основе пересечения одной скользящей средней:</p> <p style="text-align:center;"> <img src="https://c.mql5.com/2/44/1MA_Blueprint.png" loading="lazy" title="1MA Blueprint" alt="1MA Blueprint" style="vertical-align:middle;" width="750" height="563"/></p> <p style="text-align:center;"><br/></p> <p></p> <p>Код стратегии будет таким:</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;One SMA crossover.mq5 |</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Copyright 2022, MetaQuotes Ltd. |</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; https://www.mql5.com |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="preprocessor">#property </span><span class="macro">copyright</span> <span class="string">"Copyright 2022, MetaQuotes Ltd."</span>
+<span class="preprocessor">#property </span><span class="macro">link</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"https://www.mql5.com"</span>
+<span class="preprocessor">#property </span><span class="macro">version</span>&nbsp;&nbsp; <span class="string">"1.00"</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Тиковая функция эксперта&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> <span class="functions">OnTick</span>()
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="comment">//создаем массив цен</span>
+&nbsp;&nbsp; <span class="keyword">double</span> myMovingAverageArray1[];
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">//определим Ask, Bid</span>
+&nbsp;&nbsp; <span class="keyword">double</span> Ask = <span class="functions">NormalizeDouble</span>(<span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>,<span class="macro">SYMBOL_ASK</span>),<span class="predefines">_Digits</span>);
+&nbsp;&nbsp; <span class="keyword">double</span> Bid = <span class="functions">NormalizeDouble</span>(<span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>,<span class="macro">SYMBOL_BID</span>),<span class="predefines">_Digits</span>);
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">//определим свойства скользящих - простая MA с периодом 24</span>
+&nbsp;&nbsp; <span class="keyword">int</span> movingAverage1 = <span class="indicators">iMA</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, <span class="number">24</span>, <span class="number">0</span>, <span class="macro">MODE_SMA</span>, <span class="macro">PRICE_CLOSE</span>);
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">//установим сортировку цен в массиве от текущей свечи</span>
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(myMovingAverageArray1,<span class="macro">true</span>);
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">//Параметры MA - линия - текущая свеча, 3 свечи - сохраним результат</span>
+&nbsp;&nbsp; <span class="functions">CopyBuffer</span>(movingAverage1,<span class="number">0</span>,<span class="number">0</span>,<span class="number">3</span>,myMovingAverageArray1);
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">//Проверка наличия сигнала на вход в покупку</span>
+&nbsp;&nbsp; <span class="keyword">if</span> (
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Ask&gt;myMovingAverageArray1[<span class="number">0</span>])
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Comment</span>(<span class="string">"BUY"</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp; <span class="comment">//Проверка наличия сигнала на вход в продажу&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+&nbsp;&nbsp; <span class="keyword">if</span> (
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Bid&lt;myMovingAverageArray1[<span class="number">0</span>])
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Comment</span>(<span class="string">"SELL"</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;}
+<span class="comment">//+------------------------------------------------------------------+</span>
+
+</pre> <p>После запуска стратегии на графике будут формироваться следующие сигналы:</p> <p style="text-align:center;"> <img src="https://c.mql5.com/2/44/1MA_-_buy_signal.png" loading="lazy" title="1MA - сигнал на покупку" alt="1MA - сигнал на покупку" style="vertical-align:middle;" width="515" height="479"/></p> <p style="text-align:center;"> <img src="https://c.mql5.com/2/44/1MA_-_sell_signal.png" loading="lazy" title="1MA - сигнал на продажу" alt="1MA - сигнал на продажу" style="vertical-align:middle;" width="515" height="479"/></p> <h3 id="par4">Стратегия 2: пересечение двух скользящих средних</h3> <p>В этой стратегии будем использовать две скользящие средние. Период короткой скользящей средней будет 24, длинной — 50.</p> <p>Согласно этой стратегии, на каждом тике будем проверять положение двух скользящих средних:</p> <ul> <li>SMA с периодом 24 &gt; SMA с периодом 50: сигнал на покупку, будем показывать этот сигнал в виде комментария на графике.</li> <li>SMA с периодом 24 &lt; SMA с периодом 50: сигнал на продажу, будем показывать этот сигнал в виде комментария на графике.</li> <li>Во всех других случаях не делаем ничего.</li> </ul> <p>На рисунке ниже показана схема работы данной стратегии на основе двух простых скользящих средних:</p> <div> <p style="text-align:center;"> <img src="https://c.mql5.com/2/44/2MA_Blueprint.png" loading="lazy" title="2MA Blueprint" alt="2MA Blueprint" style="vertical-align:middle;" width="750" height="563"/></p> <p><br/></p> <p>Код стратегии будет таким:</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Two SMA crossover.mq5 |</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Copyright 2022, MetaQuotes Ltd. |</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; https://www.mql5.com |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="preprocessor">#property </span><span class="macro">copyright</span> <span class="string">"Copyright 2022, MetaQuotes Ltd."</span>
+<span class="preprocessor">#property </span><span class="macro">link</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"https://www.mql5.com"</span>
+<span class="preprocessor">#property </span><span class="macro">version</span>&nbsp;&nbsp; <span class="string">"1.00"</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Тиковая функция эксперта&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> <span class="functions">OnTick</span>()
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="comment">//создаем массив цен</span>
+&nbsp;&nbsp; <span class="keyword">double</span> myMovingAverageArray1[], myMovingAverageArray2[];
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">//определим свойства скользящих - простые MA с периодами 24 и 50</span>
+&nbsp;&nbsp; <span class="keyword">int</span> movingAverage1 = <span class="indicators">iMA</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, <span class="number">24</span>, <span class="number">0</span>, <span class="macro">MODE_SMA</span>, <span class="macro">PRICE_CLOSE</span>);
+&nbsp;&nbsp; <span class="keyword">int</span> movingAverage2 = <span class="indicators">iMA</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">50</span>,<span class="number">0</span>,<span class="macro">MODE_SMA</span>,<span class="macro">PRICE_CLOSE</span>);
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">//sort the price arrays 1, 2 from current candle</span>
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(myMovingAverageArray1,<span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(myMovingAverageArray2,<span class="macro">true</span>);
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">//Параметры MA1, MA2 - линия - текущая свеча, 3 свечи - сохраним результат</span>
+&nbsp;&nbsp; <span class="functions">CopyBuffer</span>(movingAverage1,<span class="number">0</span>,<span class="number">0</span>,<span class="number">3</span>,myMovingAverageArray1);
+&nbsp;&nbsp; <span class="functions">CopyBuffer</span>(movingAverage2,<span class="number">0</span>,<span class="number">0</span>,<span class="number">3</span>,myMovingAverageArray2);
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">//Проверка наличия сигнала на вход в покупку</span>
+&nbsp;&nbsp; <span class="keyword">if</span> (
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(myMovingAverageArray1[<span class="number">0</span>]&gt;myMovingAverageArray2[<span class="number">0</span>])
+&nbsp;&nbsp; &amp;&amp; (myMovingAverageArray1[<span class="number">1</span>]&lt;myMovingAverageArray2[<span class="number">1</span>])
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Comment</span>(<span class="string">"BUY"</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp; <span class="comment">//Проверка наличия сигнала на вход в продажу&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+&nbsp;&nbsp; <span class="keyword">if</span> (
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(myMovingAverageArray1[<span class="number">0</span>]&lt;myMovingAverageArray2[<span class="number">0</span>])
+&nbsp;&nbsp; &amp;&amp; (myMovingAverageArray1[<span class="number">1</span>]&gt;myMovingAverageArray2[<span class="number">1</span>])
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Comment</span>(<span class="string">"SELL"</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;}
+<span class="comment">//+------------------------------------------------------------------+</span>
+
+</pre> </div> <p>После запуска стратегии на графике будут формироваться следующие сигналы:</p> <h3> <p style="text-align:center;"> <img src="https://c.mql5.com/2/44/2MA_-_buy_signal.png" loading="lazy" title="2MA - сигнал на покупку" alt="2MA - сигнал на покупку" style="vertical-align:middle;" width="515" height="479"/></p> <p style="text-align:center;"><br/></p> <p style="text-align:center;"> <img src="https://c.mql5.com/2/44/2MA_-_sell_signal.png" loading="lazy" title="2MA - сигнал на продажу" alt="2MA - сигнал на продажу" style="vertical-align:middle;" width="515" height="479"/><br/></p><br/></h3> <h3 id="par3">Стратегия 3: пересечение трех скользящих средних</h3> <p>В этой стратегии будем использовать три скользящие средние: короткая с периодом 10, средняя с периодом 24, и длинная с периодом 48.</p> <p>Согласно этой стратегии, на каждом тике будем проверять положение трех скользящих средних:</p> <ul> <li>Если 10 SMA &gt; 24 SMA, 10 SMA &gt; 48 SMA и 24 SMA &gt; 48 SMA, это сигнал на покупку, показываем комментарий на графике.</li> <li>Если 10 SMA &lt; 24 SMA, 10 SMA &lt; 48 SMA и 24 SMA &lt; 48 SMA, это сигнал на продажу, показываем соответствующий комментарий на графике.</li> <li>Во всех других случаях не делаем ничего.</li> </ul> <p>На рисунке ниже показана схема работы данной стратегии на основе трех простых скользящих средних:</p> <div> <p style="text-align:center;"> <img src="https://c.mql5.com/2/44/3MA_Blueprint.png" loading="lazy" title="3MA Blueprint" alt="3MA Blueprint" style="vertical-align:middle;" width="750" height="563"/></p> <p style="text-align:center;"><br/></p> <p>Код стратегии будет таким: </p> <div></div> <p></p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Three SMA crossover.mq5 |</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Copyright 2022, MetaQuotes Ltd. |</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; https://www.mql5.com |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="preprocessor">#property </span><span class="macro">copyright</span> <span class="string">"Copyright 2022, MetaQuotes Ltd."</span>
+<span class="preprocessor">#property </span><span class="macro">link</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"https://www.mql5.com"</span>
+<span class="preprocessor">#property </span><span class="macro">version</span>&nbsp;&nbsp; <span class="string">"1.00"</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Тиковая функция эксперта&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> <span class="functions">OnTick</span>()
+&nbsp;&nbsp;{
+&nbsp;&nbsp; <span class="comment">//создаем массив цен</span>
+&nbsp;&nbsp; <span class="keyword">double</span> myMovingAverageArray1[], myMovingAverageArray2[],myMovingAverageArray3[];
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">//определим свойства средних - simple MA, 10 / 24 / 48</span>
+&nbsp;&nbsp; <span class="keyword">int</span> movingAverage1 = <span class="indicators">iMA</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="macro">MODE_SMA</span>, <span class="macro">PRICE_CLOSE</span>);
+&nbsp;&nbsp; <span class="keyword">int</span> movingAverage2 = <span class="indicators">iMA</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">24</span>,<span class="number">0</span>,<span class="macro">MODE_SMA</span>,<span class="macro">PRICE_CLOSE</span>);
+&nbsp;&nbsp; <span class="keyword">int</span> movingAverage3 = <span class="indicators">iMA</span>(<span class="predefines">_Symbol</span>,<span class="predefines">_Period</span>,<span class="number">48</span>,<span class="number">0</span>,<span class="macro">MODE_SMA</span>,<span class="macro">PRICE_CLOSE</span>);
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">//сортируем массивы - начало на текущей свече</span>
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(myMovingAverageArray1,<span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(myMovingAverageArray2,<span class="macro">true</span>);
+&nbsp;&nbsp; <span class="functions">ArraySetAsSeries</span>(myMovingAverageArray3,<span class="macro">true</span>);
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">//Параметры MA1, MA2, MA3 - линия - текущая свеча, 3 свечи - сохраним результат</span>
+&nbsp;&nbsp; <span class="functions">CopyBuffer</span>(movingAverage1,<span class="number">0</span>,<span class="number">0</span>,<span class="number">3</span>,myMovingAverageArray1);
+&nbsp;&nbsp; <span class="functions">CopyBuffer</span>(movingAverage2,<span class="number">0</span>,<span class="number">0</span>,<span class="number">3</span>,myMovingAverageArray2);
+&nbsp;&nbsp; <span class="functions">CopyBuffer</span>(movingAverage3,<span class="number">0</span>,<span class="number">0</span>,<span class="number">3</span>,myMovingAverageArray3);
+&nbsp;&nbsp; 
+&nbsp;&nbsp; <span class="comment">//Проверка наличия сигнала на вход в покупку</span>
+&nbsp;&nbsp; <span class="keyword">if</span> (
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(myMovingAverageArray1[<span class="number">0</span>]&gt;myMovingAverageArray2[<span class="number">0</span>])
+&nbsp;&nbsp; &amp;&amp; (myMovingAverageArray1[<span class="number">1</span>]&lt;myMovingAverageArray2[<span class="number">1</span>])
+&nbsp;&nbsp; &amp;&amp; (myMovingAverageArray1[<span class="number">0</span>]&gt;myMovingAverageArray3[<span class="number">0</span>])
+&nbsp;&nbsp; &amp;&amp; (myMovingAverageArray1[<span class="number">1</span>]&lt;myMovingAverageArray3[<span class="number">1</span>])
+&nbsp;&nbsp; &amp;&amp; (myMovingAverageArray2[<span class="number">0</span>]&gt;myMovingAverageArray3[<span class="number">0</span>])
+&nbsp;&nbsp; &amp;&amp; (myMovingAverageArray2[<span class="number">1</span>]&lt;myMovingAverageArray3[<span class="number">1</span>])
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Comment</span>(<span class="string">"BUY"</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp; <span class="comment">//Проверка наличия сигнала на вход в продажу&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+&nbsp;&nbsp; <span class="keyword">if</span> (
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(myMovingAverageArray1[<span class="number">0</span>]&lt;myMovingAverageArray2[<span class="number">0</span>])
+&nbsp;&nbsp; &amp;&amp; (myMovingAverageArray1[<span class="number">1</span>]&gt;myMovingAverageArray2[<span class="number">1</span>])
+&nbsp;&nbsp; &amp;&amp; (myMovingAverageArray1[<span class="number">0</span>]&lt;myMovingAverageArray3[<span class="number">0</span>])
+&nbsp;&nbsp; &amp;&amp; (myMovingAverageArray1[<span class="number">1</span>]&gt;myMovingAverageArray3[<span class="number">1</span>])
+&nbsp;&nbsp; &amp;&amp; (myMovingAverageArray2[<span class="number">0</span>]&lt;myMovingAverageArray3[<span class="number">0</span>])
+&nbsp;&nbsp; &amp;&amp; (myMovingAverageArray2[<span class="number">1</span>]&gt;myMovingAverageArray3[<span class="number">1</span>])
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="functions">Comment</span>(<span class="string">"SELL"</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;}
+<span class="comment">//+------------------------------------------------------------------+</span>
+
+</pre> </div> <p></p>После запуска стратегии на графике будут формироваться следующие сигналы: <p></p> <h3> <p style="text-align:center;"> <img src="https://c.mql5.com/2/44/3MA_-_buy_signal.png" loading="lazy" title="3MA - сигнал на покупку" alt="3MA - сигнал на покупку" style="vertical-align:middle;" width="538" height="479"/></p> <p style="text-align:center;"><br/></p> <p style="text-align:center;"> <img src="https://c.mql5.com/2/44/3MA_-_sell_signal.png" loading="lazy" title="3MA - сигнал на продажу" alt="3MA - сигнал на продажу" style="vertical-align:middle;" width="538" height="479"/></p> <p style="text-align:center;"><br/></p></h3> <h3>Заключение</h3> <p></p>В этой статье мы рассмотрели один из самых популярных и полезных индикаторов — скользящую среднюю, познакомились с разновидностями средних. Также мы посмотрели, как использовать этот индикатор и как написать три разные стратегии на его основе. Если вы хотите использовать эти стратегии, обязательно проведите тщательное тестирование и оптимизацию. <p></p> <p><br/></p> <p><br/></p>
+      </div>
+          <p style="text-align: right;">
+            <small>
+              Перевод с английского произведен MetaQuotes Ltd. <br>Оригинальная статья: <a href="/en/articles/3040" target="_blank">https://www.mql5.com/en/articles/3040</a>
+            </small>
+          </p>
+<div id="cb_3040" class="attachBlock">
+  <strong>Прикрепленные файлы</strong> |
+  <div class="grouped-attachments-help">
+    <a title="Загрузить все вложения в одном ZIP-архиве" href="/ru/articles/download/3040.zip">
+      <i class="attach-icon attach-icon_zip"></i>Загрузить ZIP
+    </a>
+  </div>
+    <div class="attachItem">
+      <a title="Скачать One_Moving_Average_System.mq5" href="/ru/articles/download/3040/one_moving_average_system.mq5"><i class="attach-icon attach-icon_mq5"></i>One_Moving_Average_System.mq5</a>
+      <span class="attachSize">(1.74 KB)</span>
+    </div>
+    <div class="attachItem">
+      <a title="Скачать Two_Moving_Averages_System.mq5" href="/ru/articles/download/3040/two_moving_averages_system.mq5"><i class="attach-icon attach-icon_mq5"></i>Two_Moving_Averages_System.mq5</a>
+      <span class="attachSize">(1.92 KB)</span>
+    </div>
+    <div class="attachItem">
+      <a title="Скачать Three_Moving_Averages_System.mq5" href="/ru/articles/download/3040/three_moving_averages_system.mq5"><i class="attach-icon attach-icon_mq5"></i>Three_Moving_Averages_System.mq5</a>
+      <span class="attachSize">(2.6 KB)</span>
+    </div>
+</div>
+    </div>
+
+  <div class="copyright">
+    <p><strong>Предупреждение:</strong> все права на данные материалы принадлежат MetaQuotes Ltd. Полная или частичная перепечатка запрещена.</p>
+      <p>Данная статья написана пользователем сайта и отражает его личную точку зрения. Компания MetaQuotes Ltd не несет ответственности за достоверность представленной информации, а также за возможные последствия использования описанных решений, стратегий или рекомендаций.</p>
+  </div>
+
+
+
+    <div class="article__author-with-articles">
+      
+
+
+<div class="article-footer__author">
+  <div class="article-footer__author-avatar">
+    <img id="avatar" src="https://c.mql5.com/avatar/2018/5/5AE8D3AC-DEC5_big.jpg" title="Mohamed Abdelmaaboud" alt="Mohamed Abdelmaaboud" loading="lazy" width="164" height="164">
+  </div>
+  <div class="article-footer__author-content">
+    <div class="article-footer__author-name">
+      <a href="/ru/users/m.aboud" title="Mohamed Abdelmaaboud">Mohamed Abdelmaaboud</a>
+    </div>
+    <div class="article-footer__author-info">
+      <ul>
+          <li>
+            <i title="Живёт" class="icons-profile icons-profile_geo"></i>
+            <a target="_blank" rel="nofollow" title="Живёт" href="https://www.mql5.com/go?https://maps.google.com/?z=4&q=%d0%95%d0%b3%d0%b8%d0%bf%d0%b5%d1%82">Египет</a>
+          </li>
+        <li>
+          <i title="Рейтинг" class="icons-profile icons-profile_statistics"></i>
+          <a title="Рейтинг" href="/ru/users/m.aboud/achievements">15518</a>
+        </li>
+      </ul>
+    </div>
+    <div class="article-footer__author-contacts">
+          <li title="LinkedIn"><a class="icons-networks icons-networks_linkedin-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://www.linkedin.com/in/mhassan586"></a></li>
+    <li title="X"><a class="icons-networks icons-networks_tw-mini" target="_blank" rel="noreferrer noopener nofollow" href="https://x.com/mhassan586"></a></li>
+    <li title="Сайт"><a target="_blank" rel="noreferrer noopener nofollow" href="https://mhassanhub.com" class="icons-profile icons-profile_net"></a>
+      <a target="_blank" rel="noreferrer noopener nofollow" href="https://mhassanhub.com" style="display: inline-block; vertical-align: top; margin-top: -2px;">https://mhassanhub.com</a></li>
+
+    </div>
+    <div class="article-footer__author-bio">✅ I am Mohamed Hassan Abdel Maaboud, a financial market analyst and systematic investment and trading strategist with experience in the financial markets field since 2012.
+<br>✅ Certified Financial Technician® (CFTe®) holder from IFTA (International Federation of Technical Analysts).
+<br>✅ Certified ESTA Technical Analyst (CETA ) holder from ESTA (The Egyptian Society of Technical Analysts).
+<br>👉 Check out the website through the link: <a href="/go?link=https://mhassanhub.com/" title="https://mhassanhub.com/" rel="nofollow" target="_blank">https://mhassanhub.com/</a>
+<br>✅ I am passionate about what I do and interested in adding more value using my experience in the field.
+<br>✅ I am the author of many articles here on the MQL5 website about algorithmic trading and how to create a trading system based on the most popular technical indicators.
+<br>You can find them through the following link:
+</div>
+  </div>
+</div>
+
+      <div class="other-author-articles ui">
+        <h4 class="other-author-articles__title">Другие статьи автора</h4>
+        <ul class="other-author-articles__list">
+          <li><a href="/ru/articles/19547" data-fz-event="MQL5+Article+From+Author+Article">Как создать и оптимизировать торговую систему на основе циклов (Detrended Price Oscillator — DPO)</a></li>
+          <li><a href="/ru/articles/16469" data-fz-event="MQL5+Article+From+Author+Article">Строим и оптимизируем торговую систему, основанную на объемах торгов (Chaikin Money Flow - CMF)</a></li>
+          <li><a href="/ru/articles/14135" data-fz-event="MQL5+Article+From+Author+Article">Интеграция MQL5: Python</a></li>
+          <li><a href="/ru/articles/14775" data-fz-event="MQL5+Article+From+Author+Article">Создаем и оптимизируем торговую систему на основе волатильности с индикатором Чайкина</a></li>
+          <li><a href="/ru/articles/14186" data-fz-event="MQL5+Article+From+Author+Article">Расширенные переменные и типы данных в MQL5</a></li>
+          <li><a href="/ru/articles/14169" data-fz-event="MQL5+Article+From+Author+Article">Разработка и тестирование торговых систем на основе Канала Кельтнера</a></li>
+          <li><a href="/ru/articles/14006" data-fz-event="MQL5+Article+From+Author+Article">Разработка и тестирование торговых систем Aroon</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+  <div class="article__last-comments" id="articleAdditional">
+    
+
+<div class="comments-preview">
+    <div class="title">
+      <span></span><b>
+         Последние комментарии |
+ <a href="/ru/forum/391045">Перейти к обсуждению на форуме трейдеров</a>
+      </b>
+        (3)
+    </div>
+    <div>
+        
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2022/3/6233327A-D1E7.JPG" srcset="https://c.mql5.com/avatar/2022/3/6233327A-D1E7_big.JPG 2x" alt="Tobias Johannes Zimmer" title="Tobias Johannes Zimmer" data-user-login="pennyhunter" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/ru/users/pennyhunter" data-user-login="pennyhunter">Tobias Johannes Zimmer</a></b>
+              |
+              <span class="comment__date">1 мар. 2022 в 12:36</span>
+              <a id="comment_57201934"></a>
+              
+            </div>
+            <div class="content" id="content57201934">
+              С одной стороны, спасибо, что вы сделали эту серию для начинающих. С другой стороны, я удивлен, что у вас до сих пор нет комментариев о том, почему вы не должны инициализировать хэндлы индикаторов внутри OnTick.
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/avatar_na2.png" srcset="https://c.mql5.com/avatar/avatar_na2_big.png 2x" alt="Gunnar Forsgren" title="Gunnar Forsgren" data-user-login="GunnarForsgren" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/ru/users/gunnarforsgren" data-user-login="GunnarForsgren">Gunnar Forsgren</a></b>
+              |
+              <span class="comment__date">8 мар. 2024 в 19:06</span>
+              <a id="comment_57202248"></a>
+              
+            </div>
+            <div class="content" id="content57202248">
+              Очень простые для понимания рассуждения. Поначалу я беспокоился о возможных колебаниях в точке пересечения; о риске того, что позиция будет двигаться туда-сюда между <a href="/ru/articles/522" target="_blank" title="Статья: MetaTrader 5 Добавленные торговые сигналы - лучше, чем ПАММ-счета! " class="linkator"><span class="mark">сигналом покупки/продажи</span></a>, что приведет к множеству кратковременных убыточных сделок. Что в расчетах потребуется некоторый запас для эффекта гистерезиса. Но маржа также влияет на репонсивность. Но я вижу, что в случаях покупки/продажи используются разные цены (ask/bid), и это дает некоторый запас. <br/> Тестер стратегий будет полезен. Параметризируя неопределенное поведение, тестер стратегий может выявить неожиданные результаты, которые помогут улучшить стратегию.
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/avatar_na2.png" srcset="https://c.mql5.com/avatar/avatar_na2_big.png 2x" alt="Ronald Alarcon" title="Ronald Alarcon" data-user-login="ronaldalarconlepez" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/ru/users/ronaldalarconlepez" data-user-login="ronaldalarconlepez">Ronald Alarcon</a></b>
+              |
+              <span class="comment__date">4 сент. 2025 в 17:50</span>
+              <a id="comment_57960517"></a>
+              
+            </div>
+            <div class="content" id="content57960517">
+              Отличный <a href="https://www.mql5.com/ru/articles/5638" target="_blank" title="Статья: Анализ MQL с помощью MQL " class="linkator"><span class="mark">анализ</span></a> для этой статьи, очень понятный для тех, кто начинает, как я, в этом мире, он поможет мне во многом, спасибо.
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+  </div>
+
+
+    <div class="articles-bottom-list" id="articleAdditional">
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Графика в библиотеке DoEasy (Часть 99): Перемещаем расширенный графический объект одной контрольной точкой" src="https://c.mql5.com/2/45/MQL5-avatar-doeasy-library3-2__3.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/ru/articles/10584" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Графика в библиотеке DoEasy (Часть 99): Перемещаем расширенный графический объект одной контрольной точкой</a>
+                <div class="articles-bottom-list__desc">В прошлой статье мы создали возможность перемещения опорных точек расширенного графического объекта при помощи форм управления. Теперь сделаем перемещение составного графического объекта при помощи одной точки (формы) управления графическим объектом.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Как и зачем разрабатывать собственную систему для алгоритмической торговли" src="https://c.mql5.com/2/44/why-and-how__1.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/ru/articles/10293" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Как и зачем разрабатывать собственную систему для алгоритмической торговли</a>
+                <div class="articles-bottom-list__desc">В этой статье мы рассмотрим основы языка программирования MQL. Цель статьи — помочь начинающим программистам разработать собственную систему алгоритмической торговли (торгового советника).</div>
+              </div>
+          </div>
+        </div>
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Графика в библиотеке DoEasy (Часть 100): Устраняем недочёты при работе с расширенными стандартными графическими объектами" src="https://c.mql5.com/2/45/MQL5-avatar-doeasy-library3-2__4.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/ru/articles/10634" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Графика в библиотеке DoEasy (Часть 100): Устраняем недочёты при работе с расширенными стандартными графическими объектами</a>
+                <div class="articles-bottom-list__desc">Сегодня мы немного &quot;подчистим хвосты&quot; — устраним явные недоработки при одновременной работе с расширенными (и стандартными) графическими объектами и объектами-формами на канвасе и исправим ошибки, замеченные при тестировании в прошлой статье. И на этом завершим этот раздел описания библиотеки.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Что можно сделать с помощью скользящих средних" src="https://c.mql5.com/2/45/moving_averages.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/ru/articles/10479" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Что можно сделать с помощью скользящих средних</a>
+                <div class="articles-bottom-list__desc">В данной статье мне захотелось собрать некоторые способы применения индикатора &quot;Скользящая средняя&quot;. Практически к каждому способу, если требуется анализ кривых, сделаны индикаторы, визуализирующие полезную идею. В большинстве случаев идеи подсмотрены у других авторов, однако, собранные все вместе, они помогут точнее видеть основные направления и — надеюсь — принимать более правильные торговые решения. Уровень знания языка MQL5 — начальный.</div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+<div class="clear-fix"></div>
+
+<div id='wdausxxqrpvhekbwjrjlhqjghyhesrqqau' class="r6irig5txiuua4k0m r6irig5txiuua4k0m_articles-view gg88d3drb"></div>
+    
+
+<div class="hidden" id="popupRegisterLogin">
+  <div class="register-login-popup">
+    <div class="register-login-popup__header">
+      <img src="https://c.mql5.com/i/registerlandings/logo-2.png" srcset="https://c.mql5.com/i/registerlandings/logo-2_2x.png 2x" alt="MQL5 - Язык торговых стратегий для клиентского терминала MetaTrader 5" loading="lazy" width="74" height="24" />
+    </div>
+    <div class="register-login-popup__content">
+      <div class="register-login-popup__desc">
+        <div class="register-login-popup__title">Вы упускаете торговые возможности:</div>
+        <ul>
+<li>Бесплатные приложения для трейдинга</li>
+<li>8 000+ сигналов для копирования</li>
+<li>Экономические новости для анализа финансовых рынков</li>
+</ul>
+      </div>
+      <div class="register-login-popup__forms ui">
+        <div class="register-login-popup__tabs" id="registerLoginPopupTabs">
+          <span data-id="register" id="registerLoginPopupTab_register" class="register-login-popup__tab register-login-popup__tab_active">Регистрация</span>
+          <span data-id="login" id="registerLoginPopupTab_login" class="register-login-popup__tab">Вход</span>
+        </div>
+        <div id="registerLoginPopupTabContent_register">
+          <div class="ui auth-form__content">
+    
+  <script type='text/javascript'>/*<![CDATA[*/ if (!window.V) var V = []; /*]]>*/</script>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/ru/auth_register_short" id="PopupRegisterquickRegisterForm" onsubmit="PopupRegisterquickRegistration.OnSubmit(this,&#39;ru&#39;);if(Validate(this)) Ajax.form(this,{onready:PopupRegisterquickRegistration.OnSuccessPopup,onerror:PopupRegisterquickRegistration.OnError,onbeginrequest:PopupRegisterquickRegistration.DisableInputs,onendrequest:PopupRegisterquickRegistration.EnableInputs});return(false);" enctype = "multipart/form-data"><input type="hidden" name="__signature" value="8f2de916c3ff8cd8edc75864d626aa7f"/>
+    <div class="auth-form__inputs">
+      <input type="hidden" value="0" name="IsValidate" id="PopupRegisterIsValidate" />
+
+      <!--[if lt IE 10]><div class="note">Придумайте логин:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input type="text" id="PopupRegisterusername" name="username" class="input" maxlength="32" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.CheckUserName();}" onkeyup="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.ValidateUserName(this, 'Укажите корректный логин');}" placeholder="Придумайте логин" title="Может содержать латинские буквы, цифры, точки, тире, символы подчеркивания. Не может начинаться и заканчиваться точкой. Длина: 3-32 символов." onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisterusername'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisterusername',10,'Используйте латинские буквы, допускаются цифры, символы подчеркивания и точки.',validate_username]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisterusername">латиницей и без пробелов</label>
+      </div>
+      <!--[if lt IE 10]><div class="note">Ваш email:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input class="input" type="email" id="PopupRegisteremail" name="email" placeholder="Ваш email" title="Введите email (не более 256 символов). Например: ivan@example.com" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnChange(this);}" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisteremail'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisteremail',10,'Укажите корректный email',validate_email]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisteremail">пароль придет на email</label>
+      </div>
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Register" />
+    </div>
+    <span id="PopupRegisterquickRegisterSubmit">
+      <input type="submit" value="Зарегистрироваться" id="PopupRegisterquickRegisterButton"  title="Зарегистрируйтесь и получите пароль на ваш email" class="button button_yellow"  />
+    </span>
+    <span id="PopupRegisterquickRegisterErrorMessage" class="quick-register-error-message field-validation-error" style="text-align: center; margin-top: 16px; display: none;">
+      Произошла ошибка
+    </span>
+</form>
+    
+</div>
+<div class="auth-social">
+  <ul class="auth-social-list" id="socialList">
+    <li><a onclick="window.fpush({name: 'MQL5+Popup+Register+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/ru/auth_oauth2?provider=Google&amp;amp;return=popup&amp;amp;reg=1" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Войти через Google</a></li>
+  </ul>
+</div>
+<div class="auth-block-agree">
+  <p>
+    Вы принимаете <a target="_blank" href="/ru/about/privacy">политику сайта</a> и <a target="_blank" href="/ru/about/terms">условия использования</a>
+  </p>
+</div>
+
+
+        </div>
+        <div id="registerLoginPopupTabContent_login" class="hidden">
+            <div class="auth-form__text">
+    Если у вас нет учетной записи, <a href="https://www.mql5.com/ru/auth_register" rel="nofollow" style="vertical-align: top">зарегистрируйтесь</a>
+  </div>
+<div class="ui auth-form__content auth-form__content_login" id="loginFormWrapper">
+    
+  <div id="needCookies" class="need-cookies hidden">
+    <div class="danger-box">
+      <p>Для авторизации и пользования сайтом MQL5.com необходимо разрешить использование файлов Сookie.</p>
+<p>Пожалуйста, включите в вашем браузере данную настройку, иначе вы не сможете авторизоваться.</p>
+    </div>
+  </div>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/ru/auth_login" id="loginForm" onsubmit="if(window.quickLogin){return window.quickLogin.onSubmit(this);}var result = Validate(this); if(result) { preventDoubleSubmit(this); } return result;"><input id="RedirectAfterLoginUrl" name="RedirectAfterLoginUrl" type="hidden" value="" /><input id="RegistrationUrl" name="RegistrationUrl" type="hidden" value="" /><input data-val="true" data-val-required="The ShowOpenId field is required." id="ShowOpenId" name="ShowOpenId" type="hidden" value="True" /><input id="TrackingSection" name="TrackingSection" type="hidden" value="Articles" />    <input name="ViewType" type="hidden" value="5" />
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Login" />
+    <!--[if lt IE 10]><div class="note">Ваш логин:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <input class="input qa-login" id="Login" name="Login" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Логин" title="Ваш логин" type="text" value="" />
+      <script type='text/javascript' id='validate_Login'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Login',1,'Введите логин, указанный при регистрации']);});mqGlobal.AddOnReady(function() {V.push(['Login',10,'Email нельзя использовать, введите свой логин, пожалуйста',validateLogin]);}); /*]]>*/</script>
+    </div>
+    <!--[if lt IE 10]><div class="note">Пароль:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <div class="input-with-show">
+        <input autocomplete="off" class="input qa-password" id="Password" name="Password" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Пароль" title="Введите пароль" type="password" />
+        <span class="input-with-show__icon" title="Показать пароль" onclick="if(window.quickLogin){window.quickLogin.showPass(this, 'Показать пароль', 'Скрыть пароль');}"></span>
+      </div>
+      <script type='text/javascript' id='validate_Password'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Password',1,'Введите пароль']);}); /*]]>*/</script>
+    </div>
+    <script type="text/javascript">
+    function validateLogin(input) {
+      console.log('validate login ' + input.value);
+      return !/^\w+([-+.'']{1,2}\w+)* @\w+([-.]\w+)*\.\w+([-.]\w+)*$/i.test(input.value);
+    }
+    </script>
+    <div class="forgot" id="loginForgotBlock"><a id="loginForgotLink" href="https://www.mql5.com/ru/auth_forgotten?return=popup">Забыли логин/пароль?</a></div>
+    <input type="submit" class="button button_yellow qa-submit" id="loginSubmit" value="Вход" title="Войти">
+</form></div>
+
+  <div class="auth-social" id="authSocialBlock">
+    <ul class="auth-social-list" id="socialList">
+      <li><a onclick="window.fpush({name: 'MQL5+Popup+Login+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/ru/auth_oauth2?provider=Google&amp;amp;return=popup" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Войти через Google</a></li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script id="popupSection" type="application/json">{"section": "Articles"}</script>
+<script id="popupTranslate" data-type="translate" type="application/json">
+{
+  "popup":
+  {
+  "EmailTitle" : "Пароль отправлен на {0}",
+  "EmailDescription" : "Войдите, используя полученный пароль и логин, указанный при регистрации",
+  "SubmitButtonText" : "Активировать аккаунт",
+  "RegistrationTip" : "Если вы не получили письмо с паролем, проверьте папку спам или &lt;a href={0}&gt;повторите регистрацию&lt;/a&gt;"
+  }
+}
+</script>
+
+    
+
+    
+
+
+    </article>
+  </div>
+
+
+
+<div aria-hidden="true" class="footer  desktop" id="footer">
+  <ul class="links  links_desktop">
+      <li id="navFooterCommunity">
+        <nav>
+          <ul>
+            <li><a href="https://web.metatrader.app/terminal?mode=demo&amp;lang=ru" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Footer+Trading">Онлайн трейдинг / Вебтерминал</a></li>
+            <li><a href="/ru/code" data-fz-event="MQL5+Footer+CodeBase">Бесплатные индикаторы и советники</a></li>
+            <li><a href="/ru/articles" data-fz-event="MQL5+Footer+Articles">Статьи о программировании и трейдинге</a></li>
+            <li><a href="/ru/job" data-fz-event="MQL5+Footer+Job">Заказать торговый советник и индикатор</a></li>
+            <li><a href="/ru/market" data-fz-event="MQL5+Footer+Market">Купить торговый робот и индикатор</a></li>
+            <li><a href="/ru/signals" data-fz-event="MQL5+Footer+Signals">Торговые сигналы форекс</a></li>
+            <li><a href="/ru/vps" data-fz-event="MQL5+Footer+VPS">Forex VPS для торговли</a></li>
+            <li><a href="/ru/forum" data-fz-event="MQL5+Footer+Forum">Форум трейдеров</a></li>
+            <li><a href="/ru/blogs" data-fz-event="MQL5+Footer+Blogs">Блоги трейдеров</a></li>
+            <li><a rel="nofollow" href="/ru/charts" data-fz-event="MQL5+Footer+Charts">Графики</a></li>
+            <li><a href="/ru/widgets" data-fz-event="MQL5+Footer+Widgets">Бесплатные виджеты</a></li>
+          </ul>
+        </nav>
+      </li>
+      <li id="navFooterMt5">
+        <nav>
+          <ul>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com" data-fz-event="MQL5+Footer+MetaTrader+5">Торговая платформа <span class="nobr">MetaTrader 5</span></a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/releasenotes" data-fz-event="MQL5+Footer+MetaTrader+5">Последние обновления <span class="nobr">MetaTrader 5</span></a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/news" data-fz-event="MQL5+Footer+MetaTrader+5">Новости, внедрения и технологии</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/terminal/help" data-fz-event="MQL5+Footer+MetaTrader+5">Руководство пользователя <span class="nobr">MetaTrader 5</span></a></li>
+            <li><a href="/ru/docs" data-fz-event="MQL5+Footer+Docs">Язык торговых стратегий MQL5</a></li>
+            <li><a rel="nofollow noopener" href="https://cloud.mql5.com" data-fz-event="MQL5+Footer+Cloud">MQL5 Cloud Network</a></li>
+            <li><a rel="noopener" href="https://forge.mql5.io/?lang=ru-RU" data-fz-event="MQL5+Footer+Forge" target="_blank">MQL5 Algo Forge</a></li>
+              <li><a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Footer">Скачать <span class="nobr">MetaTrader 5</span></a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/terminal/help/start_advanced/installation" data-fz-event="MQL5+Footer+MetaTrader+5">Установка платформы</a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/ru/terminal/help/start_advanced/deinstallation" data-fz-event="MQL5+Footer+MetaTrader+5">Удаление программы</a></li>
+          </ul>
+        </nav>
+
+      </li>
+    <li id="navFooterWebsite">
+        <nav>
+          <ul>
+            <li><a rel="nofollow" href="/ru/about" data-fz-event="MQL5+Footer+About">О проекте</a></li>
+              <li><a href="/ru/wall" data-fz-event="MQL5+Footer+Wall">Хроника сайта</a></li>
+            <li><a rel="nofollow" href="/ru/about/terms" data-fz-event="MQL5+Footer+About">Условия использования</a></li>
+            <li><a rel="nofollow" href="/ru/about/autopayments" data-fz-event="MQL5+Footer+About">Соглашение о рекуррентных платежах</a></li>
+            <li><a rel="nofollow" href="/ru/about/agencyagreement" data-fz-event="MQL5+Footer+About">Агентский договор-оферта</a></li>
+            <li><a rel="nofollow" href="/ru/about/privacy" data-fz-event="MQL5+Footer+About">Политика конфиденциальности и защиты данных</a></li>
+            <li><a rel="nofollow" href="/ru/about/cookies" data-fz-event="MQL5+Footer+About">Политика в отношении cookie-файлов</a></li>
+            <li>
+                <a rel="nofollow" href="/ru/contact" data-fz-event="MQL5+Footer+Contacts">Контакты и обращения</a>
+            </li>
+          </ul>
+        </nav>
+    </li>
+
+      <li>
+        <div class="footer__products">
+          <div class="footer__product">
+            <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com" class="footer__product-name">MetaTrader 5</a>
+            <div class="footer__product-links">
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon windows" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Скачать MetaTrader 5 для Windows</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/MetaTrader5.pkg.zip?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon macos" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Скачать MetaTrader 5 для MacOS</div></a>
+            <a rel="nofollow noopener" href="https://www.mql5.com/ru/articles/625?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon linux" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Скачать MetaTrader 5 для Linux</div></a>
+            <a rel="nofollow noopener" href="https://web.metatrader.app/terminal?mode=demo&amp;lang=ru" class="icon web"><div  class="footer__product-link-hint footer__product-link-hint-short">Открыть MetaTrader 5 WebTerminal</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/ios?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=ru" class="icon ios" data-fz-event="MetaTrader+5+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/RXd-JJC1I1d.png)">Отсканируйте для установки из App Store</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=ru" class="icon android" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/TrE06p2W-9d.png)">Отсканируйте для установки из Google Play</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon huawei" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ZRt&#x2B;zI1l&#x2B;8O.png)">Отсканируйте для установки из Huawei AppGallery</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon ark" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/L0Q9oag&#x2B;3eE.png)">Отсканируйте для получения файла APK для Android</div></a>
+            </div>
+          </div>
+          <div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com/en/news/2270" class="footer__product-name">MQL5 Channels</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon ios" data-fz-event="MQL5+Channels+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Nz0etpAYpcO.png)">Отсканируйте для установки из App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon android" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/8re&#x2B;UwV7BVs.png)">Отсканируйте для установки из Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Su&#x2B;fe4n374e.png)">Отсканируйте для установки из Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mql5channels/mql5channels.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/G6Mg4NfCPzO.png)">Отсканируйте для получения файла APK для Android</div></a>
+              </div>
+            </div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.tradays.com/ru/download?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MQL5+Footer+Download+Tradays" class="footer__product-name">Economic Calendar</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon ios" data-fz-event="Tradays+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/e0xuSVTw-1E.png)">Отсканируйте для установки из App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=ru" class="icon android" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/YuEbj-vmYap.png)">Отсканируйте для установки из Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CrS7bbDAdAO.png)">Отсканируйте для установки из Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/tradays/tradays.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/VZi8YPIb2op.png)">Отсканируйте для получения файла APK для Android</div></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__networks">
+          <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow" title="Facebook"><i class="icons-networks icons-networks_fb"></i></a>
+          <a href="https://t.me/mql5ru" target="_blank" rel="nofollow" title="Telegram"><i class="icons-networks icons-networks_tg"></i></a>
+          <a href="https://x.com/mql5com" target="_blank" rel="nofollow" title="X (Twitter)"><i class="icons-networks icons-networks_tw"></i></a>
+          <a href="https://www.youtube.com/@MetaQuotesOfficial" target="_blank" rel="nofollow" title="YouTube"><i class="icons-networks icons-networks_yt"></i></a>
+          <a href="https://www.linkedin.com/company/mql5" target="_blank" rel="nofollow" title="LinkedIn"><i class="icons-networks icons-networks_linkedin"></i></a>
+          <span>Подпишитесь на новости алготрейдинга</span>
+        </div>
+  
+        <div class="footer__other">
+          <div class="footer__not-a-broker">Не является брокером, нет реальных торговых счетов</div>
+          <div class="copyright">35 Dodekanisou str, Germasogeia, 4043,&nbsp;Limassol,&nbsp;Cyprus</div>
+          <div class="copyright">Copyright 2000-2026, <span class="nobr">MetaQuotes Ltd</span></div>
+        </div>
+      </li>
+  </ul>
+</div>
+
+
+
+<div class="shadow-layer" id="layer"></div>
+    
+
+  <div class="b-fixed-mt" id="bFixedMt" style="display: none;">
+    
+  </div>
+
+
+<script type='text/javascript'>
+		(function (a, e, f, g, b, c, d) { a[b] || (a.FintezaCoreObject = b, a[b] = a[b] || function () { (a[b].q = a[b].q || []).push(arguments) }, a[b].l = 1 * new Date, c = e.createElement(f), d = e.getElementsByTagName(f)[0], c.async = !0, c.defer = !0, c.src = g, d && d.parentNode && d.parentNode.insertBefore(c, d)) })
+      (window, document, "script", "/ff/core.js", "fz");
+		window.fz("register", "website", {
+      id: "sqjxkxkswybhifrohpyooonwgbvsfzmayq",
+			trackLinks: true
+		});
+        mqGlobal.AddOnReady(function () { Mql5Cookie.init('mql5.com', '5091325623986058807'); });
+mqGlobal.AddOnReady(function(){if(!window.Pocket){window.Pocket=new PocketManager();}});mqGlobal.AddOnReady(function(){if(!window.translateManager){window.translateManager=new Translate(undefined,'Ошибка: не удалось выполнить перевод. Пожалуйста, повторите попытку позже.');}if(document.querySelectorAll){var translateElements=document.querySelectorAll(".translateMenu");if(translateElements){var i=0,count=translateElements.length;for(i;i<count;i++){(function(i){var contentid=dataset(translateElements[i],"contentid"),sourcelang=dataset(translateElements[i],"sourcelang"),targetlang=dataset(translateElements[i],"targetlang"),moduleid=parseInt(dataset(translateElements[i],"moduleid")),typeid=parseInt(dataset(translateElements[i],"typeid")),entityid=parseInt(dataset(translateElements[i],"entityid"));Core.AddHandler(translateElements[i],"mouseover",function(){return translateManager.SetMenu(this,contentid,sourcelang,targetlang,moduleid,typeid,entityid);});})(i);}}}});window.fz("show","wdausxxqrpvhekbwjrjlhqjghyhesrqqau");window.mqGlobal.AddOnLoad(function(){window.fpush('MQL5+Article+Open');Articles.CheckOnScrollDown();});mqGlobal.AddOnReady(function(){window.PopupRegisterquickRegistration=new QuickRegistration('PopupRegister','Popup+Register','Articles');});function validate_username(input){var reg=/^([a-z0-9]){1}([\-._a-z0-9]){1,30}([\-_a-z0-9]){1}$/i,value=input.value,result=true;if(reg.test(value)){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Login',unit:'section',value:'Articles'});}return result;}function validate_email(input){var reg=/^\w+([-+.'']{1,2}\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/i,value=input.value,result=true,length_value=value.length;if(reg.test(value)&&length_value>=1&&length_value<=40){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Email',unit:'section',value:'Articles'});}return result;};mqGlobal.AddOnReady(function(){var username=$('PopupRegisterusername'),email=$('PopupRegisteremail');if(username)username.value='';if(email)email.value='';});mqGlobal.AddOnReady(function(){window.quickLogin=new QuickLogin('Popup+Login','Articles');});mqGlobal.AddOnLoad(function(){window.showLoginRegisterPopupAtEnd();});mqGlobal.AddOnLoad(function(){window.tooltipUserInfo.init();});mqGlobal.AddOnReady(function(){{window.initHeaderSearch('','https://www.mql5.com/ru/search');}});</script><script type="text/javascript">mqGlobal.AddOnReady(function(){window.initSuggestions("headerSearchKeyword","ru","https://search.mql5.com/api/query","https://www.mql5.com/ru/users_search/suggestion");});window.fz("show","vgckrufggwxdtfscpyalmenexmvhljduja");mqGlobal.AddOnReady(function(){window.floatVerticalPanelNode=FloatVerticalPanel('Сайт использует cookie-файлы. Узнайте больше о нашей <a href="/ru/about/cookies">политике по использованию cookie-файлов</a>.','cookie_accept');});							if (typeof Attach !== "undefined")
+			Attach.setAcceptFilter(".zip, .txt, .log, .mqh, .ex5, .mq5, .mq4, .mqproj, .ex4, .mt5, .set, .tpl, .cl, .py, .sqlite, .csv, .ini, .ipynb, .onnx, .gif, .png, .jpg, .jpeg, .mp4, .webm");
+	</script>
+
+<script type="application/ld&#x2B;json">
+		[
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"url": "https://www.mql5.com",
+				"logo": "https://c.mql5.com/i/community/logo_mql5-2.png",
+				"sameAs": [
+					"https://www.facebook.com/mql5.community",
+					"https://www.x.com/mql5com",
+					"https://www.youtube.com/user/MetaQuotesOfficial"
+				 ]
+			}
+		
+, 
+{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"Форум","description":"Обсуждение торговых стратегий и автоматического трейдинга. MQL5.community  крупнейший форум по форексу","url":"https://www.mql5.com/ru/forum","children":[]},{"@type":"SiteNavigationElement","position":2,"name":"Маркет","description":"MetaTrader Market - магазин торговых роботов, индикаторов, книг и журналов по трейдингу.","url":"https://www.mql5.com/ru/market","children":[]},{"@type":"SiteNavigationElement","position":3,"name":"Сигналы","description":"Социальный трейдинг, копирование сделок и мониторинг счетов в MetaTrader - Торговые сигналы на MQL5.com","url":"https://www.mql5.com/ru/signals","children":[]},{"@type":"SiteNavigationElement","position":4,"name":"Фриланс","description":"Заказать торговых роботов, технические индикаторы и программы для автоматического трейдинга. Работа на форексе. Фриланс-сервис на MQL5.com. Нанять на работу специалистов и экспертов по MetaTrader","url":"https://www.mql5.com/ru/job","children":[]},{"@type":"SiteNavigationElement","position":5,"name":"Котировки","description":"","url":"https://www.mql5.com/ru/quotes/overview","children":[]},{"@type":"SiteNavigationElement","position":6,"name":"MetaTrader","description":"","url":"https://www.metatrader.com","children":[]},{"@type":"SiteNavigationElement","position":7,"name":"Вебтерминал","description":"Вебтерминал для торговой плафтормы MetaTrader. Торгуйте на форекс рынке.","url":"https://web.metatrader.app/terminal?mode=demo","children":[]},{"@type":"SiteNavigationElement","position":8,"name":"Календарь","description":"","url":"https://www.mql5.com/ru/economic-calendar","children":[]},{"@type":"SiteNavigationElement","position":9,"name":"VPS","description":"","url":"https://www.mql5.com/ru/vps","children":[]},{"@type":"SiteNavigationElement","position":10,"name":"Статьи","description":"","url":"https://www.mql5.com/ru/articles","children":[]},{"@type":"SiteNavigationElement","position":11,"name":"CodeBase","description":"Скачать торговые роботы, технические индикаторы, скрипты в исходном коде - Библиотека кодов на MQL5 для MetaTrader 5","url":"https://www.mql5.com/ru/code","children":[]},{"@type":"SiteNavigationElement","position":12,"name":"Algo Forge","description":"","url":"https://forge.mql5.io","children":[]},{"@type":"SiteNavigationElement","position":13,"name":"Документация","description":"Справочник MetaQuotes Language 5 (MQL5) - Документация на MQL5.com","url":"https://www.mql5.com/ru/docs","children":[]}]}		
+,
+{"@context":"https://schema.org","@type":"TechArticle","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.mql5.com/ru/articles/3040"},"headline":"Как разрабатывать системы на основе скользящих средних","image":["https://c.mql5.com/2/44/Uptrend.png","https://c.mql5.com/2/44/Downtrend.png","https://c.mql5.com/2/44/Screen_Shot_2022-01-28_at_10.11.51_PM.png","https://c.mql5.com/2/44/Screen_Shot_2022-01-28_at_10.12.04_PM.png","https://c.mql5.com/2/44/Screen_Shot_2022-01-28_at_10.12.18_PM.png","https://c.mql5.com/2/44/Screen_Shot_2022-01-28_at_10.12.34_PM.png","https://c.mql5.com/2/44/Screen_Shot_2022-01-28_at_10.12.46_PM.png","https://c.mql5.com/2/44/Screen_Shot_2022-01-28_at_10.29.50_PM.png","https://c.mql5.com/2/44/Screen_Shot_2022-01-28_at_10.30.10_PM.png","https://c.mql5.com/2/44/Screen_Shot_2022-01-28_at_10.30.28_PM.png","https://c.mql5.com/2/44/Screen_Shot_2022-01-28_at_10.30.40_PM.png","https://c.mql5.com/2/44/1MA_Blueprint.png","https://c.mql5.com/2/44/1MA_-_buy_signal.png","https://c.mql5.com/2/44/1MA_-_sell_signal.png","https://c.mql5.com/2/44/2MA_Blueprint.png","https://c.mql5.com/2/44/2MA_-_buy_signal.png","https://c.mql5.com/2/44/2MA_-_sell_signal.png","https://c.mql5.com/2/44/3MA_Blueprint.png","https://c.mql5.com/2/44/3MA_-_buy_signal.png","https://c.mql5.com/2/44/3MA_-_sell_signal.png"],"datePublished":"2022-03-16T14:08:28+00:00Z","dateModified":"2022-03-22T09:43:29+00:00Z","author":{"@type":"Person","name":"Mohamed Abdelmaaboud","url":"https://www.mql5.com/ru/users/m.aboud"},"editor":{"@type":"Organization","name":"MetaQuotes","url":"https://www.mql5.com/ru/users/metaquotes","address":{"@type":"PostalAddress","addressCountry":"CY"}},"publisher":{"@type":"Organization","name":"MQL5 Community","url":"https://www.mql5.com","logo":{"@type":"ImageObject","url":"https://c.mql5.com/i/community/logo_mql5-2.png"}},"description":"Есть множество различных способов для фильтрации сигналов, генерируемых какой-либо стратегией. Вероятно, простейший из них  это использование скользящей средней. Об этом мы и поговорим в этой статье."}
+,
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":"https://www.mql5.com/ru/articles","name":"Статьи"},{"@type":"ListItem","position":2,"item":"https://www.mql5.com/ru/articles/mt5","name":"MetaTrader 5"},{"@type":"ListItem","position":3,"item":"https://www.mql5.com/ru/articles/mt5/trading","name":"Трейдинг"}]}
+
+		]
+	</script>
+</body>
+</html>

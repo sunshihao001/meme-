@@ -1,0 +1,1245 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+
+  <meta name="robots" content="max-snippet:250,max-image-preview:large">
+  <meta name="description" content="Analytical Volume Profile Trading (AVPT) explores how liquidity architecture and market memory shape price behavior, enabling more profound insight into institutional positioning and volume-driven structure. By mapping POC, HVNs, LVNs, and Value Areas, traders can identify acceptance, rejection, and imbalance zones with precision.">
+  <meta property="og:url" content="https://www.mql5.com/en/articles/20327">
+  <meta property="og:title" content="Analytical Volume Profile Trading (AVPT): Liquidity Architecture, Market Memory, and Algorithmic Execution">
+  <meta property="og:description" content="Analytical Volume Profile Trading (AVPT) explores how liquidity architecture and market memory shape price behavior, enabling more profound insight into institutional positioning and volume-driven structure. By mapping POC, HVNs, LVNs, and Value Areas, traders can identify acceptance, rejection, and imbalance zones with precision.">
+      <meta property="og:image" content="https://c.mql5.com/2/182/20327-analytical-volume-profile-trading-avpt-liquidity-architecture_1200x628.jpg">
+      <meta property="og:image:secure_url" content="https://c.mql5.com/2/182/20327-analytical-volume-profile-trading-avpt-liquidity-architecture_1200x628.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2025-11-24T08:32:38.0000000Z">
+  <meta property="article:author" content="https://www.mql5.com/en/users/johnhlomohang">
+  <meta property="article:section" content="MetaTrader 5">
+  <meta property="article:tag" content="Examples">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@mql5com">
+  <meta name="twitter:image" content="https://c.mql5.com/2/182/20327-analytical-volume-profile-trading-avpt-liquidity-architecture_1200x628.jpg">
+  <meta name="theme-color" content="#4a76b8">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-config" content="none">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta property="qc:admins" content="36367170677651456375">
+  <meta property="wb:webmaster" content="073d7690269bcd81">
+  <link rel="shortcut icon" href="https://c.mql5.com/i/favicon4.ico">
+  <link rel="dns-prefetch" href="https://c.mql5.com">
+  <link href="https://c.mql5.com/styles/core.444bc25de4c9131a69fedfe5ac42a082.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/all.266d64b83529847f568747dd160d42b0.css" type="text/css" rel="stylesheet" media="all">
+  <link href="https://c.mql5.com/styles/articles.bc4209e4de0b5296041832431b46f3dd.css" type="text/css" rel="stylesheet" media="all">
+  <link href="/en/articles/rss" rel="alternate" type="application/rss+xml" title="Articles on the development and application of MetaTrader 5 trading robots and technical indicators">
+  <link rel="canonical" href="https://www.mql5.com/en/articles/20327">
+  <link rel="alternate" hreflang="en" href="https://www.mql5.com/en/articles/20327">
+  <link rel="alternate" hreflang="ru" href="https://www.mql5.com/ru/articles/20327">
+  <link rel="alternate" hreflang="de" href="https://www.mql5.com/de/articles/20327">
+  <link rel="alternate" hreflang="ja" href="https://www.mql5.com/ja/articles/20327">
+  <title>Analytical Volume Profile Trading (AVPT): Liquidity Architecture, Market Memory, and Algorithmic Execution - MQL5 Articles</title>
+
+
+
+<script type="text/javascript">
+  !function(){window.mqGlobal={};var t=!1,n=!1,e=[],o=[],i=[];function d(t){var n;for(n=0;n<t.length;n+=1)t[n]()}function c(){t||(t=!0,d(e),d(o),o=[],e=[])}function a(){c(),n||(n=!0,d(i),i=[])}if(mqGlobal.AddOnReady=function(n,i){t?n(document):i?e.push(n):o.push(n)},mqGlobal.AddOnLoad=function(t){n?t(document):i.push(t)},mqGlobal.AddOnActiveWindowChange=function(t){this._onvisibility||(this._onvisibility=[]),this._onvisibility[this._onvisibility.length]=t},document.addEventListener)document.addEventListener("DOMContentLoaded",c,!1),window.addEventListener("load",a,!1);else if(document.attachEvent&&(document.attachEvent("onreadystatechange",(function(){switch(document.readyState){case"interactive":c();break;case"complete":a()}})),window.attachEvent("onload",a),document.documentElement.doScroll&&window==window.top)){!function n(){if(!t&&document.body)try{document.documentElement.doScroll("left"),c()}catch(t){setTimeout(n,0)}}()}}();
+  mqGlobal.CookieDomain = ".mql5.com";
+  mqGlobal.Language = 'en';
+  mqGlobal.IsMobile = false;
+  mqGlobal.ClearRteStorage = function (e) { if (window.GStorage || (window.GStorage = globalStorage()), window.GStorage.supported) try { var o = e; window.GStorage.getItem("rte_autosave_uid", function (e, t) { t == o && (window.GStorage.removeItem("rte_autosave_text"), window.GStorage.removeItem("rte_autosave_date"), window.GStorage.removeItem("rte_autosave_uid")) }) } catch (e) { } };
+</script>
+  
+
+    <script src="https://c.mql5.com/js/all.c09fd283bed20d28a52c95cd70a12a27.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/vendor.1be6e9a4a90b28525f93c4c69a5058a1.js" type="text/javascript" defer="defer"></script>
+  <script src="https://c.mql5.com/js/articles.cd4c73c476b2781eecdf04f5583514b5.js" type="text/javascript" defer="defer"></script>
+
+
+</head>
+
+<body id="cover" class="cover">
+
+
+  <nav class="head">
+    <a href="https://www.mql5.com" class="head__logo" title="MQL5 - Language of trade strategies built-in the MetaTrader 5 client terminal"></a>
+      <div class="head__content">
+        <div class="main-menu" id="mainmenu">
+          
+                    <ul class="main-menu__top-level" id="menuTopLevel">
+                    <li><a href="/en/forum" data-fz-event="MQL5+Menu+Forum">Forum</a></li>
+                    <li><a href="/en/market" data-fz-event="MQL5+Menu+Market">Market</a></li>
+                    <li><a href="/en/signals" data-fz-event="MQL5+Menu+Signals">Signals</a></li>
+                    <li><a href="/en/job" data-fz-event="MQL5+Menu+Job">Freelance</a></li>
+                    <li><a href="/en/vps" data-fz-event="MQL5+Menu+VPS">VPS</a></li>
+                    <li><a href="/en/quotes/overview" data-fz-event="MQL5+Menu+Overview">Quotes</a></li>
+                    <li><a href="https://www.metatrader.com" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+MetaTrader">MetaTrader</a></li>
+                  </ul><ul class="main-menu__second-level" id="menuSecondLevel">
+                    <li class="main-menu__selected"><a href="/en/articles" data-fz-event="MQL5+Menu+Articles"><img src="https://c.mql5.com/i/menu/icon-articles4.svg" alt="" width="16" height="16"/>Articles</a></li>
+                    <li><a href="/en/code" data-fz-event="MQL5+Menu+CodeBase"><img src="https://c.mql5.com/i/menu/icon-code4.svg" alt="" width="16" height="16"/>CodeBase</a></li>
+                    <li><a href="https://forge.mql5.io/?lang=en" target="_blank" rel="noopener" data-fz-event="MQL5+Menu+AlgoForge"><img src="https://c.mql5.com/i/menu/icon-algoforge4.svg" alt="" width="16" height="16"/>Algo Forge</a></li>
+                    <li><a href="/en/docs" data-fz-event="MQL5+Menu+Docs"><img src="https://c.mql5.com/i/menu/icon-docs4.svg" alt="" width="16" height="16"/>Documentation</a></li>
+                    <li><a href="/en/book" data-fz-event="MQL5+Menu+Book"><img src="https://c.mql5.com/i/menu/icon-book4.svg" alt="" width="16" height="16"/>AlgoBook</a></li>
+                    <li><a href="/en/neurobook" data-fz-event="MQL5+Menu+Neurobook"><img src="https://c.mql5.com/i/menu/icon-neurobook4.svg" alt="" width="16" height="16"/>NeuroBook</a></li>
+                    <li><a href="/en/economic-calendar" data-fz-event="MQL5+Menu+Economic+Calendar"><img src="https://c.mql5.com/i/menu/icon-economic-calendar4.svg" alt="" width="16" height="16"/>Calendar</a></li>
+                    <li><a href="https://web.metatrader.app/terminal?mode=demo&lang=en" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Menu+Trading"><img src="https://c.mql5.com/i/menu/icon-trading4.svg" alt="" width="16" height="16"/>WebTerminal</a></li>
+                    <li class="main-menu__mobile"><a href="/en/about">About</a></li>
+                    <li class="main-menu__second-tools"><a rel="noopener" target="_blank" href="https://t.me/mql5dev" title="Follow us on socials for top articles and CodeBase updates" class="button-mt" data-vars-fz="Algo+Trading+Channel+Submenu"><img width="18" height="18" src="https://c.mql5.com/i/sidebar/tg.svg" alt="" loading="lazy">Algo Trading Channel</a></li>
+                    </ul>
+        </div>
+          <div class="main-menu__active">
+            <a id="mainMenuSelected" href="#">
+              <span class="main-menu__primary">Articles</span><span class="main-menu__secondary">Sections</span>
+            </a>
+          </div>
+<form action="https://www.mql5.com/en/search" onsubmit="return false;" autocomplete="off" id="headerSearchForm" class="header-search" method="post">
+<button type="button" id="headerSearchButton" title="Search" class="header-search__button"></button><div class="header-search__input"><input name="keyword" type="text" enterkeyhint="search" title="Enter search text" placeholder="Search" id="headerSearchKeyword"/><label for="headerSearchKeyword" class="header-search__placeholder">Type <span>/</span> to search:  @user, $symbol, ...</label><button id="headerSearchSubmit" class="header-search__submit"></button></div><button type="button" id="headerSearchClean" title="Close" class="header-search__clean"></button></form>        <input class="blurHandler" id="mainMenuBlurHandler" type="checkbox">
+      </div>
+      <div class="head__toolbar" id="headerToolbar">
+          <div class="container loginRegister">
+            <nav>
+              <ul id="loginRegisterButtons"><li><a class="login" title="Please sign in. OpenID supported" href="https://www.mql5.com/en/auth_login" rel="nofollow" data-fz-event="MQL5+Menu+Siginin">Log in</a></li><li><a class="registration en" title="Please register" href="https://www.mql5.com/en/auth_register" rel="nofollow" data-fz-event="MQL5+Menu+Register" onclick="window.fpush('MQL5+Button+Click');">Create an account</a></li></ul>
+            </nav>
+          </div>
+        <div class="toggle-button" id="sidebarToggleButton">
+          <i></i>
+        </div>
+
+        <div class="group-menu" id="groupMenu">
+
+
+          <div class="container lang-menu-container">
+            <div id="langMenuContainer" class="lang-menu">
+              <input class="blurHandler" id="langmenuBlurHandler" type="checkbox">
+              <nav>
+                <ul class="lang-menu__list" id="langmenu">
+                  <li class="lang-menu__list-item lang-menu__list-item_selected"><a href="/en/articles" aria-label="English (English)"><i class="icons-languages icons-languages_en"></i><span>English</span></a></li>
+<li class="lang-menu__list-item"><a href="/ru/articles" aria-label="Русский (Russian)"><i class="icons-languages icons-languages_ru"></i><span>Русский</span></a></li>
+<li class="lang-menu__list-item"><a href="/zh/articles" aria-label="中文 (Chinese)"><i class="icons-languages icons-languages_zh"></i><span>中文</span></a></li>
+<li class="lang-menu__list-item"><a href="/es/articles" aria-label="Español (Spanish)"><i class="icons-languages icons-languages_es"></i><span>Español</span></a></li>
+<li class="lang-menu__list-item"><a href="/pt/articles" aria-label="Português (Portuguese)"><i class="icons-languages icons-languages_pt"></i><span>Português</span></a></li>
+<li class="lang-menu__list-item"><a href="/ja/articles" aria-label="日本語 (Japanese)"><i class="icons-languages icons-languages_ja"></i><span>日本語</span></a></li>
+<li class="lang-menu__list-item"><a href="/de/articles" aria-label="Deutsch (German)"><i class="icons-languages icons-languages_de"></i><span>Deutsch</span></a></li>
+<li class="lang-menu__list-item"><a href="/ko/articles" aria-label="한국어 (Korean)"><i class="icons-languages icons-languages_ko"></i><span>한국어</span></a></li>
+<li class="lang-menu__list-item"><a href="/fr/articles" aria-label="Français (French)"><i class="icons-languages icons-languages_fr"></i><span>Français</span></a></li>
+<li class="lang-menu__list-item"><a href="/it/articles" aria-label="Italiano (Italian)"><i class="icons-languages icons-languages_it"></i><span>Italiano</span></a></li>
+<li class="lang-menu__list-item"><a href="/tr/articles" aria-label="Türkçe (Turkish)"><i class="icons-languages icons-languages_tr"></i><span>Türkçe</span></a></li>
+
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+  </nav>
+
+
+
+  <div id="left-sidebar-selector" class="left-sidebar__selector left-sidebar__selector_padding">
+    <div class="left-sidebar__title">
+MetaTrader 5 /     Examples
+    </div>
+    <i class="icons-ux icons-ux_arrow-down-black"></i>
+  </div>
+  <div class="articles-container block-with-sidebar">
+    <aside class="left-sidebar left-sidebar_270" id="left-sidebar">
+      
+  <ul class="tree-menu-ul"><li class="tree-menu__item tree-menu__item_selected"><a class="tree-menu__link" href="/en/articles/examples"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples.svg" alt="" loading="lazy"/>Examples</a><ul class="tree-menu__list tree-menu__list_nested"><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/examples_indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_indicators.svg" alt="" loading="lazy"/>Indicators</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/examples_experts"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/examples_experts.svg" alt="" loading="lazy"/>Experts</a></li></ul></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/strategy_tester"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/strategy_tester.svg" alt="" loading="lazy"/>Tester</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/trading"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading.svg" alt="" loading="lazy"/>Trading</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/trading_systems"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/trading_systems.svg" alt="" loading="lazy"/>Trading systems</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/integration"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/integration.svg" alt="" loading="lazy"/>Integration</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/indicators"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/indicator.svg" alt="" loading="lazy"/>Indicators</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/expert_advisors"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/expert.svg" alt="" loading="lazy"/>Expert Advisors</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/statistics"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/statistics.svg" alt="" loading="lazy"/>Statistics and analysis</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/machine_learning"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/machine_learning.svg" alt="" loading="lazy"/>Machine learning</a></li><li class="tree-menu__item"><a class="tree-menu__link" href="/en/articles/interviews"><img class="tree-menu__icon" width="20" height="20" src="https://c.mql5.com/i/sidebar/interviews.svg" alt="" loading="lazy"/>Interviews</a></li></ul>
+  
+
+    <div class="hints-panel">
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_like"></i>
+        <div class="hints-panel__content">
+          Do you like the article?<br>
+          Share it with others —<br>post a <a href="https://www.mql5.com/en/articles/20327" target="_blank">link</a> to it!
+        </div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_tg-square icons-hints_24px"></i><div class="hints-panel__content">
+Find us on <a href="https://t.me/mql5dev" target="_blank" rel="nofollow">Telegram</a>!<br> Join our fan page</div>
+      </div>
+
+      <div class="hints-panel__item">
+        <i class="icons-hints icons-hints_mt-5"></i>
+        <div class="hints-panel__content">
+          Use new possibilities of <a href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Article" rel="nofollow sponsored noopener noreferrer">MetaTrader 5</a>
+        </div>
+      </div>
+    </div>
+<div id='vgckrufggwxdtfscpyalmenexmvhljduja' class="roeid8y6hsc3ntv1l gg88d3drb"></div>      <div class="similar-author-articles ui">
+        <h4 class="similar-author-articles__title">Similar articles</h4>
+        <ul class="similar-author-articles__list">
+            <li>
+              <a href="/en/articles/22691" data-fz-event="MQL5+Article+Similar+Article">Step-by-Step Implementation of a Local Stop Loss System in MQL5</a>
+            </li>
+            <li>
+              <a href="/en/articles/22563" data-fz-event="MQL5+Article+Similar+Article">How to Detect and Normalize Chart Objects in MQL5 (Part 2): Collecting and Structuring Data from Complex Analytical Objects</a>
+            </li>
+            <li>
+              <a href="/en/articles/17608" data-fz-event="MQL5+Article+Similar+Article">Developing a Multi-Currency Expert Advisor (Part 28): Adding a Position Closing Manager</a>
+            </li>
+            <li>
+              <a href="/en/articles/18111" data-fz-event="MQL5+Article+Similar+Article">Implementing a Breakeven Mechanism in MQL5 (Part 2): ATR- and RRR-Based Breakeven</a>
+            </li>
+            <li>
+              <a href="/en/articles/22666" data-fz-event="MQL5+Article+Similar+Article">Interactive Supply and Demand Zone Manager in MQL5: From Manual to Automated Lifecycle</a>
+            </li>
+        </ul>
+      </div>
+    <div class="freelance-hint">
+      <img src="https://c.mql5.com/i/articles/icon_freelance.svg" width="24" height="24" loading="lazy" />
+      <div class="freelance-hint__text">
+        Use the ideas from this article<br>to order your own robot<br>on Freelance
+      </div>
+        <a target="_blank" class="button button_blue-gray-border" title="Go to Freelance" href="/en/job/new" data-fz-event="MQL5+Article+New+Job">Go to Freelance</a>
+    </div>
+
+    </aside>
+    <article class="content-with-sidebar articles-content splashed">
+      
+
+
+  <header class="article-header article-header_light" style="background-color: rgb(18,39,55)">
+    <section class="article-tools-panel">
+        <div class="article-tools-panel__item">
+          <span class="popup framed client flags">
+            <a class="dropdown" href="javascript:void(false);">
+              <span class="icons-languages icons-languages_en"></span><i></i>
+            </a>
+            <span class="popup">
+              <span class="tip">
+                <span></span>
+              </span>
+              <span class="items">
+                    <a href="/ru/articles/20327">Русский</a>
+                    <a href="/de/articles/20327">Deutsch</a>
+                    <a href="/ja/articles/20327">日本語</a>
+              </span>
+            </span>
+          </span>
+        </div>
+        
+      <div class="article-tools-panel__item">
+        <a href="#pocket" title="Pocket allows you to insert a complete content description to the appropriate comment" onclick="return Pocket.Add(this,'en',2,1,20327);" class="article-tools-panel__rounded">
+          <i class="article-pocket-icon"></i>
+        </a>
+      </div>
+      <div class="article-tools-panel__item">
+        <a href="/en/articles/20327?print=" target="_blank" class="article-tools-panel__rounded" rel="nofollow" title="Printer friendly version">
+          <i class="article-print-icon"></i>
+        </a>
+      </div>
+
+    </section>
+    <section class="article-header__image-box">
+        <img class="article-header__image-preview" loading="lazy" width="32" height="16" alt="preview" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAsICAoIBwsKCQoNDAsNERwSEQ8PESIZGhQcKSQrKigkJyctMkA3LTA9MCcnOEw5PUNFSElIKzZPVU5GVEBHSEX/2wBDAQwNDREPESESEiFFLicuRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUX/wAARCAAQACADASIAAhEBAxEB/8QAFwABAQEBAAAAAAAAAAAAAAAAAgQDB//EAB4QAAEDBAMAAAAAAAAAAAAAAAEAAhEDEiEiE1Fx/8QAFQEBAQAAAAAAAAAAAAAAAAAAAgT/xAAWEQEBAQAAAAAAAAAAAAAAAAAAARH/2gAMAwEAAhEDEQA/AOaDKVo7RlJrZVKZvQ1Oqs5XWgF0wpadJoGzyPEpjAOELlJ//9k=">
+      <div class="article-header__gradient" style="background: linear-gradient(90deg, rgba(18,39,55, 1) 0%, rgba(18,39,55, 0.72) 8.31%, rgba(18,39,55, 0) 17.1%), linear-gradient(270deg, rgba(18,39,55, 1) 0%, rgba(18,39,55, 0.72) 8.06%, rgba(18,39,55, 0) 16.59%), linear-gradient(0deg, rgba(18,39,55, 1) 8.26%, rgba(18,39,55, 0.8) 65%, rgba(18,39,55, 0) 100%);"></div>
+        <picture>
+          <source srcset="https://c.mql5.com/2/182/20327-analytical-volume-profile-trading-avpt-liquidity-architecture_600x314.jpg, https://c.mql5.com/2/182/20327-analytical-volume-profile-trading-avpt-liquidity-architecture_1200x628.jpg 2x" media="(min-width:700px)">
+          <img class="article-header__image" loading="lazy" width="600" height="314" srcset="https://c.mql5.com/2/182/20327-analytical-volume-profile-trading-avpt-liquidity-architecture_300x157.jpg, https://c.mql5.com/2/182/20327-analytical-volume-profile-trading-avpt-liquidity-architecture_600x314.jpg 2x" src="https://c.mql5.com/2/182/20327-analytical-volume-profile-trading-avpt-liquidity-architecture_600x314.jpg" alt="Analytical Volume Profile Trading (AVPT): Liquidity Architecture, Market Memory, and Algorithmic Execution" onerror="this.style.display='none';">
+        </picture>
+    </section>
+    <section class="article-header__content">
+      <h1>Analytical Volume Profile Trading (AVPT): Liquidity Architecture, Market Memory, and Algorithmic Execution</h1>
+      <div class="article-header__info">
+        <a href="/en/articles/mt5">MetaTrader 5</a>
+          &mdash;
+          <a href="/en/articles/mt5/examples">Examples</a>
+        | <time datetime="2025-11-24T08:32Z" title="08:32" datetime-type="datetime">24 November 2025, 08:32</time>
+      </div>
+      <div class="article-header__indicators">
+        <span title="Views">
+          <img src="https://c.mql5.com/i/icons.svg#views-white-usage" width="20" height="20" alt="" />
+          9 357
+        </span>
+        
+          <a title="Comments" href="/en/forum/500657">
+            <img src="https://c.mql5.com/i/icons.svg#comments-white-usage" width="20" height="20" alt="" />
+            9
+          </a>
+      </div>
+      <div class="article-header__author">
+          <div class="article-header__avatar">
+            <img src="https://c.mql5.com/avatar/2023/9/6505ca3e-1abb.jpg" srcset="https://c.mql5.com/avatar/2023/9/6505ca3e-1abb_big.jpg 2x" data-user-login="JohnHlomohang" title="Hlomohang John Borotho" alt="Hlomohang John Borotho" loading="lazy" width="60" height="60">
+          </div>
+<a class="author" href="/en/users/johnhlomohang" data-user-login="JohnHlomohang">Hlomohang John Borotho</a>      </div>
+    </section>
+  </header>
+
+    <div class="content">
+      <div class="inner formatted-content">
+        <h3>Table of contents:</h3> <div> <ol> <li><a href="/en/articles/20327#Introduction">Introduction</a></li> <li><a href="/en/articles/20327#SystemOverview">System Overview and Understanding</a></li> <li><a href="/en/articles/20327#GettingStarted">Getting Started</a></li> <li><a href="/en/articles/20327#BacktestResults">Backtest Results</a></li> <li><a href="/en/articles/20327#Conclusion">Conclusion</a></li> </ol> </div> <p><br/> </p> <h3 id="Introduction">Introduction</h3> <p>With institutional order flow constantly redrawing the landscape of liquidity, traders must rely on methods that map the underlying structure of participation rather than the noise of price alone. Analytical Volume Profile Trading (AVPT) goes far beyond simple indicators by dissecting where the market actually traded, not just where it moved. Through the interplay of High-Volume Nodes, Low-Volume Nodes, Value Areas, and the all-important Point of Control, AVPT exposes the hidden layers of market memory—showing exactly where institutions agreed, disagreed, and positioned themselves.</p> <p>As algorithmic trading increasingly dominates global markets, understanding the distribution of volume across price levels becomes a decisive edge. AVPT combines microstructure analysis with automation, allowing traders to interpret liquidity imbalances in real time and execute with surgical precision. By turning raw volume into actionable structure, this approach transforms chaotic market activity into a readable blueprint for trend detection, breakout anticipation, and reversal timing.&nbsp;</p> <h3 id="SystemOverview"><br/></h3> <h3 id="SystemOverview">System Overview and Understanding<br/> </h3> <p>Key Components of Volume Profile:</p> <table cellspacing="0" cellpadding="3" width="100%" class="standart"> <thead> <tr> <th>Component&nbsp;</th> <th>Description&nbsp;</th> </tr> </thead> <tbody> <tr> <td data-label="Component&nbsp;">Point of Control (POC)</td> <td data-label="Description&nbsp;">The price level with the highest trading volume, often acting as a pivot point for price action.</td> </tr> <tr> <td data-label="Component&nbsp;">High-Value Node (HVN)</td> <td data-label="Description&nbsp;">Price levels where significant trading activity occurs, indicating strong support or resistance.</td> </tr> <tr> <td data-label="Component&nbsp;">Low-Value Node (LVN)</td> <td data-label="Description&nbsp;">Price levels with minimal trading activity, where prices can move quickly due to low liquidity.</td> </tr> <tr> <td data-label="Component&nbsp;">Value Area</td> <td data-label="Description&nbsp;">The range of price levels where a specified percentage (usually 70%) of volume was traded.</td> </tr> </tbody> </table> <p>Analytical Volume Profile Trading (AVPT) represents a sophisticated approach to market analysis that moves beyond traditional price-based technical indicators by focusing on the crucial dimension of trading volume at specific price levels. At its core, AVPT visualizes the market as a dynamic landscape where price action interacts with volume-based support and resistance zones. The Volume Profile histogram, typically displayed as a horizontal histogram on the right side of the chart, reveals where significant trading activity occurred during a specified period. This visualization creates a clear map of market consensus, showing price levels where institutions and large traders accumulated positions (High-Volume Nodes) versus areas of minimal participation (Low-Volume Nodes). The Point of Control (POC) acts as the gravitational center of this landscape, representing the price level with the highest trading volume and often serving as a powerful magnet for price returns.</p> <p>The strategic framework of AVPT revolves around understanding how price interacts with these volume-based structures. When price approaches High-Volume Nodes, it typically encounters strong support or resistance, as these zones represent areas of significant institutional interest and liquidity. Conversely, Low-Volume Nodes function as acceleration zones where price can move rapidly due to the absence of meaningful trading interest. The Value Area encompassing approximately 70% of the period's volume, defines the "fair value" range where most trading occurred. Visualizing these components creates a comprehensive trading roadmap: traders can identify potential reversal zones near value boundaries, breakout opportunities through low-volume areas, and profit targets at the POC. This three-dimensional view of the market—combining price, volume, and time—provides a significant edge over traditional two-dimensional price analysis.</p> <p>The practical implementation of AVPT involves monitoring how current price action relates to these established volume structures. In ranging markets, traders might employ mean-reversion strategies, buying near the Value Area Low with stops below nearby LVNs and taking profits at the POC. During trending conditions, breakout strategies become viable when price moves through LVN zones with momentum, targeting extensions beyond the Value Area. The visualization makes risk management particularly intuitive—stop losses naturally belong beyond LVNs where breakouts would invalidate the trade premise, while position sizing can adapt based on the width of the Value Area and distance to key volume nodes. This integrated approach to analysis, entry timing, and risk management creates a systematic methodology that aligns with how institutional money flows actually shape market movements.</p> <p style="text-align:center;"> <img width="525" height="350" src="https://c.mql5.com/2/182/503992155846000.png" style="vertical-align:middle;" loading="lazy" alt/></p> <p><br/></p><br/> <h3 id="GettingStarted">Getting Started</h3> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AVPT.mq5 |</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GIT under Copyright 2025, MetaQuotes Ltd. |</span>
+<span class="comment">//|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; https://www.mql5.com/en/users/johnhlomohang/ |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="preprocessor">#property </span><span class="macro">copyright</span> <span class="string">"GIT under Copyright 2025, MetaQuotes Ltd."</span>
+<span class="preprocessor">#property </span><span class="macro">link</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"https://www.mql5.com/en/users/johnhlomohang/"</span>
+<span class="preprocessor">#property </span><span class="macro">version</span>&nbsp;&nbsp; <span class="string">"1.00"</span>
+<span class="preprocessor">#include </span>&lt;Trade/Trade.mqh&gt;
+
+
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Input Parameters&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">input</span> group <span class="string">"=== Volume Profile Settings ==="</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VP_LookbackBars = <span class="number">500</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Volume Profile Lookback Bars</span>
+<span class="keyword">input</span> <span class="keyword">double</span>&nbsp;&nbsp; VA_Percentage = <span class="number">70.0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Value Area Percentage</span>
+<span class="keyword">input</span> <span class="keyword">double</span>&nbsp;&nbsp; HVN_Threshold = <span class="number">1.5</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// HVN Volume Threshold (x median)</span>
+<span class="keyword">input</span> <span class="keyword">double</span>&nbsp;&nbsp; LVN_Threshold = <span class="number">0.3</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// LVN Volume Threshold (x median)</span>
+
+<span class="keyword">input</span> group <span class="string">"=== Trading Settings ==="</span>
+<span class="keyword">input</span> <span class="keyword">double</span>&nbsp;&nbsp; LotSize = <span class="number">0.1</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Trade Lot Size</span>
+<span class="keyword">input</span> <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp; UseAtrSL = <span class="macro">true</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Use ATR for Stop Loss</span>
+<span class="keyword">input</span> <span class="keyword">double</span>&nbsp;&nbsp; AtrMultiplier = <span class="number">2.0</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// ATR Multiplier for SL</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AtrPeriod = <span class="number">14</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// ATR Period</span>
+<span class="keyword">input</span> <span class="keyword">double</span>&nbsp;&nbsp; RiskRewardRatio = <span class="number">1.5</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Risk/Reward Ratio</span>
+<span class="keyword">input</span> <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp; UseTrailingStop = <span class="macro">true</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Enable Trailing Stop</span>
+<span class="keyword">input</span> <span class="keyword">double</span>&nbsp;&nbsp; TrailingStep = <span class="number">0.0010</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Trailing Stop Step</span>
+
+<span class="keyword">input</span> group <span class="string">"=== Strategy Settings ==="</span>
+<span class="keyword">input</span> <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp; EnableReversion = <span class="macro">true</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Enable Reversion Strategy</span>
+<span class="keyword">input</span> <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp; EnableBreakout = <span class="macro">false</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Enable Breakout Strategy</span>
+<span class="keyword">input</span> <span class="keyword">int</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MinBarsBetweenTrades = <span class="number">3</span>;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">// Minimum Bars Between Trades</span></pre> <p>We start by defining all the configurable inputs that shape how the Volume Profile engine and trading logic operate. The first group specifies profile-related parameters such as the number of lookback bars to analyze, the percentage used to compute the Value Area, and thresholds for identifying High-Volume Nodes and Low-Volume Nodes. The trading settings section then establishes risk and position-management controls—including lot size, ATR-based stop loss, risk-reward ratio, and trailing-stop behavior—giving the EA flexibility in adapting to volatility. Finally, the strategy settings group enables or disables key AVPT modes like reversion or breakout trading while enforcing a minimum spacing between trades for cleaner execution and reduced signal noise.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Enumerations&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">enum</span> ENUM_LEVEL_POSITION{
+&nbsp;&nbsp; BELOW,
+&nbsp;&nbsp; ABOVE
+};
+
+<span class="keyword">enum</span> ENUM_DIRECTION{
+&nbsp;&nbsp; UP,
+&nbsp;&nbsp; DOWN
+};
+
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Global Variables&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+CTrade trade;
+
+<span class="comment">// Volume Profile Arrays</span>
+<span class="keyword">double</span> volumeProfile[];
+<span class="keyword">double</span> priceLevels[];
+<span class="keyword">int</span> profileBins;
+
+<span class="comment">// Key Levels</span>
+<span class="keyword">double</span> pocPrice;
+<span class="keyword">double</span> vahPrice;
+<span class="keyword">double</span> valPrice;
+<span class="keyword">double</span> hvnLevels[];
+<span class="keyword">double</span> lvnLevels[];
+
+<span class="comment">// Trading</span>
+<span class="keyword">datetime</span> lastTradeTime;
+<span class="keyword">int</span> atrHandle;
+<span class="keyword">double</span> currentAtr;</pre> <p>We then define essential enumerations and global variables that support the EA’s logic and data structures. The enum provide clear directional and positional classifications used throughout the strategy, while the global variables store core trading components such as the CTrade object, the dynamically built Volume Profile arrays, and key levels like POC, VAH, VAL, HVNs, and LVNs. Additional variables track trading logistics—including the timestamp of the last executed trade—and maintain access to indicators like ATR, ensuring the EA can reference volatility data in real time for stop-loss and risk management decisions.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Expert initialization function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">int</span> <span class="functions">OnInit</span>()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Initialize ATR indicator</span>
+&nbsp;&nbsp;&nbsp;&nbsp;atrHandle = <span class="indicators">iATR</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, AtrPeriod);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(atrHandle == <span class="macro">INVALID_HANDLE</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Error creating ATR indicator"</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>(<span class="macro">INIT_FAILED</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Initialize volume profile arrays</span>
+&nbsp;&nbsp;&nbsp;&nbsp;InitializeVolumeProfile();
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Set up timer for periodic updates</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">EventSetTimer</span>(<span class="number">60</span>); <span class="comment">// Update every minute</span>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>(<span class="macro">INIT_SUCCEEDED</span>);
+}
+
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Expert deinitialization function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> <span class="functions">OnDeinit</span>(<span class="keyword">const</span> <span class="keyword">int</span> reason)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">IndicatorRelease</span>(atrHandle);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">EventKillTimer</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;CleanUpChartObjects();
+}
+</pre> <p>In the initialization phase, the EA sets up all essential components by first creating the ATR indicator used for volatility-based stop-loss calculations and validating that it loads correctly. It then prepares the volume profile arrays through a dedicated initialization function and establishes a repeating timer so the system can update its profile and logic every minute. During deinitialization, the EA safely releases the ATR indicator, stops the timer, and removes any chart objects created during execution to ensure a clean shutdown and prevent resource leaks.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Expert tick function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> <span class="functions">OnTick</span>()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Update ATR value</span>
+&nbsp;&nbsp;&nbsp;&nbsp;UpdateAtrValue();
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Update volume profile every new bar</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(IsNewBar())
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UpdateVolumeProfile();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CalculateKeyLevels();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UpdateChartObjects();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Check for trading signals</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CheckTradingSignals();
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Manage open positions</span>
+&nbsp;&nbsp;&nbsp;&nbsp;ManagePositions();
+}
+
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Volume Profile Engine&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> InitializeVolumeProfile()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;profileBins = <span class="number">200</span>; <span class="comment">// Number of price bins</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayResize</span>(volumeProfile, profileBins);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayResize</span>(priceLevels, profileBins);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayInitialize</span>(volumeProfile, <span class="number">0</span>);
+}
+</pre> <p>In the main execution loop, the EA continuously updates the ATR value on every tick to maintain accurate volatility metrics. When a new bar forms, it triggers core processing steps: refreshing the volume profile, recalculating key levels such as POC and Value Area boundaries, and updating the visual objects on the chart. After the structural analysis is refreshed, the EA evaluates whether any trade conditions are met based on the latest Volume Profile signals, and then separately manages all currently open positions to ensure stops, trailing logic, and exits evolve with market conditions.</p> <p>The Volume Profile engine begins by initializing the data structure that will store the distribution of traded volume across price levels. By defining a fixed number of bins and resizing arrays accordingly, the EA prepares a clean container for gathering volume data during runtime. This ensures that each new bar can be mapped into a consistent volume histogram, enabling accurate detection of key levels like HVNs, LVNs, and the Point of Control later in the process.</p> <pre class="code"><span class="keyword">void</span> UpdateVolumeProfile()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Clear previous profile</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayInitialize</span>(volumeProfile, <span class="number">0</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Get price range for current lookback</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> highPrice = GetHighestPrice(VP_LookbackBars);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> lowPrice = GetLowestPrice(VP_LookbackBars);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> priceRange = highPrice - lowPrice;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> binSize = priceRange / profileBins;
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Initialize price levels</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; profileBins; i++)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;priceLevels[i] = lowPrice + (i * binSize);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Distribute volume across price bins</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> bar = <span class="number">0</span>; bar &lt; VP_LookbackBars; bar++)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> open = <span class="functions">iOpen</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, bar);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> high = <span class="functions">iHigh</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, bar);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> low = <span class="functions">iLow</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, bar);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> close = <span class="functions">iClose</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, bar);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">long</span> volume = <span class="functions">iVolume</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, bar);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DistributeVolumeToBins(open, high, low, close, volume, lowPrice, binSize);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}
+
+<span class="keyword">void</span> DistributeVolumeToBins(<span class="keyword">double</span> open, <span class="keyword">double</span> high, <span class="keyword">double</span> low, <span class="keyword">double</span> close, 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="keyword">long</span> volume, <span class="keyword">double</span> basePrice, <span class="keyword">double</span> binSize)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> bodyLow = <span class="functions">MathMin</span>(open, close);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> bodyHigh = <span class="functions">MathMax</span>(open, close);
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; profileBins; i++)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> binLow = basePrice + (i * binSize);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> binHigh = binLow + binSize;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Check if price bin was touched by this candle</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(!(high &lt; binLow || low &gt; binHigh))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Weight volume by time spent in price zone (simplified)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> overlap = <span class="functions">MathMin</span>(high, binHigh) - <span class="functions">MathMax</span>(low, binLow);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> candleRange = high - low;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(candleRange &gt; <span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> weight = overlap / candleRange;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Additional weight for body area</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(binLow &lt;= bodyHigh &amp;&amp; binHigh &gt;= bodyLow)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> bodyOverlap = <span class="functions">MathMin</span>(bodyHigh, binHigh) - <span class="functions">MathMax</span>(bodyLow, binLow);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;weight += (bodyOverlap / candleRange) * <span class="number">0.3</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;volumeProfile[i] += volume * weight;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}
+</pre> <p>The UpdateVolumeProfile() function rebuilds the entire volume distribution for the defined lookback window by first resetting the histogram and then determining the price range that needs to be profiled. It calculates bin size based on this range and initializes each price level that corresponds to a volume bin. After establishing these structural boundaries, it iterates through the historical bars within the lookback period, extracting each candle’s OHLC values and volume before passing them into the distribution engine. This ensures that the profile always reflects the most recent and relevant activity within the market.</p> <p>The DistributeVolumeToBins() function performs the core logic of allocating candle volume to the appropriate price bins. For each bin, it checks whether the candle’s range interacted with it, and if so, estimates how much trading activity likely occurred within that price zone. This estimation uses a weighted method based on the proportional overlap between the bin and the candle’s high–low range, while giving additional emphasis to the candle’s body, where more concentrated trading typically happens. By accumulating these weighted contributions, the EA produces a more realistic and detailed Volume Profile that captures institutional footprints across the price ladder.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Key Levels Calculation&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> CalculateKeyLevels()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;CalculatePOC();
+&nbsp;&nbsp;&nbsp;&nbsp;CalculateValueArea();
+&nbsp;&nbsp;&nbsp;&nbsp;CalculateHVNLVN();
+}
+
+<span class="keyword">void</span> CalculatePOC()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> maxVolume = <span class="number">0</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> pocIndex = <span class="number">0</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; profileBins; i++)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(volumeProfile[i] &gt; maxVolume)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;maxVolume = volumeProfile[i];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pocIndex = i;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;pocPrice = priceLevels[pocIndex];
+}
+
+<span class="keyword">void</span> CalculateValueArea()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> totalVolume = <span class="number">0</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; profileBins; i++)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;totalVolume += volumeProfile[i];
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> targetVolume = totalVolume * (VA_Percentage / <span class="number">100.0</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> pocIndex = FindPriceIndex(pocPrice);
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> currentVolume = volumeProfile[pocIndex];
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> upperIndex = pocIndex;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> lowerIndex = pocIndex;
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">while</span>(currentVolume &lt; targetVolume &amp;&amp; (upperIndex &lt; profileBins - <span class="number">1</span> || lowerIndex &gt; <span class="number">0</span>))
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">bool</span> canExpandUp = (upperIndex &lt; profileBins - <span class="number">1</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">bool</span> canExpandDown = (lowerIndex &gt; <span class="number">0</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> upVolume = canExpandUp ? volumeProfile[upperIndex + <span class="number">1</span>] : <span class="number">0</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> downVolume = canExpandDown ? volumeProfile[lowerIndex - <span class="number">1</span>] : <span class="number">0</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(upVolume &gt; downVolume &amp;&amp; canExpandUp)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;upperIndex++;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentVolume += upVolume;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span> <span class="keyword">if</span>(canExpandDown)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lowerIndex--;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentVolume += downVolume;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span> <span class="keyword">if</span>(canExpandUp)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;upperIndex++;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentVolume += upVolume;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;vahPrice = priceLevels[upperIndex];
+&nbsp;&nbsp;&nbsp;&nbsp;valPrice = priceLevels[lowerIndex];
+}
+
+<span class="keyword">void</span> CalculateHVNLVN()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayResize</span>(hvnLevels, <span class="number">0</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayResize</span>(lvnLevels, <span class="number">0</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Calculate median volume</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> tempVolumes[];
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayCopy</span>(tempVolumes, volumeProfile);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArraySort</span>(tempVolumes);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> medianVolume = tempVolumes[profileBins / <span class="number">2</span>];
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> hvnThreshold = medianVolume * HVN_Threshold;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> lvnThreshold = medianVolume * LVN_Threshold;
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; profileBins; i++)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(volumeProfile[i] &gt;= hvnThreshold)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> size = <span class="functions">ArraySize</span>(hvnLevels);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayResize</span>(hvnLevels, size + <span class="number">1</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hvnLevels[size] = priceLevels[i];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span> <span class="keyword">if</span>(volumeProfile[i] &lt;= lvnThreshold &amp;&amp; volumeProfile[i] &gt; <span class="number">0</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> size = <span class="functions">ArraySize</span>(lvnLevels);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">ArrayResize</span>(lvnLevels, size + <span class="number">1</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lvnLevels[size] = priceLevels[i];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}</pre> <p>The key-level calculation engine begins by orchestrating the three core components of the Volume Profile: determining the Point of Control, computing the Value Area boundaries, and identifying High-Volume Nodes and Low-Volume Nodes. This modular approach allows each method to focus on a specific structural element, ensuring that the EA maintains an accurate and clean hierarchy of liquidity levels. By separating the logic, the system remains easy to debug, extend, and optimize as new strategies or filters are added.</p> <p>The POC and Value Area calculations work together to define the market’s center of gravity. The POC is located by scanning the volume histogram for the price bin with the highest traded volume, reflecting the level of maximum market acceptance. The Value Area is then built outward from that POC by accumulating volume in both directions until the cumulative total reaches the specified percentage. This expansion logic prioritizes price levels with higher volume, allowing the EA to define the Value Area High (VAH) and Value Area Low (VAL) as boundaries that represent the region where most trading activity occurred.</p> <p>Finally, the HVN/LVN calculation identifies zones of exceptionally high and unusually low participation relative to the median volume. After computing the median from a sorted copy of the profile, the EA applies user-defined multipliers to detect meaningful clusters (HVNs) and rejection zones (LVNs). HVNs represent strong acceptance where price tends to pause, stall, or reverse, while LVNs highlight low-liquidity pockets where price often accelerates or breaks out. Collectively, these levels anchor the EA’s decision-making, enabling adaptive strategies rooted in liquidity structure and market memory.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Trading Signal Logic&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> CheckTradingSignals()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(!IsTradeAllowed()) <span class="keyword">return</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Check minimum bars between trades</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">Bars</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, lastTradeTime, <span class="functions">TimeCurrent</span>()) &lt; MinBarsBetweenTrades) 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> currentPrice = <span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_LAST</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(EnableReversion)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CheckReversionSignals(currentPrice);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(EnableBreakout)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CheckBreakoutSignals(currentPrice);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}
+
+<span class="keyword">void</span> CheckReversionSignals(<span class="keyword">double</span> currentPrice)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="predefines">MqlRates</span> currentRates[];
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">CopyRates</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, <span class="number">0</span>, <span class="number">3</span>, currentRates);
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Buy signal: Price rejects VAL with bullish confirmation</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(IsNearLevel(currentPrice, valPrice) &amp;&amp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsBullishRejection(currentRates))
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> sl = FindNearestLVN(BELOW);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> tp = pocPrice;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OpenTrade(<span class="macro">ORDER_TYPE_BUY</span>, sl, tp);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Sell signal: Price rejects VAH with bearish confirmation</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(IsNearLevel(currentPrice, vahPrice) &amp;&amp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsBearishRejection(currentRates))
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> sl = FindNearestLVN(ABOVE);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> tp = pocPrice;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OpenTrade(<span class="macro">ORDER_TYPE_SELL</span>, sl, tp);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}
+
+<span class="keyword">void</span> CheckBreakoutSignals(<span class="keyword">double</span> currentPrice)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Breakout above VAH with confirmation</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(currentPrice &gt; vahPrice &amp;&amp; IsBreakoutConfirmed(UP))
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> sl = FindNearestHVN(BELOW);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> tp = CalculateBreakoutTP(UP);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OpenTrade(<span class="macro">ORDER_TYPE_BUY</span>, sl, tp);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Breakout below VAL with confirmation</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(currentPrice &lt; valPrice &amp;&amp; IsBreakoutConfirmed(DOWN))
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> sl = FindNearestHVN(ABOVE);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> tp = CalculateBreakoutTP(DOWN);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OpenTrade(<span class="macro">ORDER_TYPE_SELL</span>, sl, tp);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}</pre> <p>The trading signal logic then ensures that the conditions are suitable for execution—confirming trading is allowed, verifying enough bars have passed since the last trade, and capturing the current market price. Once these safeguards are met, the EA evaluates which strategy modes are enabled and routes the price action through the appropriate logic blocks. If the reversion model is active, the EA checks whether price is interacting with Value Area boundaries in a way that suggests rejection; if the breakout model is active, it looks for decisive moves beyond value levels supported by structural confirmation.</p> <p>Within each strategy, the EA performs more detailed checks to validate trade setups. For reversions, it looks for bullish or bearish rejection patterns near the VAL or VAH, then calculates stop-loss and take-profit levels using the nearest LVNs and the POC as a natural magnet. For breakouts, the logic confirms that price has cleanly moved beyond VAH or VAL, then uses nearby HVNs as protective stops and computes directional targets based on breakout strength. This layered structure ensures signals are rooted in the liquidity architecture defined by the Volume Profile, producing trades that align with both market structure and volume-based context.</p> <pre class="code"><span class="comment">//+------------------------------------------------------------------+</span>
+<span class="comment">//| Trade Execution &amp; Risk Management&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span>
+<span class="comment">//+------------------------------------------------------------------+</span>
+<span class="keyword">void</span> OpenTrade(<span class="macro">ENUM_ORDER_TYPE</span> type, <span class="keyword">double</span> sl, <span class="keyword">double</span> tp)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> price = (type == <span class="macro">ORDER_TYPE_BUY</span>) ? <span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_ASK</span>) 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_BID</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(UseAtrSL)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> atrSl = currentAtr * AtrMultiplier;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sl = (type == <span class="macro">ORDER_TYPE_BUY</span>) ? price - atrSl : price + atrSl;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Calculate TP based on risk/reward</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> risk = <span class="functions">MathAbs</span>(price - sl);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tp = (type == <span class="macro">ORDER_TYPE_BUY</span>) ? price + (risk * RiskRewardRatio) 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : price - (risk * RiskRewardRatio);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Execute trade using CTrade</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(trade.PositionOpen(<span class="predefines">_Symbol</span>, type, LotSize, price, sl, tp, <span class="string">"VolumeProfileEA"</span>))
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lastTradeTime = <span class="functions">iTime</span>(<span class="predefines">_Symbol</span>, <span class="predefines">_Period</span>, <span class="number">0</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Trade executed: "</span>, <span class="functions">EnumToString</span>(type), <span class="string">" Price: "</span>, price, <span class="string">" SL: "</span>, sl, <span class="string">" TP: "</span>, tp);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Trade failed: "</span>, trade.ResultRetcodeDescription());
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}
+
+<span class="keyword">void</span> ManagePositions()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="functions">PositionsTotal</span>() - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">ulong</span> ticket = <span class="functions">PositionGetTicket</span>(i);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">PositionSelectByTicket</span>(ticket) &amp;&amp; <span class="functions">PositionGetString</span>(<span class="macro">POSITION_COMMENT</span>) == <span class="string">"VolumeProfileEA"</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(UseTrailingStop)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ApplyTrailingStop(ticket);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Check exit condition: price re-enters Value Area</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(ShouldExitEarly(ticket))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ClosePosition(ticket);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}
+
+<span class="keyword">void</span> ApplyTrailingStop(<span class="keyword">ulong</span> ticket)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">PositionSelectByTicket</span>(ticket))
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> currentPrice = <span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_LAST</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> currentSL = <span class="functions">PositionGetDouble</span>(<span class="macro">POSITION_SL</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="macro">ENUM_POSITION_TYPE</span> type = (<span class="macro">ENUM_POSITION_TYPE</span>)<span class="functions">PositionGetInteger</span>(<span class="macro">POSITION_TYPE</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> newSL = currentSL;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> point = <span class="functions">SymbolInfoDouble</span>(<span class="predefines">_Symbol</span>, <span class="macro">SYMBOL_POINT</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(type == <span class="macro">POSITION_TYPE_BUY</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newSL = currentPrice - (currentAtr * TrailingStep);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(newSL &gt; currentSL + point &amp;&amp; newSL &lt; currentPrice - point)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(trade.PositionModify(ticket, newSL, <span class="functions">PositionGetDouble</span>(<span class="macro">POSITION_TP</span>)))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Trailing SL updated for BUY: "</span>, newSL);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span> <span class="keyword">if</span>(type == <span class="macro">POSITION_TYPE_SELL</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newSL = currentPrice + (currentAtr * TrailingStep);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(newSL &lt; currentSL - point &amp;&amp; newSL &gt; currentPrice + point)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(trade.PositionModify(ticket, newSL, <span class="functions">PositionGetDouble</span>(<span class="macro">POSITION_TP</span>)))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Trailing SL updated for SELL: "</span>, newSL);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}
+
+<span class="keyword">void</span> ClosePosition(<span class="keyword">ulong</span> ticket)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="functions">PositionSelectByTicket</span>(ticket))
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="macro">ENUM_POSITION_TYPE</span> type = (<span class="macro">ENUM_POSITION_TYPE</span>)<span class="functions">PositionGetInteger</span>(<span class="macro">POSITION_TYPE</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">double</span> volume = <span class="functions">PositionGetDouble</span>(<span class="macro">POSITION_VOLUME</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(type == <span class="macro">POSITION_TYPE_BUY</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;trade.PositionClose(ticket);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span> <span class="keyword">if</span>(type == <span class="macro">POSITION_TYPE_SELL</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;trade.PositionClose(ticket);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="functions">Print</span>(<span class="string">"Position closed early: "</span>, ticket);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}
+</pre> <p>The trade execution logic begins by constructing a clean, risk-controlled order based on the signal type, current market price, and dynamic volatility conditions. If ATR-based stop-loss is enabled, the EA recalculates both SL and TP using the ATR multiplier and the configured risk-reward ratio, ensuring every position adapts to current volatility instead of relying on fixed distances. Once the final parameters are set, the EA uses the CTrade object to send the order to the server and logs whether the execution succeeded or failed. This structured workflow ensures trades are entered with consistent sizing, volatility-aligned protection, and logical profit targets rooted in the strategy’s architecture.</p> <p>The position-management engine then supervises all active VolumeProfileEA trades, applying dynamic trailing stops and evaluating whether early exits are necessary. The trailing stop adjusts itself using ATR-based movement, allowing the stop-loss to track price efficiently without choking the trade too early. Meanwhile, early-exit logic monitors whether price re-enters the Value Area—indicating that the original trade thesis may be weakening—and closes the position to preserve capital. This two-layer exit system, combining trailing logic with structural invalidation checks, ensures that each position evolves intelligently with market conditions while limiting risk and locking in profits.</p> <p><br/></p> <h3 id="BacktestResults"><b>Back Test Results</b></h3> <p>The&nbsp;back-testing was evaluated&nbsp;on the H4 timeframe&nbsp;across roughly a 2-month testing window (01 September 2025 to 03 November 2025), with the following settings:</p> <p style="text-align:center;"> <img width="689" height="338" src="https://c.mql5.com/2/182/Inp_Sets.png" style="vertical-align:middle;" loading="lazy" alt/><br/></p> <p><span>Now here is the equity curve and the backtest results:</span></p> <p style="text-align:center;"> <img width="700" height="380" src="https://c.mql5.com/2/182/AVPT_EC__1.png" style="vertical-align:middle;" loading="lazy" alt/><br/></p> <p style="text-align:center;"> <img width="697" height="380" src="https://c.mql5.com/2/182/AVPT_BT.png" style="vertical-align:middle;" loading="lazy" alt/></p> <p><br/></p> <h3 id="Conclusion">Conclusion</h3> <p>In summary, we developed Analytical Volume Profile Trading (AVPT) by breaking down how liquidity architecture, volume distribution, and market memory shape the true structure behind price movements. We explored how volume nodes, high-liquidity shelves, and low-volume inefficiencies form a repeatable blueprint of where markets pause, expand, or reverse. We then translated this structural logic into algorithmic execution—mapping how an EA can read volume profile zones, anticipate liquidity events, and align entries with the deepest institutional footprints rather than surface-level price action.</p> <p>In conclusion, AVPT gives traders a more intelligent and context-aware approach to execution: trades are no longer triggered solely by patterns or indicators, but by understanding where real liquidity sits and how markets “remember” past imbalances. By integrating market memory, volume clustering, and algorithmic decision-making, traders gain a framework that improves precision, enhances risk placement, and reduces noise-driven signals.</p>
+      </div>
+<div id="cb_20327" class="attachBlock">
+  <strong>Attached files</strong> |
+  <div class="grouped-attachments-help">
+    <a title="Download all attachments in the single ZIP archive" href="/en/articles/download/20327.zip">
+      <i class="attach-icon attach-icon_zip"></i>Download ZIP
+    </a>
+  </div>
+    <div class="attachItem">
+      <a title="Download AVPT.mq5" href="/en/articles/download/20327/AVPT.mq5"><i class="attach-icon attach-icon_mq5"></i>AVPT.mq5</a>
+      <span class="attachSize">(25.64 KB)</span>
+    </div>
+</div>
+    </div>
+
+  <div class="copyright">
+    <p><strong>Warning:</strong> All rights to these materials are reserved by MetaQuotes Ltd. Copying or reprinting of these materials in whole or in part is prohibited.</p>
+      <p>This article was written by a user of the site and reflects their personal views. MetaQuotes Ltd is not responsible for the accuracy of the information presented, nor for any consequences resulting from the use of the solutions, strategies or recommendations described.</p>
+  </div>
+
+
+
+    <div class="article__author-with-articles">
+      
+
+
+<div class="article-footer__author">
+  <div class="article-footer__author-avatar">
+    <img id="avatar" src="https://c.mql5.com/avatar/2023/9/6505ca3e-1abb_big.jpg" title="Hlomohang John Borotho" alt="Hlomohang John Borotho" loading="lazy" width="164" height="164">
+  </div>
+  <div class="article-footer__author-content">
+    <div class="article-footer__author-name">
+      <a href="/en/users/johnhlomohang" title="Hlomohang John Borotho">Hlomohang John Borotho</a>
+    </div>
+    <div class="article-footer__author-info">
+      <ul>
+          <li>
+            <i title="Works" class="icons-profile icons-profile_suitcase"></i>
+Founder and CEO
+at            GIT Capital
+          </li>
+          <li>
+            <i title="Lives" class="icons-profile icons-profile_geo"></i>
+            <a target="_blank" rel="nofollow" title="Lives" href="https://www.mql5.com/go?https://maps.google.com/?z=4&q=Lesotho">Lesotho</a>
+          </li>
+        <li>
+          <i title="Rating" class="icons-profile icons-profile_statistics"></i>
+          <a title="Rating" href="/en/users/johnhlomohang/achievements">13228</a>
+        </li>
+      </ul>
+    </div>
+    <div class="article-footer__author-contacts">
+      
+    </div>
+    <div class="article-footer__author-bio">The founder and CEO of GIT(Gold Intraday Trader) i am GIT <br/>From me to you will be GOLD(XAUUSD) market analysis <br/>EA's that will only be on GOLD markets</div>
+  </div>
+</div>
+
+      <div class="other-author-articles ui">
+        <h4 class="other-author-articles__title">Other articles by this author</h4>
+        <ul class="other-author-articles__list">
+          <li><a href="/en/articles/22772" data-fz-event="MQL5+Article+From+Author+Article">Formulating Dynamic Multi-Pair EA (Part 9): Market Microstructure Execution Noise Filtering</a></li>
+          <li><a href="/en/articles/22526" data-fz-event="MQL5+Article+From+Author+Article">Integrating AI into 3 Smart Money Concepts (SMC): OB, BOS, and FVG</a></li>
+          <li><a href="/en/articles/22220" data-fz-event="MQL5+Article+From+Author+Article">Integrating MQL5 with Data Processing Packages (Part 9): Entropy-Based Adaptive Volatility</a></li>
+          <li><a href="/en/articles/22323" data-fz-event="MQL5+Article+From+Author+Article">Creating an EMA Crossover Forward Simulation Indicator in MQL5</a></li>
+          <li><a href="/en/articles/22184" data-fz-event="MQL5+Article+From+Author+Article">Graph Theory: Heuristic Search Algorithm (A-Star) Applied in Trading</a></li>
+          <li><a href="/en/articles/21742" data-fz-event="MQL5+Article+From+Author+Article">Automating Market Entropy Indicator: Trading System Based on Information Theory</a></li>
+          <li><a href="/en/articles/21976" data-fz-event="MQL5+Article+From+Author+Article">Formulating Dynamic Multi-Pair EA (Part 8): Time-of-Day Capital Rotation Approach</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+  <div class="article__last-comments" id="articleAdditional">
+    
+
+<div class="comments-preview">
+    <div class="title">
+      <span></span><b>
+         Last comments |
+ <a href="/en/forum/500657">Go to discussion</a>
+      </b>
+        (9)
+    </div>
+    <div>
+        
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2023/9/6505ca3e-1abb.jpg" srcset="https://c.mql5.com/avatar/2023/9/6505ca3e-1abb_big.jpg 2x" alt="Hlomohang John Borotho" title="Hlomohang John Borotho" data-user-login="JohnHlomohang" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/johnhlomohang" data-user-login="JohnHlomohang">Hlomohang John Borotho</a></b>
+              |
+              <span class="comment__date">28 Nov 2025 at 14:55</span>
+              <a id="comment_58615381"></a>
+              
+            </div>
+            <div class="content" id="content58615381">
+              <div class="fquote"> <b><span style="color:#42639C;">Cédric Olivier <a href="/en/forum/500657#comment_58601783">#</a></span>:</b><br/> Hello Hlomohang John Borotho, Thank you for your article — it was very interesting. In return, I’d like to share with you and the community an indicator version of your AVPT EA, which I developed with a bit of assistance. Here is the source code attached.<br/><br/>How to use the indicator ?<br/><br/> <div> ## Key Indicator Elements </div> <div> <br/> </div> <div> ### 1. Volume Histogram (Left side of the chart) </div> <div> - **Green bars**: Represent price levels within the **Value Zone** (70% of total volume by default) </div> <div> - **Gray bars**: Represent price levels outside the Value Zone </div> <div> - **Bar width**: The wider the bar, the greater the volume traded at that price level </div> <div> <br/> </div> <div> ### 2. Horizontal Key Levels </div> <div> - **POC (Point of Control)**: The **solid red line** - this is the price level where the highest trading volume was recorded </div> <div> - This is a very important <a href="/en/articles/1742" title="Article: Method of Building Resistance and Support Levels Using MQL5 " class="linkator"><span class="mark">support/resistance level</span></a> </div> <div> <br/> </div> <div> - The price tends to retrace to this level </div> <div> <br/> </div> <div> - **VAH (Value Area High)**: The **upper dotted green line** - upper boundary of the Value Zone </div> <div> - **VAL (Value Area Low)**: The **lower dotted green line** - lower boundary of the Value Zone </div> <div> - The space between VAH and VAL represents the area where 70% of the volume was traded. </div> <div> <br/> </div> <div> - This is considered the "fair value" of the market for the analyzed period. </div> <div> <br/> </div> <div> - **HVN (High Volume Nodes)**: The **dashed blue lines** - price levels with very high volume (1.5x the median volume) </div> <div> <br/> </div> <div> - Areas of strong institutional interest </div> <div> <br/> </div> <div> - Very good support/resistance levels </div> <div> <br/> </div> <div> - **LVN (Low Volume Nodes)**: The **dashed yellow lines** - price levels with very low volume (0.3x the median volume) </div> <div> <br/> </div> <div> - Areas of low institutional interest </div> <div> <br/> </div> <div> - The price generally breaks through these levels quickly. </div> <div> <br/> </div> <div> ## How to use this indicator for trading </div> <div> <br/> </div> <div> 1. **Identifying key areas**: </div> <div> <br/> </div> <div> - The POC is your most important level to monitor. </div> <div> <br/> </div> <div> - The Value Zone (between VAH and VAL) is the "fair value" area. </div> <div> <br/> </div> <div> 2. **Trading strategies**: </div> <div> <br/> </div> <div> - **Buying**: Near the Value Zone (VAL) or the Point of Change (POC) if the market is in an uptrend </div> <div> <br/> </div> <div> - **Sells**: Near the Average Value Zone (AVT) or the Point of Change (POC) if the market is in a downtrend </div> <div> - **Target**: If the price crosses an Average Value Level (LVN), it tends to continue to the next High Value Level (HVN) </div> <div> - **Stop-loss**: Placed beyond a significant HVN </div> <div> <br/> </div> <div> 3. **Confirmation**: </div> <div> <br/> </div> <div> - When the price returns to the Value Zone after having left it, it is often a good signal of a return to the "fair value" </div> <div> <br/> </div> <div> - A price above the AVT indicates buying pressure, below the VAL indicates selling pressure </div> <div> <br/> </div> <div> ## Customizable parameters (within the indicator) </div> <div> - You can adjust the percentage of the Value Zone (70% by default) </div> <div> - You can modify the thresholds for the HVN and LVN according to your preferences </div> <div> - You can enable/disable the histogram display as needed </div> <div> <br/> </div> <div> This indicator is particularly useful It helps identify where institutions traded most actively (HVN), where there was little activity (LVN), and where the "fair" price lies (Value Zone). It is highly valued by traders who follow Smart Money concepts.<br/><br/>Thank you again. Together as a community, we are smarter!<br/> </div> </div> <p>Thanks for the indicator&nbsp;<span>Cédric Olivier.</span></p>
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2023/9/6505ca3e-1abb.jpg" srcset="https://c.mql5.com/avatar/2023/9/6505ca3e-1abb_big.jpg 2x" alt="Hlomohang John Borotho" title="Hlomohang John Borotho" data-user-login="JohnHlomohang" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/johnhlomohang" data-user-login="JohnHlomohang">Hlomohang John Borotho</a></b>
+              |
+              <span class="comment__date">28 Nov 2025 at 14:56</span>
+              <a id="comment_58615388"></a>
+              
+            </div>
+            <div class="content" id="content58615388">
+              <div class="fquote"> <b><span style="color:#42639C;">Ryan L Johnson <a href="/en/forum/500657#comment_58610601">#</a></span>:</b><br/> <p><span>What an epic Article and Discussion... and all within only 3 days of time.</span></p> <p><a href="/en/users/johnhlomohang" target="_blank" class="user-ref">@Hlomohang John Borotho</a>, Thank you.</p> <p><a href="/en/users/manisintam" target="_blank" class="user-ref">@Cédric Olivier</a>, Thank you.</p> <p><br/></p> <p>I wouldn't really worry about the symbol tested. FYI, it likely wasn't a security in the technical sense of the word because iRealVolume() is excluded from the code. The code uses iVolume() which returns the same values as iTickVolume()--these are generally used for OTC markets, e.g., FX, CFD's, etc.&nbsp;</p> </div> Thanks Ryan, and you all for the feedback, y'all are welcome.
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2023/9/6505ca3e-1abb.jpg" srcset="https://c.mql5.com/avatar/2023/9/6505ca3e-1abb_big.jpg 2x" alt="Hlomohang John Borotho" title="Hlomohang John Borotho" data-user-login="JohnHlomohang" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/johnhlomohang" data-user-login="JohnHlomohang">Hlomohang John Borotho</a></b>
+              |
+              <span class="comment__date">28 Nov 2025 at 14:59</span>
+              <a id="comment_58615396"></a>
+              
+            </div>
+            <div class="content" id="content58615396">
+              <div class="fquote"> <b><span style="color:#42639C;">Bryan John Aldridge <a href="/en/forum/500657#comment_58592946">#</a></span>:</b><br/> Interesting approach but would appreciate if you had identified the security that the <a href="/en/articles/2612" title="Article: Testing trading strategies on real ticks " class="linkator"><span class="mark">backtest</span></a> was performed against in order to validate the results presented. </div> <p>Hey, the symbol tested is XAUUSD, and please refer to the testing period and settings used to achieve the same results.</p>
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2021/9/61386C5C-A569.jpg" srcset="https://c.mql5.com/avatar/2021/9/61386C5C-A569_big.jpg 2x" alt="DecentOne" title="DecentOne" data-user-login="DecentOne" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/decentone" data-user-login="DecentOne">DecentOne</a></b>
+              |
+              <span class="comment__date">1 Dec 2025 at 07:43</span>
+              <a id="comment_58628415"></a>
+              
+            </div>
+            <div class="content" id="content58628415">
+              Is there an EA for this I can download and use?I'm not a coder
+            </div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="user"><div class="frame"><div class="bg"><img src="https://c.mql5.com/avatar/2025/5/68239006-fc9d.png" srcset="https://c.mql5.com/avatar/2025/5/68239006-fc9d_big.png 2x" alt="Ryan L Johnson" title="Ryan L Johnson" data-user-login="RJo" loading="lazy" width="60" height="60"></div></div></div>
+
+          <div class="text">
+            <div>
+              <b><a class="author" href="/en/users/rjo" data-user-login="RJo">Ryan L Johnson</a></b>
+              |
+              <span class="comment__date">1 Dec 2025 at 13:11</span>
+              <a id="comment_58630427"></a>
+              
+            </div>
+            <div class="content" id="content58630427">
+              <div class="fquote"> <strong><span style="color:#42639C;">DecentOne <a href="/en/forum/500657#comment_58628415">#</a></span>:</strong><br/> Is there an EA for this I can download and use?I'm not a coder </div> <p>It's at the end of the Article that is linked up top in this Discussion:</p> <p><span><span>&nbsp;</span></span><a href="/en/articles/20327" target="_blank">Analytical Volume Profile Trading (AVPT): Liquidity Architecture, Market Memory, and Algorithmic Execution</a></p> <p><a href="/en/articles/20327" target="_blank"></a> </p> <p>(This is how all Article Discussions automatically posted in the Forum work.)</p> <p> <img width="264" height="263" src="https://c.mql5.com/3/480/EA.png" loading="lazy" title="EA" alt="EA" style="vertical-align:middle;"/></p>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+  </div>
+
+
+    <div class="articles-bottom-list" id="articleAdditional">
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Introduction to MQL5 (Part 28): Mastering API and WebRequest Function in MQL5 (II)" src="https://c.mql5.com/2/182/20280-introduction-to-mql5-part-28-logo__1.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/20280" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Introduction to MQL5 (Part 28): Mastering API and WebRequest Function in MQL5 (II)</a>
+                <div class="articles-bottom-list__desc">This article teaches you how to retrieve and extract price data from external platforms using APIs and the WebRequest function in MQL5. You’ll learn how URLs are structured, how API responses are formatted, how to convert server data into readable strings, and how to identify and extract specific values from JSON responses.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Price Action Analysis Toolkit Development (Part 51): Revolutionary Chart Search Technology for Candlestick Pattern Discovery" src="https://c.mql5.com/2/182/20313-price-action-analysis-toolkit-logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/20313" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Price Action Analysis Toolkit Development (Part 51): Revolutionary Chart Search Technology for Candlestick Pattern Discovery</a>
+                <div class="articles-bottom-list__desc">This article is intended for algorithmic traders, quantitative analysts, and MQL5 developers interested in enhancing their understanding of candlestick pattern recognition through practical implementation. It provides an in‑depth exploration of the CandlePatternSearch.mq5 Expert Advisor—a complete framework for detecting, visualizing, and monitoring classical candlestick formations in MetaTrader 5. Beyond a line‑by‑line review of the code, the article discusses architectural design, pattern detection logic, GUI integration, and alert mechanisms, illustrating how traditional price‑action analysis can be automated efficiently.</div>
+              </div>
+          </div>
+        </div>
+        <div class="articles-bottom-list__row">
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Developing a Trading Strategy: The Flower Volatility Index Trend-Following Approach" src="https://c.mql5.com/2/182/20309-developing-a-trading-strategy-logo__1.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/20309" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Developing a Trading Strategy: The Flower Volatility Index Trend-Following Approach</a>
+                <div class="articles-bottom-list__desc">The relentless quest to decode market rhythms has led traders and quantitative analysts to develop countless mathematical models. This article has introduced the Flower Volatility Index (FVI), a novel approach that transforms the mathematical elegance of Rose Curves into a functional trading tool. Through this work, we have shown how mathematical models can be adapted into practical trading mechanisms capable of supporting both analysis and decision-making in real market conditions.</div>
+              </div>
+          </div>
+          <div class="articles-bottom-list__column">
+              <div class="articles-bottom-list__item">
+                <img alt="Automating Trading Strategies in MQL5 (Part 41): Candle Range Theory (CRT) – Accumulation, Manipulation, Distribution (AMD)" src="https://c.mql5.com/2/182/20323-automating-trading-strategies-logo.png" loading="lazy" width="60" height="60" class="articles-bottom-list__avatar">
+                <a href="/en/articles/20323" data-fz-event="MQL5+Article+Next+Article" class="articles-bottom-list__title">Automating Trading Strategies in MQL5 (Part 41): Candle Range Theory (CRT) – Accumulation, Manipulation, Distribution (AMD)</a>
+                <div class="articles-bottom-list__desc">In this article, we develop a Candle Range Theory (CRT) trading system in MQL5 that identifies accumulation ranges on a specified timeframe, detects breaches with manipulation depth filtering, and confirms reversals for entry trades in the distribution phase. The system supports dynamic or static stop-loss and take-profit calculations based on risk-reward ratios, optional trailing stops, and limits on positions per direction for controlled risk management.</div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+<div class="clear-fix"></div>
+
+<div id='wdausxxqrpvhekbwjrjlhqjghyhesrqqau' class="r6irig5txiuua4k0m r6irig5txiuua4k0m_articles-view gg88d3drb"></div>
+    
+
+<div class="hidden" id="popupRegisterLogin">
+  <div class="register-login-popup">
+    <div class="register-login-popup__header">
+      <img src="https://c.mql5.com/i/registerlandings/logo-2.png" srcset="https://c.mql5.com/i/registerlandings/logo-2_2x.png 2x" alt="MQL5 - Language of trade strategies built-in the MetaTrader 5 client terminal" loading="lazy" width="74" height="24" />
+    </div>
+    <div class="register-login-popup__content">
+      <div class="register-login-popup__desc">
+        <div class="register-login-popup__title">You are missing trading opportunities:</div>
+        <ul>
+<li>Free trading apps</li>
+<li>Over 8,000 signals for copying</li>
+<li>Economic news for exploring financial markets</li>
+</ul>
+      </div>
+      <div class="register-login-popup__forms ui">
+        <div class="register-login-popup__tabs" id="registerLoginPopupTabs">
+          <span data-id="register" id="registerLoginPopupTab_register" class="register-login-popup__tab register-login-popup__tab_active">Registration</span>
+          <span data-id="login" id="registerLoginPopupTab_login" class="register-login-popup__tab">Log in</span>
+        </div>
+        <div id="registerLoginPopupTabContent_register">
+          <div class="ui auth-form__content">
+    
+  <script type='text/javascript'>/*<![CDATA[*/ if (!window.V) var V = []; /*]]>*/</script>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/en/auth_register_short" id="PopupRegisterquickRegisterForm" onsubmit="PopupRegisterquickRegistration.OnSubmit(this,&#39;en&#39;);if(Validate(this)) Ajax.form(this,{onready:PopupRegisterquickRegistration.OnSuccessPopup,onerror:PopupRegisterquickRegistration.OnError,onbeginrequest:PopupRegisterquickRegistration.DisableInputs,onendrequest:PopupRegisterquickRegistration.EnableInputs});return(false);" enctype = "multipart/form-data"><input type="hidden" name="__signature" value="dcf3f4218460695e296ba1d336d0a7a9"/>
+    <div class="auth-form__inputs">
+      <input type="hidden" value="0" name="IsValidate" id="PopupRegisterIsValidate" />
+
+      <!--[if lt IE 10]><div class="note">Login:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input type="text" id="PopupRegisterusername" name="username" class="input" maxlength="32" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.CheckUserName();}" onkeyup="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.ValidateUserName(this, 'Enter a valid login');}" placeholder="Login" title="May contain Latin letters, digits, dots, dashes,underscore characters. Cannot start or end with a dot. The allowed length is 3 to 32 characters." onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisterusername'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisterusername',10,'You may use Latin characters, numbers, underscores and periods.',validate_username]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisterusername">latin characters without spaces</label>
+      </div>
+      <!--[if lt IE 10]><div class="note">Your email:</div><![endif]-->
+      <div class="auth-form__box-input">
+        <input class="input" type="email" id="PopupRegisteremail" name="email" placeholder="Your email" title="Please enter the email (it may not exceed 256 characters). For example: john@example.com" onchange="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnChange(this);}" onfocus="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnFocus(this,'');}" onblur="if(window.PopupRegisterquickRegistration){PopupRegisterquickRegistration.OnBlur(this);}">
+        <script type='text/javascript' id='validate_PopupRegisteremail'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['PopupRegisteremail',10,'Enter a valid email address',validate_email]);}); /*]]>*/</script>
+
+        <label class="label" for="PopupRegisteremail">a password will be sent to this email</label>
+      </div>
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Register" />
+    </div>
+    <span id="PopupRegisterquickRegisterSubmit">
+      <input type="submit" value="Register" id="PopupRegisterquickRegisterButton"  title="Sign up and receive an email with your password" class="button button_yellow"  />
+    </span>
+    <span id="PopupRegisterquickRegisterErrorMessage" class="quick-register-error-message field-validation-error" style="text-align: center; margin-top: 16px; display: none;">
+      An error occurred
+    </span>
+</form>
+    
+</div>
+<div class="auth-social">
+  <ul class="auth-social-list" id="socialList">
+    <li><a onclick="window.fpush({name: 'MQL5+Popup+Register+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/en/auth_oauth2?provider=Google&amp;amp;return=popup&amp;amp;reg=1" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Log in With Google</a></li>
+  </ul>
+</div>
+<div class="auth-block-agree">
+  <p>
+    You agree to <a target="_blank" href="/en/about/privacy">website policy</a> and <a target="_blank" href="/en/about/terms">terms of use</a>
+  </p>
+</div>
+
+
+        </div>
+        <div id="registerLoginPopupTabContent_login" class="hidden">
+            <div class="auth-form__text">
+    If you do not have an account, please <a href="https://www.mql5.com/en/auth_register" rel="nofollow" style="vertical-align: top">register</a>
+  </div>
+<div class="ui auth-form__content auth-form__content_login" id="loginFormWrapper">
+    
+  <div id="needCookies" class="need-cookies hidden">
+    <div class="danger-box">
+      <p>Allow the use of cookies to log in to the MQL5.com website.</p>
+<p>Please enable the necessary setting in your browser, otherwise you will not be able to log in.</p>
+    </div>
+  </div>
+<script type='text/javascript'>/*<![CDATA[*/ if(! window.V) var V=[]; /*]]>*/</script>
+<form method="POST" action="/en/auth_login" id="loginForm" onsubmit="if(window.quickLogin){return window.quickLogin.onSubmit(this);}var result = Validate(this); if(result) { preventDoubleSubmit(this); } return result;"><input id="RedirectAfterLoginUrl" name="RedirectAfterLoginUrl" type="hidden" value="" /><input id="RegistrationUrl" name="RegistrationUrl" type="hidden" value="" /><input data-val="true" data-val-required="The ShowOpenId field is required." id="ShowOpenId" name="ShowOpenId" type="hidden" value="True" /><input id="TrackingSection" name="TrackingSection" type="hidden" value="Articles" />    <input name="ViewType" type="hidden" value="5" />
+      <input name="PrefixId" type="hidden" value="Popup&#x2B;Login" />
+    <!--[if lt IE 10]><div class="note">Your login:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <input class="input qa-login" id="Login" name="Login" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Login" title="Your login" type="text" value="" />
+      <script type='text/javascript' id='validate_Login'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Login',1,'Enter login specified when signing up']);});mqGlobal.AddOnReady(function() {V.push(['Login',10,'Email cannot be used. Enter your login please',validateLogin]);}); /*]]>*/</script>
+    </div>
+    <!--[if lt IE 10]><div class="note">Password:</div><![endif]-->
+    <div class="auth-form__box-input">
+      <div class="input-with-show">
+        <input autocomplete="off" class="input qa-password" id="Password" name="Password" onchange="if(window.quickLogin){window.quickLogin.onChange(this);}" placeholder="Password" title="Enter the password please" type="password" />
+        <span class="input-with-show__icon" title="Show password" onclick="if(window.quickLogin){window.quickLogin.showPass(this, 'Show password', 'Hide password');}"></span>
+      </div>
+      <script type='text/javascript' id='validate_Password'>/*<![CDATA[*/ mqGlobal.AddOnReady(function() {V.push(['Password',1,'Please enter the password']);}); /*]]>*/</script>
+    </div>
+    <script type="text/javascript">
+    function validateLogin(input) {
+      console.log('validate login ' + input.value);
+      return !/^\w+([-+.'']{1,2}\w+)* @\w+([-.]\w+)*\.\w+([-.]\w+)*$/i.test(input.value);
+    }
+    </script>
+    <div class="forgot" id="loginForgotBlock"><a id="loginForgotLink" href="https://www.mql5.com/en/auth_forgotten?return=popup">Forgot your login/password?</a></div>
+    <input type="submit" class="button button_yellow qa-submit" id="loginSubmit" value="Log in" title="Enter">
+</form></div>
+
+  <div class="auth-social" id="authSocialBlock">
+    <ul class="auth-social-list" id="socialList">
+      <li><a onclick="window.fpush({name: 'MQL5+Popup+Login+Google', unit: 'section', value: 'Articles'}); " href="https://www.mql5.com/en/auth_oauth2?provider=Google&amp;amp;return=popup" class="auth-soc-button qa-google-button auth-soc-button_google" rel="nofollow">Log in With Google</a></li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script id="popupSection" type="application/json">{"section": "Articles"}</script>
+<script id="popupTranslate" data-type="translate" type="application/json">
+{
+  "popup":
+  {
+  "EmailTitle" : "The password has been sent to {0}",
+  "EmailDescription" : "Log in using the obtained password and the login specified during the registration",
+  "SubmitButtonText" : "Activate account",
+  "RegistrationTip" : "If you have not received the password email, check the spam folder or &lt;a href={0}&gt;repeat the registration&lt;/a&gt;"
+  }
+}
+</script>
+
+    
+
+    
+
+
+    </article>
+  </div>
+
+
+
+<div aria-hidden="true" class="footer  desktop" id="footer">
+  <ul class="links  links_desktop">
+      <li id="navFooterCommunity">
+        <nav>
+          <ul>
+            <li><a href="https://web.metatrader.app/terminal?mode=demo&amp;lang=en" target="_blank" rel="nofollow noopener" data-fz-event="MQL5+Footer+Trading">Online trading / WebTerminal</a></li>
+            <li><a href="/en/code" data-fz-event="MQL5+Footer+CodeBase">Free technical indicators and robots</a></li>
+            <li><a href="/en/articles" data-fz-event="MQL5+Footer+Articles">Articles about programming and trading</a></li>
+            <li><a href="/en/job" data-fz-event="MQL5+Footer+Job">Order trading robots on the Freelance</a></li>
+            <li><a href="/en/market" data-fz-event="MQL5+Footer+Market">Market of Expert Advisors and applications&#x9;</a></li>
+            <li><a href="/en/signals" data-fz-event="MQL5+Footer+Signals">Follow forex signals</a></li>
+            <li><a href="/en/vps" data-fz-event="MQL5+Footer+VPS">Low latency forex VPS</a></li>
+            <li><a href="/en/forum" data-fz-event="MQL5+Footer+Forum">Traders forum</a></li>
+            <li><a href="/en/blogs" data-fz-event="MQL5+Footer+Blogs">Trading blogs</a></li>
+            <li><a rel="nofollow" href="/en/charts" data-fz-event="MQL5+Footer+Charts">Charts</a></li>
+            <li><a href="/en/widgets" data-fz-event="MQL5+Footer+Widgets">Free widgets</a></li>
+          </ul>
+        </nav>
+      </li>
+      <li id="navFooterMt5">
+        <nav>
+          <ul>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> Trading Platform</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/releasenotes" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> latest updates</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/news" data-fz-event="MQL5+Footer+MetaTrader+5">News, implementations and technology</a></li>
+            <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help" data-fz-event="MQL5+Footer+MetaTrader+5"><span class="nobr">MetaTrader 5</span> User Manual</a></li>
+            <li><a href="/en/docs" data-fz-event="MQL5+Footer+Docs">MQL5 language of trading strategies</a></li>
+            <li><a rel="nofollow noopener" href="https://cloud.mql5.com" data-fz-event="MQL5+Footer+Cloud">MQL5 Cloud Network</a></li>
+            <li><a rel="noopener" href="https://forge.mql5.io/?lang=en" data-fz-event="MQL5+Footer+Forge" target="_blank">MQL5 Algo Forge</a></li>
+              <li><a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MetaTrader+5+Desktop+Download+Footer">Download <span class="nobr">MetaTrader 5</span></a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help/start_advanced/installation" data-fz-event="MQL5+Footer+MetaTrader+5">Install Platform</a></li>
+              <li><a rel="nofollow noopener" href="https://www.metatrader5.com/en/terminal/help/start_advanced/deinstallation" data-fz-event="MQL5+Footer+MetaTrader+5">Uninstall Platform</a></li>
+          </ul>
+        </nav>
+
+      </li>
+    <li id="navFooterWebsite">
+        <nav>
+          <ul>
+            <li><a rel="nofollow" href="/en/about" data-fz-event="MQL5+Footer+About">About</a></li>
+              <li><a href="/en/wall" data-fz-event="MQL5+Footer+Wall">Timeline</a></li>
+            <li><a rel="nofollow" href="/en/about/terms" data-fz-event="MQL5+Footer+About">Terms and Conditions</a></li>
+            <li><a rel="nofollow" href="/en/about/autopayments" data-fz-event="MQL5+Footer+About">Recurring Payment Agreement</a></li>
+            <li><a rel="nofollow" href="/en/about/agencyagreement" data-fz-event="MQL5+Footer+About">Agency Agreement – Offer</a></li>
+            <li><a rel="nofollow" href="/en/about/privacy" data-fz-event="MQL5+Footer+About">Privacy and Data Protection Policy</a></li>
+            <li><a rel="nofollow" href="/en/about/cookies" data-fz-event="MQL5+Footer+About">Cookies Policy</a></li>
+            <li>
+                <a rel="nofollow" href="/en/contact" data-fz-event="MQL5+Footer+Contacts">Contacts and requests</a>
+            </li>
+          </ul>
+        </nav>
+    </li>
+
+      <li>
+        <div class="footer__products">
+          <div class="footer__product">
+            <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com" class="footer__product-name">MetaTrader 5</a>
+            <div class="footer__product-links">
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon windows" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for Windows</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/MetaTrader5.pkg.zip?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon macos" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for MacOS</div></a>
+            <a rel="nofollow noopener" href="https://www.mql5.com/en/articles/625?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon linux" data-fz-event="MetaTrader+5+Desktop+Download+Footer"><div class="footer__product-link-hint footer__product-link-hint-short">Download MetaTrader 5 for Linux</div></a>
+            <a rel="nofollow noopener" href="https://web.metatrader.app/terminal?mode=demo&amp;lang=en" class="icon web"><div  class="footer__product-link-hint footer__product-link-hint-short">Open MetaTrader 5 WebTerminal</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/ios?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=en" class="icon ios" data-fz-event="MetaTrader+5+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/jhZn8Ed1I1d.png)">Scan to install from App Store</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes&amp;hl=en" class="icon android" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/kiF2Io6W-9d.png)">Scan to install from Google Play</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mt5/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon huawei" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/ZRt&#x2B;zI1l&#x2B;8O.png)">Scan to install from Huawei AppGallery</div></a>
+            <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.mql5.com&amp;utm_campaign=install.metaquotes" class="icon ark" data-fz-event="MetaTrader+5+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/L0Q9oag&#x2B;3eE.png)">Scan to get Android APK file</div></a>
+            </div>
+          </div>
+          <div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.metatrader5.com/en/news/2270" class="footer__product-name">MQL5 Channels</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon ios" data-fz-event="MQL5+Channels+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/bZVfOJnYpcO.png)">Scan to install from App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon android" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/32MJFgw7BVs.png)">Scan to install from Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/mql5.channels/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Su&#x2B;fe4n374e.png)">Scan to install from Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/mql5channels/mql5channels.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="MQL5+Channels+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/G6Mg4NfCPzO.png)">Scan to get Android APK file</div></a>
+              </div>
+            </div>
+            <div class="footer__product">
+              <a target="_blank" rel="nofollow noopener" href="https://www.tradays.com/en/download?utm_source=www.mql5.com&amp;utm_campaign=download" data-fz-event="MQL5+Footer+Download+Tradays" class="footer__product-name">Economic Calendar</a>
+              <div class="footer__product-links">
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/ios?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon ios" data-fz-event="Tradays+iOS+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CpD&#x2B;mhIw-1E.png)">Scan to install from App Store</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android?utm_source=www.mql5.com&amp;utm_campaign=download&amp;hl=en" class="icon android" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/Bgyx8UcmYap.png)">Scan to install from Google Play</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/mobile/tradays/android/app-gallery?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon huawei" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/CrS7bbDAdAO.png)">Scan to install from Huawei AppGallery</div></a>
+              <a rel="nofollow noopener" href="https://download.terminal.free/cdn/web/metaquotes.software.corp/tradays/tradays.apk?utm_source=www.mql5.com&amp;utm_campaign=download" class="icon ark" data-fz-event="Tradays+Android+Download+Footer"><div class="footer__product-link-hint" style="background-image: url(https://c.mql5.com/qr/VZi8YPIb2op.png)">Scan to get Android APK file</div></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__networks">
+          <a href="https://www.facebook.com/mql5.community/" target="_blank" rel="nofollow" title="Facebook"><i class="icons-networks icons-networks_fb"></i></a>
+          <a href="https://t.me/mql5dev" target="_blank" rel="nofollow" title="Telegram"><i class="icons-networks icons-networks_tg"></i></a>
+          <a href="https://x.com/mql5com" target="_blank" rel="nofollow" title="X (Twitter)"><i class="icons-networks icons-networks_tw"></i></a>
+          <a href="https://www.youtube.com/@MetaQuotesOfficial" target="_blank" rel="nofollow" title="YouTube"><i class="icons-networks icons-networks_yt"></i></a>
+          <a href="https://www.linkedin.com/company/mql5" target="_blank" rel="nofollow" title="LinkedIn"><i class="icons-networks icons-networks_linkedin"></i></a>
+          <span>Subscribe to algotrading news</span>
+        </div>
+  
+        <div class="footer__other">
+          <div class="footer__not-a-broker">Not a broker, no real trading accounts</div>
+          <div class="copyright">35 Dodekanisou str, Germasogeia, 4043,&nbsp;Limassol,&nbsp;Cyprus</div>
+          <div class="copyright">Copyright 2000-2026, <span class="nobr">MetaQuotes Ltd</span></div>
+        </div>
+      </li>
+  </ul>
+</div>
+
+
+
+<div class="shadow-layer" id="layer"></div>
+    
+
+  <div class="b-fixed-mt" id="bFixedMt" style="display: none;">
+    
+  </div>
+
+
+<script type='text/javascript'>
+		(function (a, e, f, g, b, c, d) { a[b] || (a.FintezaCoreObject = b, a[b] = a[b] || function () { (a[b].q = a[b].q || []).push(arguments) }, a[b].l = 1 * new Date, c = e.createElement(f), d = e.getElementsByTagName(f)[0], c.async = !0, c.defer = !0, c.src = g, d && d.parentNode && d.parentNode.insertBefore(c, d)) })
+      (window, document, "script", "/ff/core.js", "fz");
+		window.fz("register", "website", {
+      id: "sqjxkxkswybhifrohpyooonwgbvsfzmayq",
+			trackLinks: true
+		});
+        mqGlobal.AddOnReady(function () { Mql5Cookie.init('mql5.com', '5095786119321655290'); });
+mqGlobal.AddOnReady(function(){if(!window.Pocket){window.Pocket=new PocketManager();}});mqGlobal.AddOnReady(function(){if(!window.translateManager){window.translateManager=new Translate(undefined,'Error: failed to translate. Please try again later.');}if(document.querySelectorAll){var translateElements=document.querySelectorAll(".translateMenu");if(translateElements){var i=0,count=translateElements.length;for(i;i<count;i++){(function(i){var contentid=dataset(translateElements[i],"contentid"),sourcelang=dataset(translateElements[i],"sourcelang"),targetlang=dataset(translateElements[i],"targetlang"),moduleid=parseInt(dataset(translateElements[i],"moduleid")),typeid=parseInt(dataset(translateElements[i],"typeid")),entityid=parseInt(dataset(translateElements[i],"entityid"));Core.AddHandler(translateElements[i],"mouseover",function(){return translateManager.SetMenu(this,contentid,sourcelang,targetlang,moduleid,typeid,entityid);});})(i);}}}});window.fz("show","wdausxxqrpvhekbwjrjlhqjghyhesrqqau");window.mqGlobal.AddOnLoad(function(){window.fpush('MQL5+Article+Open');Articles.CheckOnScrollDown();});mqGlobal.AddOnReady(function(){window.PopupRegisterquickRegistration=new QuickRegistration('PopupRegister','Popup+Register','Articles');});function validate_username(input){var reg=/^([a-z0-9]){1}([\-._a-z0-9]){1,30}([\-_a-z0-9]){1}$/i,value=input.value,result=true;if(reg.test(value)){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Login',unit:'section',value:'Articles'});}return result;}function validate_email(input){var reg=/^\w+([-+.'']{1,2}\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/i,value=input.value,result=true,length_value=value.length;if(reg.test(value)&&length_value>=1&&length_value<=40){result=true;}else{result=false;window.fpush({name:'MQL5+Popup+Register+Invalid+Email',unit:'section',value:'Articles'});}return result;};mqGlobal.AddOnReady(function(){var username=$('PopupRegisterusername'),email=$('PopupRegisteremail');if(username)username.value='';if(email)email.value='';});mqGlobal.AddOnReady(function(){window.quickLogin=new QuickLogin('Popup+Login','Articles');});mqGlobal.AddOnLoad(function(){window.showLoginRegisterPopupAtEnd();});mqGlobal.AddOnLoad(function(){window.tooltipUserInfo.init();});mqGlobal.AddOnReady(function(){{window.initHeaderSearch('','https://www.mql5.com/en/search');}});</script><script type="text/javascript">mqGlobal.AddOnReady(function(){window.initSuggestions("headerSearchKeyword","en","https://search.mql5.com/api/query","https://www.mql5.com/en/users_search/suggestion");});window.fz("show","vgckrufggwxdtfscpyalmenexmvhljduja");mqGlobal.AddOnReady(function(){window.floatVerticalPanelNode=FloatVerticalPanel('This website uses cookies. Learn more about our <a href="/en/about/cookies">Cookies Policy</a>.','cookie_accept');});							if (typeof Attach !== "undefined")
+			Attach.setAcceptFilter(".zip, .txt, .log, .mqh, .ex5, .mq5, .mq4, .mqproj, .ex4, .mt5, .set, .tpl, .cl, .py, .sqlite, .csv, .ini, .ipynb, .onnx, .gif, .png, .jpg, .jpeg, .mp4, .webm");
+	</script>
+
+<script type="application/ld&#x2B;json">
+		[
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"url": "https://www.mql5.com",
+				"logo": "https://c.mql5.com/i/community/logo_mql5-2.png",
+				"sameAs": [
+					"https://www.facebook.com/mql5.community",
+					"https://www.x.com/mql5com",
+					"https://www.youtube.com/user/MetaQuotesOfficial"
+				 ]
+			}
+		
+, 
+{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"Forum","description":"Discussions of trading strategies and algorithmic trading. MQL5.community  the largest forex forum","url":"https://www.mql5.com/en/forum","children":[]},{"@type":"SiteNavigationElement","position":2,"name":"Market","description":"MetaTrader Market - a Market of trading robots, indicators, trading books and magazines","url":"https://www.mql5.com/en/market","children":[]},{"@type":"SiteNavigationElement","position":3,"name":"Signals","description":"Social trading, copy trading and account monitoring with MetaTrader - Trading Signals on MQL5.com","url":"https://www.mql5.com/en/signals","children":[]},{"@type":"SiteNavigationElement","position":4,"name":"Freelance","description":"Order trading robots, technical indicators and algorithmic trading applications. Forex jobs. Freelance on MQL5.com. Hire MetaTrader experts and specialists","url":"https://www.mql5.com/en/job","children":[]},{"@type":"SiteNavigationElement","position":5,"name":"Quotes","description":"","url":"https://www.mql5.com/en/quotes/overview","children":[]},{"@type":"SiteNavigationElement","position":6,"name":"MetaTrader","description":"","url":"https://www.metatrader.com","children":[]},{"@type":"SiteNavigationElement","position":7,"name":"WebTerminal","description":"WebTerminal for the MetaTrader trading platform. Online forex trading.","url":"https://web.metatrader.app/terminal?mode=demo","children":[]},{"@type":"SiteNavigationElement","position":8,"name":"Calendar","description":"","url":"https://www.mql5.com/en/economic-calendar","children":[]},{"@type":"SiteNavigationElement","position":9,"name":"VPS","description":"","url":"https://www.mql5.com/en/vps","children":[]},{"@type":"SiteNavigationElement","position":10,"name":"Articles","description":"","url":"https://www.mql5.com/en/articles","children":[]},{"@type":"SiteNavigationElement","position":11,"name":"CodeBase","description":"Download trading robots, technical indicators and scripts with source code - MQL5 Code Base for MetaTrader 5","url":"https://www.mql5.com/en/code","children":[]},{"@type":"SiteNavigationElement","position":12,"name":"Algo Forge","description":"","url":"https://forge.mql5.io","children":[]},{"@type":"SiteNavigationElement","position":13,"name":"Documentation","description":"MetaQuotes Language 5 (MQL5) Reference - Documentation on MQL5.com","url":"https://www.mql5.com/en/docs","children":[]}]}		
+,
+{"@context":"https://schema.org","@type":"TechArticle","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.mql5.com/en/articles/20327"},"headline":"Analytical Volume Profile Trading (AVPT): Liquidity Architecture, Market Memory, and Algorithmic Execution","image":["https://c.mql5.com/2/182/503992155846000.png","https://c.mql5.com/2/182/Inp_Sets.png","https://c.mql5.com/2/182/AVPT_EC__1.png","https://c.mql5.com/2/182/AVPT_BT.png"],"datePublished":"2025-11-24T08:32:38+00:00Z","dateModified":"2025-11-19T15:41:41+00:00Z","author":{"@type":"Person","name":"Hlomohang John Borotho","url":"https://www.mql5.com/en/users/johnhlomohang"},"editor":{"@type":"Organization","name":"MetaQuotes","url":"https://www.mql5.com/en/users/metaquotes","address":{"@type":"PostalAddress","addressCountry":"CY"}},"publisher":{"@type":"Organization","name":"MQL5 Community","url":"https://www.mql5.com","logo":{"@type":"ImageObject","url":"https://c.mql5.com/i/community/logo_mql5-2.png"}},"description":"Analytical Volume Profile Trading (AVPT) explores how liquidity architecture and market memory shape price behavior, enabling more profound insight into institutional positioning and volume-driven structure. By mapping POC, HVNs, LVNs, and Value Areas, traders can identify acceptance, rejection, and imbalance zones with precision."}
+,
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":"https://www.mql5.com/en/articles","name":"Articles"},{"@type":"ListItem","position":2,"item":"https://www.mql5.com/en/articles/mt5","name":"MetaTrader 5"},{"@type":"ListItem","position":3,"item":"https://www.mql5.com/en/articles/mt5/examples","name":"Examples"}]}
+
+		]
+	</script>
+</body>
+</html>
