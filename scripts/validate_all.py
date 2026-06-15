@@ -15,6 +15,7 @@ COMMANDS = [
     [sys.executable, "scripts/validate_state_paths.py"],
     [sys.executable, "scripts/validate_loop_agent_reports.py"],
     [sys.executable, "scripts/validate_index_references.py"],
+    [sys.executable, "scripts/validate_sample_records.py"],
 ]
 
 
