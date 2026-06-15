@@ -256,25 +256,30 @@ skills_forbidden_this_turn
 missing_skills_if_any
 ```
 
-### Step 3：钉住唯一最高价值问题
+### Step 3：语义发散与问题空间建模
 
-用 `dbs-good-question` 形成：
+用 `dbs-good-question` + `dbs-deconstruct` 先形成问题空间，而不是直接钉住唯一最高价值问题：
 
 ```text
 observed_symptom
-target_state
-core_conflict
+problem_world
+solution_world
+shared_phenomena
+concept_map_seed
+issue_tree_seed
+external_search_terms
 constraints
 feedback_entry
-improved_agent_question
 ```
 
 规则：
 
 ```text
-1. 只选一个问题。
-2. 不能把“完善项目”当成问题。
-3. 问题必须能导向一个文件、字段、validator、issue 草案或 Owner 决策。
+1. 如果概念未拆清，不得直接收敛到执行任务。
+2. 如果问题可能有多个 frame，至少保留 3 个候选框架。
+3. 如果涉及理论升级，必须检索外部相似概念或论坛/文章来源。
+4. 收敛对象改称 current_convergence_slice，不再称“唯一最高价值问题”。
+5. 必须记录 unchosen_branches 和 revisit_trigger。
 ```
 
 ### Step 4：判断输出类型
@@ -288,6 +293,9 @@ TYPE_C_VALIDATOR_OR_QUALITY_GATE
 TYPE_D_OWNER_DECISION_BRIEF
 TYPE_E_BLOCKER_REPORT
 TYPE_F_RUNTIME_CONTRACT_PATCH
+TYPE_G_CONCEPT_SEMANTIC_MAP
+TYPE_H_EXTERNAL_CONCEPT_ABSORPTION
+TYPE_I_LOOP_SELF_PATCH
 ```
 
 ### Step 5：权限分类
@@ -330,15 +338,19 @@ specs/mql5-fcz-reclaim-model/reports/loop_agent_demand_grilling_report_<YYYYMMDD
 报告必须包含：
 
 ```text
-1. 本轮唯一最高价值问题。
-2. 实际加载技能。
-3. 禁止调用技能。
-4. 输出类型。
-5. 权限分类。
-6. 更新文件。
-7. PROPOSED / UNKNOWN / REQUIRES_OWNER 项。
-8. 验证输出。
-9. 下一轮建议。
+1. problem_world / solution_world / shared_phenomena。
+2. concept_map_seed / issue_tree_seed。
+3. external_sources_absorbed，若本轮涉及理论升级。
+4. 当前收敛切片 current_convergence_slice。
+5. 未选分支 unchosen_branches 与 revisit_trigger。
+6. 实际加载技能。
+7. 禁止调用技能。
+8. 输出类型。
+9. 权限分类。
+10. 更新文件。
+11. PROPOSED / UNKNOWN / REQUIRES_OWNER 项。
+12. 验证输出。
+13. 下一轮建议。
 ```
 
 ### Step 8：更新索引和变更记录

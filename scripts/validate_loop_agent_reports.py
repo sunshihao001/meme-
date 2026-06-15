@@ -17,7 +17,7 @@ DEFAULT_REPORTS_DIR = PROJECT_ROOT / "specs" / "mql5-fcz-reclaim-model" / "repor
 REPORT_GLOB = "loop_agent_demand_grilling_report_*.md"
 
 REQUIRED_EVIDENCE: list[tuple[str, tuple[str, ...]]] = [
-    ("本轮唯一最高价值问题", ("本轮唯一最高价值问题",)),
+    ("问题空间或当前收敛切片", ("本轮唯一最高价值问题", "current_convergence_slice", "当前收敛切片", "problem_world", "concept_map_seed", "issue_tree_seed")),
     ("loaded", ("loaded", "实际加载技能", "实际加载")),
     ("referenced_only", ("referenced_only", "referenced only", "referenced_only", "referenced /", "只 referenced")),
     ("conditional_not_executed", ("conditional_not_executed", "conditional", "not_executed", "未调用", "按需但未调用", "not called")),
