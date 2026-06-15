@@ -4,9 +4,9 @@
 - [x] 缺字段 fixture 能失败。
 - [x] 只扫描 loop report 命名文件。
 - [x] `validate_all` 包含新 validator。
-- [ ] 当前真实报告通过。
-- [ ] 全量验证通过。
-- [ ] GitHub Actions 通过。
+- [x] 当前真实报告通过。
+- [x] 全量验证通过。
+- [x] GitHub Actions 通过。
 
 ## False-success traps
 
