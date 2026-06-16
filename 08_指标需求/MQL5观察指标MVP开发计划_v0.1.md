@@ -193,6 +193,13 @@ fcz_bars
 poc_level
 vah_level
 val_level
+profile_bin_count
+poc_position_ratio
+zone_tick_volume_sum
+poc_above_bars
+avwap_above_bars
+poc_rejected_recently
+avwap_rejected_recently
 avwap_zonestart
 avwap_impulsestart
 retracement_ratio

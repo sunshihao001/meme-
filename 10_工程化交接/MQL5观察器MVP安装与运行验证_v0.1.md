@@ -180,7 +180,125 @@ symbol,timeframe,sample_time,fcz_high,fcz_low,fcz_bars,poc_level,vah_level,val_l
 
 ---
 
-## 7. 本版结论
+## 7. TP-013 Profile 质量字段补齐追加记录
+
+追加时间：2026-06-15 06:29 PDT
+
+本次源码追加：
+
+```text
+profile_bin_count
+poc_position_ratio
+zone_tick_volume_sum
+```
+
+追加原因：
+
+```text
+1. 三个字段只增强 Profile / FCZ 质量审计，不构成交易信号。
+2. `poc_position_ratio` 可帮助识别 POC 是否贴近区间边缘。
+3. `zone_tick_volume_sum` 可让样本记录知道 FCZ 区间内 tick volume 总量。
+4. `profile_bin_count` 让 CSV 记录保留 Profile 计算参数。
+```
+
+真实重新编译结果：
+
+```text
+Result: 0 errors, 0 warnings, 1578 ms elapsed, cpu='X64 Regular'
+```
+
+重新安装到 MT5 数据目录：
+
+```text
+C:/Users/Administrator/AppData/Roaming/MetaQuotes/Terminal/D0E8209F77C8CF37AD8BF550E51FF075/MQL5/Indicators/FCZ_Cost_Reclaim_Observer.mq5
+C:/Users/Administrator/AppData/Roaming/MetaQuotes/Terminal/D0E8209F77C8CF37AD8BF550E51FF075/MQL5/Indicators/FCZ_Cost_Reclaim_Observer.ex5
+```
+
+安装文件存在证据：
+
+```text
+FCZ_Cost_Reclaim_Observer.ex5 size=23990
+FCZ_Cost_Reclaim_Observer.mq5 size=10068
+```
+
+边界不变：
+
+```text
+compiled: yes
+installed_to_mt5_data_dir: yes
+manual_chart_visual_confirmation: blocked_by_gui_access
+csv_runtime_generation: pending_manual_chart_run
+```
+
+追加后的 CSV 字段应至少包含：
+
+```text
+symbol,timeframe,sample_time,fcz_high,fcz_low,fcz_bars,poc_level,vah_level,val_level,profile_bin_count,poc_position_ratio,zone_tick_volume_sum,avwap_zonestart,avwap_impulsestart,retracement_ratio,poc_relation,avwap_relation,current_state,allowed_mode,positive_evidence,negative_evidence,missing_evidence
+```
+
+---
+
+## 8. TP-014 POC/AVWAP 只读历史关系字段追加记录
+
+追加时间：2026-06-15 06:35 PDT
+
+本次源码追加：
+
+```text
+InpRelationLookbackBars = 10
+poc_above_bars
+avwap_above_bars
+poc_rejected_recently
+avwap_rejected_recently
+```
+
+追加原因：
+
+```text
+1. 让观察器能导出最小历史关系字段，区分“当前在水平线上方”与“最近是否被该水平压回”。
+2. 字段保持只读观察性质，不输出 accepted_strong / entry_signal。
+3. rejected_recently 只代表 lookback 范围内曾经 high >= level 且 close < level，并且当前 close < level；不是交易结论。
+4. above_bars 只统计从当前 K 开始连续收在水平线上的 bar 数，不做阈值判定。
+```
+
+真实重新编译结果：
+
+```text
+Result: 0 errors, 0 warnings, 753 ms elapsed, cpu='X64 Regular'
+```
+
+重新安装到 MT5 数据目录：
+
+```text
+C:/Users/Administrator/AppData/Roaming/MetaQuotes/Terminal/D0E8209F77C8CF37AD8BF550E51FF075/MQL5/Indicators/FCZ_Cost_Reclaim_Observer.mq5
+C:/Users/Administrator/AppData/Roaming/MetaQuotes/Terminal/D0E8209F77C8CF37AD8BF550E51FF075/MQL5/Indicators/FCZ_Cost_Reclaim_Observer.ex5
+```
+
+安装文件存在证据：
+
+```text
+FCZ_Cost_Reclaim_Observer.ex5 size=26722
+FCZ_Cost_Reclaim_Observer.mq5 size=12278
+```
+
+边界不变：
+
+```text
+compiled: yes
+installed_to_mt5_data_dir: yes
+manual_chart_visual_confirmation: blocked_by_gui_access
+csv_runtime_generation: pending_manual_chart_run
+```
+
+追加后的 CSV 字段应至少包含：
+
+```text
+symbol,timeframe,sample_time,fcz_high,fcz_low,fcz_bars,poc_level,vah_level,val_level,profile_bin_count,poc_position_ratio,zone_tick_volume_sum,poc_above_bars,avwap_above_bars,poc_rejected_recently,avwap_rejected_recently,avwap_zonestart,avwap_impulsestart,retracement_ratio,poc_relation,avwap_relation,current_state,allowed_mode,positive_evidence,negative_evidence,missing_evidence
+```
+
+---
+
+## 9. 本版结论
 
 本轮把 MQL5 观察器 MVP 从“只编译通过”推进到：
 

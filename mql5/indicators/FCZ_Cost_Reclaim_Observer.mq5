@@ -21,6 +21,7 @@ input int    InpWashoutLowShift = 10;
 
 input bool   InpShowAVWAPZoneStart = true;
 input bool   InpShowAVWAPImpulseStart = true;
+input int    InpRelationLookbackBars = 10;
 
 string PREFIX = "FCZ_OBSERVER_";
 
@@ -96,6 +97,7 @@ int OnCalculate(const int rates_total,
    }
 
    double poc = fczLow + (pocBin + 0.5) * binSize;
+   double pocPositionRatio = (poc - fczLow) / (fczHigh - fczLow);
    int lowBin = pocBin;
    int highBin = pocBin;
    double covered = bins[pocBin];
@@ -163,17 +165,32 @@ int OnCalculate(const int rates_total,
    if(avwapZone != EMPTY_VALUE)
       avwapRelation = RelationToLevel(close[0], avwapZone, _Point * 3.0);
 
+   int pocAboveBars = CountConsecutiveClosesAbove(close, poc, rates_total, InpRelationLookbackBars);
+   int avwapAboveBars = 0;
+   if(avwapZone != EMPTY_VALUE)
+      avwapAboveBars = CountConsecutiveClosesAbove(close, avwapZone, rates_total, InpRelationLookbackBars);
+   bool pocRejectedRecently = WasRejectedRecently(high, close, poc, rates_total, InpRelationLookbackBars);
+   bool avwapRejectedRecently = false;
+   if(avwapZone != EMPTY_VALUE)
+      avwapRejectedRecently = WasRejectedRecently(high, close, avwapZone, rates_total, InpRelationLookbackBars);
+
    DrawLabel(PREFIX + "STATUS",
              "FCZ Observer MVP\n" +
              "POC: " + DoubleToString(poc, _Digits) + " (" + pocRelation + ")\n" +
+             "POC position: " + DoubleToString(pocPositionRatio, 3) + "\n" +
+             "POC above bars: " + IntegerToString(pocAboveBars) + " rejected_recently=" + BoolText(pocRejectedRecently) + "\n" +
              "VAH/VAL: " + DoubleToString(vah, _Digits) + " / " + DoubleToString(val, _Digits) + "\n" +
              "AVWAP ZoneStart: " + ValueText(avwapZone) + " (" + avwapRelation + ")\n" +
+             "AVWAP above bars: " + IntegerToString(avwapAboveBars) + " rejected_recently=" + BoolText(avwapRejectedRecently) + "\n" +
              "Retracement: " + ValueText(retracement) + "\n" +
              "State: " + state + "\n" +
              "Allowed: observe_only");
 
    if(InpExportCSV)
-      ExportLatest(_Symbol, EnumToString(_Period), time[0], fczHigh, fczLow, fczBars, poc, vah, val, avwapZone, avwapImpulse, retracement, pocRelation, avwapRelation, state);
+      ExportLatest(_Symbol, EnumToString(_Period), time[0], fczHigh, fczLow, fczBars,
+                   poc, vah, val, InpProfileBins, pocPositionRatio, totalVol,
+                   pocAboveBars, avwapAboveBars, pocRejectedRecently, avwapRejectedRecently,
+                   avwapZone, avwapImpulse, retracement, pocRelation, avwapRelation, state);
 
    return(rates_total);
 }
@@ -249,8 +266,46 @@ string RelationToLevel(double price, double level, double tolerance)
    return("below");
 }
 
+int CountConsecutiveClosesAbove(const double &close[], double level, int rates_total, int maxBars)
+{
+   if(level == EMPTY_VALUE || rates_total <= 0 || maxBars <= 0)
+      return(0);
+   int limit = MathMin(maxBars, rates_total);
+   int count = 0;
+   for(int i = 0; i < limit; i++)
+   {
+      if(close[i] > level)
+         count++;
+      else
+         break;
+   }
+   return(count);
+}
+
+bool WasRejectedRecently(const double &high[], const double &close[], double level, int rates_total, int lookbackBars)
+{
+   if(level == EMPTY_VALUE || rates_total <= 0 || lookbackBars <= 0)
+      return(false);
+   if(close[0] >= level)
+      return(false);
+   int limit = MathMin(lookbackBars, rates_total);
+   for(int i = 0; i < limit; i++)
+   {
+      if(high[i] >= level && close[i] < level)
+         return(true);
+   }
+   return(false);
+}
+
+string BoolText(bool value)
+{
+   return(value ? "true" : "false");
+}
+
 void ExportLatest(string symbol, string timeframe, datetime sampleTime,
                   double fczHigh, double fczLow, int fczBars, double poc, double vah, double val,
+                  int profileBinCount, double pocPositionRatio, long zoneTickVolumeSum,
+                  int pocAboveBars, int avwapAboveBars, bool pocRejectedRecently, bool avwapRejectedRecently,
                   double avwapZone, double avwapImpulse, double retracement,
                   string pocRelation, string avwapRelation, string state)
 {
@@ -261,7 +316,9 @@ void ExportLatest(string symbol, string timeframe, datetime sampleTime,
 
    FileWrite(handle,
              "symbol", "timeframe", "sample_time", "fcz_high", "fcz_low",
-             "fcz_bars", "poc_level", "vah_level", "val_level", "avwap_zonestart",
+             "fcz_bars", "poc_level", "vah_level", "val_level", "profile_bin_count",
+             "poc_position_ratio", "zone_tick_volume_sum", "poc_above_bars",
+             "avwap_above_bars", "poc_rejected_recently", "avwap_rejected_recently", "avwap_zonestart",
              "avwap_impulsestart", "retracement_ratio", "poc_relation",
              "avwap_relation", "current_state", "allowed_mode",
              "positive_evidence", "negative_evidence", "missing_evidence");
@@ -270,6 +327,8 @@ void ExportLatest(string symbol, string timeframe, datetime sampleTime,
              symbol, timeframe, TimeToString(sampleTime, TIME_DATE | TIME_MINUTES),
              DoubleToString(fczHigh, _Digits), DoubleToString(fczLow, _Digits),
              IntegerToString(fczBars), DoubleToString(poc, _Digits), DoubleToString(vah, _Digits), DoubleToString(val, _Digits),
+             IntegerToString(profileBinCount), DoubleToString(pocPositionRatio, 6), IntegerToString(zoneTickVolumeSum),
+             IntegerToString(pocAboveBars), IntegerToString(avwapAboveBars), BoolText(pocRejectedRecently), BoolText(avwapRejectedRecently),
              ValueText(avwapZone), ValueText(avwapImpulse), ValueText(retracement),
              pocRelation, avwapRelation, state, "observe_only",
              "manual_fcz_and_profile_ready", "thresholds_not_validated", "manual_chart_review_required");
