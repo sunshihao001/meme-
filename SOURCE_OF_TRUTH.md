@@ -218,4 +218,8 @@ TP-006：FCZ_C / FCZ_D 图表派生结构
 
 ```text
 skills/mql5-fcz-reclaim-kb/SKILL.md
+10_工程化交接/Hermes_GitHub_外部资源三层工作流_v0.1.md
+10_工程化交接/Hermes调用Codex命令编排工作流_v0.1.md
 ```
+
+说明：`Hermes调用Codex命令编排工作流_v0.1.md` 是 Hermes 作为需求澄清/控制端调用 Codex CLI worker 的命令选择真源；涉及 codex exec、review、apply、sandbox、background、output-last-message、add-dir 等调用方式时优先读取。

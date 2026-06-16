@@ -206,6 +206,7 @@ P5-1 增强 AGENTS.md / CLAUDE.md / Codex handoff 的一致性。
 P5-2 建立 Agent handoff checklist。
 P5-3 将常见任务沉淀为项目 skill 更新。
 P5-4 引入 code review / simplification / validator-first 工作流。
+P5-5 固化 Hermes 调用 Codex 命令编排工作流，按任务选择 codex exec / review / apply / sandbox / output-last-message / background。
 ```
 
 完成标准：
@@ -214,6 +215,7 @@ P5-4 引入 code review / simplification / validator-first 工作流。
 1. 每个 Agent 都知道读什么、改什么、不改什么。
 2. 长期逻辑沉淀在 repo 文件和 skills/ 中。
 3. PR 与 CI 成为协作闭环，而不是聊天结论。
+4. Hermes 调用 Codex 的命令选择规则已沉淀到 `10_工程化交接/Hermes调用Codex命令编排工作流_v0.1.md`。
 ```
 
 ---
