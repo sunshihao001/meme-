@@ -90,7 +90,9 @@ GMGN-driven FCZ Structural Observer
 3. 样本标注与 raw refs。
 4. 状态机 mapper 设计。
 5. 反证、消融、回测规则设计。
-6. 纸上交易/quote-only dry run 的前置规格。
+6. 样本反证与 anti-hindsight schema。
+7. reason-code taxonomy。
+8. paper trading/quote-only dry run 的前置规格。
 ```
 
 当前禁止推进：
@@ -120,6 +122,9 @@ GMGN-driven FCZ Structural Observer
 13_量化交易系统架构/06_C端v0.2深度理论落库总纲.md
 13_量化交易系统架构/07_FCZ状态机专题_v0.2.md
 13_量化交易系统架构/08_GMGN_data_to_state_mapper_v0.2.md
+13_量化交易系统架构/09_样本反证与anti_hindsight_schema_v0.2.md
+13_量化交易系统架构/10_reason_code_taxonomy_v0.2.md
+13_量化交易系统架构/11_backtest_ablation_paper_trading_pre_spec_v0.2.md
 ```
 
 ---

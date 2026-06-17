@@ -126,6 +126,9 @@ skills/ 只放可执行工作流，不替代知识库文章
 13_量化交易系统架构/06_C端v0.2深度理论落库总纲.md
 13_量化交易系统架构/07_FCZ状态机专题_v0.2.md
 13_量化交易系统架构/08_GMGN_data_to_state_mapper_v0.2.md
+13_量化交易系统架构/09_样本反证与anti_hindsight_schema_v0.2.md
+13_量化交易系统架构/10_reason_code_taxonomy_v0.2.md
+13_量化交易系统架构/11_backtest_ablation_paper_trading_pre_spec_v0.2.md
 ```
 
 说明：MQL5/MT5 是观察器原型与量化体系设计参考层；最终目标是 GMGN 数据源 + 自建 meme 市场交易/扫描/验证脚本。当前阶段只允许只读数据、样本反证、状态字段和 observe_only/research_only 闭环，不允许 API key/private key/swap/自动下单。

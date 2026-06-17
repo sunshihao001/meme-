@@ -74,6 +74,9 @@ ROADMAP.md
 13_量化交易系统架构/06_C端v0.2深度理论落库总纲.md
 13_量化交易系统架构/07_FCZ状态机专题_v0.2.md
 13_量化交易系统架构/08_GMGN_data_to_state_mapper_v0.2.md
+13_量化交易系统架构/09_样本反证与anti_hindsight_schema_v0.2.md
+13_量化交易系统架构/10_reason_code_taxonomy_v0.2.md
+13_量化交易系统架构/11_backtest_ablation_paper_trading_pre_spec_v0.2.md
 ```
 
 如果要继续推进 AI 工作流，先看：
