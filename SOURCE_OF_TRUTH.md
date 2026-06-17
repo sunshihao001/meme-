@@ -237,6 +237,7 @@ skills/meme-source-pack-port/SKILL.md
 skills/meme-theory-codex-port/SKILL.md
 skills/meme-repo-landing-port/SKILL.md
 skills/meme-verification-review-port/SKILL.md
+10_工程化交接/meme多端口skill组合栈_v0.1.md
 ```
 
 这些 skills 分别对应：A 需求控制、B Source Pack、C 理论生成、D 落库、E 审查。它们是 meme 项目级执行适配，不是 ai- 通用方法论本体。
