@@ -82,14 +82,15 @@ OK: all project validation checks passed
 ```
 
 ## Commit / Push
-待 D端提交后补充：
+D端已提交并 push：
 
 ```text
-commit: pending
-push: pending
+commit: 551106f
+message: docs: add fcz state machine v0.2 slice
+push: success → origin/docs/project-governance-v1
 PR: https://github.com/sunshihao001/meme-/pull/1
-CI: pending
+CI: validate pass
 ```
 
 ## Ready for E端?
-待 D端完成验证、普通 commit、push 与 PR/CI 检查后交给 E端审查。
+是。D端已完成第二切片落库、验证、普通 commit、push 与 PR/CI 检查，可交给 E端审查 repo diff。

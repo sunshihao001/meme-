@@ -125,6 +125,7 @@ skills/ 只放可执行工作流，不替代知识库文章
 13_量化交易系统架构/04_MVP闭环定义.md
 13_量化交易系统架构/06_C端v0.2深度理论落库总纲.md
 13_量化交易系统架构/07_FCZ状态机专题_v0.2.md
+13_量化交易系统架构/08_GMGN_data_to_state_mapper_v0.2.md
 ```
 
 说明：MQL5/MT5 是观察器原型与量化体系设计参考层；最终目标是 GMGN 数据源 + 自建 meme 市场交易/扫描/验证脚本。当前阶段只允许只读数据、样本反证、状态字段和 observe_only/research_only 闭环，不允许 API key/private key/swap/自动下单。
@@ -225,3 +226,17 @@ skills/mql5-fcz-reclaim-kb/SKILL.md
 ```
 
 说明：`Hermes调用Codex命令编排工作流_v0.1.md` 是 Hermes 作为需求澄清/控制端调用 Codex CLI worker 的命令选择真源；涉及 codex exec、review、apply、sandbox、background、output-last-message、add-dir 等调用方式时优先读取。
+
+## 9. meme 项目端口专用 skills
+
+当前 meme 多 Telegram bot 循环代理建议使用的项目级 skills：
+
+```text
+skills/meme-demand-control-port/SKILL.md
+skills/meme-source-pack-port/SKILL.md
+skills/meme-theory-codex-port/SKILL.md
+skills/meme-repo-landing-port/SKILL.md
+skills/meme-verification-review-port/SKILL.md
+```
+
+这些 skills 分别对应：A 需求控制、B Source Pack、C 理论生成、D 落库、E 审查。它们是 meme 项目级执行适配，不是 ai- 通用方法论本体。

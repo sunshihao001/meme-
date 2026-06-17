@@ -119,6 +119,7 @@ GMGN-driven FCZ Structural Observer
 13_量化交易系统架构/05_从研究库到交易系统的迁移路线.md
 13_量化交易系统架构/06_C端v0.2深度理论落库总纲.md
 13_量化交易系统架构/07_FCZ状态机专题_v0.2.md
+13_量化交易系统架构/08_GMGN_data_to_state_mapper_v0.2.md
 ```
 
 ---
