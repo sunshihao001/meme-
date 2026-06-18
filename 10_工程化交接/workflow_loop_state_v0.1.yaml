@@ -1,19 +1,15 @@
 loop_id: af-workflow-loop-v0.1
-status: running
+status: trial_active
 mode: manual_triggered_minimal_loop
-current_stage: DESIGN
-current_port: C
-next_port: C
-current_task_id: task-005-design-batch-2-state-chain-wrapper
+current_stage: TRIAL_ACTIVE
+current_port: A
+next_port: A
+current_task_id: none
 
 objective: >
   Run an A-F multi-port workflow loop that can read queue/state, classify the next task,
   route across A/B/C/D/E/F ports, produce durable artifacts, verify results, stop or continue
   according to explicit conditions, and escalate to Owner only at decision gates.
-
-stage_machine:
-  current_stage: DESIGN
-  next_stage: LANDING
 
 active_thread:
   name: dbskill_batch_2_state_chain_trial
@@ -28,30 +24,27 @@ active_thread:
     e_review: partial_pass_continue_to_f_decision
     f_decision: ACCEPT_SMALL_SCOPE_BATCH_2_TRIAL
     batch_2_trial: authorized
-    c_design: ready
-    d_landing: pending
-    e_state_chain_verification: pending
+    d_landing: completed
+    e_state_chain_verification: PASS_TRIAL_SCOPE
+    trial_status: active_with_guardrails
 
 artifacts:
-  sample_01: 10_工程化交接/dbskill样例01_自然语言升级与下一阶段路线_v0.1.md
-  sample_02: 10_工程化交接/dbskill样例02_上下文汇总与自然语言专业化测试_v0.1.md
-  sample_03: 10_工程化交接/dbskill样例03_外部GitHubSkill局部抽取判断测试_v0.1.md
-  source_pack: 10_工程化交接/dbskill三样例SourcePack_v0.1.md
-  e_review: 10_工程化交接/dbskill第一批三样例效果验证报告_v0.1.md
-  owner_brief: 10_工程化交接/dbskill第二批状态链试接入OwnerDecisionBrief_v0.1.md
   owner_decision: 10_工程化交接/dbskill第二批状态链试接入Owner决策记录_v0.1.md
   batch_2_trial_plan: 10_工程化交接/dbskill第二批状态链小范围试接入运行方案_v0.1.md
+  landing_record: 10_工程化交接/dbskill第二批状态链试接入落库记录_v0.1.md
+  initial_snapshot: 10_工程化交接/state_snapshots/20260618_dbskill_batch_2_trial_design_snapshot.yaml
+  e_verification: 10_工程化交接/dbskill第二批状态链试接入验证报告_v0.1.md
 
 next_action:
-  port: D
-  stage: LANDING
-  task: land_batch_2_state_chain_wrapper_and_initial_snapshot
-  requires_owner_input: false
+  port: A
+  stage: TRIAL_ACTIVE
+  task: wait_for_next_real_workflow_change_to_test_state_chain
+  requires_owner_input: true
 
 stop_conditions:
-  success: batch_2_trial_design_landed_and_e_verified
-  pause: waiting_for_owner_decision
-  revise: e_verification_fails_state_chain_scope
+  success: batch_2_trial_remains_traceable_and_useful_across_next_real_workflow_change
+  pause: waiting_for_next_real_workflow_change
+  revise: e_verification_finds_scope_pollution
   blocked: state_chain_requires_global_runtime_or_repo_external_memory
 
 forbidden:

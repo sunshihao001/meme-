@@ -1,78 +1,58 @@
 queue_id: af-workflow-loop-queue-v0.1
-status: active
+status: active_waiting_for_next_real_workflow_change
 
 items:
   - id: task-001-collect-dbskill-sample-03
     status: completed
-    priority: P0
     current_port: A
     target_stage: INTAKE
-    description: >
-      Collect one real business/strategy/workflow natural-language idea from Owner
-      to run as dbskill sample_03.
     result_artifact: 10_工程化交接/dbskill样例03_外部GitHubSkill局部抽取判断测试_v0.1.md
-    success_condition: sample_03_validated
 
   - id: task-002-b-source-pack-three-samples
     status: completed
-    priority: P1
     current_port: B
     target_stage: SOURCE_PACK
-    description: >
-      After sample_03 exists, collect sample_01/02/03 into a compact source pack
-      for E-port verification.
     result_artifact: 10_工程化交接/dbskill三样例SourcePack_v0.1.md
-    success_condition: source_pack_ready_for_e_review
 
   - id: task-003-e-verify-three-samples
     status: completed
-    priority: P1
     current_port: E
     target_stage: VERIFY
-    description: >
-      Verify whether dbskill batch 1 actually improves understanding,
-      professionalization, executability, and routing quality.
     result_artifact: 10_工程化交接/dbskill第一批三样例效果验证报告_v0.1.md
-    success_condition: partial_pass_continue_to_f_decision
 
   - id: task-004-f-decide-batch-2-trial
     status: completed
-    priority: P0
     current_port: F
     target_stage: OWNER_GATE
-    description: >
-      Decide whether to trial dbskill batch 2 state-chain capabilities
-      dbs-decision/dbs-save/dbs-restore/dbs-report in small scope.
     result_artifact: 10_工程化交接/dbskill第二批状态链试接入Owner决策记录_v0.1.md
-    success_condition: owner_decision_recorded
     decision: ACCEPT_SMALL_SCOPE_BATCH_2_TRIAL
 
   - id: task-005-design-batch-2-state-chain-wrapper
-    status: in_progress
-    priority: P0
+    status: completed
     current_port: C
     target_stage: DESIGN
-    description: >
-      Design the small-scope wrapper for batch 2 state-chain capabilities.
-    expected_artifact: 10_工程化交接/dbskill第二批状态链小范围试接入运行方案_v0.1.md
-    success_condition: batch_2_trial_design_ready
+    result_artifact: 10_工程化交接/dbskill第二批状态链小范围试接入运行方案_v0.1.md
 
   - id: task-006-land-batch-2-state-chain-wrapper-and-snapshot
-    status: blocked_by_task-005
-    priority: P1
+    status: completed
     current_port: D
     target_stage: LANDING
-    description: >
-      Land the batch 2 wrapper design and initial state snapshot directory/files.
-    expected_artifact: 10_工程化交接/dbskill第二批状态链试接入落库_v0.1.md
-    success_condition: batch_2_landing_ready
+    result_artifact: 10_工程化交接/dbskill第二批状态链试接入落库记录_v0.1.md
+    snapshot: 10_工程化交接/state_snapshots/20260618_dbskill_batch_2_trial_design_snapshot.yaml
 
   - id: task-007-e-verify-batch-2-state-chain
-    status: blocked_by_task-006
-    priority: P1
+    status: completed
     current_port: E
     target_stage: VERIFY
+    result_artifact: 10_工程化交接/dbskill第二批状态链试接入验证报告_v0.1.md
+    result: PASS_TRIAL_SCOPE
+
+  - id: task-008-next-real-workflow-change-state-chain-test
+    status: waiting_for_next_real_workflow_change
+    priority: P1
+    current_port: A
+    target_stage: TRIAL_ACTIVE
     description: >
-      Verify whether the batch 2 state-chain wrapper remains scoped, traceable, and non-polluting.
-    expected_artifact: 10_工程化交接/dbskill第二批状态链试接入验证报告_v0.1.md
-    success_condition: batch_2_e_review_ready
+      Use the next real workflow change to test dbs-save/dbs-restore/dbs-report under guardrails.
+    expected_artifact: TBD
+    success_condition: state_chain_reduces_context_break_without_pollution
