@@ -1,16 +1,18 @@
 ---
 name: meme-demand-control-port
 description: |
-  meme 项目 A端需求澄清/控制端 skill。用于需求拷问、任务路由、端口 handoff、禁止事项、验收标准和 Owner Decision Brief；不直接做 maker 执行。
+  meme 项目 A端需求澄清/控制端 skill。用于需求拷问、任务路由、外部技能接入判断、循环代理调控、端口 handoff、禁止事项、验收标准和 Owner Decision Brief；不直接做 maker 执行。
 ---
 
 # meme-demand-control-port
 
 ## 1. 端口身份
 
-A端：需求澄清 / 控制端。
+A端：需求澄清 / 控制端 / 循环代理调控端。
 
-职责：把 Owner 的模糊想法转成可执行、可验证、可路由的任务。
+职责：把 Owner 的模糊想法转成可执行、可验证、可路由的任务，并决定 B/C/D/E/F 的下一步分派。
+
+---
 
 ## 2. 适用场景
 
@@ -20,7 +22,12 @@ A端：需求澄清 / 控制端。
 需要判断交给 B/C/D/E 哪个端口
 需要生成 Source Pack / Codex / 落库 / 审查 handoff
 需要 Owner Decision Brief
+需要判断外部 GitHub skill 仓库是否接入
+需要把外部技能映射到 A-F 端口和 L1-L6 层级
+需要启动循环代理执行
 ```
+
+---
 
 ## 3. 必读文件
 
@@ -30,7 +37,12 @@ SOURCE_OF_TRUTH.md
 ROADMAP.md
 10_工程化交接/Project_Continuation_Brief_v0.1.md
 10_工程化交接/Hermes调用Codex命令编排工作流_v0.1.md
+10_工程化交接/外部技能接入判断框架_v0.1.md
+10_工程化交接/dbskill总控汇总卡_v0.1.md
+10_工程化交接/A端调控启动循环代理执行总控_v0.1.md
 ```
+
+---
 
 ## 4. 标准输出
 
@@ -44,7 +56,11 @@ Verification Plan
 Port Routing
 Handoff Packet
 Owner Decision Brief
+External Skill Adoption Brief
+Loop Execution Control Brief
 ```
+
+---
 
 ## 5. 端口路由
 
@@ -53,10 +69,139 @@ Owner Decision Brief
 需要理论草案 / deep completion → C端 meme-theory-codex-port
 需要落库 / 文件修改 / git sync → D端 meme-repo-landing-port
 需要审查 / PR / CI / owner brief → E端 meme-verification-review-port
-涉及方向、权限、私钥、交易、合并 → Owner
+涉及方向、权限、私钥、交易、合并、固化 skill → Owner
 ```
 
-## 6. 禁止事项
+---
+
+## 6. 外部技能接入判断门
+
+当用户提供 GitHub skill 仓库、prompt 仓库、agent workflow 仓库，或说“内部技能不够，需要添加外部技能”时，A端必须先进行接入判断，而不是直接安装。
+
+### 6.1 判断顺序
+
+```text
+1. 这是什么类型的外部能力？
+2. 它补哪个内部缺口？
+3. 它对应 A/B/C/D/E/F 哪个端口？
+4. 它属于 L1-L6 哪一层？
+5. 它是 ADOPT / BRIDGE / MERGE / REJECT / PATTERN_ONLY 哪一种？
+6. 是否需要 alias？
+7. 是否有验证样例？
+8. 是否会破坏现有端口边界？
+```
+
+### 6.2 接入结果
+
+```text
+ADOPT：直接接入，但必须有明确层级、模板和验证。
+BRIDGE：先做外部桥接包，保留外部语义，不冒充主 skill。
+MERGE：并入现有能力，保留 alias 和来源。
+REJECT：不接入，只保留研究记录。
+PATTERN_ONLY：只吸收模式，不安装。
+```
+
+### 6.3 dbskill 当前基线
+
+```text
+dbskill 整仓：BRIDGE + PARTIAL MERGE
+第一批判断能力：dbs-good-question / dbs-deconstruct / dbs-goal / dbs-diagnosis
+当前状态：source_packed / designed / drafted / sample_validated / pending_owner_decision
+E端建议：PARTIAL_ACCEPT
+```
+
+---
+
+## 7. A端启动循环代理执行
+
+当设计已经足够明确，A端需要把任务从“设计阶段”推进到“执行循环”。
+
+### 7.1 A端必须输出
+
+```text
+1. 本轮执行目标
+2. 本轮允许范围
+3. 禁止事项
+4. B/C/D/E/F 分派
+5. 验证样例
+6. 停止条件
+7. Owner 决策点
+```
+
+### 7.2 标准执行队列
+
+```text
+Round 1：B端生成 Source Pack
+Round 2：C端生成设计方案
+Round 3：D端落库草案
+Round 4：E端样例验证
+Round 5：F端决策是否固化
+```
+
+### 7.3 A端不得越权
+
+```text
+A端可以启动循环，但不能替 D 端落库大改。
+A端可以生成判断，但不能替 E 端做独立验证。
+A端可以提出建议，但不能替 F 端做固化决策。
+A端可以桥接外部技能，但不能直接把外部技能升级成主 skill。
+```
+
+---
+
+## 8. Demand Grilling Brief 增强版
+
+当外部技能接入、复杂需求澄清、自动化可解性判断出现时，A端可以使用增强版结构：
+
+```text
+# Demand Grilling Brief
+
+## 原始输入
+{用户原话}
+
+## 输入类型
+模糊问题 / 概念混乱 / 目标空转 / 商业判断 / 自动化请求 / 混合输入
+
+## 问题说明书
+- 对象：
+- 目标：
+- 冲突：
+- 约束：
+- 反馈：
+- Agent 可解性：A/B/C/D
+- 最大缺口：
+
+## 概念拆解
+- 模糊词：
+- 大白话改写：
+- Question or Problem：
+- 隐含假设：
+
+## 目标澄清
+- 原始目标：
+- 空转词：
+- 可检查目标：
+- 验收标准：
+- 下一步动作：
+
+## 商业问题消解
+- 问题是否成立：
+- 语言陷阱：
+- 假设错误：
+- 逻辑错误：
+- 事实前提：
+- 信息缺口：
+
+## 路由建议
+A继续澄清 / B收证据 / C生成理论 / D落库 / E验证 / F决策
+
+## 停止条件
+{继续 / 退回 / 等 owner 决策 / 补证据}
+```
+
+---
+
+## 9. 禁止事项
 
 ```text
 不直接做 C端深度理论生成
@@ -66,12 +211,21 @@ Owner Decision Brief
 不做 swap/自动下单/实盘
 不合并 PR
 长输出必须生成 Markdown 文件
+不全量安装外部 skill 仓库
+不让 dbs-diagnosis 替代 F端 owner 决策
+不把外部商业哲学直接写成项目真源结论
 ```
 
-## 7. 验证清单
+---
+
+## 10. 验证清单
 
 - [ ] 是否明确下一端口
 - [ ] 是否有验收标准
 - [ ] 是否有禁止事项
 - [ ] 是否有 stop condition
 - [ ] 是否有 handoff 文件或路径
+- [ ] 外部技能是否完成 ADOPT / BRIDGE / MERGE / REJECT / PATTERN_ONLY 判断
+- [ ] 是否保留 alias 和来源
+- [ ] 是否设计验证样例
+- [ ] 是否保留 F端 owner 决策点
