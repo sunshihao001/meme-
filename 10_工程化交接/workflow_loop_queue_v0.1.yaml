@@ -1,5 +1,5 @@
 queue_id: af-workflow-loop-queue-v0.1
-status: active_waiting_for_next_abc_research_loop_sample
+status: waiting_for_owner_decision_on_c_detailed_theory
 
 items:
   - id: task-001-collect-dbskill-sample-03
@@ -101,3 +101,35 @@ items:
       research output rather than a final execution package.
     result_artifact: 10_工程化交接/C端研究版理论框架草案_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
     success_condition: c_research_draft_ready_for_owner_review
+
+  - id: task-013-c-execution-package-for-c-detailed-theory
+    status: completed
+    priority: P1
+    current_port: C
+    target_stage: C_EXECUTION_PACKAGE
+    result_artifact: 10_工程化交接/C-execution接口包_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
+    success_condition: c_execution_package_ready_for_d_e_f
+
+  - id: task-014-d-land-c-detailed-theory-chain
+    status: completed
+    priority: P1
+    current_port: D
+    target_stage: LANDING
+    result_artifact: 10_工程化交接/D端落库记录_多端口技能进化机制C端详细理论版全链路推进_v0.1.md
+    success_condition: d_landing_record_ready
+
+  - id: task-015-e-verify-c-detailed-theory
+    status: completed
+    priority: P1
+    current_port: E
+    target_stage: VERIFY
+    result_artifact: 10_工程化交接/E端验证报告_多端口技能进化机制C端详细理论版_v0.1.md
+    result: PASS_WITH_RECOMMENDATION
+
+  - id: task-016-f-owner-decision-c-detailed-theory
+    status: waiting_for_owner_decision
+    priority: P1
+    current_port: F
+    target_stage: OWNER_GATE
+    result_artifact: 10_工程化交接/F端OwnerDecisionBrief_多端口技能进化机制C端详细理论版_v0.1.md
+    recommended_decision: ACCEPT_BUT_REQUIRE_ONE_PAGE_CONTROL_CARD

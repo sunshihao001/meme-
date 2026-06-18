@@ -1,10 +1,10 @@
 loop_id: af-workflow-loop-v0.1
 status: trial_active
 mode: manual_triggered_minimal_loop
-current_stage: KNOWLEDGE_RESEARCH_LOOP
-current_port: C
-next_port: C
-current_task_id: task-012-c-research-theory-draft
+current_stage: OWNER_GATE
+current_port: F
+next_port: F
+current_task_id: task-016-f-owner-decision-c-detailed-theory
 
 objective: >
   Run a double-loop multi-port workflow: first an A/B/C knowledge research loop that can
@@ -30,6 +30,11 @@ active_thread:
     real_workflow_change: abc_knowledge_research_loop_before_execution_loop
     state_chain_test: active
     owner_expression_guidance: added
+    c_detailed_theory: generated_by_codex
+    c_execution_package: ready
+    d_landing_c_theory: completed
+    e_verification_c_theory: PASS_WITH_RECOMMENDATION
+    f_owner_decision_c_theory: waiting_for_owner
 
 artifacts:
   owner_decision: 10_工程化交接/dbskill第二批状态链试接入Owner决策记录_v0.1.md
@@ -39,12 +44,17 @@ artifacts:
   e_verification: 10_工程化交接/dbskill第二批状态链试接入验证报告_v0.1.md
   abc_loop_correction: 10_工程化交接/A_B_C知识研究循环与C-D-E-F执行循环重构方案_v0.1.md
   research_topic_brief: 10_工程化交接/研究课题_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
+  c_detailed_theory: 10_工程化交接/C端详细理论版_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
+  c_execution_package: 10_工程化交接/C-execution接口包_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
+  d_landing_c_theory: 10_工程化交接/D端落库记录_多端口技能进化机制C端详细理论版全链路推进_v0.1.md
+  e_verification_c_theory: 10_工程化交接/E端验证报告_多端口技能进化机制C端详细理论版_v0.1.md
+  f_owner_brief_c_theory: 10_工程化交接/F端OwnerDecisionBrief_多端口技能进化机制C端详细理论版_v0.1.md
 
 next_action:
-  port: B_or_C
-  stage: KNOWLEDGE_RESEARCH_LOOP
-  task: choose_next_research_sample_or_generate_b_source_pack_for_topic
-  requires_owner_input: false
+  port: F
+  stage: OWNER_GATE
+  task: owner_decide_accept_c_detailed_theory_baseline
+  requires_owner_input: true
 
 stop_conditions:
   success: batch_2_trial_remains_traceable_and_useful_across_next_real_workflow_change
