@@ -1,5 +1,10 @@
 queue_id: af-workflow-loop-queue-v0.1
 status: waiting_for_owner_decision_on_c_detailed_theory
+mode: fast_path
+priority_policy:
+  P0: today_now
+  P1: important_but_not_blocking
+  P2: reserve_and_later
 
 items:
   - id: task-001-collect-dbskill-sample-03
@@ -127,9 +132,28 @@ items:
     result: PASS_WITH_RECOMMENDATION
 
   - id: task-016-f-owner-decision-c-detailed-theory
-    status: waiting_for_owner_decision
+    status: completed
     priority: P1
     current_port: F
     target_stage: OWNER_GATE
     result_artifact: 10_工程化交接/F端OwnerDecisionBrief_多端口技能进化机制C端详细理论版_v0.1.md
     recommended_decision: ACCEPT_BUT_REQUIRE_ONE_PAGE_CONTROL_CARD
+
+  - id: task-017-create-one-page-control-card
+    status: completed
+    priority: P1
+    current_port: C
+    target_stage: CONTROL_CARD
+    result_artifact: 10_工程化交接/一页总控卡_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
+    success_condition: one_page_control_card_completed
+
+  - id: task-018-validate-owner-expression-guidance-with-real-sample
+    status: waiting_for_next_run
+    priority: P1
+    current_port: A
+    target_stage: SAMPLE_VALIDATION
+    description: >
+      Validate the owner expression guidance using a real sample, then decide whether the one-page
+      control card is sufficient for day-to-day use.
+    expected_artifact: 10_工程化交接/样例验证_Owner表达引导与防偏题_v0.1.md
+    success_condition: owner_expression_guidance_proven_with_sample
