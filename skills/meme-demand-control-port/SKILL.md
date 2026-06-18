@@ -170,7 +170,7 @@ dbskill 整仓：BRIDGE + PARTIAL MERGE
 第一批判断能力：dbs-good-question / dbs-deconstruct / dbs-goal / dbs-diagnosis
 新定位：A端自然语言专业化升级辅助包
 四件套分工：问题成型 / 概念拆解 / 目标升级 / 反向诊断
-当前状态：small_scope_enabled / project_skill_updated / needs_more_samples
+当前状态：small_scope_enabled / project_skill_updated / sample_01_validated / needs_sample_02_03
 第二批状态链：hold_for_real_samples
 E端建议：先用 2-3 个真实自然语言样例验证，再决定是否扩大接入
 ```
