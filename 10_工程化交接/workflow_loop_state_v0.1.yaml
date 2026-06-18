@@ -2,9 +2,9 @@ loop_id: af-workflow-loop-v0.1
 status: trial_active
 mode: manual_triggered_minimal_loop
 current_stage: KNOWLEDGE_RESEARCH_LOOP
-current_port: A
-next_port: A_or_B_or_C
-current_task_id: task-009-next-abc-research-loop-sample
+current_port: B
+next_port: B
+current_task_id: task-010-b-source-pack-for-abc-skill-evolution-topic
 
 objective: >
   Run a double-loop multi-port workflow: first an A/B/C knowledge research loop that can

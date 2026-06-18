@@ -70,14 +70,14 @@ items:
     success_condition: scattered_ideas_are_consolidated_into_research_topic
 
   - id: task-010-b-source-pack-for-abc-skill-evolution-topic
-    status: waiting_for_next_run
+    status: completed
     priority: P1
     current_port: B
     target_stage: SOURCE_PACK
     description: >
       Generate a B-port source/context pack for the new research topic, using existing local
       workflow docs and any approved external references as evidence.
-    expected_artifact: 10_工程化交接/研究课题SourcePack_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
+    result_artifact: 10_工程化交接/研究课题SourcePack_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
     success_condition: b_source_pack_ready_for_c_research_draft
 
   - id: task-011-add-owner-expression-guidance-layer
