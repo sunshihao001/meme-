@@ -205,7 +205,37 @@ Step 4：最后才评估 Pattern Only 区
 
 ---
 
-## 8. 验证口径
+## 8. A端新定位下的调整
+
+按最新 A端定位，dbskill 第一批不再只是“判断增强”，而应作为：
+
+```text
+A端自然语言专业化升级辅助包
+```
+
+第一批四件套的新分工：
+
+```text
+dbs-good-question → 问题成型器：把自然语言变成真正的问题。
+dbs-deconstruct → 概念拆解器：把模糊词拆成可理解的专业概念。
+dbs-goal → 目标升级器：把愿望语法转成可检查目标。
+dbs-diagnosis → 问题反审器：检查问题是否成立、是否需要更高阶问法。
+```
+
+当前调整口径：
+
+```text
+第一批：small_scope_enabled / needs_more_samples
+第二批：hold_for_real_samples
+第三批：pattern_or_later
+内容类：pattern_only / reject_for_current_mainline
+```
+
+第二批 `dbs-decision / dbs-save / dbs-restore / dbs-report` 暂不扩大接入，先用 2-3 个真实自然语言输入验证第一批是否真的能提升想法质量。
+
+---
+
+## 9. 验证口径
 
 每接一个 dbskill 子技能，必须回答：
 
