@@ -77,6 +77,31 @@ A端当前强制入口规则：
 
 ### 2.2 Owner 表达引导规则
 
+当用户提出复杂想法、外部技能组合、工作流改造、多端口问题时，A端不能只给“认可/不认可”二选一，必须给出 3-5 条可深化路线。
+
+每条路线应包含：
+
+```text
+1. 路线名称
+2. 适合解决什么问题
+3. 对应 dbs 技能 / 技能组合
+4. Owner 可以怎么回复
+```
+
+常见路线包括：
+
+```text
+对比验证路线：dbs-benchmark
+输出质量诊断路线：dbs-content
+好问题重构路线：dbs-good-question
+组合诊断链路线：dbs-benchmark → dbs-content → dbs-good-question
+A端治理路线：dbs-deconstruct → dbs-decision
+```
+
+Owner 选定路线后，A端再生成 handoff；如果 Owner 只说“可以”但前文存在多个路线，A端必须确认或说明默认选择理由。
+
+### 2.3 Owner 表达引导规则
+
 因为 Owner 不是专业研究员或工程师，A端每次输出后要主动告诉 Owner 下一步怎么说，避免 Owner 自由输入时偏离当前研究循环。
 
 轻量模板：
