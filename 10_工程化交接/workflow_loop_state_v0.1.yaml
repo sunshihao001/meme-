@@ -1,15 +1,15 @@
 loop_id: af-workflow-loop-v0.1
 status: trial_active
 mode: manual_triggered_minimal_loop
-current_stage: TRIAL_ACTIVE
+current_stage: KNOWLEDGE_RESEARCH_LOOP
 current_port: A
-next_port: A
-current_task_id: none
+next_port: A_or_B_or_C
+current_task_id: task-008-next-real-workflow-change-state-chain-test
 
 objective: >
-  Run an A-F multi-port workflow loop that can read queue/state, classify the next task,
-  route across A/B/C/D/E/F ports, produce durable artifacts, verify results, stop or continue
-  according to explicit conditions, and escalate to Owner only at decision gates.
+  Run a double-loop multi-port workflow: first an A/B/C knowledge research loop that can
+  iterate until the Owner is satisfied, then a C/D/E/F execution-verification loop that lands,
+  verifies, and escalates decisions through explicit gates.
 
 active_thread:
   name: dbskill_batch_2_state_chain_trial
@@ -27,6 +27,8 @@ active_thread:
     d_landing: completed
     e_state_chain_verification: PASS_TRIAL_SCOPE
     trial_status: active_with_guardrails
+    real_workflow_change: abc_knowledge_research_loop_before_execution_loop
+    state_chain_test: active
 
 artifacts:
   owner_decision: 10_工程化交接/dbskill第二批状态链试接入Owner决策记录_v0.1.md
@@ -34,12 +36,13 @@ artifacts:
   landing_record: 10_工程化交接/dbskill第二批状态链试接入落库记录_v0.1.md
   initial_snapshot: 10_工程化交接/state_snapshots/20260618_dbskill_batch_2_trial_design_snapshot.yaml
   e_verification: 10_工程化交接/dbskill第二批状态链试接入验证报告_v0.1.md
+  abc_loop_correction: 10_工程化交接/A_B_C知识研究循环与C-D-E-F执行循环重构方案_v0.1.md
 
 next_action:
   port: A
-  stage: TRIAL_ACTIVE
-  task: wait_for_next_real_workflow_change_to_test_state_chain
-  requires_owner_input: true
+  stage: KNOWLEDGE_RESEARCH_LOOP
+  task: use_a_b_c_research_loop_for_method_or_knowledge_updates_before_execution
+  requires_owner_input: false
 
 stop_conditions:
   success: batch_2_trial_remains_traceable_and_useful_across_next_real_workflow_change

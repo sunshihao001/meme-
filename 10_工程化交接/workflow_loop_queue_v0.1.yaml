@@ -1,5 +1,5 @@
 queue_id: af-workflow-loop-queue-v0.1
-status: active_waiting_for_next_real_workflow_change
+status: active_waiting_for_next_abc_research_loop_sample
 
 items:
   - id: task-001-collect-dbskill-sample-03
@@ -48,11 +48,23 @@ items:
     result: PASS_TRIAL_SCOPE
 
   - id: task-008-next-real-workflow-change-state-chain-test
-    status: waiting_for_next_real_workflow_change
+    status: completed
     priority: P1
     current_port: A
-    target_stage: TRIAL_ACTIVE
+    target_stage: KNOWLEDGE_RESEARCH_LOOP
     description: >
-      Use the next real workflow change to test dbs-save/dbs-restore/dbs-report under guardrails.
+      Use the user's correction that A/B/C should be a knowledge research loop before C/D/E/F
+      execution to test dbs-save/dbs-restore/dbs-report under guardrails.
+    result_artifact: 10_工程化交接/A_B_C知识研究循环与C-D-E-F执行循环重构方案_v0.1.md
+    success_condition: state_chain_records_real_workflow_architecture_change_without_pollution
+
+  - id: task-009-next-abc-research-loop-sample
+    status: waiting_for_next_research_topic_or_owner_feedback
+    priority: P1
+    current_port: A
+    target_stage: KNOWLEDGE_RESEARCH_LOOP
+    description: >
+      For the next method/knowledge/update question, run the corrected A/B/C research loop first;
+      only enter C/D/E/F after the Owner is satisfied with the C research output.
     expected_artifact: TBD
-    success_condition: state_chain_reduces_context_break_without_pollution
+    success_condition: owner_satisfaction_gate_before_execution_loop

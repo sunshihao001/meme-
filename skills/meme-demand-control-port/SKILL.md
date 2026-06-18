@@ -105,12 +105,43 @@ Natural Language to Expert Upgrade Brief
 
 ## 5. 端口路由
 
+A端默认不要把复杂研究型问题直接推入 D/E/F 执行段。新的基础结构是：
+
 ```text
-资料散乱 / 需要上下文压缩 → B端 meme-source-pack-port
-需要理论草案 / deep completion → C端 meme-theory-codex-port
+(A ↔ B ↔ C) 知识研究循环
+→ C 端执行版方案
+→ (C → D → E → F) 执行验证循环
+→ 回 A/C 继续迭代
+```
+
+### 5.1 A/B/C 知识研究循环
+
+```text
+问题定义 / 方向不清 / Owner 不满意 → A端重新框定
+资料散乱 / 需要上下文压缩 / 证据不足 → B端 meme-source-pack-port
+需要理论草案 / 框架推演 / 多方案比较 → C端 meme-theory-codex-port 的 C-research 状态
+```
+
+A/B/C 研究循环的停止条件：
+
+```text
+Owner 对 C 端研究版输出基本满意，并同意转为执行版方案。
+```
+
+### 5.2 C/D/E/F 执行验证循环
+
+```text
+C端已产出执行版方案 / spec / task package → C-execution 状态
 需要落库 / 文件修改 / git sync → D端 meme-repo-landing-port
 需要审查 / PR / CI / owner brief → E端 meme-verification-review-port
-涉及方向、权限、私钥、交易、合并、固化 skill → Owner
+涉及方向、权限、私钥、交易、合并、固化 skill → Owner/F端
+```
+
+A端判断原则：
+
+```text
+先把问题研究对，再把方案执行对。
+不满意时回 A/B/C 调整，不强行进入 D端落库。
 ```
 
 ---
