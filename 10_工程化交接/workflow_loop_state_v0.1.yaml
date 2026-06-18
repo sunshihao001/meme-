@@ -1,0 +1,86 @@
+loop_id: af-workflow-loop-v0.1
+status: running
+mode: manual_triggered_minimal_loop
+current_stage: INTAKE
+current_port: A
+next_port: A
+current_task_id: task-001-collect-dbskill-sample-03
+
+objective: >
+  Run an A-F multi-port workflow loop that can read queue/state, classify the next task,
+  route across A/B/C/D/E/F ports, produce durable artifacts, verify results, stop or continue
+  according to explicit conditions, and escalate to Owner only at decision gates.
+
+ports:
+  A:
+    role: demand_control_and_loop_controller
+    stages: [INTAKE, CLARIFY, ROUTE]
+  B:
+    role: source_pack_and_context_compression
+    stages: [SOURCE_PACK]
+  C:
+    role: theory_design_and_solution_generation
+    stages: [DESIGN]
+  D:
+    role: repo_landing_execution_and_git_sync
+    stages: [LANDING]
+  E:
+    role: independent_verification_checker
+    stages: [VERIFY]
+  F:
+    role: owner_decision_and_authorization_gate
+    stages: [OWNER_GATE]
+
+stage_machine:
+  allowed_stages:
+    - INTAKE
+    - CLARIFY
+    - SOURCE_PACK
+    - DESIGN
+    - LANDING
+    - VERIFY
+    - OWNER_GATE
+    - DONE
+    - BLOCKED
+    - REVISE
+  current_stage: INTAKE
+  next_stage: CLARIFY
+
+maker_checker:
+  maker_ports: [A, B, C, D]
+  checker_port: E
+  owner_gate: F
+  max_revision_loops: 3
+
+active_thread:
+  name: dbskill_batch_1_to_batch_2_decision
+  purpose: >
+    Finish dbskill batch 1 sample validation, run E-port overall verification,
+    and ask F whether to trial batch 2 state-chain capabilities.
+  current_status:
+    sample_01: validated
+    sample_02: validated
+    sample_03: needed
+    e_review: pending
+    f_decision: pending
+
+next_action:
+  port: A
+  stage: INTAKE
+  task: collect_real_business_strategy_or_workflow_input_for_sample_03
+  requires_owner_input: true
+  owner_prompt: >
+    Please provide one real business/strategy/workflow natural-language idea to use as sample_03.
+
+stop_conditions:
+  success: active_thread_done_and_e_verified_and_f_decision_recorded
+  pause: waiting_for_owner_input_or_owner_decision
+  revise: e_verification_fails_or_same_issue_under_3_times
+  blocked: same_failure_repeats_3_times_or_forbidden_action_required
+
+forbidden:
+  - bypass_e_verification
+  - let_maker_self_certify_completion
+  - enter_batch_2_without_f_decision
+  - install_full_external_skill_repo_without_adoption_gate
+  - global_runtime_auto_trigger_without_owner_authorization

@@ -1,0 +1,52 @@
+queue_id: af-workflow-loop-queue-v0.1
+status: active
+
+items:
+  - id: task-001-collect-dbskill-sample-03
+    status: waiting_for_owner_input
+    priority: P0
+    current_port: A
+    target_stage: INTAKE
+    description: >
+      Collect one real business/strategy/workflow natural-language idea from Owner
+      to run as dbskill sample_03.
+    input_required: true
+    next_route_after_input: A_LIGHT_UPGRADE
+    expected_artifact: 10_工程化交接/dbskill样例03_业务策略工作流自然语言升级测试_v0.1.md
+    success_condition: sample_03_validated
+    forbidden:
+      - invent_sample_03
+      - use_process_meta_discussion_as_sample_03
+
+  - id: task-002-b-source-pack-three-samples
+    status: blocked_by_task-001
+    priority: P1
+    current_port: B
+    target_stage: SOURCE_PACK
+    description: >
+      After sample_03 exists, collect sample_01/02/03 into a compact source pack
+      for E-port verification.
+    expected_artifact: 10_工程化交接/dbskill三样例SourcePack_v0.1.md
+    success_condition: source_pack_ready_for_e_review
+
+  - id: task-003-e-verify-three-samples
+    status: blocked_by_task-002
+    priority: P1
+    current_port: E
+    target_stage: VERIFY
+    description: >
+      Verify whether dbskill batch 1 actually improves understanding,
+      professionalization, executability, and routing quality.
+    expected_artifact: 10_工程化交接/dbskill第一批三样例效果验证报告_v0.1.md
+    success_condition: e_review_pass_or_revise_decision
+
+  - id: task-004-f-decide-batch-2-trial
+    status: blocked_by_task-003
+    priority: P2
+    current_port: F
+    target_stage: OWNER_GATE
+    description: >
+      Decide whether to trial dbskill batch 2 state-chain capabilities
+      dbs-decision/dbs-save/dbs-restore/dbs-report in small scope.
+    expected_artifact: 10_工程化交接/dbskill第二批状态链试接入OwnerDecisionBrief_v0.1.md
+    success_condition: owner_decision_recorded
