@@ -4,7 +4,7 @@ mode: manual_triggered_minimal_loop
 current_stage: KNOWLEDGE_RESEARCH_LOOP
 current_port: A
 next_port: A_or_B_or_C
-current_task_id: task-008-next-real-workflow-change-state-chain-test
+current_task_id: task-009-next-abc-research-loop-sample
 
 objective: >
   Run a double-loop multi-port workflow: first an A/B/C knowledge research loop that can
@@ -37,11 +37,12 @@ artifacts:
   initial_snapshot: 10_工程化交接/state_snapshots/20260618_dbskill_batch_2_trial_design_snapshot.yaml
   e_verification: 10_工程化交接/dbskill第二批状态链试接入验证报告_v0.1.md
   abc_loop_correction: 10_工程化交接/A_B_C知识研究循环与C-D-E-F执行循环重构方案_v0.1.md
+  research_topic_brief: 10_工程化交接/研究课题_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
 
 next_action:
-  port: A
+  port: B_or_C
   stage: KNOWLEDGE_RESEARCH_LOOP
-  task: use_a_b_c_research_loop_for_method_or_knowledge_updates_before_execution
+  task: choose_next_research_sample_or_generate_b_source_pack_for_topic
   requires_owner_input: false
 
 stop_conditions:

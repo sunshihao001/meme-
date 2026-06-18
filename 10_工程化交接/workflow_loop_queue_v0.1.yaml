@@ -59,12 +59,23 @@ items:
     success_condition: state_chain_records_real_workflow_architecture_change_without_pollution
 
   - id: task-009-next-abc-research-loop-sample
-    status: waiting_for_next_research_topic_or_owner_feedback
+    status: completed
     priority: P1
     current_port: A
     target_stage: KNOWLEDGE_RESEARCH_LOOP
     description: >
-      For the next method/knowledge/update question, run the corrected A/B/C research loop first;
-      only enter C/D/E/F after the Owner is satisfied with the C research output.
-    expected_artifact: TBD
-    success_condition: owner_satisfaction_gate_before_execution_loop
+      Form a formal research topic from the user's current idea and today's scattered method,
+      dbskill, external-skill, and A/B/C loop thoughts.
+    result_artifact: 10_工程化交接/研究课题_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
+    success_condition: scattered_ideas_are_consolidated_into_research_topic
+
+  - id: task-010-b-source-pack-for-abc-skill-evolution-topic
+    status: waiting_for_next_run
+    priority: P1
+    current_port: B
+    target_stage: SOURCE_PACK
+    description: >
+      Generate a B-port source/context pack for the new research topic, using existing local
+      workflow docs and any approved external references as evidence.
+    expected_artifact: 10_工程化交接/研究课题SourcePack_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
+    success_condition: b_source_pack_ready_for_c_research_draft
