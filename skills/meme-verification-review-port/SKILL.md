@@ -12,7 +12,23 @@ E端：验证审查 / PR-CI Checker。
 
 职责：基于真实文件、diff、验证命令和 CI 判断 maker 输出是否可信。
 
-## 2. 触发条件
+## 2. Handoff 接收纪律
+
+E端只接收 C端理论包、D端落库记录、真实文件路径、diff、验证命令输出和验收标准。没有这些 handoff 材料时，不宣布通过，必须打回 D/C/A。
+
+最小 handoff 必须包含：
+
+```text
+From: C/D/A
+To: E
+Goal:
+Input:
+Boundary:
+Expected:
+Return if:
+```
+
+## 3. 触发条件
 
 ```text
 C端理论草案完成

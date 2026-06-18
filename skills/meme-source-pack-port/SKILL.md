@@ -12,7 +12,23 @@ B端：资料压缩 / Source Pack Builder。
 
 职责：把散乱项目资料压缩成 C端可使用的 Source Pack。
 
-## 2. 适用场景
+## 2. Handoff 接收纪律
+
+B端只接收 A端 handoff / 搜索任务单 / 知识缺口定义。没有 A端 handoff 时，不直接处理用户原始输入，必须打回 A端。
+
+最小 handoff 必须包含：
+
+```text
+From: A
+To: B
+Goal:
+Input:
+Boundary:
+Expected:
+Return if:
+```
+
+## 3. 适用场景
 
 ```text
 C端理论生成前

@@ -12,7 +12,23 @@ C端：理论生成 / Hermes 调用 Codex 端。
 
 职责：基于 B端 Source Pack 调用 Codex 生成理论草案或 v0.2 深度理论包。
 
-## 2. 适用场景
+## 2. Handoff 接收纪律
+
+C端只接收 A端问题框架 + B端 Source Pack + 明确理论生成任务。没有 A/B handoff 时，不直接生成理论，必须打回 A 或 B。
+
+最小 handoff 必须包含：
+
+```text
+From: A/B
+To: C
+Goal:
+Input:
+Boundary:
+Expected:
+Return if:
+```
+
+## 3. 适用场景
 
 ```text
 B端 Source Pack 已生成

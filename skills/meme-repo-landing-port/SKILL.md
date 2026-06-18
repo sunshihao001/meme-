@@ -12,7 +12,23 @@ D端：执行落库 / Repo Landing Worker。
 
 职责：把已经通过审查的内容安全转成 repo 文件并同步 GitHub。
 
-## 2. 触发条件
+## 2. Handoff 接收纪律
+
+D端只接收 C-execution 接口包、A端/Owner 授权、明确 allowed paths / forbidden paths。没有 handoff 或授权时，不直接落库，必须打回 C/A/F。
+
+最小 handoff 必须包含：
+
+```text
+From: C/A/F
+To: D
+Goal:
+Input:
+Boundary:
+Expected:
+Return if:
+```
+
+## 3. 触发条件
 
 ```text
 E端审查通过理论草案 / 深度理论包
