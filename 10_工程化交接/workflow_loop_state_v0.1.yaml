@@ -29,6 +29,7 @@ active_thread:
     trial_status: active_with_guardrails
     real_workflow_change: abc_knowledge_research_loop_before_execution_loop
     state_chain_test: active
+    owner_expression_guidance: added
 
 artifacts:
   owner_decision: 10_工程化交接/dbskill第二批状态链试接入Owner决策记录_v0.1.md

@@ -79,3 +79,14 @@ items:
       workflow docs and any approved external references as evidence.
     expected_artifact: 10_工程化交接/研究课题SourcePack_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
     success_condition: b_source_pack_ready_for_c_research_draft
+
+  - id: task-011-add-owner-expression-guidance-layer
+    status: completed
+    priority: P0
+    current_port: A
+    target_stage: KNOWLEDGE_RESEARCH_LOOP
+    description: >
+      Add the user's correction that a non-professional Owner needs explicit guidance on how to
+      express the next input and avoid drifting off-topic after each output.
+    result_artifact: 10_工程化交接/研究课题_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
+    success_condition: owner_expression_guidance_added_to_topic_and_a_port_skill
