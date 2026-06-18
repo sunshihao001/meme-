@@ -1,69 +1,36 @@
 loop_id: af-workflow-loop-v0.1
-status: waiting_for_owner_decision
+status: running
 mode: manual_triggered_minimal_loop
-current_stage: OWNER_GATE
-current_port: F
-next_port: F
-current_task_id: task-004-f-decide-batch-2-trial
+current_stage: DESIGN
+current_port: C
+next_port: C
+current_task_id: task-005-design-batch-2-state-chain-wrapper
 
 objective: >
   Run an A-F multi-port workflow loop that can read queue/state, classify the next task,
   route across A/B/C/D/E/F ports, produce durable artifacts, verify results, stop or continue
   according to explicit conditions, and escalate to Owner only at decision gates.
 
-ports:
-  A:
-    role: demand_control_and_loop_controller
-    stages: [INTAKE, CLARIFY, ROUTE]
-  B:
-    role: source_pack_and_context_compression
-    stages: [SOURCE_PACK]
-  C:
-    role: theory_design_and_solution_generation
-    stages: [DESIGN]
-  D:
-    role: repo_landing_execution_and_git_sync
-    stages: [LANDING]
-  E:
-    role: independent_verification_checker
-    stages: [VERIFY]
-  F:
-    role: owner_decision_and_authorization_gate
-    stages: [OWNER_GATE]
-
 stage_machine:
-  allowed_stages:
-    - INTAKE
-    - CLARIFY
-    - SOURCE_PACK
-    - DESIGN
-    - LANDING
-    - VERIFY
-    - OWNER_GATE
-    - DONE
-    - BLOCKED
-    - REVISE
-  current_stage: OWNER_GATE
-  next_stage: OWNER_GATE
-
-maker_checker:
-  maker_ports: [A, B, C, D]
-  checker_port: E
-  owner_gate: F
-  max_revision_loops: 3
+  current_stage: DESIGN
+  next_stage: LANDING
 
 active_thread:
-  name: dbskill_batch_1_to_batch_2_decision
+  name: dbskill_batch_2_state_chain_trial
   purpose: >
-    Finish dbskill batch 1 sample validation, run E-port overall verification,
-    and ask F whether to trial batch 2 state-chain capabilities.
+    Trial dbskill batch 2 state-chain capabilities in small scope for workflow state,
+    queue, owner decisions, snapshots, restore, and reports.
   current_status:
     sample_01: validated
     sample_02: validated
     sample_03: validated
     b_source_pack: ready
     e_review: partial_pass_continue_to_f_decision
-    f_decision: pending_owner_selection
+    f_decision: ACCEPT_SMALL_SCOPE_BATCH_2_TRIAL
+    batch_2_trial: authorized
+    c_design: ready
+    d_landing: pending
+    e_state_chain_verification: pending
 
 artifacts:
   sample_01: 10_工程化交接/dbskill样例01_自然语言升级与下一阶段路线_v0.1.md
@@ -72,25 +39,24 @@ artifacts:
   source_pack: 10_工程化交接/dbskill三样例SourcePack_v0.1.md
   e_review: 10_工程化交接/dbskill第一批三样例效果验证报告_v0.1.md
   owner_brief: 10_工程化交接/dbskill第二批状态链试接入OwnerDecisionBrief_v0.1.md
+  owner_decision: 10_工程化交接/dbskill第二批状态链试接入Owner决策记录_v0.1.md
+  batch_2_trial_plan: 10_工程化交接/dbskill第二批状态链小范围试接入运行方案_v0.1.md
 
 next_action:
-  port: F
-  stage: OWNER_GATE
-  task: owner_choose_batch_2_trial_decision
-  requires_owner_input: true
-  owner_prompt: >
-    Choose A ACCEPT_SMALL_SCOPE_BATCH_2_TRIAL, B PARTIAL_ACCEPT_MORE_BUSINESS_SAMPLES,
-    C REVISE_BATCH_1_TEMPLATE, or D REJECT_BATCH_2_FOR_NOW.
+  port: D
+  stage: LANDING
+  task: land_batch_2_state_chain_wrapper_and_initial_snapshot
+  requires_owner_input: false
 
 stop_conditions:
-  success: owner_decision_recorded
+  success: batch_2_trial_design_landed_and_e_verified
   pause: waiting_for_owner_decision
-  revise: owner_requests_batch_1_template_revision
-  blocked: owner_decision_requires_forbidden_action
+  revise: e_verification_fails_state_chain_scope
+  blocked: state_chain_requires_global_runtime_or_repo_external_memory
 
 forbidden:
-  - bypass_e_verification
-  - let_maker_self_certify_completion
-  - enter_batch_2_without_f_decision
-  - install_full_external_skill_repo_without_adoption_gate
+  - install_full_dbskill_repo
   - global_runtime_auto_trigger_without_owner_authorization
+  - dbs_decision_replaces_owner_decision
+  - dbs_report_replaces_e_verification
+  - dbs_save_restore_uses_repo_external_truth

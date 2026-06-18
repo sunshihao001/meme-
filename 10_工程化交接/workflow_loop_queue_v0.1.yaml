@@ -1,5 +1,5 @@
 queue_id: af-workflow-loop-queue-v0.1
-status: active_waiting_for_owner_decision
+status: active
 
 items:
   - id: task-001-collect-dbskill-sample-03
@@ -10,7 +10,6 @@ items:
     description: >
       Collect one real business/strategy/workflow natural-language idea from Owner
       to run as dbskill sample_03.
-    input_required: false
     result_artifact: 10_工程化交接/dbskill样例03_外部GitHubSkill局部抽取判断测试_v0.1.md
     success_condition: sample_03_validated
 
@@ -37,17 +36,43 @@ items:
     success_condition: partial_pass_continue_to_f_decision
 
   - id: task-004-f-decide-batch-2-trial
-    status: waiting_for_owner_decision
+    status: completed
     priority: P0
     current_port: F
     target_stage: OWNER_GATE
     description: >
       Decide whether to trial dbskill batch 2 state-chain capabilities
       dbs-decision/dbs-save/dbs-restore/dbs-report in small scope.
-    result_artifact: 10_工程化交接/dbskill第二批状态链试接入OwnerDecisionBrief_v0.1.md
+    result_artifact: 10_工程化交接/dbskill第二批状态链试接入Owner决策记录_v0.1.md
     success_condition: owner_decision_recorded
-    decision_options:
-      - ACCEPT_SMALL_SCOPE_BATCH_2_TRIAL
-      - PARTIAL_ACCEPT_MORE_BUSINESS_SAMPLES
-      - REVISE_BATCH_1_TEMPLATE
-      - REJECT_BATCH_2_FOR_NOW
+    decision: ACCEPT_SMALL_SCOPE_BATCH_2_TRIAL
+
+  - id: task-005-design-batch-2-state-chain-wrapper
+    status: in_progress
+    priority: P0
+    current_port: C
+    target_stage: DESIGN
+    description: >
+      Design the small-scope wrapper for batch 2 state-chain capabilities.
+    expected_artifact: 10_工程化交接/dbskill第二批状态链小范围试接入运行方案_v0.1.md
+    success_condition: batch_2_trial_design_ready
+
+  - id: task-006-land-batch-2-state-chain-wrapper-and-snapshot
+    status: blocked_by_task-005
+    priority: P1
+    current_port: D
+    target_stage: LANDING
+    description: >
+      Land the batch 2 wrapper design and initial state snapshot directory/files.
+    expected_artifact: 10_工程化交接/dbskill第二批状态链试接入落库_v0.1.md
+    success_condition: batch_2_landing_ready
+
+  - id: task-007-e-verify-batch-2-state-chain
+    status: blocked_by_task-006
+    priority: P1
+    current_port: E
+    target_stage: VERIFY
+    description: >
+      Verify whether the batch 2 state-chain wrapper remains scoped, traceable, and non-polluting.
+    expected_artifact: 10_工程化交接/dbskill第二批状态链试接入验证报告_v0.1.md
+    success_condition: batch_2_e_review_ready

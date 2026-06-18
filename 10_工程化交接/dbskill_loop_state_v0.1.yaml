@@ -1,6 +1,6 @@
 loop_id: dbskill-sample-validation-loop-v0.1
-status: waiting_for_owner_decision
-current_stage: owner_gate
+status: batch_2_trial_authorized
+current_stage: design
 purpose: >
   Validate whether dbskill batch 1 can reliably upgrade ordinary natural-language
   user inputs into clearer, professional, executable workflow routes before any
@@ -10,24 +10,15 @@ samples:
   sample_01:
     status: validated
     file: 10_工程化交接/dbskill样例01_自然语言升级与下一阶段路线_v0.1.md
-    input_type: dbskill_plan_continuation
   sample_02:
     status: validated
     file: 10_工程化交接/dbskill样例02_上下文汇总与自然语言专业化测试_v0.1.md
-    input_type: context_summary_and_self_test
   sample_03:
     status: validated
     file: 10_工程化交接/dbskill样例03_外部GitHubSkill局部抽取判断测试_v0.1.md
-    input_type: external_github_skill_partial_adoption_judgment
 
 batch_1:
-  skills:
-    - dbs-good-question
-    - dbs-deconstruct
-    - dbs-goal
-    - dbs-diagnosis
   status:
-    - small_scope_enabled
     - sample_01_validated
     - sample_02_validated
     - sample_03_validated
@@ -39,28 +30,28 @@ batch_2:
     - dbs-save
     - dbs-restore
     - dbs-report
-  status: pending_owner_decision
+  decision: ACCEPT_SMALL_SCOPE_BATCH_2_TRIAL
+  status: trial_authorized_design_ready
+  allowed_scope:
+    - workflow_loop_state
+    - workflow_loop_queue
+    - dbskill_loop_state
+    - owner_decision_brief
+    - e_verification_report
+    - repo_traceable_state_snapshots
 
 artifacts:
   source_pack: 10_工程化交接/dbskill三样例SourcePack_v0.1.md
   e_review: 10_工程化交接/dbskill第一批三样例效果验证报告_v0.1.md
   owner_brief: 10_工程化交接/dbskill第二批状态链试接入OwnerDecisionBrief_v0.1.md
+  owner_decision: 10_工程化交接/dbskill第二批状态链试接入Owner决策记录_v0.1.md
+  batch_2_trial_plan: 10_工程化交接/dbskill第二批状态链小范围试接入运行方案_v0.1.md
 
-next_action: owner_choose_batch_2_trial_decision
-
-maker_checker_loop:
-  maker: A/B/D completed sample reports and source pack
-  checker: E completed partial pass review
-  owner_gate: F waiting for Owner selection
-
-stop_conditions:
-  success: owner_decision_recorded
-  pause: waiting_for_owner_decision
-  revise: owner_requests_more_samples_or_template_revision
-  reject: owner_rejects_batch_2_for_now
+next_action: D_land_batch_2_state_chain_wrapper_and_initial_snapshot
 
 forbidden:
   - install_full_dbskill_repo
-  - enter_batch_2_without_owner_decision
-  - global_runtime_trigger_without_owner_decision
-  - let_dbs_diagnosis_replace_f_owner_decision
+  - enter_global_runtime_trigger
+  - dbs_decision_replaces_owner_decision
+  - dbs_report_replaces_e_verification
+  - dbs_save_restore_uses_repo_external_truth
