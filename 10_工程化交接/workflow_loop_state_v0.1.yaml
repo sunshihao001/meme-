@@ -1,10 +1,10 @@
 loop_id: af-workflow-loop-v0.1
-status: running
+status: waiting_for_owner_decision
 mode: manual_triggered_minimal_loop
-current_stage: INTAKE
-current_port: A
-next_port: A
-current_task_id: task-001-collect-dbskill-sample-03
+current_stage: OWNER_GATE
+current_port: F
+next_port: F
+current_task_id: task-004-f-decide-batch-2-trial
 
 objective: >
   Run an A-F multi-port workflow loop that can read queue/state, classify the next task,
@@ -43,8 +43,8 @@ stage_machine:
     - DONE
     - BLOCKED
     - REVISE
-  current_stage: INTAKE
-  next_stage: CLARIFY
+  current_stage: OWNER_GATE
+  next_stage: OWNER_GATE
 
 maker_checker:
   maker_ports: [A, B, C, D]
@@ -60,23 +60,33 @@ active_thread:
   current_status:
     sample_01: validated
     sample_02: validated
-    sample_03: needed
-    e_review: pending
-    f_decision: pending
+    sample_03: validated
+    b_source_pack: ready
+    e_review: partial_pass_continue_to_f_decision
+    f_decision: pending_owner_selection
+
+artifacts:
+  sample_01: 10_工程化交接/dbskill样例01_自然语言升级与下一阶段路线_v0.1.md
+  sample_02: 10_工程化交接/dbskill样例02_上下文汇总与自然语言专业化测试_v0.1.md
+  sample_03: 10_工程化交接/dbskill样例03_外部GitHubSkill局部抽取判断测试_v0.1.md
+  source_pack: 10_工程化交接/dbskill三样例SourcePack_v0.1.md
+  e_review: 10_工程化交接/dbskill第一批三样例效果验证报告_v0.1.md
+  owner_brief: 10_工程化交接/dbskill第二批状态链试接入OwnerDecisionBrief_v0.1.md
 
 next_action:
-  port: A
-  stage: INTAKE
-  task: collect_real_business_strategy_or_workflow_input_for_sample_03
+  port: F
+  stage: OWNER_GATE
+  task: owner_choose_batch_2_trial_decision
   requires_owner_input: true
   owner_prompt: >
-    Please provide one real business/strategy/workflow natural-language idea to use as sample_03.
+    Choose A ACCEPT_SMALL_SCOPE_BATCH_2_TRIAL, B PARTIAL_ACCEPT_MORE_BUSINESS_SAMPLES,
+    C REVISE_BATCH_1_TEMPLATE, or D REJECT_BATCH_2_FOR_NOW.
 
 stop_conditions:
-  success: active_thread_done_and_e_verified_and_f_decision_recorded
-  pause: waiting_for_owner_input_or_owner_decision
-  revise: e_verification_fails_or_same_issue_under_3_times
-  blocked: same_failure_repeats_3_times_or_forbidden_action_required
+  success: owner_decision_recorded
+  pause: waiting_for_owner_decision
+  revise: owner_requests_batch_1_template_revision
+  blocked: owner_decision_requires_forbidden_action
 
 forbidden:
   - bypass_e_verification

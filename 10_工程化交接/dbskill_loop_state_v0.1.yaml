@@ -1,6 +1,6 @@
 loop_id: dbskill-sample-validation-loop-v0.1
-status: running
-current_stage: sample_validation
+status: waiting_for_owner_decision
+current_stage: owner_gate
 purpose: >
   Validate whether dbskill batch 1 can reliably upgrade ordinary natural-language
   user inputs into clearer, professional, executable workflow routes before any
@@ -16,9 +16,9 @@ samples:
     file: 10_工程化交接/dbskill样例02_上下文汇总与自然语言专业化测试_v0.1.md
     input_type: context_summary_and_self_test
   sample_03:
-    status: needed
-    file: null
-    required_input_type: real_business_strategy_or_workflow_idea
+    status: validated
+    file: 10_工程化交接/dbskill样例03_外部GitHubSkill局部抽取判断测试_v0.1.md
+    input_type: external_github_skill_partial_adoption_judgment
 
 batch_1:
   skills:
@@ -30,7 +30,8 @@ batch_1:
     - small_scope_enabled
     - sample_01_validated
     - sample_02_validated
-    - needs_sample_03
+    - sample_03_validated
+    - e_review_partial_pass
 
 batch_2:
   skills:
@@ -38,24 +39,28 @@ batch_2:
     - dbs-save
     - dbs-restore
     - dbs-report
-  status: hold_for_sample_03_and_e_review
+  status: pending_owner_decision
 
-next_action: collect_real_business_strategy_or_workflow_input_for_sample_03
+artifacts:
+  source_pack: 10_工程化交接/dbskill三样例SourcePack_v0.1.md
+  e_review: 10_工程化交接/dbskill第一批三样例效果验证报告_v0.1.md
+  owner_brief: 10_工程化交接/dbskill第二批状态链试接入OwnerDecisionBrief_v0.1.md
+
+next_action: owner_choose_batch_2_trial_decision
 
 maker_checker_loop:
-  maker: A端生成样例03自然语言专业化升级报告，D端落库
-  checker: E端审查三个样例是否真的提升理解、专业化和可执行性
-  owner_gate: F端决定是否小范围试接入第二批状态链
+  maker: A/B/D completed sample reports and source pack
+  checker: E completed partial pass review
+  owner_gate: F waiting for Owner selection
 
 stop_conditions:
-  success: sample_03_validated_and_e_review_passed_and_f_brief_ready
-  pause: waiting_for_owner_real_input_for_sample_03
-  revise: e_review_finds_outputs_are_only_pretty_summaries
-  reject: batch_1_fails_to_show_actual_improvement
+  success: owner_decision_recorded
+  pause: waiting_for_owner_decision
+  revise: owner_requests_more_samples_or_template_revision
+  reject: owner_rejects_batch_2_for_now
 
 forbidden:
   - install_full_dbskill_repo
-  - enter_batch_2_without_sample_03
-  - enter_batch_2_without_e_review
-  - create_global_runtime_trigger_without_owner_decision
+  - enter_batch_2_without_owner_decision
+  - global_runtime_trigger_without_owner_decision
   - let_dbs_diagnosis_replace_f_owner_decision
