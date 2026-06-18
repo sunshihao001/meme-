@@ -90,3 +90,14 @@ items:
       express the next input and avoid drifting off-topic after each output.
     result_artifact: 10_工程化交接/研究课题_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
     success_condition: owner_expression_guidance_added_to_topic_and_a_port_skill
+
+  - id: task-012-c-research-theory-draft
+    status: completed
+    priority: P1
+    current_port: C
+    target_stage: RESEARCH_DRAFT
+    description: >
+      Generate the C-research theory draft from the B-port source pack, keeping it as a revisable
+      research output rather than a final execution package.
+    result_artifact: 10_工程化交接/C端研究版理论框架草案_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
+    success_condition: c_research_draft_ready_for_owner_review
