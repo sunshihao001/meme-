@@ -37,14 +37,15 @@ automatic questioning → automatic judgment → automatic reasoning → continu
 - 补背景证据 → Agent Reach / dbs-learning / dbs-content-system / dbs-report
 - 推进成方案 → to-prd / writing-plans / to-issues / triage / executing-plans
 
-### 1.4 A 端已经有自动技能调用路由表
+### 1.4 A 端已经有自动技能调用协议、路由表和状态机
 
 已新增：
 
 - `A端自动技能调用协议_v0.1.md`
 - `A端自动技能调用路由表_v0.1.md`
+- `A端自动技能调用状态机_v0.1.md`
 
-这两份把“自动提问、自动判断、自动推理、自动选技能”写出来了。
+这三份把“自动提问、自动判断、自动选技能、自动吸收信息、再判断是否转端”写出来了。
 
 ---
 
