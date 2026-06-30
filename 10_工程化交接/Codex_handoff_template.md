@@ -3,7 +3,7 @@
 ```md
 Read:
 - AGENTS.md
-- CONTEXT.md
+- SOURCE_OF_TRUTH.md
 - specs/<feature>/spec.md
 - specs/<feature>/plan.md
 - specs/<feature>/tasks.md
@@ -36,30 +36,47 @@ Output:
 
 ---
 
-# 当前项目的暂定 Codex Handoff
+# 当前项目的真实 Codex / Agent Handoff：TP-003
 
-> 注意：GitHub issue 编号 UNKNOWN，因此本段只能作为本地 handoff 草案，不能假装已有 issue。
+> 状态：真实 GitHub Issue 已创建，不再使用 `#UNKNOWN`。  
+> GitHub Issue：#2  
+> URL：https://github.com/sunshihao001/meme-/issues/2
 
 ```md
 Read:
 - AGENTS.md
 - SOURCE_OF_TRUTH.md
-- 10_工程化交接/AI软件工程方法轮接入_spec.md
-- 10_工程化交接/AI软件工程方法轮接入_plan.md
-- 10_工程化交接/AI软件工程方法轮接入_tasks.md
-- 10_工程化交接/AI软件工程方法轮接入_checklist.md
-- GitHub issue #UNKNOWN
+- 10_工程化交接/Project_Continuation_Brief_v0.1.md
+- 10_工程化交接/优先级问题清单任务包_v0.1.md
+- 10_工程化交接/issues/issue-005-index-reference-validator.md
+- GitHub issue #2: https://github.com/sunshihao001/meme-/issues/2
 
 Task:
-Implement the selected issue only. If no GitHub issue exists, stop and ask the owner to create/select one.
+Implement TP-003 only: add an index reference validator quality gate.
 
 Rules:
 - Do not expand scope.
-- Use TDD when practical.
-- Add or update tests.
-- Run available checks.
-- Report changed files.
-- Report exact verification results.
-- Stop and ask if product/security/permission decision is needed.
-- Do not create GitHub issues, branches, PRs, or releases unless explicitly authorized.
+- Use TDD: write `tests/test_validate_index_references.py` first and observe RED.
+- Add `scripts/validate_index_references.py` using Python standard library only.
+- Parse formal file paths from `00_知识库设计规范/05_索引与变更记录/知识库索引_v0.1.md`.
+- Ignore URLs, explanatory prose, tree branch glyph lines, and directory-only entries where appropriate.
+- Wire the validator into `scripts/validate_all.py`.
+- Update index, changelog, Project Continuation Brief, and task package status.
+- Run exact verification commands and report output.
+- Stop for owner decision before merge, branch protection, bulk issue creation, or broad directory restructuring.
+
+Verification:
+```bash
+python scripts/validate_index_references.py
+python -m unittest discover -s tests -p 'test_validate_index_references.py'
+python scripts/validate_all.py
+gh pr checks 1
+```
+
+Output:
+- Summary of changes.
+- Changed files.
+- RED/GREEN test evidence.
+- Exact validation output.
+- GitHub Issue #2 / PR #1 linkage status.
 ```

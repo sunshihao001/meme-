@@ -2,7 +2,8 @@
 
 > 项目：MQL5_第一控盘区成本中枢回收模型_学习资料  
 > 用途：定义本项目的权威真源、冲突处理规则和后续维护入口。  
-> 状态：v0.1，Agent 工作台真源地图。
+> 状态：v0.1，Agent 工作台真源地图。  
+> 最新补充：13_量化交易系统架构 已成为 GMGN 自建 meme 量化交易系统的系统级架构入口。
 
 ---
 
@@ -113,6 +114,25 @@ skills/ 只放可执行工作流，不替代知识库文章
 08_指标需求/MQL5观察指标字段映射与模块优先级_v0.1.md
 ```
 
+根系需求更正与最终系统方向优先查看：
+
+```text
+10_工程化交接/根系需求更正_GMGN自建交易系统_v0.1.md
+09_规则与回测/GMGN数据源到FCZ状态机字段映射_v0.1.md
+13_量化交易系统架构/00_总览_GMGN自建meme量化交易系统.md
+13_量化交易系统架构/01_系统层次地图.md
+13_量化交易系统架构/03_缺口清单与阶段门.md
+13_量化交易系统架构/04_MVP闭环定义.md
+13_量化交易系统架构/06_C端v0.2深度理论落库总纲.md
+13_量化交易系统架构/07_FCZ状态机专题_v0.2.md
+13_量化交易系统架构/08_GMGN_data_to_state_mapper_v0.2.md
+13_量化交易系统架构/09_样本反证与anti_hindsight_schema_v0.2.md
+13_量化交易系统架构/10_reason_code_taxonomy_v0.2.md
+13_量化交易系统架构/11_backtest_ablation_paper_trading_pre_spec_v0.2.md
+```
+
+说明：MQL5/MT5 是观察器原型与量化体系设计参考层；最终目标是 GMGN 数据源 + 自建 meme 市场交易/扫描/验证脚本。当前阶段只允许只读数据、样本反证、状态字段和 observe_only/research_only 闭环，不允许 API key/private key/swap/自动下单。
+
 ---
 
 ## 5. 资料来源与吸收真源
@@ -169,6 +189,7 @@ meme庄家控盘语义补充资料/
 新样本标注规范 → 07_样本标注/
 新指标需求 / MVP计划 → 08_指标需求/
 新规则整合 / 回测设计 → 09_规则与回测/
+新系统架构 / 量化系统阶段门 / MVP闭环 / 迁移路线 → 13_量化交易系统架构/
 废弃旧稿 → 99_归档/
 Agent 工作流 → skills/
 ```
@@ -177,16 +198,49 @@ Agent 工作流 → skills/
 
 ## 8. 当前下一步真源入口
 
+当前接手项目、判断从哪里继续，优先查看：
+
+```text
+10_工程化交接/Project_Continuation_Brief_v0.1.md
+```
+
 当前最建议推进：
 
 ```text
+TP-003 / GitHub Issue #2：index reference validator
+https://github.com/sunshihao001/meme-/issues/2
+```
+
+后续候选：
+
+```text
+TP-004：sample record markdown validator
+TP-005：FCZ_B_0001 真实失败样本
+TP-006：FCZ_C / FCZ_D 图表派生结构
 08_指标需求/MQL5观察指标MVP开发计划_v0.1.md
-07_样本标注/meme样本标注体系_v0.1.md
-09_规则与回测/状态机规则整合_v0.1.md
 ```
 
 如涉及项目工作方式，先查看：
 
 ```text
 skills/mql5-fcz-reclaim-kb/SKILL.md
+10_工程化交接/Hermes_GitHub_外部资源三层工作流_v0.1.md
+10_工程化交接/Hermes调用Codex命令编排工作流_v0.1.md
 ```
+
+说明：`Hermes调用Codex命令编排工作流_v0.1.md` 是 Hermes 作为需求澄清/控制端调用 Codex CLI worker 的命令选择真源；涉及 codex exec、review、apply、sandbox、background、output-last-message、add-dir 等调用方式时优先读取。
+
+## 9. meme 项目端口专用 skills
+
+当前 meme 多 Telegram bot 循环代理建议使用的项目级 skills：
+
+```text
+skills/meme-demand-control-port/SKILL.md
+skills/meme-source-pack-port/SKILL.md
+skills/meme-theory-codex-port/SKILL.md
+skills/meme-repo-landing-port/SKILL.md
+skills/meme-verification-review-port/SKILL.md
+10_工程化交接/meme多端口skill组合栈_v0.1.md
+```
+
+这些 skills 分别对应：A 需求控制、B Source Pack、C 理论生成、D 落库、E 审查。它们是 meme 项目级执行适配，不是 ai- 通用方法论本体。

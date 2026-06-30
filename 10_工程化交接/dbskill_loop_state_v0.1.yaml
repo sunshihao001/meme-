@@ -1,0 +1,62 @@
+loop_id: dbskill-sample-validation-loop-v0.1
+status: batch_2_trial_active
+current_stage: trial_active
+purpose: >
+  Validate whether dbskill batch 1 can reliably upgrade ordinary natural-language
+  user inputs into clearer, professional, executable workflow routes and trial
+  batch 2 state-chain capabilities under guardrails.
+
+samples:
+  sample_01:
+    status: validated
+    file: 10_工程化交接/dbskill样例01_自然语言升级与下一阶段路线_v0.1.md
+  sample_02:
+    status: validated
+    file: 10_工程化交接/dbskill样例02_上下文汇总与自然语言专业化测试_v0.1.md
+  sample_03:
+    status: validated
+    file: 10_工程化交接/dbskill样例03_外部GitHubSkill局部抽取判断测试_v0.1.md
+
+batch_1:
+  status:
+    - sample_01_validated
+    - sample_02_validated
+    - sample_03_validated
+    - e_review_partial_pass
+
+batch_2:
+  skills:
+    - dbs-decision
+    - dbs-save
+    - dbs-restore
+    - dbs-report
+  decision: ACCEPT_SMALL_SCOPE_BATCH_2_TRIAL
+  status:
+    - trial_authorized
+    - design_ready
+    - landing_completed
+    - e_verified_pass_trial_scope
+    - trial_active_with_guardrails
+  allowed_scope:
+    - workflow_loop_state
+    - workflow_loop_queue
+    - dbskill_loop_state
+    - owner_decision_brief
+    - e_verification_report
+    - repo_traceable_state_snapshots
+
+artifacts:
+  owner_decision: 10_工程化交接/dbskill第二批状态链试接入Owner决策记录_v0.1.md
+  batch_2_trial_plan: 10_工程化交接/dbskill第二批状态链小范围试接入运行方案_v0.1.md
+  landing_record: 10_工程化交接/dbskill第二批状态链试接入落库记录_v0.1.md
+  initial_snapshot: 10_工程化交接/state_snapshots/20260618_dbskill_batch_2_trial_design_snapshot.yaml
+  e_verification: 10_工程化交接/dbskill第二批状态链试接入验证报告_v0.1.md
+
+next_action: wait_for_next_real_workflow_change_to_test_state_chain
+
+forbidden:
+  - install_full_dbskill_repo
+  - enter_global_runtime_trigger
+  - dbs_decision_replaces_owner_decision
+  - dbs_report_replaces_e_verification
+  - dbs_save_restore_uses_repo_external_truth

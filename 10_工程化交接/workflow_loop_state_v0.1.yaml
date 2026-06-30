@@ -1,0 +1,78 @@
+loop_id: af-workflow-loop-v0.1
+status: trial_active
+mode: manual_triggered_minimal_loop
+current_stage: SAMPLE_VALIDATION_READY
+current_port: A
+next_port: A
+current_task_id: task-018-next-sample-validate-owner-expression-guidance
+speed_profile: fast_first
+default_loop_mode: fast_path
+max_research_rounds: 2
+max_artifacts_per_round: 2
+deep_mode_trigger: owner_requests_deeper_theory_or_fast_mode_is_insufficient
+
+objective: >
+  Run a double-loop multi-port workflow: first an A/B/C knowledge research loop that can
+  iterate until the Owner is satisfied, then a C/D/E/F execution-verification loop that lands,
+  verifies, and escalates decisions through explicit gates.
+
+active_thread:
+  name: dbskill_batch_2_state_chain_trial
+  purpose: >
+    Trial dbskill batch 2 state-chain capabilities in small scope for workflow state,
+    queue, owner decisions, snapshots, restore, and reports.
+  current_status:
+    sample_01: validated
+    sample_02: validated
+    sample_03: validated
+    b_source_pack: ready
+    e_review: partial_pass_continue_to_f_decision
+    f_decision: ACCEPT_SMALL_SCOPE_BATCH_2_TRIAL
+    batch_2_trial: authorized
+    d_landing: completed
+    e_state_chain_verification: PASS_TRIAL_SCOPE
+    trial_status: active_with_guardrails
+    real_workflow_change: abc_knowledge_research_loop_before_execution_loop
+    state_chain_test: active
+    owner_expression_guidance: added
+    c_detailed_theory: generated_by_codex
+    c_execution_package: ready
+    d_landing_c_theory: completed
+    e_verification_c_theory: PASS_WITH_RECOMMENDATION
+    f_owner_decision_c_theory: ACCEPT_BUT_REQUIRE_ONE_PAGE_CONTROL_CARD
+    one_page_control_card: completed
+
+artifacts:
+  owner_decision: 10_工程化交接/dbskill第二批状态链试接入Owner决策记录_v0.1.md
+  batch_2_trial_plan: 10_工程化交接/dbskill第二批状态链小范围试接入运行方案_v0.1.md
+  landing_record: 10_工程化交接/dbskill第二批状态链试接入落库记录_v0.1.md
+  initial_snapshot: 10_工程化交接/state_snapshots/20260618_dbskill_batch_2_trial_design_snapshot.yaml
+  e_verification: 10_工程化交接/dbskill第二批状态链试接入验证报告_v0.1.md
+  abc_loop_correction: 10_工程化交接/A_B_C知识研究循环与C-D-E-F执行循环重构方案_v0.1.md
+  research_topic_brief: 10_工程化交接/研究课题_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
+  c_detailed_theory: 10_工程化交接/C端详细理论版_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
+  c_execution_package: 10_工程化交接/C-execution接口包_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
+  d_landing_c_theory: 10_工程化交接/D端落库记录_多端口技能进化机制C端详细理论版全链路推进_v0.1.md
+  e_verification_c_theory: 10_工程化交接/E端验证报告_多端口技能进化机制C端详细理论版_v0.1.md
+  f_owner_brief_c_theory: 10_工程化交接/F端OwnerDecisionBrief_多端口技能进化机制C端详细理论版_v0.1.md
+  f_owner_decision_record: 10_工程化交接/F端Owner决策记录_接受C端详细理论版并要求一页总控卡_v0.1.md
+  one_page_control_card: 10_工程化交接/一页总控卡_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
+
+next_action:
+  port: A
+  stage: SAMPLE_VALIDATION_READY
+  task: validate_owner_expression_guidance_with_real_sample
+  requires_owner_input: false
+
+stop_conditions:
+  success: batch_2_trial_remains_traceable_and_useful_across_next_real_workflow_change
+  pause: waiting_for_next_real_workflow_change
+  revise: e_verification_finds_scope_pollution
+  blocked: state_chain_requires_global_runtime_or_repo_external_memory
+
+forbidden:
+  - install_full_dbskill_repo
+  - global_runtime_auto_trigger_without_owner_authorization
+  - dbs_decision_replaces_owner_decision
+  - dbs_report_replaces_e_verification
+  - dbs_save_restore_uses_repo_external_truth

@@ -1,0 +1,86 @@
+name: 样本标注 / 反证样本任务
+
+description: 用于 FCZ_B/C/D 等真实或模拟样本补齐、审计、CSV 同步任务。
+
+title: "[Sample] <样本ID或样本任务>"
+
+labels:
+  - sample-labeling
+  - research
+  - needs-triage
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        样本任务必须区分事实、推测、评分和交易结论。
+        禁止在没有证据时把字段硬填成确定结论。
+
+  - type: input
+    id: sample_id
+    attributes:
+      label: 样本 ID
+      placeholder: "FCZ_B_0001 / FCZ_C_0001 / FCZ_D_0001 / 新样本ID"
+    validations:
+      required: true
+
+  - type: textarea
+    id: sample_goal
+    attributes:
+      label: 样本目标
+      placeholder: "例如：补齐 FCZ_B_0001 的真实‘模型符合但失败’样本。"
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence_sources
+    attributes:
+      label: 证据来源
+      description: GMGN 链接、原始 refs、图表、历史记录、下载文件等。
+      placeholder: "source_chart_url / raw_refs / token address / timeframe / 来源说明"
+    validations:
+      required: true
+
+  - type: textarea
+    id: fields_to_update
+    attributes:
+      label: 待更新字段
+      placeholder: |
+        - sample_start_time
+        - sample_end_time
+        - current_state_path
+        - final_classification
+        - death_market_score
+        - bull_trap_score
+        - commercial_actionability_score
+    validations:
+      required: true
+
+  - type: textarea
+    id: non_goals
+    attributes:
+      label: 非目标
+      placeholder: "例如：不新增自动抓取系统；不把单样本结论扩展成策略有效性结论。"
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 验收标准
+      placeholder: |
+        - [ ] 单样本记录已更新
+        - [ ] CSV 已同步
+        - [ ] unknown 字段有原因，不伪造事实
+        - [ ] 索引/变更记录已更新
+        - [ ] validate_all 通过
+    validations:
+      required: true
+
+  - type: textarea
+    id: risk_notes
+    attributes:
+      label: 风险 / 反证注意事项
+      placeholder: "诱多、死亡盘、数据污染、样本选择偏差、图表不可复现等。"
+    validations:
+      required: false

@@ -1,34 +1,5 @@
-# Secrets / credentials
-.env
-*.key
-*.pem
-*.p12
-*.pfx
-*.crt
-*.cer
-id_rsa*
-id_ed25519*
-
-# Python
-__pycache__/
-*.py[cod]
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-.venv/
-venv/
-
-# Logs / temp
-*.log
-*.tmp
-*.bak
-.DS_Store
-Thumbs.db
-
-# Editor
-.vscode/
-.idea/
-
-# Local MT5 / generated exports (review before committing if needed)
-MQL5/Files/
-*.ex5
+.agents/
+skills-lock.json
+**/__pycache__/
+mql5/indicators/*.ex5
+mql5/indicators/compile.log

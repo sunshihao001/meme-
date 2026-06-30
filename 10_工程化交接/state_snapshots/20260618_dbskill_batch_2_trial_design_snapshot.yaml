@@ -1,0 +1,45 @@
+snapshot_id: 20260618_dbskill_batch_2_trial_design_snapshot
+loop_id: af-workflow-loop-v0.1
+created_for: dbskill_batch_2_state_chain_trial
+stage: LANDING
+port: D
+status: snapshot_created
+
+owner_decision:
+  decision: ACCEPT_SMALL_SCOPE_BATCH_2_TRIAL
+  file: 10_工程化交接/dbskill第二批状态链试接入Owner决策记录_v0.1.md
+
+batch_2_trial:
+  status: authorized_and_landed
+  allowed_skills:
+    dbs-decision:
+      local_role: F端决策事件记录器
+      allowed_scope: owner_decision_briefs_and_decision_records
+    dbs-save:
+      local_role: workflow state snapshot 保存器
+      allowed_scope: repo_tracked_workflow_state_and_queue_snapshots
+    dbs-restore:
+      local_role: workflow state 恢复入口
+      allowed_scope: repo_internal_state_queue_restore_only
+    dbs-report:
+      local_role: E/F 汇总报告辅助器
+      allowed_scope: evidence_linked_review_and_owner_reports
+
+current_artifacts:
+  workflow_state: 10_工程化交接/workflow_loop_state_v0.1.yaml
+  workflow_queue: 10_工程化交接/workflow_loop_queue_v0.1.yaml
+  dbskill_state: 10_工程化交接/dbskill_loop_state_v0.1.yaml
+  trial_plan: 10_工程化交接/dbskill第二批状态链小范围试接入运行方案_v0.1.md
+  owner_decision: 10_工程化交接/dbskill第二批状态链试接入Owner决策记录_v0.1.md
+
+next_expected_step:
+  port: E
+  task: verify_batch_2_state_chain_scope_and_traceability
+  expected_artifact: 10_工程化交接/dbskill第二批状态链试接入验证报告_v0.1.md
+
+forbidden:
+  - install_full_dbskill_repo
+  - global_runtime_auto_trigger
+  - repo_external_memory_truth
+  - decision_without_owner
+  - report_without_evidence_links

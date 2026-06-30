@@ -1,0 +1,159 @@
+queue_id: af-workflow-loop-queue-v0.1
+status: waiting_for_owner_decision_on_c_detailed_theory
+mode: fast_path
+priority_policy:
+  P0: today_now
+  P1: important_but_not_blocking
+  P2: reserve_and_later
+
+items:
+  - id: task-001-collect-dbskill-sample-03
+    status: completed
+    current_port: A
+    target_stage: INTAKE
+    result_artifact: 10_工程化交接/dbskill样例03_外部GitHubSkill局部抽取判断测试_v0.1.md
+
+  - id: task-002-b-source-pack-three-samples
+    status: completed
+    current_port: B
+    target_stage: SOURCE_PACK
+    result_artifact: 10_工程化交接/dbskill三样例SourcePack_v0.1.md
+
+  - id: task-003-e-verify-three-samples
+    status: completed
+    current_port: E
+    target_stage: VERIFY
+    result_artifact: 10_工程化交接/dbskill第一批三样例效果验证报告_v0.1.md
+
+  - id: task-004-f-decide-batch-2-trial
+    status: completed
+    current_port: F
+    target_stage: OWNER_GATE
+    result_artifact: 10_工程化交接/dbskill第二批状态链试接入Owner决策记录_v0.1.md
+    decision: ACCEPT_SMALL_SCOPE_BATCH_2_TRIAL
+
+  - id: task-005-design-batch-2-state-chain-wrapper
+    status: completed
+    current_port: C
+    target_stage: DESIGN
+    result_artifact: 10_工程化交接/dbskill第二批状态链小范围试接入运行方案_v0.1.md
+
+  - id: task-006-land-batch-2-state-chain-wrapper-and-snapshot
+    status: completed
+    current_port: D
+    target_stage: LANDING
+    result_artifact: 10_工程化交接/dbskill第二批状态链试接入落库记录_v0.1.md
+    snapshot: 10_工程化交接/state_snapshots/20260618_dbskill_batch_2_trial_design_snapshot.yaml
+
+  - id: task-007-e-verify-batch-2-state-chain
+    status: completed
+    current_port: E
+    target_stage: VERIFY
+    result_artifact: 10_工程化交接/dbskill第二批状态链试接入验证报告_v0.1.md
+    result: PASS_TRIAL_SCOPE
+
+  - id: task-008-next-real-workflow-change-state-chain-test
+    status: completed
+    priority: P1
+    current_port: A
+    target_stage: KNOWLEDGE_RESEARCH_LOOP
+    description: >
+      Use the user's correction that A/B/C should be a knowledge research loop before C/D/E/F
+      execution to test dbs-save/dbs-restore/dbs-report under guardrails.
+    result_artifact: 10_工程化交接/A_B_C知识研究循环与C-D-E-F执行循环重构方案_v0.1.md
+    success_condition: state_chain_records_real_workflow_architecture_change_without_pollution
+
+  - id: task-009-next-abc-research-loop-sample
+    status: completed
+    priority: P1
+    current_port: A
+    target_stage: KNOWLEDGE_RESEARCH_LOOP
+    description: >
+      Form a formal research topic from the user's current idea and today's scattered method,
+      dbskill, external-skill, and A/B/C loop thoughts.
+    result_artifact: 10_工程化交接/研究课题_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
+    success_condition: scattered_ideas_are_consolidated_into_research_topic
+
+  - id: task-010-b-source-pack-for-abc-skill-evolution-topic
+    status: completed
+    priority: P1
+    current_port: B
+    target_stage: SOURCE_PACK
+    description: >
+      Generate a B-port source/context pack for the new research topic, using existing local
+      workflow docs and any approved external references as evidence.
+    result_artifact: 10_工程化交接/研究课题SourcePack_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
+    success_condition: b_source_pack_ready_for_c_research_draft
+
+  - id: task-011-add-owner-expression-guidance-layer
+    status: completed
+    priority: P0
+    current_port: A
+    target_stage: KNOWLEDGE_RESEARCH_LOOP
+    description: >
+      Add the user's correction that a non-professional Owner needs explicit guidance on how to
+      express the next input and avoid drifting off-topic after each output.
+    result_artifact: 10_工程化交接/研究课题_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
+    success_condition: owner_expression_guidance_added_to_topic_and_a_port_skill
+
+  - id: task-012-c-research-theory-draft
+    status: completed
+    priority: P1
+    current_port: C
+    target_stage: RESEARCH_DRAFT
+    description: >
+      Generate the C-research theory draft from the B-port source pack, keeping it as a revisable
+      research output rather than a final execution package.
+    result_artifact: 10_工程化交接/C端研究版理论框架草案_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
+    success_condition: c_research_draft_ready_for_owner_review
+
+  - id: task-013-c-execution-package-for-c-detailed-theory
+    status: completed
+    priority: P1
+    current_port: C
+    target_stage: C_EXECUTION_PACKAGE
+    result_artifact: 10_工程化交接/C-execution接口包_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
+    success_condition: c_execution_package_ready_for_d_e_f
+
+  - id: task-014-d-land-c-detailed-theory-chain
+    status: completed
+    priority: P1
+    current_port: D
+    target_stage: LANDING
+    result_artifact: 10_工程化交接/D端落库记录_多端口技能进化机制C端详细理论版全链路推进_v0.1.md
+    success_condition: d_landing_record_ready
+
+  - id: task-015-e-verify-c-detailed-theory
+    status: completed
+    priority: P1
+    current_port: E
+    target_stage: VERIFY
+    result_artifact: 10_工程化交接/E端验证报告_多端口技能进化机制C端详细理论版_v0.1.md
+    result: PASS_WITH_RECOMMENDATION
+
+  - id: task-016-f-owner-decision-c-detailed-theory
+    status: completed
+    priority: P1
+    current_port: F
+    target_stage: OWNER_GATE
+    result_artifact: 10_工程化交接/F端OwnerDecisionBrief_多端口技能进化机制C端详细理论版_v0.1.md
+    recommended_decision: ACCEPT_BUT_REQUIRE_ONE_PAGE_CONTROL_CARD
+
+  - id: task-017-create-one-page-control-card
+    status: completed
+    priority: P1
+    current_port: C
+    target_stage: CONTROL_CARD
+    result_artifact: 10_工程化交接/一页总控卡_A_B_C知识研究循环驱动的多端口技能进化机制_v0.1.md
+    success_condition: one_page_control_card_completed
+
+  - id: task-018-validate-owner-expression-guidance-with-real-sample
+    status: waiting_for_next_run
+    priority: P1
+    current_port: A
+    target_stage: SAMPLE_VALIDATION
+    description: >
+      Validate the owner expression guidance using a real sample, then decide whether the one-page
+      control card is sufficient for day-to-day use.
+    expected_artifact: 10_工程化交接/样例验证_Owner表达引导与防偏题_v0.1.md
+    success_condition: owner_expression_guidance_proven_with_sample

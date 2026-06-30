@@ -1,0 +1,74 @@
+name: Validator / CI 质量门任务
+
+description: 用于新增或增强 scripts/validate_all.py 聚合的项目质量门。
+
+title: "[Validator] <验证器名称>"
+
+labels:
+  - validator
+  - ci
+  - quality-gate
+  - needs-triage
+
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 要防止的问题
+      description: 这个 validator 要阻止哪类文档漂移、字段缺失或状态错误？
+      placeholder: "例如：索引列出的文件路径不存在，但 CI 没有发现。"
+    validations:
+      required: true
+
+  - type: textarea
+    id: target_files
+    attributes:
+      label: 目标文件 / 目录
+      placeholder: |
+        - 00_知识库设计规范/05_索引与变更记录/知识库索引_v0.1.md
+        - 07_样本标注/样本记录/
+        - specs/
+    validations:
+      required: true
+
+  - type: textarea
+    id: rules
+    attributes:
+      label: 验证规则
+      placeholder: |
+        - 所有索引路径必须存在
+        - 样本记录必须包含 reviewer / review_date
+        - 状态路径只能使用允许节点
+    validations:
+      required: true
+
+  - type: textarea
+    id: tests
+    attributes:
+      label: 测试要求
+      placeholder: |
+        - 新增 tests/test_<validator>.py
+        - 包含通过样例和失败样例
+        - 接入 scripts/validate_all.py
+    validations:
+      required: true
+
+  - type: textarea
+    id: non_goals
+    attributes:
+      label: 非目标
+      placeholder: "例如：不重写现有 CSV schema validator；不引入外部依赖。"
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 验收标准
+      placeholder: |
+        - [ ] validator 脚本存在
+        - [ ] unit tests 通过
+        - [ ] validate_all 聚合通过
+        - [ ] README / ROADMAP 或索引必要时更新
+    validations:
+      required: true
